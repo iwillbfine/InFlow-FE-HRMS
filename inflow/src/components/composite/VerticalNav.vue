@@ -10,7 +10,6 @@
         hbgc="#fff"
         ac="#003566"
         abgc="#fff"
-        @click="selectItem(index)"
       >
         <component :is="item.icon"></component>
         <span>{{ item.name }}</span>
