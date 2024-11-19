@@ -1,16 +1,18 @@
 <template>
   <div class="test">
+    <VerticalNav></VerticalNav>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import VerticalNav from './components/composite/VerticalNav.vue';
 </script>
 
 <style scoped>
 .test {
   display: flex;
   height: 100vh;
-  justify-content: center;
+  width: 100%;
 }
 </style>

@@ -1,50 +1,39 @@
 <template>
-  <li :style="customStyle">
+  <li
+    :style="[customStyle, dynamicStyle]"
+    :class="{ active: isActive }"
+    @mouseover="hovering = true"
+    @mouseleave="hovering = false"
+    @click="activate"
+  >
     <slot></slot>
   </li>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
-  h: {
-    type: String,
-    default: 'auto',
-  },
-  w: {
-    type: String,
-    default: '100%',
-  },
-  b: {
-    type: String,
-    default: 'none',
-  },
-  br: {
-    type: String,
-    default: '0rem',
-  },
-  bgc: {
-    type: String,
-    default: '#ffffff',
-  },
-  fs: {
-    type: String,
-    default: '100%',
-  },
-  fw: {
-    type: String,
-    default: 'inherit',
-  },
-  c: {
-    type: String,
-    default: 'inherit',
-  },
-  fld: {
-    type: String,
-    default: 'inherit',
-  },
+  h: { type: String, default: 'auto' },
+  w: { type: String, default: '100%' },
+  b: { type: String, default: 'none' },
+  br: { type: String, default: '0rem' },
+  bgc: { type: String, default: 'transparent' },
+  fs: { type: String, default: '100%' },
+  fw: { type: String, default: 'inherit' },
+  c: { type: String, default: 'inherit' },
+  fld: { type: String, default: 'inherit' },
+  hc: { type: String, default: 'inherit' }, // hover color
+  hbgc: { type: String, default: 'transparent' }, // hover background color
+  ac: { type: String, default: 'inherit' }, // active color
+  abgc: { type: String, default: 'transparent' }, // active background color
+  active: { type: Boolean, default: false },
 });
+
+const hovering = ref(false);
+const isActive = ref(false);
+
+const emit = defineEmits(['update:active']);
 
 const customStyle = computed(() => ({
   display: 'flex',
@@ -58,4 +47,24 @@ const customStyle = computed(() => ({
   color: props.c,
   flexDirection: props.fld,
 }));
+
+const dynamicStyle = computed(() => {
+  isActive.value = props.active;
+  if (isActive.value) {
+    return {
+      backgroundColor: props.abgc,
+      color: props.ac,
+    };
+  } else if (hovering.value) {
+    return {
+      backgroundColor: props.hbgc,
+      color: props.hc,
+    };
+  }
+  return {};
+});
+
+const activate = () => {
+  emit('update:active', true);
+};
 </script>

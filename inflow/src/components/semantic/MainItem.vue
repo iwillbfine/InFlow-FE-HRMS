@@ -26,7 +26,7 @@ const props = defineProps({
   },
   bgc: {
     type: String,
-    default: '#ffffff',
+    default: 'transparent',
   },
   fs: {
     type: String,

@@ -1,3 +1,3 @@
 <template>
-  <i class="fa-solid fa-user-pen"></i>
+  <i class="fa-solid fa-pen-to-square"></i>
 </template>

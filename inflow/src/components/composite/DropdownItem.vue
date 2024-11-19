@@ -1,15 +1,18 @@
 <template>
   <FlexItem class="dropdown" @click="toggleDropdown" fld="column" w="16rem" fs="1.6rem" fw="500" c="#003566">
-    <FlexItem class="dropdown-header" fld="row" br="0.6rem">
+    <FlexItem class="dropdown-header" fld="row" br="0.6rem" bgc="#fff">
       {{ selectedItem ? selectedItem.name : placeholder }}
       <CaretUpIcon v-if="isDropdownOpen"></CaretUpIcon>
       <CaretDownIcon v-else></CaretDownIcon>
     </FlexItem>
-    <UlItem class="dropdown-list" v-if="isDropdownOpen" br="0.6rem">
+    <UlItem class="dropdown-list" v-if="isDropdownOpen" br="0.6rem" bgc="#fff">
       <LiItem class="dropdown-item"
         v-for="(item, index) in list"
         :key="index"
         @click.stop="selectItem(item)"
+        bgc="#fff"
+        hc="#fff"
+        hbgc="#003566"
       >
         {{ item.name }}
       </LiItem>
@@ -18,9 +21,9 @@
 </template>
 
 <script setup>
-import FlexItem from "../semantic/FlexItem.vue";
-import UlItem from "../semantic/UlItem.vue";
-import LiItem from "../semantic/LiItem.vue";
+import FlexItem from '../semantic/FlexItem.vue';
+import UlItem from '../semantic/UlItem.vue';
+import LiItem from '../semantic/LiItem.vue';
 import CaretUpIcon from "../icons/CaretUpIcon.vue"
 import CaretDownIcon from "../icons/CaretDownIcon.vue"
 import { ref } from 'vue';
@@ -52,7 +55,7 @@ const selectItem = (item) => {
 };
 </script>
 
-<style scoped>
+<style>
 .dropdown {
   flex-direction: column;
   cursor: pointer;
