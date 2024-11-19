@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <VerticalNav></VerticalNav>
+    <VerticalNav :cur="3"></VerticalNav>
   </div>
 </template>
 

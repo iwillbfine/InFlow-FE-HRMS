@@ -5,7 +5,7 @@
         class="nav-item"
         v-for="(item, index) in list"
         :key="index"
-        :active="selectedItem === index"
+        :active="cur === index"
         hc="#003566"
         hbgc="#fff"
         ac="#003566"
@@ -31,6 +31,13 @@ import AddressBookIcon from '../icons/AddressBookIcon.vue';
 import ChartIcon from '../icons/ChartIcon.vue';
 import { ref } from 'vue';
 
+const props = defineProps({
+  cur: {
+    type: Number,
+    default: 0,
+  }
+})
+
 const list = [
   { name: '평가', icon: EvaluationIcon },
   { name: '챗봇', icon: RobotIcon },
@@ -39,13 +46,6 @@ const list = [
   { name: '인사 관리', icon: AddressBookIcon },
   { name: '통계', icon: ChartIcon },
 ];
-
-const selectedItem = ref(null);
-
-// 항목 선택 핸들러
-const selectItem = (index) => {
-  selectedItem.value = index;
-};
 </script>
 
 <style scoped>
