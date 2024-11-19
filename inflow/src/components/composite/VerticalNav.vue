@@ -58,6 +58,7 @@ const list = [
   align-items: center;
   padding: 1.5rem;
   gap: 0.6rem;
+  cursor: pointer;
 }
 
 .nav-item i {
