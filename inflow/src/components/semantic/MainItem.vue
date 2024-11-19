@@ -14,7 +14,7 @@ const props = defineProps({
   },
   w: {
     type: String,
-    default: '100%',
+    default: 'auto',
   },
   b: {
     type: String,

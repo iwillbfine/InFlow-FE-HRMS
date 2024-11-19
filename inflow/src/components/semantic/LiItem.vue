@@ -15,7 +15,7 @@ import { computed, ref } from 'vue';
 
 const props = defineProps({
   h: { type: String, default: 'auto' },
-  w: { type: String, default: '100%' },
+  w: { type: String, default: 'auto' },
   b: { type: String, default: 'none' },
   br: { type: String, default: '0rem' },
   bgc: { type: String, default: 'transparent' },

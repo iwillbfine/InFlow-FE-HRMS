@@ -1,7 +1,7 @@
 <template>
-  <div :style="customStyle">
+  <header :style="customStyle">
     <slot></slot>
-  </div>
+  </header>
 </template>
 
 <script setup>
