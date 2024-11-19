@@ -1,7 +1,7 @@
 <template>
-  <aside :style="customStyle">
+  <footer :style="customStyle">
     <slot></slot>
-  </aside>
+  </footer>
 </template>
 
 <script setup>

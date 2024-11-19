@@ -35,7 +35,7 @@ const props = defineProps({
   c: {
     type: String,
     default: '#202020',
-  },
+  }
 });
 
 const customStyle = computed(() => ({
