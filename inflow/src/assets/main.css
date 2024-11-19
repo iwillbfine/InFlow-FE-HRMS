@@ -1,35 +1,70 @@
-@import './base.css';
+/* Noto Sans KR 글꼴을 import */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+:root {
+  font-size: 10px;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+/* 전역적으로 적용 */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+/* 기본적으로 모든 컴포넌트의 텍스트 요소에 적용 */
+* {
+  font-family: inherit;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+@media screen and (max-width: 1600px) {
+  :root {
+    font-size: 9.5px;
+  } 
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+@media screen and (max-width: 1400px) {
+  :root {
+    font-size: 9px;
+  } 
+}
+
+@media screen and (max-width: 1200px) {
+  :root {
+    font-size: 8.5px;
+  } 
+}
+
+@media screen and (max-width: 1000px) {
+  :root {
+    font-size: 8px;
+  } 
+}
+
+@media screen and (max-width: 800px) {
+  :root {
+    font-size: 7.5px;
+  } 
+}
+
+@media screen and (max-width: 600px) {
+  :root {
+    font-size: 7px;
+  } 
+}
+
+@media screen and (max-width: 400px) {
+  :root {
+    font-size: 6px;
+  } 
+}
+
+@media screen and (max-width: 350px) {
+  :root {
+    font-size: 5.5px;
+  } 
+}
+
+@media screen and (max-width: 300px) {
+  :root {
+    font-size: 5px;
+  } 
 }
