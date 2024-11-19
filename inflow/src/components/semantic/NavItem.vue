@@ -10,11 +10,11 @@ import { computed } from 'vue';
 const props = defineProps({
   h: {
     type: String,
-    default: '10rem',
+    default: 'auto',
   },
   w: {
     type: String,
-    default: '10rem',
+    default: '100%',
   },
   b: {
     type: String,
@@ -30,11 +30,19 @@ const props = defineProps({
   },
   fs: {
     type: String,
-    default: '1rem',
+    default: '100%',
+  },
+  fw: {
+    type: String,
+    default: 'inherit',
   },
   c: {
     type: String,
-    default: '#202020',
+    default: 'inherit',
+  },
+  fld: {
+    type: String,
+    default: 'inherit',
   },
 });
 
@@ -46,6 +54,8 @@ const customStyle = computed(() => ({
   borderRadius: props.br,
   backgroundColor: props.bgc,
   fontSize: props.fs,
-  color: props.c
+  fontWeight: props.fw,
+  color: props.c,
+  flexDirection: props.fld,
 }));
 </script>

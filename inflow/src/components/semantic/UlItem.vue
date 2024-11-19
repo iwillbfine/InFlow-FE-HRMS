@@ -1,7 +1,7 @@
 <template>
-  <section :style="customStyle">
+  <ul :style="customStyle">
     <slot></slot>
-  </section>
+  </ul>
 </template>
 
 <script setup>

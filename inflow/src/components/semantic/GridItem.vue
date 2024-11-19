@@ -1,7 +1,7 @@
 <template>
-  <section :style="customStyle">
+  <div :style="customStyle">
     <slot></slot>
-  </section>
+  </div>
 </template>
 
 <script setup>
@@ -40,14 +40,10 @@ const props = defineProps({
     type: String,
     default: 'inherit',
   },
-  fld: {
-    type: String,
-    default: 'inherit',
-  },
 });
 
 const customStyle = computed(() => ({
-  display: 'flex',
+  display: 'grid',
   height: props.h,
   width: props.w,
   border: props.b,
@@ -55,7 +51,6 @@ const customStyle = computed(() => ({
   backgroundColor: props.bgc,
   fontSize: props.fs,
   fontWeight: props.fw,
-  color: props.c,
-  flexDirection: props.fld,
+  color: props.c
 }));
 </script>
