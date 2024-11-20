@@ -13,7 +13,7 @@
     <UlItem
       v-if="isDropdownOpen"
       class="dropdown-list"
-      w="14rem"
+      w="20rem"
       br="0.6rem"
       bgc="#fff"
       fs="1.4rem"
@@ -22,6 +22,7 @@
         v-for="(item, index) in list"
         :key="index"
         class="dropdown-item"
+        h="4.4rem"
         bgc="#fff"
         hc="#fff"
         hbgc="#003566"

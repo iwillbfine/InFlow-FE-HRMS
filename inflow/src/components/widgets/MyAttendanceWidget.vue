@@ -1,5 +1,11 @@
 <template>
-  <WidgetItem label="나의 근태 현황" h="20rem" :w="widgetWidth">
+  <WidgetItem
+    class="my-attendance-widget"
+    label="나의 근태 현황"
+    h="20rem"
+    minh="20rem"
+    :w="widgetWidth"
+  >
     <FlexItem class="widget-content" fld="row" h="100%" w="100%">
       <FlexItem
         v-for="(item, index) in list"

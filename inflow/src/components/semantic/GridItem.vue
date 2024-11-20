@@ -40,6 +40,22 @@ const props = defineProps({
     type: String,
     default: 'inherit',
   },
+  maxh: {
+    type: String,
+    default: '',
+  },
+  minh: {
+    type: String,
+    default: '',
+  },
+  maxw: {
+    type: String,
+    default: '',
+  },
+  minw: {
+    type: String,
+    default: '',
+  },
 });
 
 const customStyle = computed(() => ({
@@ -52,5 +68,9 @@ const customStyle = computed(() => ({
   fontSize: props.fs,
   fontWeight: props.fw,
   color: props.c,
+  maxHeight: props.maxh,
+  minHeight: props.minh,
+  maxWidth: props.maxw,
+  minWidth: props.minw,
 }));
 </script>

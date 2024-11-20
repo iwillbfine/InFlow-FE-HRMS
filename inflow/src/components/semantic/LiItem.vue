@@ -1,10 +1,9 @@
 <template>
   <li
     :style="[customStyle, dynamicStyle]"
-    :class="{ active: isActive }"
+    :class="{ active: props.active }"
     @mouseover="hovering = true"
     @mouseleave="hovering = false"
-    @click="activate"
   >
     <slot></slot>
   </li>
@@ -23,6 +22,10 @@ const props = defineProps({
   fw: { type: String, default: 'inherit' },
   c: { type: String, default: 'inherit' },
   fld: { type: String, default: 'inherit' },
+  maxh: { type: String, default: '' },
+  minh: { type: String, default: '' },
+  maxw: { type: String, default: '' },
+  minw: { type: String, default: '' },
   hc: { type: String, default: 'inherit' }, // hover color
   hbgc: { type: String, default: 'transparent' }, // hover background color
   ac: { type: String, default: 'inherit' }, // active color
@@ -31,9 +34,6 @@ const props = defineProps({
 });
 
 const hovering = ref(false);
-const isActive = ref(false);
-
-const emit = defineEmits(['update:active']);
 
 const customStyle = computed(() => ({
   display: 'flex',
@@ -46,11 +46,14 @@ const customStyle = computed(() => ({
   fontWeight: props.fw,
   color: props.c,
   flexDirection: props.fld,
+  maxHeight: props.maxh,
+  minHeight: props.minh,
+  maxWidth: props.maxw,
+  minWidth: props.minw,
 }));
 
 const dynamicStyle = computed(() => {
-  isActive.value = props.active;
-  if (isActive.value) {
+  if (props.active) {
     return {
       backgroundColor: props.abgc,
       color: props.ac,
@@ -63,8 +66,4 @@ const dynamicStyle = computed(() => {
   }
   return {};
 });
-
-const activate = () => {
-  emit('update:active', true);
-};
 </script>

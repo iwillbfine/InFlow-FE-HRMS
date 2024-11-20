@@ -1,5 +1,6 @@
 <template>
   <ButtonItem
+    class="setting-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"
