@@ -19,10 +19,12 @@ const list = ref([
   { content: 'D-27', label: '월급날'},
   { content: '출근', label: '오늘의 근무 상태'},
   { content: '534일', label: '근속 일수'},
+  { content: '5/15', label: '연차 현황'},
+  { content: '6:30', label: '초과 근무 시간'},
 ]);
 
 const widgetWidth = computed(() => {
-  return `${list.value.length * 20}rem`;
+  return `${list.value.length * 15}rem`;
 });
 </script>
 

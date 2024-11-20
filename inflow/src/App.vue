@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <VerticalNav :cur="0"></VerticalNav>
+    <VerticalNav></VerticalNav>
     <FlexItem fld="column" h=100% w="100%">
       <MainHeader userName="홍길동"></MainHeader>
       <MainItem h="100%" w="100%">
