@@ -1,18 +1,31 @@
 <template>
-  <FlexItem class="employee-account-toggle" @click="toggleDropdown" fld="column"fw="700">
+  <FlexItem
+    class="account-dropdown"
+    fld="column"
+    fw="700"
+    @click="toggleDropdown"
+  >
     <FlexItem class="dropdown-header" fld="row" fs="2rem">
-      <span>{{ userName }} 님</span>
+      <span>{{ props.userName }} 님</span>
       <ChevronUpIcon v-if="isDropdownOpen"></ChevronUpIcon>
       <ChevronDownIcon v-else></ChevronDownIcon>
     </FlexItem>
-    <UlItem class="dropdown-list" v-if="isDropdownOpen" w="14rem" br="0.6rem" bgc="#fff" fs="1.4rem">
-      <LiItem class="dropdown-item"
+    <UlItem
+      v-if="isDropdownOpen"
+      class="dropdown-list"
+      w="14rem"
+      br="0.6rem"
+      bgc="#fff"
+      fs="1.4rem"
+    >
+      <LiItem
         v-for="(item, index) in list"
         :key="index"
-        @click.stop="selectItem(item)"
+        class="dropdown-item"
         bgc="#fff"
         hc="#fff"
         hbgc="#003566"
+        @click.stop="selectItem(item)"
       >
         {{ item.name }}
       </LiItem>
@@ -24,15 +37,15 @@
 import FlexItem from '../semantic/FlexItem.vue';
 import UlItem from '../semantic/UlItem.vue';
 import LiItem from '../semantic/LiItem.vue';
-import ChevronUpIcon from "../icons/ChevronUpIcon.vue"
-import ChevronDownIcon from "../icons/ChevronDownIcon.vue"
+import ChevronUpIcon from '../icons/ChevronUpIcon.vue';
+import ChevronDownIcon from '../icons/ChevronDownIcon.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
   userName: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const list = ref([
@@ -62,15 +75,15 @@ const selectItem = (item) => {
 
 const handleChangePassword = () => {
   console.log('비밀번호 재설정');
-}
+};
 
 const handleLogout = () => {
   console.log('로그아웃.');
-}
+};
 </script>
 
 <style scoped>
-.employee-account-toggle {
+.account-dropdown {
   position: relative;
   flex-direction: column;
   cursor: pointer;
@@ -99,5 +112,3 @@ const handleLogout = () => {
   padding: 1rem;
 }
 </style>
-
-

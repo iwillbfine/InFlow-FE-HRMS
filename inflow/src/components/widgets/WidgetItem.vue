@@ -1,7 +1,14 @@
 <template>
-  <SectionItem class="widget" fld="column" :h="h" :w="w" br="1rem">
-    <FlexItem class="widget-label" w="100%" bgc="#003566" fs="1.6rem" fw="500" c="#fff">
-      <span>{{ label }}</span>
+  <SectionItem class="widget" fld="column" :h="props.h" :w="props.w" br="1rem">
+    <FlexItem
+      class="widget-label"
+      w="100%"
+      bgc="#003566"
+      fs="1.6rem"
+      fw="500"
+      c="#fff"
+    >
+      <span>{{ props.label }}</span>
     </FlexItem>
     <FlexItem class="widget-content-wrapper" h="100%" w="100%" bgc="#fff">
       <slot></slot>
@@ -16,17 +23,17 @@ import FlexItem from '../semantic/FlexItem.vue';
 const props = defineProps({
   label: {
     type: String,
-    required: true
+    required: true,
   },
   h: {
     type: String,
-    required: true
+    required: true,
   },
   w: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>
 
 <style scoped>

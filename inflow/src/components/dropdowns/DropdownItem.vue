@@ -1,18 +1,33 @@
 <template>
-  <FlexItem class="dropdown" @click="toggleDropdown" fld="column" :w="w" fs="1.6rem" fw="500" c="#003566">
+  <FlexItem
+    class="dropdown"
+    fld="column"
+    :w="props.w"
+    fs="1.6rem"
+    fw="500"
+    c="#003566"
+    @click="toggleDropdown"
+  >
     <FlexItem class="dropdown-header" fld="row" br="0.6rem" bgc="#fff">
-      {{ selectedItem ? selectedItem.name : placeholder }}
+      {{ selectedItem ? selectedItem.name : props.placeholder }}
       <CaretUpIcon v-if="isDropdownOpen"></CaretUpIcon>
       <CaretDownIcon v-else></CaretDownIcon>
     </FlexItem>
-    <UlItem class="dropdown-list" v-if="isDropdownOpen" w="100%" br="0.6rem" bgc="#fff">
-      <LiItem class="dropdown-item"
-        v-for="(item, index) in list"
+    <UlItem
+      v-if="isDropdownOpen"
+      class="dropdown-list"
+      w="100%"
+      br="0.6rem"
+      bgc="#fff"
+    >
+      <LiItem
+        v-for="(item, index) in props.list"
         :key="index"
-        @click.stop="selectItem(item)"
+        class="dropdown-item"
         bgc="#fff"
         hc="#fff"
         hbgc="#003566"
+        @click.stop="selectItem(item)"
       >
         {{ item.name }}
       </LiItem>
@@ -24,8 +39,8 @@
 import FlexItem from '../semantic/FlexItem.vue';
 import UlItem from '../semantic/UlItem.vue';
 import LiItem from '../semantic/LiItem.vue';
-import CaretUpIcon from "../icons/CaretUpIcon.vue"
-import CaretDownIcon from "../icons/CaretDownIcon.vue"
+import CaretUpIcon from '../icons/CaretUpIcon.vue';
+import CaretDownIcon from '../icons/CaretDownIcon.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -40,7 +55,7 @@ const props = defineProps({
   w: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const selectedItem = ref(null);

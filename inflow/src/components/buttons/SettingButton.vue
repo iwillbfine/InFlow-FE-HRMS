@@ -1,5 +1,12 @@
 <template>
-  <ButtonItem :h="h" :w="w" :br="br" :bgc="bgc" :fs="fs" :c="c">
+  <ButtonItem
+    :h="props.h"
+    :w="props.w"
+    :br="props.br"
+    :bgc="props.bgc"
+    :fs="props.fs"
+    :c="props.c"
+  >
     <GearIcon></GearIcon>
   </ButtonItem>
 </template>
@@ -15,5 +22,5 @@ const props = defineProps({
   bgc: { type: String, required: true },
   fs: { type: String, required: true },
   c: { type: String, required: true },
-})
+});
 </script>

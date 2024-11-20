@@ -1,6 +1,20 @@
 <template>
-  <FlexItem class="outer-circle" :h="h" :w="w" br="50%" :bg="gradientBackground">
-    <FlexItem class="inner-circle" :style="innerCircleStyles" br="50%" bgc="#fff" :fs="fs" :fw="fw" :c="c">
+  <FlexItem
+    class="outer-circle"
+    :h="h"
+    :w="w"
+    br="50%"
+    :bg="gradientBackground"
+  >
+    <FlexItem
+      class="inner-circle"
+      :style="innerCircleStyles"
+      br="50%"
+      bgc="#fff"
+      :fs="fs"
+      :fw="fw"
+      :c="c"
+    >
       <span>{{ content }}</span>
     </FlexItem>
   </FlexItem>
@@ -8,33 +22,34 @@
 
 <script setup>
 import FlexItem from '../semantic/FlexItem.vue';
-import { computed } from 'vue'
+import { computed } from 'vue';
 
 const props = defineProps({
   content: {
-    type: String
+    type: String,
+    default: '',
   },
   h: {
     type: String,
-    default: '8.6rem'
+    default: '8.6rem',
   },
   w: {
     type: String,
-    default: '8.6rem'
+    default: '8.6rem',
   },
   fs: {
     type: String,
-    default: '2rem'
+    default: '2rem',
   },
   fw: {
     type: String,
-    default: '700'
+    default: '700',
   },
   c: {
     type: String,
-    default: '#003566'
-  }
-})
+    default: '#003566',
+  },
+});
 
 const scaleSize = (size, scaleFactor) => {
   const regex = /(\d+(\.\d+)?)(px|rem|em)/;
@@ -55,7 +70,7 @@ const innerCircleStyles = computed(() => {
 
   return {
     height: scaledHeight,
-    width: scaledWidth
+    width: scaledWidth,
   };
 });
 

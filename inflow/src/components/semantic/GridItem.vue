@@ -51,6 +51,6 @@ const customStyle = computed(() => ({
   backgroundColor: props.bgc,
   fontSize: props.fs,
   fontWeight: props.fw,
-  color: props.c
+  color: props.c,
 }));
 </script>

@@ -25,7 +25,7 @@ const props = defineProps({
     default: '0rem',
   },
   bg: {
-    type: String
+    type: String,
   },
   bgc: {
     type: String,
