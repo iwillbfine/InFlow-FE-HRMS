@@ -1,12 +1,19 @@
 <template>
   <NavItem class="sub-menu-nav" h="4.2rem" w="100%">
-    <UlItem class="menu-list" h="100%" fld="row" fs="1.7rem" fw="500">
+    <UlItem
+      class="menu-list"
+      h="100%"
+      fld="row"
+      fs="1.7rem"
+      fw="500"
+      :style="inactiveStyle"
+    >
       <LiItem
         v-for="(item, index) in props.list"
         :key="index"
         class="menu-item"
         :active="props.cur === index"
-        :style="props.cur === index ? activeStyle : inactiveStyle"
+        :style="props.cur === index ? activeStyle : {}"
         h="100%"
         c="#5A5A5A"
         hc="#003566"
