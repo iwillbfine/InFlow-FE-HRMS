@@ -59,3 +59,11 @@ const customStyle = computed(() => ({
   flexDirection: props.fld,
 }));
 </script>
+
+<style scoped>
+main {
+  padding-top: 4rem;
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+</style>

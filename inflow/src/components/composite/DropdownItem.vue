@@ -1,11 +1,11 @@
 <template>
-  <FlexItem class="dropdown" @click="toggleDropdown" fld="column" w="16rem" fs="1.6rem" fw="500" c="#003566">
+  <FlexItem class="dropdown" @click="toggleDropdown" fld="column" :w="w" fs="1.6rem" fw="500" c="#003566">
     <FlexItem class="dropdown-header" fld="row" br="0.6rem" bgc="#fff">
       {{ selectedItem ? selectedItem.name : placeholder }}
       <CaretUpIcon v-if="isDropdownOpen"></CaretUpIcon>
       <CaretDownIcon v-else></CaretDownIcon>
     </FlexItem>
-    <UlItem class="dropdown-list" v-if="isDropdownOpen" br="0.6rem" bgc="#fff">
+    <UlItem class="dropdown-list" v-if="isDropdownOpen" w="100%" br="0.6rem" bgc="#fff">
       <LiItem class="dropdown-item"
         v-for="(item, index) in list"
         :key="index"
@@ -37,6 +37,10 @@ const props = defineProps({
     type: Array, // id와 name을 key값으로 갖는 map 배열
     required: true,
   },
+  w: {
+    type: String,
+    required: true,
+  }
 });
 
 const selectedItem = ref(null);
@@ -55,8 +59,9 @@ const selectItem = (item) => {
 };
 </script>
 
-<style>
+<style scoped>
 .dropdown {
+  position: relative;
   flex-direction: column;
   cursor: pointer;
 }
@@ -72,7 +77,9 @@ const selectItem = (item) => {
 }
 
 .dropdown-list {
-  margin-top: 1.5rem;
+  position: absolute;
+  top: 6rem;
+  left: 0;
   max-height: 15rem;
   overflow-y: auto;
   box-shadow: 0 0.2rem 0.4rem 0.2rem rgba(0, 0, 0, 0.15);
@@ -81,10 +88,5 @@ const selectItem = (item) => {
 
 .dropdown-item {
   padding: 1rem;
-}
-
-.dropdown-item:hover {
-  background-color: #003566;
-  color: #fff;
 }
 </style>

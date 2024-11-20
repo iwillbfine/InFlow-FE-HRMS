@@ -6,6 +6,7 @@
         v-for="(item, index) in list"
         :key="index"
         :active="cur === index"
+        @click.stop="selectItem(item)"
         hc="#003566"
         hbgc="#fff"
         ac="#003566"
@@ -28,23 +29,30 @@ import SearchIcon from '../icons/SearchIcon.vue';
 import UserIcon from '../icons/UserIcon.vue';
 import AddressBookIcon from '../icons/AddressBookIcon.vue';
 import ChartIcon from '../icons/ChartIcon.vue';
-import { ref } from 'vue';
+import { ref, markRaw } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   cur: {
     type: Number,
-    default: 0,
+    default: null,
   }
 })
 
-const list = [
-  { name: '평가', icon: EvaluationIcon },
-  { name: '챗봇', icon: RobotIcon },
-  { name: '사원 찾기', icon: SearchIcon },
-  { name: '인사 기본', icon: UserIcon },
-  { name: '인사 관리', icon: AddressBookIcon },
-  { name: '통계', icon: ChartIcon },
-];
+const list = ref([
+  { name: '평가', icon: markRaw(EvaluationIcon), link: '/evaluation'},
+  { name: '챗봇', icon: markRaw(RobotIcon), link: '/chatbot'},
+  { name: '사원 찾기', icon: markRaw(SearchIcon), link: '/emp-search'},
+  { name: '인사 기본', icon: markRaw(UserIcon), link: '/hr-basic'},
+  { name: '인사 관리', icon: markRaw(AddressBookIcon), link: '/hr-management'},
+  { name: '통계', icon: markRaw(ChartIcon), link: '/statistics'},
+]);
+
+const router = useRouter();
+
+const selectItem = (item) => {
+  router.push(item.link);
+};
 </script>
 
 <style scoped>

@@ -24,6 +24,9 @@ const props = defineProps({
     type: String,
     default: '0rem',
   },
+  bg: {
+    type: String
+  },
   bgc: {
     type: String,
     default: 'transparent',
@@ -52,6 +55,7 @@ const customStyle = computed(() => ({
   width: props.w,
   border: props.b,
   borderRadius: props.br,
+  background: props.bg,
   backgroundColor: props.bgc,
   fontSize: props.fs,
   fontWeight: props.fw,
