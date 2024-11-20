@@ -48,7 +48,7 @@ const activeStyle = {
 
 const inactiveStyle = {
   borderBottom: '1px solid #898989',
-}
+};
 </script>
 
 <style scoped>
