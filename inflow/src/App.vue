@@ -1,8 +1,8 @@
 <template>
   <div class="test">
-    <VerticalNav></VerticalNav>
+    <CommonNav></CommonNav>
     <FlexItem fld="column" h="100%" w="100%">
-      <MainHeader user-name="홍길동"></MainHeader>
+      <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="100%" w="100%">
         <MyAttendanceWidget />
       </MainItem>
@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import VerticalNav from './components/common/VerticalNav.vue';
-import MainHeader from './components/common/MainHeader.vue';
+import CommonNav from './components/common/CommonNav.vue';
+import CommonHeader from './components/common/CommonHeader.vue';
 import MainItem from './components/semantic/MainItem.vue';
 import FlexItem from './components/semantic/FlexItem.vue';
 import MyAttendanceWidget from './components/widgets/MyAttendanceWidget.vue';

@@ -1,6 +1,6 @@
 <template>
   <NavItem
-    class="vertical-nav"
+    class="common-nav"
     fld="column"
     w="12rem"
     fs="2rem"
