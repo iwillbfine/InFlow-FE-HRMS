@@ -13,11 +13,6 @@
           <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :list="menuList"></SubMenuNav>
             <CommonArticle label="휴가 신청서" h="50rem" w="90%" minh="50rem">
-              <DropdownItem
-                placeholder="안녕"
-                w="16rem"
-                :list="menuList"
-              ></DropdownItem>
             </CommonArticle>
             <CommonArticle
               label="휴직 신청서"
@@ -38,10 +33,9 @@ import CommonHeader from './components/common/CommonHeader.vue';
 import CommonWidget from './components/common/CommonWidget.vue';
 import MainItem from './components/semantic/MainItem.vue';
 import FlexItem from './components/semantic/FlexItem.vue';
-import { ref } from 'vue';
 import CommonArticle from './components/common/CommonArticle.vue';
 import SubMenuNav from './components/nav/SubMenuNav.vue';
-import DropdownItem from './components/dropdowns/DropdownItem.vue';
+import { ref } from 'vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
