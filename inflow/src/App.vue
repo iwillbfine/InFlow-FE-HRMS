@@ -24,7 +24,9 @@
         </CommonWidget>
       </MainItem>
     </FlexItem>
-    <CrudModal v-if="isModalOpen" @close="closeModal"></CrudModal>
+    <CrudModal v-if="isModalOpen" @close="closeModal">
+      <FlexItem minh="100rem" w="50%" b="1px solid #000"></FlexItem>
+    </CrudModal>
   </div>
 </template>
 

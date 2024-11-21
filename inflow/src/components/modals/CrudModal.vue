@@ -1,7 +1,7 @@
 <template>
   <ModalBackground>
     <ModalItem h="58rem" w="75rem" fs="2rem" fw="500">
-      <FlexItem class="modal-content" fld="column" h="100%" w="100%">
+      <FlexItem class="modal-content-container" fld="column" h="100%" w="100%">
         <FlexItem class="modal-close" fld="row" h="4rem" w="100%">
           <CloseButton
             h="3rem"
@@ -12,7 +12,9 @@
             @click="closeModal"
           />
         </FlexItem>
-        <slot></slot>
+        <FlexItem class="modal-content" fld="column" h="calc(100% - 4rem)" w="100%">
+          <slot></slot>
+        </FlexItem>
       </FlexItem>
     </ModalItem>
   </ModalBackground>
@@ -32,14 +34,18 @@ const closeModal = () => {
 </script>
 
 <style scoped>
-.modal-content {
+.modal-content-container {
   align-items: center;
   gap: 1rem;
-  overflow: auto;
 }
 
 .modal-close {
   justify-content: flex-end;
+}
+
+.modal-content {
+  align-items: center;
+  overflow: auto;
 }
 
 .modal-label {
