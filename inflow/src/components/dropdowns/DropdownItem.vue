@@ -88,9 +88,13 @@ const selectItem = (item) => {
 }
 
 .dropdown-header {
+  align-content: center;
   justify-content: space-between;
-  padding: 1rem;
   box-shadow: 0 0.2rem 0.4rem 0.2rem rgba(0, 0, 0, 0.15);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  padding-right: 0.6rem;
+  padding-left: 1rem;
 }
 
 .dropdown-header i {
@@ -99,7 +103,7 @@ const selectItem = (item) => {
 
 .dropdown-list {
   position: absolute;
-  top: 6rem;
+  top: 5rem;
   left: 0;
   max-height: 15rem;
   overflow-y: auto;
@@ -108,6 +112,10 @@ const selectItem = (item) => {
 }
 
 .dropdown-item {
-  padding: 1rem;
+  justify-content: center;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  padding-right: 0.6rem;
+  padding-left: 1rem;
 }
 </style>

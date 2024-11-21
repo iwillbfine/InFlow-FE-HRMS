@@ -5,7 +5,6 @@
       h="100%"
       fld="row"
       fs="1.7rem"
-      fw="700"
       :style="inactiveStyle"
     >
       <LiItem
@@ -50,10 +49,12 @@ const selectItem = (item) => {
 };
 
 const activeStyle = {
+  fontWeight: "700",
   borderBottom: '2px solid #003566',
 };
 
 const inactiveStyle = {
+  fontWeight: "500",
   borderBottom: '1px solid #898989',
 };
 </script>
