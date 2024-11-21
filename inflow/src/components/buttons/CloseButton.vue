@@ -1,6 +1,6 @@
 <template>
   <ButtonItem
-    class="setting-btn"
+    class="close-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"
@@ -8,12 +8,12 @@
     :fs="props.fs"
     :c="props.c"
   >
-    <GearIcon></GearIcon>
+    <XmarkIcon></XmarkIcon>
   </ButtonItem>
 </template>
 
 <script setup>
-import GearIcon from '../icons/GearIcon.vue';
+import XmarkIcon from '../icons/XmarkIcon.vue';
 import ButtonItem from '../semantic/ButtonItem.vue';
 
 const props = defineProps({

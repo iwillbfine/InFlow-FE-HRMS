@@ -8,17 +8,11 @@
         h="4rem"
         w="4rem"
         br="50%"
-        bgc="#003566"
-        fs="2.2rem"
-        c="#fff"
       ></SettingButton>
       <HomeButton
         h="4rem"
         w="4rem"
         br="50%"
-        bgc="#003566"
-        fs="2.2rem"
-        c="#fff"
       ></HomeButton>
       <AccountDropdown :user-name="userName" />
     </NavItem>

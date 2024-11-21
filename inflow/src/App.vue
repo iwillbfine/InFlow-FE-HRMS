@@ -24,6 +24,7 @@
         </CommonWidget>
       </MainItem>
     </FlexItem>
+    <CrudModal v-if="isModalOpen" label="신청 정보" @close="closeModal"></CrudModal>
   </div>
 </template>
 
@@ -36,6 +37,7 @@ import FlexItem from './components/semantic/FlexItem.vue';
 import CommonArticle from './components/common/CommonArticle.vue';
 import SubMenuNav from './components/nav/SubMenuNav.vue';
 import { ref } from 'vue';
+import CrudModal from './components/modals/CrudModal.vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
@@ -45,6 +47,16 @@ const menuList = ref([
   { name: '계약서 서명', link: '/5' },
   { name: '휴가 관리', link: '/6' },
 ]);
+
+const isModalOpen = ref(true);
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
 </script>
 
 <style scoped>
