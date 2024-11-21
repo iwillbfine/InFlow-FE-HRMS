@@ -24,7 +24,7 @@
         </CommonWidget>
       </MainItem>
     </FlexItem>
-    <CrudModal v-if="isModalOpen" label="신청 정보" @close="closeModal"></CrudModal>
+    <CrudModal v-if="isModalOpen" @close="closeModal"></CrudModal>
   </div>
 </template>
 

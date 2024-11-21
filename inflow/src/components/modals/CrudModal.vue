@@ -12,7 +12,6 @@
             @click="closeModal"
           />
         </FlexItem>
-        <span class="modal-label">{{ props.label }}</span>
         <slot></slot>
       </FlexItem>
     </ModalItem>
@@ -24,10 +23,6 @@ import CloseButton from '../buttons/CloseButton.vue';
 import ModalBackground from '../modals/ModalBackground.vue';
 import ModalItem from '../modals/ModalItem.vue';
 import FlexItem from '../semantic/FlexItem.vue';
-
-const props = defineProps({
-  label: { type: String, required: true },
-});
 
 const emit = defineEmits(['close']);
 
