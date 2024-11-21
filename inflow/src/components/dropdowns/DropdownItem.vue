@@ -8,7 +8,13 @@
     c="#003566"
     @click="toggleDropdown"
   >
-    <FlexItem class="dropdown-header" fld="row" br="0.6rem" bgc="#fff">
+    <FlexItem
+      class="dropdown-header"
+      fld="row"
+      br="0.6rem"
+      bgc="#fff"
+      :style="{ color: selectedItem ? '#003566' : '#5a5a5a' }"
+    >
       {{ selectedItem ? selectedItem.name : props.placeholder }}
       <CaretUpIcon v-if="isDropdownOpen"></CaretUpIcon>
       <CaretDownIcon v-else></CaretDownIcon>

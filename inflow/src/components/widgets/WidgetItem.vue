@@ -1,5 +1,5 @@
 <template>
-  <ArticleItem
+  <SectionItem
     class="widget"
     fld="column"
     :h="props.h"
@@ -29,12 +29,12 @@
     >
       <slot></slot>
     </FlexItem>
-  </ArticleItem>
+  </SectionItem>
 </template>
 
 <script setup>
 import FlexItem from '../semantic/FlexItem.vue';
-import ArticleItem from '../semantic/ArticleItem.vue';
+import SectionItem from '../semantic/SectionItem.vue';
 
 const props = defineProps({
   label: {

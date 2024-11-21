@@ -5,7 +5,7 @@
       h="100%"
       fld="row"
       fs="1.7rem"
-      fw="500"
+      fw="700"
       :style="inactiveStyle"
     >
       <LiItem
@@ -60,7 +60,7 @@ const inactiveStyle = {
 
 <style scoped>
 .sub-menu-nav {
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 .menu-item {
