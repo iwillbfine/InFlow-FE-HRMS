@@ -13,6 +13,7 @@
           <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :list="menuList"></SubMenuNav>
             <CommonArticle label="휴가 신청서" h="50rem" w="90%" minh="50rem">
+              <HalfDropdown @half-selected="handleSelected"></HalfDropdown>
             </CommonArticle>
           </FlexItem>
         </CommonWidget>
@@ -30,6 +31,7 @@ import FlexItem from './components/semantic/FlexItem.vue';
 import CommonArticle from './components/common/CommonArticle.vue';
 import SubMenuNav from './components/nav/SubMenuNav.vue';
 import { ref } from 'vue';
+import HalfDropdown from './components/dropdowns/HalfDropdown.vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
@@ -39,6 +41,10 @@ const menuList = ref([
   { name: '계약서 서명', link: '/5' },
   { name: '휴가 관리', link: '/6' },
 ]);
+
+const handleSelected = (date) => {
+  console.log('selected date:', date);
+};
 </script>
 
 <style scoped>
