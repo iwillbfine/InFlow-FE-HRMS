@@ -1,6 +1,6 @@
 <template>
   <ButtonItem
-    class="close-btn"
+    class="xmark-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"

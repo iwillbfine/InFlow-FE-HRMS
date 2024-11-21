@@ -13,7 +13,15 @@
           <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :list="menuList"></SubMenuNav>
             <CommonArticle label="휴가 신청서" h="50rem" w="90%" minh="50rem">
-              <HalfDropdown @half-selected="handleSelected"></HalfDropdown>
+              <FlexItem class="file-list" fld="row" h="10rem" w="100%">
+                <FileItem
+                  v-for="(item, index) in fileList"
+                  :key="index"
+                  :id="index"
+                  :name="item.name"
+                  @remove-file="handleRemove"
+                ></FileItem>
+              </FlexItem>
             </CommonArticle>
           </FlexItem>
         </CommonWidget>
@@ -26,12 +34,12 @@
 import CommonNav from './components/common/CommonNav.vue';
 import CommonHeader from './components/common/CommonHeader.vue';
 import CommonWidget from './components/common/CommonWidget.vue';
+import CommonArticle from './components/common/CommonArticle.vue';
 import MainItem from './components/semantic/MainItem.vue';
 import FlexItem from './components/semantic/FlexItem.vue';
-import CommonArticle from './components/common/CommonArticle.vue';
 import SubMenuNav from './components/nav/SubMenuNav.vue';
 import { ref } from 'vue';
-import HalfDropdown from './components/dropdowns/HalfDropdown.vue';
+import FileItem from './components/common/FileItem.vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
@@ -42,8 +50,17 @@ const menuList = ref([
   { name: '휴가 관리', link: '/6' },
 ]);
 
-const handleSelected = (date) => {
-  console.log('selected date:', date);
+const fileList = ref([
+  { name: '과제 등록 및 조회' },
+  { name: '사원 정보 등록' },
+  { name: '부서 관리' },
+  { name: '인사 발령' },
+  { name: '계약서 서명' },
+  { name: '휴가 관리' },
+]);
+
+const handleRemove = (id) => {
+  fileList.value.splice(id, 1);
 };
 </script>
 
@@ -58,5 +75,9 @@ const handleSelected = (date) => {
   align-items: center;
   padding: 2rem;
   overflow: auto;
+}
+
+.file-list {
+  gap: 1rem;
 }
 </style>

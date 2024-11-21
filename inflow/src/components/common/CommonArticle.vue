@@ -19,7 +19,9 @@
     >
       {{ props.label }}
     </FlexItem>
-    <slot></slot>
+    <FlexItem class="article-content" h="calc(100% - 4rem)" w="100%">
+      <slot></slot>
+    </FlexItem>
   </ArticleItem>
 </template>
 

@@ -3,7 +3,7 @@
     <ModalItem h="58rem" w="75rem" fs="2rem" fw="500">
       <FlexItem class="modal-content-container" fld="column" h="100%" w="100%">
         <FlexItem class="modal-close" fld="row" h="4rem" w="100%">
-          <CloseButton
+          <XmarkButton
             h="3rem"
             w="3rem"
             fs="3rem"
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import CloseButton from '../buttons/CloseButton.vue';
+import XmarkButton from '../buttons/XmarkButton.vue';
 import ModalBackground from '../modals/ModalBackground.vue';
 import ModalItem from '../modals/ModalItem.vue';
 import FlexItem from '../semantic/FlexItem.vue';
