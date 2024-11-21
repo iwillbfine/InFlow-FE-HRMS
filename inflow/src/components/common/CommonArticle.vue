@@ -36,11 +36,11 @@ const props = defineProps({
   },
   h: {
     type: String,
-    default: '100%',
+    default: 'auto',
   },
   w: {
     type: String,
-    default: '100%',
+    default: 'auto',
   },
   maxh: {
     type: String,
@@ -64,5 +64,9 @@ const props = defineProps({
 <style scoped>
 .common-article {
   align-items: center;
+}
+
+.article-content {
+  overflow: auto;
 }
 </style>

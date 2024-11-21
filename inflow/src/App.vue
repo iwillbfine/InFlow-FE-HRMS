@@ -12,16 +12,22 @@
         <CommonWidget :cur="0" :list="menuList">
           <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :list="menuList"></SubMenuNav>
-            <CommonArticle label="휴가 신청서" h="50rem" w="90%" minh="50rem">
-              <FlexItem class="file-list" fld="row" h="10rem" w="100%">
-                <FileItem
-                  v-for="(item, index) in fileList"
-                  :key="index"
-                  :id="index"
-                  :name="item.name"
-                  @remove-file="handleRemove"
-                ></FileItem>
-              </FlexItem>
+            <CommonArticle label="휴가 신청서" w="90%">
+              <TableItem gtc="repeat(3,1fr)" br="1rem">
+                <TableRow>
+                  <TableCell th gr="span 2">안녕</TableCell>
+                  <TableCell th>Header 2</TableCell>
+                  <TableCell th>Header 3</TableCell>
+                </TableRow>
+                <TableRow bgc="#aaa">
+                  <TableCell gc="span 2">a2</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>b1</TableCell>
+                  <TableCell>b2</TableCell>
+                  <TableCell>b3</TableCell>
+                </TableRow>
+              </TableItem>
             </CommonArticle>
           </FlexItem>
         </CommonWidget>
@@ -39,7 +45,9 @@ import MainItem from './components/semantic/MainItem.vue';
 import FlexItem from './components/semantic/FlexItem.vue';
 import SubMenuNav from './components/nav/SubMenuNav.vue';
 import { ref } from 'vue';
-import FileItem from './components/common/FileItem.vue';
+import TableItem from './components/semantic/TableItem.vue';
+import TableCell from './components/semantic/TableCell.vue';
+import TableRow from './components/semantic/TableRow.vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
@@ -49,19 +57,6 @@ const menuList = ref([
   { name: '계약서 서명', link: '/5' },
   { name: '휴가 관리', link: '/6' },
 ]);
-
-const fileList = ref([
-  { name: '과제 등록 및 조회' },
-  { name: '사원 정보 등록' },
-  { name: '부서 관리' },
-  { name: '인사 발령' },
-  { name: '계약서 서명' },
-  { name: '휴가 관리' },
-]);
-
-const handleRemove = (id) => {
-  fileList.value.splice(id, 1);
-};
 </script>
 
 <style scoped>
@@ -75,9 +70,5 @@ const handleRemove = (id) => {
   align-items: center;
   padding: 2rem;
   overflow: auto;
-}
-
-.file-list {
-  gap: 1rem;
 }
 </style>
