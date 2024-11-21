@@ -47,11 +47,11 @@ const props = defineProps({
 });
 
 const list = ref([
-  { name: '평가', icon: markRaw(EvaluationIcon), link: '/evaluation' },
-  { name: '챗봇', icon: markRaw(RobotIcon), link: '/chatbot' },
   { name: '사원 찾기', icon: markRaw(SearchIcon), link: '/emp-search' },
+  { name: '챗봇', icon: markRaw(RobotIcon), link: '/chatbot' },
   { name: '인사 기본', icon: markRaw(UserIcon), link: '/hr-basic' },
   { name: '인사 관리', icon: markRaw(AddressBookIcon), link: '/hr-management' },
+  { name: '평가', icon: markRaw(EvaluationIcon), link: '/evaluation' },
   { name: '통계', icon: markRaw(ChartIcon), link: '/statistics' },
 ]);
 
