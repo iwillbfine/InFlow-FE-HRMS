@@ -10,7 +10,7 @@
 <script setup>
 import SectionItem from '../semantic/SectionItem.vue';
 import WidgetItem from '../widgets/WidgetItem.vue';
-import MenuNav from './MenuNav.vue';
+import MenuNav from '../nav/MenuNav.vue';
 
 const props = defineProps({
   cur: {

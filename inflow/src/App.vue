@@ -10,9 +10,7 @@
       <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="calc(100% - 12rem)" w="100%">
         <CommonWidget :cur="0" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%">
-            <SubMenuNav :cur="0" :list="menuList"></SubMenuNav>
-          </FlexItem>
+          <FlexItem class="widget-content" h="100%" w="100%"></FlexItem>
         </CommonWidget>
       </MainItem>
     </FlexItem>
@@ -26,7 +24,6 @@ import CommonWidget from './components/common/CommonWidget.vue';
 import MainItem from './components/semantic/MainItem.vue';
 import FlexItem from './components/semantic/FlexItem.vue';
 import { ref } from 'vue';
-import SubMenuNav from './components/common/SubMenuNav.vue';
 
 const menuList = ref([
   { name: '과제 등록 및 조회', link: '/1' },
