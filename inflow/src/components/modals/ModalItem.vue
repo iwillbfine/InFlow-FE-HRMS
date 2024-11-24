@@ -26,9 +26,10 @@ const props = defineProps({
     required: true,
   },
   fs: {
-
-  }
-})
+    type: String,
+    required: true,
+  },
+});
 </script>
 
 <style scoped>

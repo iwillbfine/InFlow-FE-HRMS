@@ -1,10 +1,25 @@
 <template>
   <FlexItem class="date-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
-    <DropdownItem placeholder="----" :list="yearList" w="8rem" v-model:selected-item="selectedYear"></DropdownItem>
+    <DropdownItem
+      v-model:selected-item="selectedYear"
+      placeholder="----"
+      :list="yearList"
+      w="8rem"
+    ></DropdownItem>
     <span>년</span>
-    <DropdownItem placeholder="--" :list="monthList" w="6rem" v-model:selected-item="selectedMonth"></DropdownItem>
+    <DropdownItem
+      v-model:selected-item="selectedMonth"
+      placeholder="--"
+      :list="monthList"
+      w="6rem"
+    ></DropdownItem>
     <span>월</span>
-    <DropdownItem placeholder="--" :list="dayList" w="6rem" v-model:selected-item="selectedDay"></DropdownItem>
+    <DropdownItem
+      v-model:selected-item="selectedDay"
+      placeholder="--"
+      :list="dayList"
+      w="6rem"
+    ></DropdownItem>
     <span>일</span>
   </FlexItem>
 </template>
@@ -12,7 +27,7 @@
 <script setup lang="ts">
 import FlexItem from '../semantic/FlexItem.vue';
 import DropdownItem from './DropdownItem.vue';
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
 const emit = defineEmits(['valid-date-selected']);
 
@@ -70,7 +85,7 @@ const dayList = ref(
 </script>
 
 <style scoped>
-.date-dropdown{
+.date-dropdown {
   justify-content: center;
   align-items: center;
   gap: 1rem;

@@ -24,7 +24,7 @@ const props = defineProps({
   gtc: {
     type: String,
     default: 'repeat(1, 1fr)',
-  }
+  },
 });
 
 const customStyle = computed(() => ({

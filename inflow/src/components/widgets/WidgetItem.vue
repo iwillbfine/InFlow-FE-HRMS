@@ -75,7 +75,7 @@ const props = defineProps({
 <style scoped>
 .widget {
   overflow: auto;
-  box-shadow: 0 0.2rem 0.4rem 0.2rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.6rem 1rem 0rem rgba(0, 0, 0, 0.15);
 }
 
 .widget-label {

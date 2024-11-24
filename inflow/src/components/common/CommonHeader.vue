@@ -4,16 +4,8 @@
       <span>{{ props.userName }} 님, 안녕하세요!</span>
     </SectionItem>
     <NavItem class="top-nav" h="4rem">
-      <SettingButton
-        h="4rem"
-        w="4rem"
-        br="50%"
-      ></SettingButton>
-      <HomeButton
-        h="4rem"
-        w="4rem"
-        br="50%"
-      ></HomeButton>
+      <SettingButton h="4rem" w="4rem" br="50%"></SettingButton>
+      <HomeButton h="4rem" w="4rem" br="50%"></HomeButton>
       <AccountDropdown :user-name="userName" />
     </NavItem>
   </HeaderItem>

@@ -7,6 +7,7 @@
     :bgc="props.bgc"
     :fs="props.fs"
     :c="props.c"
+    @click="goHome"
   >
     <HomeIcon></HomeIcon>
   </ButtonItem>
@@ -15,6 +16,7 @@
 <script setup>
 import HomeIcon from '../icons/HomeIcon.vue';
 import ButtonItem from '../semantic/ButtonItem.vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   h: { type: String, required: true },
@@ -24,4 +26,10 @@ const props = defineProps({
   fs: { type: String, default: '2.2rem' },
   c: { type: String, default: '#fff' },
 });
+
+const router = useRouter();
+
+const goHome = () => {
+  router.push('/');
+};
 </script>

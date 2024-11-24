@@ -1,7 +1,23 @@
 <template>
-  <FlexItem class="file-item" fld="row" maxh="3.1rem" fs="1.3rem" br="2rem" b="1px solid #003566" c="#003566">
+  <FlexItem
+    class="file-item"
+    fld="row"
+    maxh="3.1rem"
+    fs="1.3rem"
+    br="2rem"
+    b="1px solid #003566"
+    c="#003566"
+  >
     <span>{{ props.name }}</span>
-    <XmarkButton @click="handleOnclick" h="2rem" w="2rem" br="50%" fs="1.3rem" bgc="#003566" c="#fff"></XmarkButton>
+    <XmarkButton
+      h="2rem"
+      w="2rem"
+      br="50%"
+      fs="1.3rem"
+      bgc="#003566"
+      c="#fff"
+      @click="handleOnclick"
+    ></XmarkButton>
   </FlexItem>
 </template>
 

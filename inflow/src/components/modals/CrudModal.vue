@@ -12,7 +12,12 @@
             @click="closeModal"
           />
         </FlexItem>
-        <FlexItem class="modal-content" fld="column" h="calc(100% - 4rem)" w="100%">
+        <FlexItem
+          class="modal-content"
+          fld="column"
+          h="calc(100% - 4rem)"
+          w="100%"
+        >
           <slot></slot>
         </FlexItem>
       </FlexItem>

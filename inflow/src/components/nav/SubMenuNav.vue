@@ -49,12 +49,12 @@ const selectItem = (item) => {
 };
 
 const activeStyle = {
-  fontWeight: "700",
+  fontWeight: '700',
   borderBottom: '2px solid #003566',
 };
 
 const inactiveStyle = {
-  fontWeight: "500",
+  fontWeight: '500',
   borderBottom: '1px solid #898989',
 };
 </script>

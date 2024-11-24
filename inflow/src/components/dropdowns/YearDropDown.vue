@@ -1,6 +1,11 @@
 <template>
   <FlexItem class="year-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
-    <DropdownItem placeholder="----" :list="yearList" w="8rem" v-model:selected-item="selectedYear"></DropdownItem>
+    <DropdownItem
+      v-model:selected-item="selectedYear"
+      placeholder="----"
+      :list="yearList"
+      w="8rem"
+    ></DropdownItem>
     <span>년도</span>
   </FlexItem>
 </template>
@@ -8,7 +13,7 @@
 <script setup lang="ts">
 import FlexItem from '../semantic/FlexItem.vue';
 import DropdownItem from './DropdownItem.vue';
-import { ref, watch } from 'vue'
+import { ref, watch } from 'vue';
 
 const emit = defineEmits(['valid-date-selected']);
 
@@ -44,7 +49,7 @@ const yearList = ref(
 </script>
 
 <style scoped>
-.year-dropdown{
+.year-dropdown {
   justify-content: center;
   align-items: center;
   gap: 1rem;

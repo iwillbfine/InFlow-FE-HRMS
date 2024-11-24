@@ -36,7 +36,7 @@ const props = defineProps({
   gr: {
     type: String,
     default: '',
-  }
+  },
 });
 
 const customStyle = computed(() => {

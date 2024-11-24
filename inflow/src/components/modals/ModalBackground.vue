@@ -1,5 +1,5 @@
 <template>
-  <FlexItem class="modal-background"  h="100%" w="100%" bgc="rgba(0,0,0,0.3)">
+  <FlexItem class="modal-background" h="100%" w="100%" bgc="rgba(0,0,0,0.3)">
     <slot></slot>
   </FlexItem>
 </template>
