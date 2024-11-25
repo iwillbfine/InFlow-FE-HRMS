@@ -57,7 +57,7 @@ const isNotSame = ref(false);
   padding: 1rem;
   font-size: 1.7rem;
   font-weight: 300;
-  border: 1px solid #202020;
+  border: 1px solid #1f1f1f;
   border-radius: 1rem;
   color: #003566;
 }
