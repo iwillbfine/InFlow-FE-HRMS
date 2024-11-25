@@ -52,6 +52,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['reset-password']);
+
 const list = ref([
   { id: 1, name: '비밀번호 재설정' },
   { id: 2, name: '로그아웃' },
@@ -78,7 +80,7 @@ const selectItem = (item) => {
 };
 
 const handleChangePassword = () => {
-  router.push('/reset-pwd');
+  emit('reset-password');
 };
 
 const handleLogout = () => {

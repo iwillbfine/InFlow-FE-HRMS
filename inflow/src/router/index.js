@@ -18,7 +18,6 @@ import VacationManagementView from '@/views/hr-management/VacationManagementView
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
 import StatisticsView from '@/views/statistics/StatisticsView.vue';
 import LoginView from '@/views/login/LoginView.vue';
-import ResetPasswordView from '@/views/login/ResetPasswordView.vue';
 
 const routes = [
   {
@@ -30,11 +29,6 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView,
-  },
-  {
-    path: '/reset-pwd',
-    name: 'reset-pwd',
-    component: ResetPasswordView,
   },
   {
     path: '/emp-search',

@@ -6,9 +6,10 @@
     <NavItem class="top-nav" h="4rem">
       <SettingButton h="4rem" w="4rem" br="50%"></SettingButton>
       <HomeButton h="4rem" w="4rem" br="50%"></HomeButton>
-      <AccountDropdown :user-name="userName" />
+      <AccountDropdown :user-name="userName" @reset-password="changeModalStatus" />
     </NavItem>
   </HeaderItem>
+  <ResetPasswordModal v-if="isResetPwdModalOpen" class="reset-pwd-modal" @close="changeModalStatus"></ResetPasswordModal>
 </template>
 
 <script setup>
@@ -18,6 +19,8 @@ import NavItem from '../semantic/NavItem.vue';
 import SettingButton from '../buttons/SettingButton.vue';
 import HomeButton from '../buttons/HomeButton.vue';
 import AccountDropdown from '../dropdowns/AccountDropdown.vue';
+import ResetPasswordModal from '../modals/resetPasswordModal.vue';
+import { ref } from 'vue';
 
 const props = defineProps({
   userName: {
@@ -25,6 +28,12 @@ const props = defineProps({
     required: true,
   },
 });
+
+const isResetPwdModalOpen = ref(false);
+
+const changeModalStatus = () => {
+  isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
+}
 </script>
 
 <style scoped>
@@ -38,5 +47,11 @@ const props = defineProps({
 
 .top-nav {
   gap: 2rem;
+}
+
+.reset-pwd-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

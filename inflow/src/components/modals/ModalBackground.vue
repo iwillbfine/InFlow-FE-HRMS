@@ -13,5 +13,6 @@ import FlexItem from '../semantic/FlexItem.vue';
   position: absolute;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 </style>

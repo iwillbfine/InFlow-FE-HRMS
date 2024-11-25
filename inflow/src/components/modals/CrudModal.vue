@@ -1,6 +1,6 @@
 <template>
   <ModalBackground>
-    <ModalItem h="58rem" w="75rem" fs="2rem" fw="500">
+    <ModalItem :h="props.h" :w="props.w" fs="2rem" fw="500">
       <FlexItem class="modal-content-container" fld="column" h="100%" w="100%">
         <FlexItem class="modal-close" fld="row" h="4rem" w="100%">
           <XmarkButton
@@ -31,6 +31,17 @@ import ModalBackground from '../modals/ModalBackground.vue';
 import ModalItem from '../modals/ModalItem.vue';
 import FlexItem from '../semantic/FlexItem.vue';
 
+const props = defineProps({
+  h: {
+    type: String,
+    default: "58rem",
+  },
+  w: {
+    type: String,
+    default: "75rem",
+  }
+})
+
 const emit = defineEmits(['close']);
 
 const closeModal = () => {
@@ -49,6 +60,7 @@ const closeModal = () => {
 }
 
 .modal-content {
+  gap: 0.5rem;
   align-items: center;
   overflow: auto;
 }

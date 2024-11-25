@@ -30,7 +30,6 @@
       </FlexItem>
       <ButtonItem class="login-btn" fs="1.4rem" @click="login">로그인</ButtonItem>
     </ArticleItem>
-    <ButtonItem class="find-pwd-btn" fs="1.4rem" c="#758EA4" @click="goResetPwd">비밀번호를 잊으셨나요?</ButtonItem>
   </SectionItem>
 </template>
 
@@ -41,7 +40,6 @@ import ArticleItem from '../../components/semantic/ArticleItem.vue';
 import ButtonItem from '../../components/semantic/ButtonItem.vue';
 import CompanyLogo from '../../components/common/CompanyLogo.vue';
 import CompanyName from '../../components/common/CompanyName.vue';
-import { useRouter } from 'vue-router';
 
 const props = defineProps({
   employeeNumber: {
@@ -62,25 +60,19 @@ const props = defineProps({
   }
 });
 
-const router = useRouter();
-
 const emit = defineEmits(['update:id', 'update:password', 'login']);
 
 const updateId = (newId) => emit('update:id', newId);
 const updatePassword = (newPassword) => emit('update:password', newPassword);
 
 const login = () => emit('login');
-
-const goResetPwd = () => {
-  router.push('/reset-pwd');
-}
 </script>
 
 <style scoped>
 .login-container {
-  margin-top: 10rem;
   font-family: 'inter';
   font-weight: 400;
+  justify-content: center;
   align-items: center;
   gap: 3rem;
 }
