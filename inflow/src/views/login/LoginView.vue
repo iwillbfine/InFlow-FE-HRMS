@@ -1,13 +1,27 @@
 <template>
   <BubbleBackground></BubbleBackground>
   <div class="page-container">
-    <FlexItem h="28rem" w="44rem" bgc="rgba(0, 34, 65, 0.74)" br="1.5rem"></FlexItem>
+    <LoginSection
+      v-model:id="employeeNumber"
+      v-model:password="password"
+      :invalid="true"
+      :message="'사번 또는 비밀번호가 잘못 되었습니다.'"
+    />
   </div>
 </template>
 
 <script setup>
 import BubbleBackground from '../../components/common/BubbleBackground.vue';
-import FlexItem from '../../components/semantic/FlexItem.vue';
+import LoginSection from '../../components/common/LoginSection.vue';
+import { ref, watch } from 'vue';
+
+const employeeNumber = ref('');
+const password = ref('');
+
+watch([employeeNumber, password], () => {
+  console.log(employeeNumber.value, password.value);
+})
+
 </script>
 
 <style scoped>
@@ -16,6 +30,5 @@ import FlexItem from '../../components/semantic/FlexItem.vue';
   height: 100vh;
   width: 100%;
   justify-content: center;
-  align-items: center;
 }
 </style>
