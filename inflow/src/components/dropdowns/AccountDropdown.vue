@@ -41,6 +41,9 @@ import LiItem from '../semantic/LiItem.vue';
 import ChevronUpIcon from '../icons/ChevronUpIcon.vue';
 import ChevronDownIcon from '../icons/ChevronDownIcon.vue';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const props = defineProps({
   userName: {
@@ -75,11 +78,11 @@ const selectItem = (item) => {
 };
 
 const handleChangePassword = () => {
-  console.log('비밀번호 재설정');
+  router.push('/reset-pwd');
 };
 
 const handleLogout = () => {
-  console.log('로그아웃.');
+  router.push('/login');
 };
 </script>
 
