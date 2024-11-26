@@ -84,7 +84,10 @@ const handleChangePassword = () => {
 };
 
 const handleLogout = () => {
-  router.push('/login');
+  if (confirm('정말 로그아웃하시겠습니까?')) {
+    localStorage.clear();
+    router.push('/login');
+  }
 };
 </script>
 
