@@ -10,7 +10,10 @@
       <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="calc(100% - 12rem)" w="100%">
         <CommonWidget :cur="2" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%"> </FlexItem>
+          <FlexItem class="widget-content" h="100%" w="100%">
+            <SalaryTable></SalaryTable>
+
+          </FlexItem>
         </CommonWidget>
       </MainItem>
     </FlexItem>
@@ -24,6 +27,7 @@ import CommonWidget from '@/components/common/CommonWidget.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref } from 'vue';
+import SalaryTable from '@/components/salarytable/SalaryTable.vue';
 
 const menuList = ref([
   { name: '개인신상관리', link: '/hr-basic/my-info' },
@@ -41,8 +45,18 @@ const menuList = ref([
 }
 
 .widget-content {
+  display: flex;
+  justify-content: center;
   align-items: center;
   padding: 2rem;
   overflow: auto;
 }
+
+.SalaryTable {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: auto;
+}
+
 </style>
