@@ -26,6 +26,8 @@ import ReturnView from '@/views/hr-basic/attendance/ReturnView.vue';
 import BusinessTripView from '@/views/hr-basic/attendance/BusinessTripView.vue';
 import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
 import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
+import VacationPaymentView from '@/views/hr-management/vacation/VacationPaymentView.vue';
+import VacationPolicyView from '@/views/hr-management/vacation/VacationPolicyView.vue';
 
 const routes = [
   {
@@ -159,6 +161,23 @@ const routes = [
     path: '/hr-management/vacation',
     name: 'hr-management-vacation',
     component: VacationManagementView,
+    children: [
+      {
+        path: '',
+        name: 'hr-management-vacation-default',
+        component: VacationPaymentView,
+      },
+      {
+        path: 'payment',
+        name: 'hr-management-vacation-payment',
+        component: VacationPaymentView,
+      },
+      {
+        path: 'policy',
+        name: 'hr-management-vacation-policy',
+        component: VacationPolicyView,
+      },
+    ]
   },
   {
     path: '/evaluation',
