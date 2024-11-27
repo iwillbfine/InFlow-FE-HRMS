@@ -9,7 +9,7 @@
     >
       <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="calc(100% - 12rem)" w="100%">
-        <CommonWidget :cur="0" :list="menuList">
+        <CommonWidget :cur="4" :list="menuList">
           <FlexItem class="widget-content" h="100%" w="100%"> </FlexItem>
         </CommonWidget>
       </MainItem>
