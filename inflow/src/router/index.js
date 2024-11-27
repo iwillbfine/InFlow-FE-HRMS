@@ -28,6 +28,7 @@ import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
 import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 import VacationPaymentView from '@/views/hr-management/vacation/VacationPaymentView.vue';
 import VacationPolicyView from '@/views/hr-management/vacation/VacationPolicyView.vue';
+import MyDepartmentView from '@/views/hr-basic/MyDepartmentView.vue';
 
 const routes = [
   {
@@ -121,6 +122,11 @@ const routes = [
     path: '/hr-basic/contract',
     name: 'hr-basic-contract',
     component: ContractView,
+  },
+  {
+    path: '/hr-basic/my-department',
+    name: 'hr-basic-my-department',
+    component: MyDepartmentView,
   },
   {
     path: '/hr-management',
