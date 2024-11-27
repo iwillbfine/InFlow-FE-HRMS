@@ -10,7 +10,10 @@
       <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="calc(100% - 12rem)" w="100%">
         <CommonWidget :cur="6" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%"> </FlexItem>
+          <FlexItem class="widget-content" h="100%" w="100%">
+            <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+            <router-view></router-view>
+          </FlexItem>
         </CommonWidget>
       </MainItem>
     </FlexItem>
@@ -23,6 +26,7 @@ import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonWidget from '@/components/common/CommonWidget.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
+import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import { ref } from 'vue';
 
 const menuList = ref([
@@ -34,6 +38,17 @@ const menuList = ref([
   { name: '계약서 서명', link: '/hr-management/contract' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
 ]);
+
+const subMenuList = ref([
+  { name: '휴가 지급', link: '/hr-management/vacation/payment' },
+  { name: '휴가 정책', link: '/hr-management/vacation/policy' },
+]);
+
+const subIdx = ref(0);
+
+const handleClicked = (idx) => {
+  subIdx.value = idx;
+}
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@ import NavItem from '../semantic/NavItem.vue';
 import SettingButton from '../buttons/SettingButton.vue';
 import HomeButton from '../buttons/HomeButton.vue';
 import AccountDropdown from '../dropdowns/AccountDropdown.vue';
-import ResetPasswordModal from '../modals/resetPasswordModal.vue';
+import ResetPasswordModal from '../modals/ResetPasswordModal.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
