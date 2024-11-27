@@ -18,6 +18,14 @@ import VacationManagementView from '@/views/hr-management/VacationManagementView
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
 import StatisticsView from '@/views/statistics/StatisticsView.vue';
 import LoginView from '@/views/login/LoginView.vue';
+import CommuteView from '@/views/hr-basic/attendance/CommuteView.vue';
+import RemoteView from '@/views/hr-basic/attendance/RemoteView.vue';
+import OvertimeView from '@/views/hr-basic/attendance/OvertimeView.vue';
+import LeaveView from '@/views/hr-basic/attendance/LeaveView.vue';
+import ReturnView from '@/views/hr-basic/attendance/ReturnView.vue';
+import BusinessTripView from '@/views/hr-basic/attendance/BusinessTripView.vue';
+import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
+import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 
 const routes = [
   {
@@ -54,6 +62,53 @@ const routes = [
     path: '/hr-basic/attendance',
     name: 'hr-basic-attendance',
     component: AttendanceView,
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-attendance-default',
+        component: CommuteView,
+      },
+      {
+        path: 'commute',
+        name: 'hr-basic-attendance-commute',
+        component: CommuteView,
+      },
+      {
+        path: 'remote',
+        name: 'hr-basic-attendance-remote',
+        component: RemoteView,
+      },
+      {
+        path: 'overtime',
+        name: 'hr-basic-attendance-overtime',
+        component: OvertimeView,
+      },
+      {
+        path: 'vacation',
+        name: 'hr-basic-attendance-vacation',
+        component: VacationView,
+      },
+      {
+        path: 'leave',
+        name: 'hr-basic-attendance-leave',
+        component: LeaveView,
+      },
+      {
+        path: 'return',
+        name: 'hr-basic-attendance-return',
+        component: ReturnView,
+      },
+      {
+        path: 'business-trip',
+        name: 'hr-basic-attendance-business-trip',
+        component: BusinessTripView,
+      },
+      {
+        path: 'dispatch',
+        name: 'hr-basic-attendance-dispatch',
+        component: DispatchView,
+      },
+    ]
   },
   {
     path: '/hr-basic/salary',
