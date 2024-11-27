@@ -40,15 +40,15 @@ const isValidDate = ref(true); // 유효성 상태를 저장
 const validateDate = () => {
   if (selectedYear.value && selectedMonth.value && selectedDay.value) {
     const year = selectedYear.value;
-    const month = selectedMonth.value; // 1월이 1부터 시작
-    const day = selectedDay.value;
+    const month = String(selectedMonth.value).padStart(2, '0'); // 1월이 1부터 시작
+    const day = String(selectedDay.value).padStart(2, '0');
 
     // 유효한 날짜인지 검증
-    const date = new Date(year, month - 1, day); // month는 0부터 시작하므로 -1 필요
+    const date = new Date(year, parseInt(month) - 1, parseInt(day)); // month는 0부터 시작하므로 -1 필요
     isValidDate.value =
       date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date.getDate() === day;
+      date.getMonth() === parseInt(month) - 1 &&
+      date.getDate() === parseInt(day);
 
     if (isValidDate.value) {
       emit('valid-date-selected', `${year}-${month}-${day}`); // 유효한 날짜만 emit

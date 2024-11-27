@@ -32,11 +32,11 @@ const isValidDate = ref(true); // 유효성 상태를 저장
 const validateDate = () => {
   if (selectedYear.value && selectedMonth.value) {
     const year = selectedYear.value;
-    const month = selectedMonth.value; // 1월이 1부터 시작
+    const month = String(selectedMonth.value).padStart(2, '0'); // 2자리로 변환
 
     // 유효한 날짜인지 검증
-    const date = new Date(year, month - 1, 1); // month는 0부터 시작하므로 -1 필요
-    isValidDate.value = date.getFullYear() === year && date.getMonth() === month - 1;
+    const date = new Date(year, parseInt(month) - 1, 1); // month는 0부터 시작하므로 -1 필요
+    isValidDate.value = date.getFullYear() === year && date.getMonth() === parseInt(month) - 1;
 
     if (isValidDate.value) {
       emit('valid-date-selected', `${year}-${month}`); // 유효한 날짜만 emit
