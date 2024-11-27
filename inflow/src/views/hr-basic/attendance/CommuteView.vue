@@ -20,6 +20,13 @@
         <TableCell th fs="1.6rem">재택여부</TableCell>
         <TableCell th fs="1.6rem">초과근무 시간</TableCell>
       </TableRow>
+      <TableRow>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+      </TableRow>
     </TableItem>
   </FlexItem>
 </template>
@@ -34,13 +41,42 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import ChevronLeftButton from '@/components/buttons/ChevronLeftButton.vue';
 import ChevronRightButton from '@/components/buttons/ChevronRightButton.vue';
 import YearMonthDropDown from '@/components/dropdowns/YearMonthDropDown.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
-const curMonth = ref("2024년 11월");
+const eid = ref(null);
+const curPage = ref(1);
+const curMonth = ref('2024-11');
+const commuteList = ref([]);
+
+const router = useRouter();
+
+const fetchCommuteDate = async () => {
+  const response = (
+      await axios.get(`http://localhost:5000/api/commutes?eid=${eid.value}&page=${curPage.value}&date=${curMonth.value}`,
+        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
+      )
+    ).data;
+
+  if (response.success) {
+    commuteList.value = response.content;
+    console.log(commuteList.value);
+  }
+}
 
 const selectedDate = (date) => {
   console.log(date);
 }
+
+onMounted(() => {
+  eid.value = localStorage.getItem('employeeId');
+  if (eid.value == null) {
+    alert("로그인이 필요합니다.");
+    router.push('/login');
+  }
+  fetchCommuteDate();
+})
 </script>
 
 <style scoped>
