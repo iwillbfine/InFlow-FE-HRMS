@@ -24,7 +24,7 @@
   </FlexItem>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import FlexItem from '../semantic/FlexItem.vue';
 import DropdownItem from './DropdownItem.vue';
 import { ref, watch } from 'vue';
