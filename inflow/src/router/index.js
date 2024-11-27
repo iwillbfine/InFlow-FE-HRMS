@@ -28,6 +28,13 @@ import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
 import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 import VacationPaymentView from '@/views/hr-management/vacation/VacationPaymentView.vue';
 import VacationPolicyView from '@/views/hr-management/vacation/VacationPolicyView.vue';
+import EmployeeInfoUploadView from '@/views/hr-management/EmployeeUpload/EmployeeInfoUploadView.vue';
+import CareerInfoUploadView from '@/views/hr-management/EmployeeUpload/CareerInfoUploadView.vue';
+import EducationInfoUploadView from '@/views/hr-management/EmployeeUpload/EducationInfoUploadView.vue';
+import QualificationInfoUploadView from '@/views/hr-management/EmployeeUpload/QualificationInfoUploadView.vue';
+import LanguageTestInfoUploadView from '@/views/hr-management/EmployeeUpload/LanguageTestInfoUploadView.vue';
+import DisciplineRewardInfoUploadView from '@/views/hr-management/EmployeeUpload/DisciplineRewardInfoUploadView.vue';
+import FamilyMemberInfoUploadView from '@/views/hr-management/EmployeeUpload/FamilyMemberInfoUploadView.vue';
 
 const routes = [
   {
@@ -136,6 +143,43 @@ const routes = [
     path: '/hr-management/employee/upload',
     name: 'hr-management-employee-upload',
     component: EmployeeUploadView,
+    children: [
+      {
+        path: 'employees',
+        name: 'EmployeeInfo',
+        component: EmployeeInfoUploadView,
+      },
+      {
+        path: 'careers',
+        name: 'CareerInfo',
+        component: CareerInfoUploadView,
+      },
+      {
+        path: 'educations',
+        name: 'EducationInfo',
+        component: EducationInfoUploadView,
+      },
+      {
+        path: 'qualifications',
+        name: 'QualificationInfo',
+        component: QualificationInfoUploadView,
+      },
+      {
+        path: 'languagetests',
+        name: 'LanguageTestInfo',
+        component: LanguageTestInfoUploadView,
+      },
+      {
+        path: 'disciplinerewards',
+        name: 'DisciplineRewardInfo',
+        component: DisciplineRewardInfoUploadView,
+      },
+      {
+        path: 'familymembers',
+        name: 'FamilyMemberInfo',
+        component: FamilyMemberInfoUploadView,
+      },
+    ],
   },
   {
     path: '/hr-management/department',
