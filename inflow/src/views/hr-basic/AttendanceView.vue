@@ -50,7 +50,6 @@ const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
-  console.log(subIdx.value);
 }
 
 </script>
