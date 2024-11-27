@@ -54,6 +54,48 @@ const routes = [
     path: '/hr-basic/attendance',
     name: 'hr-basic-attendance',
     component: AttendanceView,
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-attendance-default',
+        component: null,
+      },
+      {
+        path: 'commute',
+        name: 'hr-basic-attendance-commute',
+        component: null,
+      },
+      {
+        path: 'remote',
+        name: 'hr-basic-attendance-remote',
+        component: null,
+      },
+      {
+        path: 'overtime',
+        name: 'hr-basic-attendance-overtime',
+        component: null,
+      },
+      {
+        path: 'leave',
+        name: 'hr-basic-attendance-leave',
+        component: null,
+      },
+      {
+        path: 'return',
+        name: 'hr-basic-attendance-return',
+        component: null,
+      },
+      {
+        path: 'business-trip',
+        name: 'hr-basic-attendance-business-trip',
+        component: null,
+      },
+      {
+        path: 'dispatch',
+        name: 'hr-basic-attendance-dispatch',
+        component: null,
+      },
+    ]
   },
   {
     path: '/hr-basic/salary',

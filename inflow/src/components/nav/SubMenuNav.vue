@@ -17,7 +17,7 @@
         c="#5A5A5A"
         hc="#003566"
         ac="#003566"
-        @click.stop="selectItem(item)"
+        @click.stop="selectItem(item, index)"
       >
         <span>{{ item.name }}</span>
       </LiItem>
@@ -44,7 +44,10 @@ const props = defineProps({
 
 const router = useRouter();
 
-const selectItem = (item) => {
+const emit = defineEmits(['clicked'])
+
+const selectItem = (item, index) => {
+  emit('clicked', index);
   router.push(item.link);
 };
 
