@@ -28,13 +28,13 @@ import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
 import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 import VacationPaymentView from '@/views/hr-management/vacation/VacationPaymentView.vue';
 import VacationPolicyView from '@/views/hr-management/vacation/VacationPolicyView.vue';
-import EmployeeInfoUploadView from '@/views/hr-management/EmployeeUpload/EmployeeInfoUploadView.vue';
 import CareerInfoUploadView from '@/views/hr-management/EmployeeUpload/CareerInfoUploadView.vue';
 import EducationInfoUploadView from '@/views/hr-management/EmployeeUpload/EducationInfoUploadView.vue';
 import QualificationInfoUploadView from '@/views/hr-management/EmployeeUpload/QualificationInfoUploadView.vue';
 import LanguageTestInfoUploadView from '@/views/hr-management/EmployeeUpload/LanguageTestInfoUploadView.vue';
 import DisciplineRewardInfoUploadView from '@/views/hr-management/EmployeeUpload/DisciplineRewardInfoUploadView.vue';
 import FamilyMemberInfoUploadView from '@/views/hr-management/EmployeeUpload/FamilyMemberInfoUploadView.vue';
+import MyDepartmentView from '@/views/hr-basic/MyDepartmentView.vue';
 
 const routes = [
   {
@@ -128,6 +128,11 @@ const routes = [
     path: '/hr-basic/contract',
     name: 'hr-basic-contract',
     component: ContractView,
+  },
+  {
+    path: '/hr-basic/my-department',
+    name: 'hr-basic-my-department',
+    component: MyDepartmentView,
   },
   {
     path: '/hr-management',
