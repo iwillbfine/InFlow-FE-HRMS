@@ -25,6 +25,7 @@ import LeaveView from '@/views/hr-basic/attendance/LeaveView.vue';
 import ReturnView from '@/views/hr-basic/attendance/ReturnView.vue';
 import BusinessTripView from '@/views/hr-basic/attendance/BusinessTripView.vue';
 import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
+import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 
 const routes = [
   {
@@ -81,6 +82,11 @@ const routes = [
         path: 'overtime',
         name: 'hr-basic-attendance-overtime',
         component: OvertimeView,
+      },
+      {
+        path: 'vacation',
+        name: 'hr-basic-attendance-vacation',
+        component: VacationView,
       },
       {
         path: 'leave',

@@ -40,6 +40,7 @@ const subMenuList = ref([
   { name: '출퇴근 내역', link: '/hr-basic/attendance/commute' },
   { name: '재택 근무 관리', link: '/hr-basic/attendance/remote' },
   { name: '초과 근무 관리', link: '/hr-basic/attendance/overtime' },
+  { name: '휴가 관리', link: '/hr-basic/attendance/vacation' },
   { name: '휴직 관리', link: '/hr-basic/attendance/leave' },
   { name: '복직 관리', link: '/hr-basic/attendance/return' },
   { name: '출장 관리', link: '/hr-basic/attendance/business-trip' },
