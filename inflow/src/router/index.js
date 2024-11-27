@@ -35,6 +35,7 @@ import LanguageTestInfoUploadView from '@/views/hr-management/EmployeeUpload/Lan
 import DisciplineRewardInfoUploadView from '@/views/hr-management/EmployeeUpload/DisciplineRewardInfoUploadView.vue';
 import FamilyMemberInfoUploadView from '@/views/hr-management/EmployeeUpload/FamilyMemberInfoUploadView.vue';
 import MyDepartmentView from '@/views/hr-basic/MyDepartmentView.vue';
+import EmployeeInfoUploadView from '@/views/hr-management/EmployeeUpload/EmployeeInfoUploadView.vue';
 
 const routes = [
   {
