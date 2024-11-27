@@ -23,16 +23,20 @@ import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import MyAttendanceWidget from '@/components/widgets/MyAttendanceWidget.vue';
+import { useRouter } from 'vue-router';
 import { getEmployeeById } from '@/api/emp_info';
 
 // 상태 변수
+const eid = ref(null);
 const employeeName = ref(''); // 사원 이름 상태
+
+const router = useRouter();
 
 // 사원 정보를 가져오는 함수
 const fetchEmployeeDetails = async () => {
   try {
-    const employeeId = 9; // 조회할 사원 ID
-    const employeeData = await getEmployeeById(employeeId);
+    const employeeData = await getEmployeeById(eid.value);
+    localStorage.setItem("employeeName", employeeData.name);
     employeeName.value = employeeData.name; // API 응답에서 이름을 가져옴
     console.log('사원 정보:', employeeData);
   } catch (error) {
@@ -42,6 +46,11 @@ const fetchEmployeeDetails = async () => {
 
 // 컴포넌트가 마운트될 때 사원 정보를 가져옴
 onMounted(() => {
+  eid.value = localStorage.getItem('employeeId');
+  if (eid.value == null) {
+    alert("로그인이 필요합니다.");
+    router.push('/login');
+  }
   fetchEmployeeDetails();
 });
 </script>
