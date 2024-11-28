@@ -11,7 +11,7 @@
       <MainItem h="calc(100% - 12rem)" w="100%">
         <CommonWidget :cur="1" :list="menuList">
           <FlexItem class="widget-content" h="100%" w="100%"> 
-            <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked" class="ca"/>
+            <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"/>
             <CommonArticle :label="`${title}`" w="90%">
               <router-view :key="$route.fullPath" />
             </CommonArticle>
@@ -97,9 +97,5 @@ const subMenuList = ref([
   align-items: center;
   padding: 2rem;
   overflow: auto;
-}
-
-.ca {
-  cursor: pointer;
 }
 </style>
