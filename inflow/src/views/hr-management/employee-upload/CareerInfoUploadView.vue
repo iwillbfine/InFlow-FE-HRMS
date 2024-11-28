@@ -62,12 +62,9 @@
 <script setup>
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getValidData } from '@/api/emp_attach';
+import { getDoc, saveData, getEmpId } from '@/api/emp_attach';
 
-const headerNames = ref([
-  "사번", "성별", "성명", "생년월일", "이메일", "휴대폰번호", "입사유형", "계약월급",
-  "도로명 주소", "상세주소", "우편번호", "부서코드", "직위코드", "직책코드", "직무코드"
-]);
+const headerNames = ref(["사번", "회사명", "직책명", "입사일", "퇴사일"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
 
 const chkHeader = ref(false);
@@ -76,38 +73,33 @@ const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
 const validData = ref({});
+const ids = ref({})
+const loading = ref(true);
 
 const validators = {
-  성별: (value) => /^(남|여)$/.test(value),
-  생년월일: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
-  이메일: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-  휴대폰번호: (value) => /^01[0-9]-\d{3,4}-\d{4}$/.test(value),
-  입사유형: (value) => /^(ROOKIE|VETERAN)$/.test(value),
-  부서코드: (value) => validData.value.departments?.includes(value),
-  직위코드: (value) => validData.value.positions?.includes(value),
-  직책코드: (value) => validData.value.roles?.includes(value),
-  직무코드: (value) => validData.value.duties?.includes(value),
+  사번: (value) => ids.value[value] !== undefined,
+  입사일: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
+  퇴사일: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
 };
 
 const isCellValid = (value, header) => {
-  if (value === null || value === '') {
-    return false;
-  }
-
-  if (validators[header]) {
-    return validators[header](value);
-  }
-
-  return true;
+  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
+  if (value === null || value === '') return false;
+  return validators[header] ? validators[header](value) : true;
 };
-
-onMounted(async () => {
-  validData.value = await getValidData();
-  initializeSelectedRows();
-});
 
 const clickInput = () => {
   fileInput.value.click();
+}
+
+const getEmpIds = async() => {
+  loading.value = true;
+  const tmp = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  tmp.forEach((row) => {
+    ids.value[row["employee_number"]] = row["employee_id"];
+    ids.value[row["employee_id"]] = row["employee_number"];
+  });
+  loading.value = false;
 }
 
 const handleFileUpload = (event) => {
@@ -139,6 +131,7 @@ const addToRowsData = () => {
     });
   });
   removeDuplicateRows();
+  getEmpIds();
   initializeSelectedRows();
 };
 
@@ -159,6 +152,8 @@ const initializeSelectedRows = () => {
   chkHeader.value = false;
 };
 
+initializeSelectedRows();
+
 const toggleAllCheckboxes = () => {
   selectedRows.value.fill(chkHeader.value);
 };
@@ -173,32 +168,28 @@ const deleteSelectedRows = () => {
   initializeSelectedRows();
 };
 
-const mapping = () => {
-  return rowsData.value.map((row) => ({
-    employee_number: row["사번"],
-    gender: row["성별"] === "여" ? "FEMALE" : row["성별"] === "남" ? "MALE" : null,
-    name: row["성명"],
-    birth_date: row["생년월일"],
-    email: row["이메일"],
-    phone_number: row["휴대폰번호"],
-    join_type: row["입사유형"],
-    monthly_salary: row["계약월급"],
-    street_address: row["도로명 주소"],
-    detailed_address: row["상세주소"],
-    postcode: row["우편번호"],
-    department_code: row["부서코드"],
-    position_code: row["직위코드"],
-    role_code: row["직책코드"],
-    duty_code: row["직무코드"],
-  }));
+const mapping = async () => {
+  await getEmpIds();
+  const result = ref([]);
+  rowsData.value.map((row) => { 
+    result.value.push({
+      company_name: row["회사명"],
+      role_name: row["직책명"],
+      join_date: row["입사일"],
+      resignation_date: row["퇴사일"],
+      employee_id: `${ids.value[row['사번']]}`,
+    });
+  });
+  return result.value;
 };
 
+
 const fileDownload = async () => {
-  const blob = await getDoc("new_employee");
+  const blob = await getDoc("career");
   const url = URL.createObjectURL(new Blob([blob]));
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", "employee_template.xlsx");
+  link.setAttribute("download", "career_form.xlsx");
   link.click();
 };
 
@@ -213,8 +204,9 @@ const postData = async () => {
     window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
     return;
   }
-  await saveData(mapping(), null);
-  window.alert("사원 정보 등록 완료");
+  const data = await mapping();
+  await saveData(data, 'careers');
+  window.alert("사원 경력 정보 등록 완료");
   window.location.reload();
 };
 </script>
@@ -306,7 +298,6 @@ button p {
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow-x: scroll;
   align-items: stretch;
   padding: 0 0 10px 0;
 }
@@ -318,7 +309,8 @@ button p {
 
 .colname {
   display: grid;
-  grid-template-columns: 50px 150px 50px 100px 130px 250px 160px 100px 120px 300px 150px 100px 100px 100px 100px 100px;
+  grid-template-columns: 50px 150px 200px 100px 130px 130px;
+  grid-template-columns: 1fr 3fr 4fr 2fr 2.5fr 2.5fr;
   height: 50px;
   justify-content: stretch;
   justify-items: center;

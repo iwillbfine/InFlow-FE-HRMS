@@ -85,4 +85,8 @@ const inactiveStyle = {
 .menu-item:first-child:before {
   content: '';
 }
+
+span {
+  cursor: pointer;
+}
 </style>
