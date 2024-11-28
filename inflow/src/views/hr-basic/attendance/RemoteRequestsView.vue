@@ -1,8 +1,9 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
+    <ArrowLeftButton h="3.6rem" w="3.6rem" br="50%" @click="goBack"></ArrowLeftButton>
     <ChangeMonthComponent
       :cur-month="curMonth"
-      description="출퇴근 내역"
+      description="재택근무 신청 내역"
       @go-prev-month="goPrevMonth"
       @go-next-month="goNextMonth"
     >
@@ -11,20 +12,22 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="repeat(5, 1fr)" br="0.5rem">
+      <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
         <TableRow>
-          <TableCell th fs="1.6rem">일자</TableCell>
-          <TableCell th fs="1.6rem">출근 시각</TableCell>
-          <TableCell th fs="1.6rem">퇴근 시각</TableCell>
-          <TableCell th fs="1.6rem">재택여부</TableCell>
-          <TableCell th fs="1.6rem">초과근무 시간</TableCell>
+          <TableCell th fs="1.6rem">신청 ID</TableCell>
+          <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
+          <TableCell th fs="1.6rem">재택근무 사유</TableCell>
+          <TableCell th fs="1.6rem">신청일</TableCell>
+          <TableCell th fs="1.6rem">상태</TableCell>
+          <TableCell th fs="1.6rem">취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in commuteList">
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseTime(item.end_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.remote_status }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.overtime ? Math.trunc(item.overtime / 60) + "시간 " + (item.overtime%60) + "분" : "-" }}</TableCell>
+        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList">
+          <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
         </TableRow>
       </TableItem>
     </div>
@@ -36,8 +39,9 @@
       w="100%"
       fs="1.6rem"
     >
-      출퇴근 내역이 존재하지 않습니다.
+      신청 내역이 존재하지 않습니다.
     </FlexItem>
+    <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
   </FlexItem>
 </template>
 
@@ -48,25 +52,31 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import SelectYearMonthComponent from '@/components/common/SelectYearMonthComponent.vue';
 import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
+import PaginationComponent from '@/components/common/PaginationComponent.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getCommutesByEmployeeId } from '@/api/attendance';
+import { getRemoteRequestsByEmployeeId } from '@/api/attendance';
+import ArrowLeftButton from '@/components/buttons/ArrowLeftButton.vue';
 
 const eid = ref(null);
+const curPage = ref(1);
 const curMonth = ref('');
-const commuteList = ref([]);
+const remoteRequestList = ref([]);
+const pageInfo = ref({});
 const isEmpty = ref(true);
 
 const router = useRouter();
 const route = useRoute();
 
-const fetchCommuteDate = async (eid, date) => {
-  const response = await getCommutesByEmployeeId(eid, date);
+const fetchCommuteDate = async (eid, page, date) => {
+  const response = await getRemoteRequestsByEmployeeId(eid, page, date);
   if (response.success) {
-    commuteList.value = response.content;
-    isEmpty.value = commuteList.value.isEmpty ? true : false;
+    remoteRequestList.value = response.content.elements;
+    pageInfo.value = response.content;
+    isEmpty.value = remoteRequestList.value.isEmpty ? true : false;
   } else {
-    commuteList.value = [];
+    remoteRequestList.value = [];
+    pageInfo.value = {};
     isEmpty.value = true;
   }
 }
@@ -94,27 +104,36 @@ const parseDate = (dateStr) => {
   return formattedDate;
 }
 
-// 시간만 파싱
-const parseTime = (dateStr) => {
-  const date = new Date(dateStr);
+const parseRequestStatus = (status) => {
+  switch (status) {
+    case 'ACCEPT': return '승인됨';
+    case 'REJECT': return '반려됨';
+    default: return '대기중';
+  }
+}
 
-  const hours = String(date.getHours()).padStart(2, "0"); // 2자리로 패딩
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  const formattedTime = `${hours}시 ${minutes}분`;
-  return formattedTime;
+const handleChangePage = (page) => {
+  curPage.value = page;
+  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: curMonth.value } });
 }
 
 const goPrevMonth = (prevMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: prevMonth } });
+  curPage.value = 1;
+  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: prevMonth } });
 }
 
 const goNextMonth = (nextMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: nextMonth } });
+  curPage.value = 1;
+  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: nextMonth } });
 }
 
 const goSelectedMonth = (selectedMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: selectedMonth } })
+  curPage.value = 1;
+  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: selectedMonth } })
+}
+
+const goBack = () => {
+  router.push('/hr-basic/attendance/remote');
 }
 
 // URL 쿼리 변화를 감지하는 watcher
@@ -122,8 +141,9 @@ watch(
   () => route.query,
   (newQuery) => {
     eid.value = localStorage.getItem('employeeId');
+    curPage.value = newQuery.page || 1;
     curMonth.value = newQuery.date || getCurMonth();
-    fetchCommuteDate(eid.value, curMonth.value)
+    fetchCommuteDate(eid.value, curPage.value, curMonth.value)
   },
   { immediate: true }
 )
@@ -149,6 +169,13 @@ onMounted(() => {
   margin-top: 2.5rem;
 }
 
+.arrow-left-btn {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  gap: 1rem;
+}
+
 .select-year-month-section {
   position: absolute;
   right: 0;
@@ -161,13 +188,13 @@ onMounted(() => {
   align-items: center;
 }
 
-.table-wrapper {
-  max-height: 34rem;
-  overflow-y: auto;
-}
-
 .empty-message {
   justify-content: center;
   align-items: center;
 }
+
+.pagination {
+  min-height: 8rem;
+}
 </style>
+

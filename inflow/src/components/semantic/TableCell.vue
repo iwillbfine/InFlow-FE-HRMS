@@ -29,6 +29,22 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  topl: {
+    type: Boolean,
+    default: false,
+  },
+  topr: {
+    type: Boolean,
+    default: false,
+  },
+  botr: {
+    type: Boolean,
+    default: false,
+  },
+  botr: {
+    type: Boolean,
+    default: false,
+  },
   gc: {
     type: String,
     default: '',
@@ -50,14 +66,23 @@ const customStyle = computed(() => {
 
   // th가 true일 경우 추가되는 스타일
   if (props.th) {
-    return {
-      ...baseStyle,
+    Object.assign(baseStyle, {
       backgroundColor: '#f8f8f8',
       justifyContent: 'center',
       alignContent: 'center',
       fontWeight: '700',
-    };
+    });
   }
+
+  // borderRadius 설정
+  const borderRadius = [
+    props.topl ? '0.6rem' : '0',
+    props.topr ? '0.6rem' : '0',
+    props.bottomr ? '0.6rem' : '0',
+    props.bottoml ? '0.6rem' : '0',
+  ].join(' ');
+
+  baseStyle.borderRadius = borderRadius;
 
   return baseStyle;
 });
@@ -65,9 +90,8 @@ const customStyle = computed(() => {
 
 <style scoped>
 .tc {
-  border-right: 1px solid #dadada !important;
-  border-bottom: 1px solid #dadada !important;
   align-items: center;
   padding: 1rem;
+  border: 0.5px solid #dadada !important;
 }
 </style>
