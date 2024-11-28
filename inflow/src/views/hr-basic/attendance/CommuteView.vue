@@ -19,7 +19,7 @@
           <TableCell th fs="1.6rem">재택여부</TableCell>
           <TableCell th fs="1.6rem">초과근무 시간</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in commuteList">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in commuteList" :key="index">
           <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_time) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_time) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseTime(item.end_time) }}</TableCell>
@@ -130,10 +130,6 @@ watch(
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  if (!eid.value) {
-    alert("로그인이 필요합니다.");
-    router.push('/login');
-  }
 })
 </script>
 
@@ -159,11 +155,6 @@ onMounted(() => {
 .mid {
   justify-content: center;
   align-items: center;
-}
-
-.table-wrapper {
-  max-height: 34rem;
-  overflow-y: auto;
 }
 
 .empty-message {

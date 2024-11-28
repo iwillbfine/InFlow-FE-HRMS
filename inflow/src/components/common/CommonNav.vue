@@ -2,6 +2,7 @@
   <NavItem
     class="common-nav"
     fld="column"
+    h="100%"
     w="12rem"
     fs="2rem"
     c="#fff"
@@ -63,6 +64,10 @@ const selectItem = (item) => {
 </script>
 
 <style scoped>
+.common-nav {
+  position: fixed;
+}
+
 .nav-list {
   padding-top: 6rem;
 }

@@ -1,34 +1,24 @@
 <template>
-  <div class="page-container">
-    <CommonNav :cur="2"></CommonNav>
-    <FlexItem
-      class="main-container"
-      fld="column"
-      h="100%"
-      w="calc(100% - 12rem)"
-    >
-      <CommonHeader :user-name="employeeName"></CommonHeader>
-      <MainItem h="calc(100% - 10rem)" w="100%">
-        <CommonWidget :cur="1" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%">
-            <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
-            <router-view></router-view>
-          </FlexItem>
-        </CommonWidget>
-      </MainItem>
-    </FlexItem>
-  </div>
+  <CommonNav :cur="2"></CommonNav>
+  <CommonHeader :user-name="employeeName"></CommonHeader>
+  <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
+    <CommonMenu :cur="1" :list="menuList"></CommonMenu>
+    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SectionItem class="content-section" w="100%">
+      <router-view></router-view>
+    </SectionItem>
+  </MainItem>
 </template>
 
 <script setup>
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
-import CommonWidget from '@/components/common/CommonWidget.vue';
+import CommonMenu from '@/components/common/CommonMenu.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import SectionItem from '@/components/semantic/SectionItem.vue';
 
 // 상태 변수
 const eid = ref(null);
@@ -86,15 +76,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.page-container {
-  display: flex;
-  height: 100vh;
-  width: 100%;
+.sub-menu-nav {
+  position: fixed;
+  top: 19.4rem;
+  width: calc(100% - 12rem) !important;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  z-index: 2;
 }
 
-.widget-content {
+.content-section {
+  position: absolute;
+  top: 13.5rem;
+  right: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+  flex-grow: 1;
   align-items: center;
-  padding: 2rem;
-  overflow: auto;
 }
 </style>

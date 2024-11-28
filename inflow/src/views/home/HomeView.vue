@@ -1,19 +1,8 @@
 <template>
-  <div class="page-container">
-    <CommonNav></CommonNav>
-    <FlexItem
-      class="main-container"
-      fld="column"
-      h="100%"
-      w="calc(100% - 12rem)"
-    >
-      <!-- 사원 이름을 동적으로 표시 -->
-      <CommonHeader :user-name="employeeName"></CommonHeader>
-      <MainItem h="calc(100% - 12rem)" w="100%">
-        <MyAttendanceWidget></MyAttendanceWidget>
-      </MainItem>
-    </FlexItem>
-  </div>
+  <CommonNav></CommonNav>
+  <CommonHeader :user-name="employeeName"></CommonHeader>
+  <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
+  </MainItem>
 </template>
 
 <script setup>
@@ -21,8 +10,6 @@ import { ref, onMounted } from 'vue'; // 상태 관리 및 생명주기 훅
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
-import MyAttendanceWidget from '@/components/widgets/MyAttendanceWidget.vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeById } from '@/api/emp_info';
 
@@ -56,9 +43,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.page-container {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-}
 </style>
