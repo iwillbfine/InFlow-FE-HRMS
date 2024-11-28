@@ -156,8 +156,8 @@ const focusPassword = () => {
   right: 10px;
   top: 50%; /* 중앙 정렬 */
   transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
 }
 
