@@ -309,7 +309,6 @@ button p {
 
 .colname {
   display: grid;
-  grid-template-columns: 50px 150px 200px 100px 130px 130px;
   grid-template-columns: 1fr 3fr 4fr 2fr 2.5fr 2.5fr;
   height: 50px;
   justify-content: stretch;
