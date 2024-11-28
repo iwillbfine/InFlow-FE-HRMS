@@ -10,7 +10,12 @@
       <CommonHeader user-name="홍길동"></CommonHeader>
       <MainItem h="calc(100% - 10rem)" w="100%">
         <CommonWidget :cur="3" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%"> </FlexItem>
+          <FlexItem class="widget-content" h="100%" w="100%"> 
+            <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"/>
+            <CommonArticle :label="`${title}`" w="90%">
+              <router-view :key="$route.fullPath" />
+            </CommonArticle>
+          </FlexItem>
         </CommonWidget>
       </MainItem>
     </FlexItem>
@@ -21,9 +26,21 @@
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonWidget from '@/components/common/CommonWidget.vue';
+import CommonArticle from '@/components/common/CommonArticle.vue'
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
-import { ref } from 'vue';
+import SubMenuNav from '@/components/nav/SubMenuNav.vue';
+import { useRouter, useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
+
+const route = useRoute();
+const router = useRouter();
+
+const title = ref('인사발령 등록');
+const resetValues = () => {
+  title.value = '인사발령 등록';
+  subIdx.value = 0;
+}
 
 const menuList = ref([
   { name: '사원 정보 조회', link: '/hr-management/employee/info' },
@@ -34,6 +51,47 @@ const menuList = ref([
   { name: '계약서 서명', link: '/hr-management/contract' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
 ]);
+
+const subMenuList = ref([
+  { name: '인사발령 등록', link: '/hr-management/appointment/upload' },
+  { name: '인사발령 이력', link: '/hr-management/appointment/history' },
+]);
+
+const subIdx = ref(0);
+
+const handleClicked = (idx) => {
+  subIdx.value = idx;
+  title.value = subMenuList.value[subIdx.value].name;
+}
+
+watch(
+  () => route.path,
+  (newPath) => {
+    const matchedIndex = subMenuList.value.findIndex(
+      (item) => item.link === newPath
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+      title.value = subMenuList.value[matchedIndex].name;
+    }
+  },
+  { immediate: true }
+);
+
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/hr-management/appointment') {
+    resetValues();
+    console.log('reseted: ', title.value, ', ', subIdx.value);
+    if (to.path !== '/hr-management/appointment/upload') {
+      next('/hr-management/appointment/upload');
+    } else {
+      next();
+    }
+    return;
+  }
+  next();
+});
 </script>
 
 <style scoped>

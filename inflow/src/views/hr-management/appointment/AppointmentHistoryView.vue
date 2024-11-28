@@ -62,9 +62,12 @@
 <script setup>
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getEmpId, getLanguageTests, getLangCode } from '@/api/emp_attach';
+import { getDoc, saveData, getValidData } from '@/api/emp_attach';
 
-const headerNames = ref(["사번", "자격증명", "자격번호", "취득일", "발급기관", "등급 및 점수", "언어코드"]);
+const headerNames = ref([
+  "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)", 
+  "발령 직무(CODE)", "발령 직책(CODE)", "발령 직위(CODE)"
+]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
 
 const chkHeader = ref(false);
@@ -73,16 +76,14 @@ const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
 const validData = ref({});
-const ids = ref({});
-const langCode = ref([]);
-const qns = ref([]);
-const loading = ref(true);
 
 const validators = {
-  사번: (value) => ids.value[value] !== undefined,
-  자격번호: (value) => !qns.value?.includes(`${value}`),
-  언어코드: (value) => langCode.value?.includes(`${value}`),
-  취득일: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
+  "발령대상(사번)": (value) => ids.value[value] !== undefined,
+  "인사발령 유형(CODE)": (value) => validData.value.appointment_items?.includes(value),
+  "발령 부서(CODE)": (value) => validData.value.departments?.includes(value),
+  "발령 직무(CODE)": (value) => validData.value.positions?.includes(value),
+  "발령 직책(CODE)": (value) => validData.value.roles?.includes(value),
+  "발령 직위(CODE)": (value) => validData.value.duties?.includes(value),
 };
 
 const isCellValid = (value, header) => {
@@ -91,21 +92,14 @@ const isCellValid = (value, header) => {
   return validators[header] ? validators[header](value) : true;
 };
 
-const clickInput = () => {
-  fileInput.value.click();
-}
-
 const getEmpIds = async() => {
   loading.value = true;
-  const tmp1 = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
-  const tmp2 = await getLangCode();
-  const tmp3 = await getLanguageTests();
-  tmp1.forEach((row) => {
+  validData.value = await getValidData();
+  const tmp = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  tmp.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
     ids.value[row["employee_id"]] = row["employee_number"];
   });
-  langCode.value = tmp2.map((row) => `${row["language_code"]}`);
-  qns.value = tmp3.map((row) => `${row["qualification_number"]}`);
   loading.value = false;
 }
 
@@ -175,30 +169,28 @@ const deleteSelectedRows = () => {
   initializeSelectedRows();
 };
 
+
 const mapping = async () => {
   await getEmpIds();
   const result = ref([]);
   rowsData.value.map((row) => { 
     result.value.push({
-      language_test_name: row["자격증명"],
-      qualification_number: row["자격번호"],
-      issuer: row["발급기관"],
-      qualified_at: row["취득일"],
-      grade_score: row["등급 및 점수"],
-      employee_id: `${ids.value[row['사번']]}`,
-      language_code: row["언어코드"],
-    });
-  });
-  return result.value;
+      employee_number: row["발령대상(사번)"],
+      authorizer_id: '현재 로그인한 사원id',
+      department_code: row["발령 부서(CODE)"],
+      position_code: row["발령 직위(CODE)"],
+      role_code: row["발령 직책(CODE)"],
+      duty_code: row["발령 직무(CODE)"],
+      appointment_item_code: row["인사발령 유형(CODE)"],
+  })});
 };
 
-
 const fileDownload = async () => {
-  const blob = await getDoc("language");
+  const blob = await getDoc("appointment");
   const url = URL.createObjectURL(new Blob([blob]));
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", "language_form.xlsx");
+  link.setAttribute("download", "appointment_template.xlsx");
   link.click();
 };
 
@@ -213,9 +205,8 @@ const postData = async () => {
     window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
     return;
   }
-  const data = await mapping();
-  await saveData(data, 'language-tests');
-  window.alert("사원 어학 시험 정보 등록 완료");
+  await saveData(mapping(), null);
+  window.alert("인사발령 정보 등록 완료");
   window.location.reload();
 };
 </script>
@@ -308,6 +299,7 @@ button p {
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow-x: scroll;
   align-items: stretch;
   padding: 0 0 10px 0;
 }
@@ -323,7 +315,7 @@ button p {
 
 .colname {
   display: grid;
-  grid-template-columns: 50px 150px 2.5fr 2.5fr 2.5fr 2.5fr 2fr 2fr;
+  grid-template-columns: 50px 150px 50px 100px 130px 250px 160px 100px 120px 300px 150px 100px 100px 100px 100px 100px;
   height: 50px;
   justify-content: stretch;
   justify-items: center;

@@ -277,7 +277,8 @@ button p {
 }
 
 .exlbtns2 {
-  margin: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .exlbtns2 button {
@@ -303,6 +304,10 @@ button p {
   padding: 0 0 10px 0;
 }
 
+.inboard div {
+  height: 100%;
+}
+
 .inboard > :last-child {
   border-radius: 5px;
   border-bottom: solid 2px #2e2f3015;
@@ -310,7 +315,7 @@ button p {
 
 .colname {
   display: grid;
-  grid-template-columns: 0.5fr 2fr 3fr 2fr 2fr 1fr 2fr;
+  grid-template-columns: 50px 150px 3fr 2fr 2fr 1fr 2fr;
   height: 50px;
   justify-content: stretch;
   justify-items: center;
