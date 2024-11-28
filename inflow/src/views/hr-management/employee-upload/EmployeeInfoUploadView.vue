@@ -284,7 +284,8 @@ button p {
 }
 
 .exlbtns2 {
-  margin: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .exlbtns2 button {
@@ -309,6 +310,10 @@ button p {
   overflow-x: scroll;
   align-items: stretch;
   padding: 0 0 10px 0;
+}
+
+.inboard div {
+  height: 100%;
 }
 
 .inboard > :last-child {

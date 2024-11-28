@@ -54,3 +54,23 @@ export const getQualifications = async () => {
     throw error;
   }
 };
+
+export const getLanguageTests = async () => {
+  try {
+    const response = await apiClient.get(`/employees/language-tests`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getLangCode = async () => {
+  try {
+    const response = await apiClient.get(`/employees/language-tests/languages`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};

@@ -30,40 +30,18 @@ import CommonArticle from '@/components/common/CommonArticle.vue'
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
 
+const route = useRoute();
 const router = useRouter();
 
 const title = ref('기본 정보');
-
+console.log(route.path);
 const resetValues = () => {
   title.value = '기본 정보';
   subIdx.value = 0;
 }
-
-const subIdx = ref(0);
-
-const handleClicked = (idx) => {
-  subIdx.value = idx;
-  title.value = subMenuList.value[subIdx.value].name;
-}
-
-
-router.beforeEach((to, from, next) => {
-  if (to.path === '/hr-management/employee/upload') {
-    resetValues();
-
-    if (to.path !== '/hr-management/employee/upload/employees') {
-      next('/hr-management/employee/upload/employees');
-    } else {
-      next();
-    }
-
-    return;
-  }
-  next();
-});
 
 const menuList = ref([
   { name: '사원 정보 조회', link: '/hr-management/employee/info' },
@@ -84,6 +62,42 @@ const subMenuList = ref([
   { name: '포상 및 징계', link: '/hr-management/employee/upload/disciplinerewards' },
   { name: '가구원', link: '/hr-management/employee/upload/familymembers' },
 ]);
+
+const subIdx = ref(0);
+
+const handleClicked = (idx) => {
+  subIdx.value = idx;
+  title.value = subMenuList.value[subIdx.value].name;
+}
+
+watch(
+  () => route.path,
+  (newPath) => {
+    const matchedIndex = subMenuList.value.findIndex(
+      (item) => item.link === newPath
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+      title.value = subMenuList.value[matchedIndex].name;
+    }
+  },
+  { immediate: true }
+);
+
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/hr-management/employee/upload') {
+    resetValues();
+    console.log('reseted: ', title.value, ', ', subIdx.value);
+    if (to.path !== '/hr-management/employee/upload/employees') {
+      next('/hr-management/employee/upload/employees');
+    } else {
+      next();
+    }
+    return;
+  }
+  next();
+});
 </script>
 
 <style scoped>
