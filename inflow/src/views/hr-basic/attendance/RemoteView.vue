@@ -2,29 +2,38 @@
 <CommonArticle label="재택근무 신청" minh="29rem" w="90%">
   <TableItem gtc="2fr 4fr">
     <TableRow>
-      <TableCell class="h-7" th fs="1.6rem">재택근무 요청 날짜</TableCell>
+      <TableCell class="h-7" th fs="1.6rem">재택근무 날짜</TableCell>
       <TableCell class="h-7 pl-1" fs="1.6rem">
-        <DateDropDown @valid-date-selected=""></DateDropDown>
+        <DateDropDown @valid-date-selected="updateSelectedDate"></DateDropDown>
       </TableCell>
     </TableRow>
     <TableRow>
       <TableCell class="h-7" th fs="1.6rem">재택근무 사유</TableCell>
       <TableCell class="h-7 pl-1" fs="1.6rem">
-        <input type="text" name="reason-input" placeholder="사유를 작성해주세요."/>
+        <input v-model="requestReason" type="text" name="reason-input" placeholder="사유를 작성해주세요."/>
       </TableCell>
     </TableRow>
   </TableItem>
   <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
 </CommonArticle>
 <hr/>
-<CommonArticle label="재택근무 신청 내역" minh="30rem" w="90%">
-  <TableItem gtc="2fr 4fr 6fr 3fr 3fr">
+<CommonArticle label="재택근무 신청 내역" minh="33rem" w="90%">
+  <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
     <TableRow>
       <TableCell th fs="1.6rem">신청 ID</TableCell>
-      <TableCell th fs="1.6rem">재택근무 요청 날짜</TableCell>
+      <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
       <TableCell th fs="1.6rem">재택근무 사유</TableCell>
+      <TableCell th fs="1.6rem">신청일</TableCell>
       <TableCell th fs="1.6rem">상태</TableCell>
       <TableCell th fs="1.6rem">취소 요청</TableCell>
+    </TableRow>
+    <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList">
+      <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
+      <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
+      <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
+      <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
+      <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
+      <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
     </TableRow>
   </TableItem>
   <FlexItem
@@ -50,11 +59,14 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getRemoteRequestPreviewsByEmployeeId } from '@/api/attendance';
+import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api/attendance';
 
 const eid = ref(null);
 const remoteRequestList = ref([]);
 const isEmpty = ref(true);
+
+const selectedDate = ref('');
+const requestReason = ref('');
 
 const router = useRouter();
 
@@ -69,14 +81,84 @@ const fetchRemoteRequestData = async (eid) => {
     isEmpty.value = true;
   }
 }
+// 일까지 파싱
+const parseDate = (dateStr) => {
+  const date = new Date(dateStr);
 
-const handleOnclick = () => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1 필요
+  const day = date.getDate();
+
+  const formattedDate = `${year}년 ${month}월 ${day}일`;
+  return formattedDate;
+}
+
+const parseRequestStatus = (status) => {
+  switch (status) {
+    case 'ACCEPT': return '승인됨';
+    case 'REJECT': return '반려됨';
+    default: return '대기중';
+  }
+}
+
+const updateSelectedDate = (date) => {
+  selectedDate.value = date;
+}
+
+const checkValidDate = () => {
+  // selectedDate를 Date 객체로 변환
+  const selected = new Date(selectedDate.value);
+
+  // 오늘 날짜를 Date 객체로 변환
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 시간 비교를 위해 00:00:00으로 설정
+
+  // selectedDate가 오늘보다 이전인지 비교
+  if (selected < today) {
+    return false;
+  }
+
+  return true;
+};
+
+const handleOnclick = async () => {
+  if (!selectedDate.value) {
+    alert("재택근무 날짜를 선택하세요.");
+    return;
+  }
+
+  if (!checkValidDate()) {
+    alert("재택근무 날짜는 오늘보다 이전일 수 없습니다.");
+    return;
+  }
+
+  if (!requestReason.value) {
+    alert("재택근무 사유를 입력하세요.");
+    return;
+  }
+
+  const response = await createRemoteRequest({
+    request_reason: requestReason.value,
+    start_date: selectedDate.value,
+    employee_id: eid.value,
+    attendance_request_type_id: 1,
+  });
+
+  selectedDate.value = ''; // 무한 요청 방지
+  requestReason.value = ''; // 무한 요청 방지
+
+  if (response.success) {
+    alert("재택근무 신청이 성공적으로 전송되었습니다.");
+    window.location.reload();
+  } else {
+    alert("재택근무 신청 실패! 다시 시도해주세요.");
+  }
 
 };
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  if (eid.value == null) {
+  if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
   }
@@ -97,6 +179,11 @@ hr {
 
 .pl-1 {
   padding-left: 2rem;
+}
+
+.mid {
+  justify-content: center;
+  align-items: center;
 }
 
 .submit-btn {

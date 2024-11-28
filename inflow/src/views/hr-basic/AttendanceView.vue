@@ -10,7 +10,7 @@
       <CommonHeader :user-name="employeeName"></CommonHeader>
       <MainItem h="calc(100% - 10rem)" w="100%">
         <CommonWidget :cur="1" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%">
+          <FlexItem class="widget-content" h="100%" w="100%" @on-mounted="updateSubIdx">
             <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
             <router-view></router-view>
           </FlexItem>
@@ -29,7 +29,6 @@ import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getEmployeeById } from '@/api/emp_info';
 
 // 상태 변수
 const eid = ref(null);
@@ -60,15 +59,21 @@ const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
+  localStorage.setItem('subIdx', subIdx.value);
 }
 
 // 컴포넌트가 마운트될 때 사원 정보를 가져옴
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
-  if (eid.value == null) {
+  if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+  }
+
+  const savedSubIdx = localStorage.getItem('subIdx');
+  if (savedSubIdx) {
+    subIdx.value = Number(savedSubIdx);
   }
 });
 </script>

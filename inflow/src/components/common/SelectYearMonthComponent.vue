@@ -1,6 +1,6 @@
 <template>
   <SectionItem fld="row">
-    <YearMonthDropDown @valid-date-selected="selectedDate"></YearMonthDropDown>
+    <YearMonthDropDown @valid-date-selected="updateSelectedMonth"></YearMonthDropDown>
     <ButtonItem h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>
   </SectionItem>
 </template>
@@ -16,7 +16,7 @@ const selectedMonth = ref('');
 const emit = defineEmits(['monthSelected']);
 
 // 연월 선택될 때 호출
-const selectedDate = (date) => {
+const updateSelectedMonth = (date) => {
   selectedMonth.value = date;
 }
 

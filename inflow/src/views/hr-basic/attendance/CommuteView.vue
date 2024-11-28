@@ -130,7 +130,7 @@ watch(
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  if (eid.value == null) {
+  if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
   }
