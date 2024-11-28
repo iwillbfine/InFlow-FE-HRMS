@@ -11,7 +11,7 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="repeat(5, 1fr)">
+      <TableItem class="commute-table" gtc="repeat(5, 1fr)" br="0.5rem">
         <TableRow>
           <TableCell th fs="1.6rem">일자</TableCell>
           <TableCell th fs="1.6rem">출근 시각</TableCell>
@@ -163,7 +163,7 @@ onMounted(() => {
 
 .table-wrapper {
   padding: 1.5rem;
-  max-height: 37rem;
+  max-height: 34rem;
   overflow-y: auto;
 }
 

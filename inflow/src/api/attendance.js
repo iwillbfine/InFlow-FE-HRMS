@@ -10,3 +10,14 @@ export const getCommutesByEmployeeId = async (eid, date) => {
     throw error;
   }
 };
+
+// 2. 사원 ID로 재택근무 최근 신청 내역 조회
+export const getRemoteRequestPreviewsByEmployeeId = async (eid) => {
+  try {
+    const response = await apiClient.get(`/attendance-requests/commute/remote/preview?eid=${eid}`);
+    return response.data;
+  } catch (error) {
+    console.error('getRemoteRequestPreviewsByEmployeeId 에러:', error);
+    throw error;
+  }
+};
