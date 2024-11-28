@@ -52,12 +52,12 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/hr-management/vacation';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath === defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }
@@ -66,7 +66,7 @@ onMounted(() => {
   if (savedSubIdx) {
     subIdx.value = Number(savedSubIdx);
   }
-}
+}); // onMounted 블록을 제대로 닫음
 </script>
 
 <style scoped>
