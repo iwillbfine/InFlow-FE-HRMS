@@ -8,9 +8,9 @@
       w="calc(100% - 12rem)"
     >
       <CommonHeader user-name="홍길동"></CommonHeader>
-      <MainItem h="calc(100% - 12rem)" w="100%">
+      <MainItem h="calc(100% - 10rem)" w="100%">
         <CommonWidget :cur="1" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%"> 
+          <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked" class="ca"/>
             <CommonArticle :label="`${title}`" w="90%">
               <router-view :key="$route.fullPath" />
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-    
+
     return;
   }
   next();

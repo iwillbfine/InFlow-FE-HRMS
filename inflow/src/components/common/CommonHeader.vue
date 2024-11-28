@@ -1,5 +1,5 @@
 <template>
-  <HeaderItem class="common-header" fld="row" h="12rem" w="100%" fw="700">
+  <HeaderItem class="common-header" fld="row" h="10rem" w="100%" fw="700">
     <SectionItem class="welcome-section" h="6rem" fs="3.4rem">
       <span>{{ props.userName }} 님, 안녕하세요!</span>
     </SectionItem>
