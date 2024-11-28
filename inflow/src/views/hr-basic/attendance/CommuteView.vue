@@ -1,15 +1,13 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <SectionItem class="change-month-section" fld="row">
-      <ChevronLeftButton h="3.6rem" w="3.6rem" bgc="transparent" c="#202020" @click="goPrevMonth"></ChevronLeftButton>
-      <span class="cur-month">{{ parseMonth(curMonth) }}</span>
-      <span class="description">출퇴근 내역</span>
-      <ChevronRightButton h="3.6rem" w="3.6rem" bgc="transparent" c="#202020" @click="goNextMonth"></ChevronRightButton>
-    </SectionItem>
-    <SectionItem class="select-year-month-section" fld="row">
-      <YearMonthDropDown @valid-date-selected="selectedDate"></YearMonthDropDown>
-      <ButtonItem h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>
-    </SectionItem>
+    <ChangeMonthComponent
+      :cur-month="curMonth"
+      description="출퇴근 내역"
+      @go-prev-month="goPrevMonth"
+      @go-next-month="goNextMonth"
+    >
+    </ChangeMonthComponent>
+    <SelectYearMonthComponent class="select-year-month-section" @month-selected="goSelectedMonth"></SelectYearMonthComponent>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -30,27 +28,32 @@
         </TableRow>
       </TableItem>
     </div>
-    <FlexItem v-if="isEmpty" class="empty-message" fld="row" h="6rem" w="100%" fs="1.6rem">출퇴근 내역이 존재하지 않습니다.</FlexItem>
+    <FlexItem
+      v-if="isEmpty"
+      class="empty-message"
+      fld="row"
+      h="6rem"
+      w="100%"
+      fs="1.6rem"
+    >
+      출퇴근 내역이 존재하지 않습니다.
+    </FlexItem>
   </FlexItem>
 </template>
 
 <script setup>
 import FlexItem from '@/components/semantic/FlexItem.vue';
-import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import SectionItem from '@/components/semantic/SectionItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
-import ChevronLeftButton from '@/components/buttons/ChevronLeftButton.vue';
-import ChevronRightButton from '@/components/buttons/ChevronRightButton.vue';
-import YearMonthDropDown from '@/components/dropdowns/YearMonthDropDown.vue';
+import SelectYearMonthComponent from '@/components/common/SelectYearMonthComponent.vue';
+import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import axios from 'axios';
+import { getCommutesByEmployeeId } from '@/api/attendance';
 
 const eid = ref(null);
 const curMonth = ref('');
-const selectedMonth = ref('');
 const commuteList = ref([]);
 const isEmpty = ref(true);
 
@@ -58,16 +61,10 @@ const router = useRouter();
 const route = useRoute();
 
 const fetchCommuteDate = async (eid, date) => {
-  const response = (
-      await axios.get(`http://localhost:5000/api/commutes?eid=${eid}&date=${date}`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
-      )
-    ).data;
-
+  const response = await getCommutesByEmployeeId(eid, date);
   if (response.success) {
     commuteList.value = response.content;
-    if (commuteList.value.isEmpty) isEmpty.value = true;
-    else isEmpty.value = false;
+    isEmpty.value = commuteList.value.isEmpty ? true : false;
   } else {
     commuteList.value = []
     isEmpty.value = true;
@@ -97,17 +94,6 @@ const parseDate = (dateStr) => {
   return formattedDate;
 }
 
-// 월까지 파싱
-const parseMonth = (dateStr) => {
-  const date = new Date(dateStr);
-
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1 필요
-
-  const formattedMonth = `${year}년 ${month}월`;
-  return formattedMonth;
-}
-
 // 시간만 파싱
 const parseTime = (dateStr) => {
   const date = new Date(dateStr);
@@ -119,32 +105,16 @@ const parseTime = (dateStr) => {
   return formattedTime;
 }
 
-// 연월 선택될 때 호출
-const selectedDate = (date) => {
-  selectedMonth.value = date;
-}
-
-// 조회 버튼 클릭시 호출
-const handleOnclick = () => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: selectedMonth.value } })
-}
-
-// 이전 달로 이동
-const goPrevMonth = () => {
-  const curDate = new Date(curMonth.value + "-01"); // 현재 날짜 생성
-  curDate.setMonth(curDate.getMonth() - 1); // 이전 달로 이동
-
-  const prevMonth = curDate.getFullYear() + '-' + String(curDate.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+const goPrevMonth = (prevMonth) => {
   router.push({ path: '/hr-basic/attendance/commute', query: { date: prevMonth } });
 }
 
-// 다음 달로 이동
-const goNextMonth = () => {
-  const curDate = new Date(curMonth.value + "-01"); // 현재 날짜 생성
-  curDate.setMonth(curDate.getMonth() + 1); // 다음 달로 이동
-
-  const nextMonth = curDate.getFullYear() + '-' + String(curDate.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+const goNextMonth = (nextMonth) => {
   router.push({ path: '/hr-basic/attendance/commute', query: { date: nextMonth } });
+}
+
+const goSelectedMonth = (selectedMonth) => {
+  router.push({ path: '/hr-basic/attendance/commute', query: { date: selectedMonth } })
 }
 
 // URL 쿼리 변화를 감지하는 watcher
@@ -177,28 +147,6 @@ onMounted(() => {
 .content-body {
   width: 80%;
   margin-top: 2.5rem;
-}
-
-.cur-month {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #0063BF;
-}
-
-.description {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #202020;
-}
-
-.change-month-section {
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.change-month-section button {
-  margin-top: 0.5rem;
 }
 
 .select-year-month-section {
