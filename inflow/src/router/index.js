@@ -36,6 +36,13 @@ import DisciplineRewardInfoUploadView from '@/views/hr-management/employee-uploa
 import FamilyMemberInfoUploadView from '@/views/hr-management/employee-upload/FamilyMemberInfoUploadView.vue';
 import MyDepartmentView from '@/views/hr-basic/MyDepartmentView.vue';
 import EmployeeInfoUploadView from '@/views/hr-management/employee-upload/EmployeeInfoUploadView.vue';
+import RemoteRequestsView from '@/views/hr-basic/attendance/RemoteRequestsView.vue';
+import OvertimeRequestsView from '@/views/hr-basic/attendance/OvertimeRequestsView.vue';
+import VacationRequestsView from '@/views/hr-basic/attendance/VacationRequestsView.vue';
+import LeaveRequestsView from '@/views/hr-basic/attendance/LeaveRequestsView.vue';
+import ReturnRequestsView from '@/views/hr-basic/attendance/ReturnRequestsView.vue';
+import BusinessTripRequestsView from '@/views/hr-basic/attendance/BusinessTripRequestsView.vue';
+import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsView.vue';
 
 const routes = [
   {
@@ -89,9 +96,19 @@ const routes = [
         component: RemoteView,
       },
       {
+        path: 'remote/requests',
+        name: 'hr-basic-attendance-remote-requests',
+        component: RemoteRequestsView,
+      },
+      {
         path: 'overtime',
         name: 'hr-basic-attendance-overtime',
         component: OvertimeView,
+      },
+      {
+        path: 'overtime/requests',
+        name: 'hr-basic-attendance-overtime-requests',
+        component: OvertimeRequestsView,
       },
       {
         path: 'vacation',
@@ -99,9 +116,19 @@ const routes = [
         component: VacationView,
       },
       {
+        path: 'vacation/requests',
+        name: 'hr-basic-attendance-vacation-requests',
+        component: VacationRequestsView,
+      },
+      {
         path: 'leave',
         name: 'hr-basic-attendance-leave',
         component: LeaveView,
+      },
+      {
+        path: 'leave/requests',
+        name: 'hr-basic-attendance-leave-requests',
+        component: LeaveRequestsView,
       },
       {
         path: 'return',
@@ -109,14 +136,29 @@ const routes = [
         component: ReturnView,
       },
       {
+        path: 'return/requests',
+        name: 'hr-basic-attendance-return-requests',
+        component: ReturnRequestsView,
+      },
+      {
         path: 'business-trip',
         name: 'hr-basic-attendance-business-trip',
         component: BusinessTripView,
       },
       {
+        path: 'business-trip/requests',
+        name: 'hr-basic-attendance-business-trip-requests',
+        component: BusinessTripRequestsView,
+      },
+      {
         path: 'dispatch',
         name: 'hr-basic-attendance-dispatch',
         component: DispatchView,
+      },
+      {
+        path: 'dispatch/requests',
+        name: 'hr-basic-attendance-dispatch-requests',
+        component: DispatchRequestsView,
       },
     ]
   },

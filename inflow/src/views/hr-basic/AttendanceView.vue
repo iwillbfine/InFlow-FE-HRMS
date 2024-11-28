@@ -10,7 +10,7 @@
       <CommonHeader :user-name="employeeName"></CommonHeader>
       <MainItem h="calc(100% - 10rem)" w="100%">
         <CommonWidget :cur="1" :list="menuList">
-          <FlexItem class="widget-content" h="100%" w="100%" @on-mounted="updateSubIdx">
+          <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
             <router-view></router-view>
           </FlexItem>
@@ -28,13 +28,14 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 // 상태 변수
 const eid = ref(null);
 const employeeName = ref(''); // 사원 이름 상태
 
 const router = useRouter();
+const route = useRoute();
 
 const menuList = ref([
   { name: '개인신상관리', link: '/hr-basic/my-info' },
@@ -69,6 +70,12 @@ onMounted(() => {
   if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+  }
+
+  const defaultUrl = '/hr-basic/attendance';
+  if(route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
   }
 
   const savedSubIdx = localStorage.getItem('subIdx');

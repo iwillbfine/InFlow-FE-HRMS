@@ -10,14 +10,22 @@
     <TableRow>
       <TableCell class="h-7" th fs="1.6rem">재택근무 사유</TableCell>
       <TableCell class="h-7 pl-1" fs="1.6rem">
-        <input v-model="requestReason" type="text" name="reason-input" placeholder="사유를 작성해주세요."/>
+        <input
+          v-model="requestReason"
+          class="reason-input"
+          type="text"
+          name="reason-input"
+          placeholder="사유를 작성해주세요."
+          maxlength="20"
+        />
       </TableCell>
     </TableRow>
   </TableItem>
   <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
 </CommonArticle>
 <hr/>
-<CommonArticle label="재택근무 신청 내역" minh="33rem" w="90%">
+<CommonArticle class="pos-rel" label="재택근무 신청 내역" minh="38rem" w="90%">
+  <MoreListButton @click="goMoreList"></MoreListButton>
   <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
     <TableRow>
       <TableCell th fs="1.6rem">신청 ID</TableCell>
@@ -52,11 +60,13 @@
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import TableRow from '@/components/semantic/TableRow.vue';
+import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
+
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api/attendance';
@@ -137,6 +147,11 @@ const handleOnclick = async () => {
     return;
   }
 
+  if (requestReason.value.length > 20) {
+    alert("신청 사유는 20자 이내로 작성해주세요.");
+    return;
+  }
+
   const response = await createRemoteRequest({
     request_reason: requestReason.value,
     start_date: selectedDate.value,
@@ -153,7 +168,10 @@ const handleOnclick = async () => {
   } else {
     alert("재택근무 신청 실패! 다시 시도해주세요.");
   }
+};
 
+const goMoreList = () => {
+  router.push('/hr-basic/attendance/remote/requests');
 };
 
 onMounted(() => {
@@ -167,6 +185,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.reason-input {
+  height: 100%;
+  width: 100%;
+}
+
+.pos-rel {
+  position: relative;
+}
+
 hr {
   width: 90%;
   margin-bottom: 3rem;
@@ -189,6 +216,14 @@ hr {
 .submit-btn {
   margin-top: 3.2rem;
   align-self: center;
+}
+
+.more-list-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  gap: 0.3rem;
+  align-self: flex-end;
 }
 
 .empty-message {

@@ -53,8 +53,6 @@ const prevPage = () => {
   flex-direction: row;
   flex-wrap: nowrap;
   width: 100%;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
   color: var(--red-color);
 }
 

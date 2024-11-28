@@ -32,3 +32,14 @@ export const getRemoteRequestPreviewsByEmployeeId = async (eid) => {
     throw error;
   }
 };
+
+// 3. 사원 ID, 페이지번호, 날짜(yyyy-MM)로 재택근무 전체 신청 내역 페이지별 조회
+export const getRemoteRequestsByEmployeeId = async (eid, page, date) => {
+  try {
+    const response = await apiClient.get(`/attendance-requests/commute/remote?eid=${eid}&page=${page}&date=${date}`);
+    return response.data;
+  } catch (error) {
+    console.error('getRemoteRequestsByEmployeeId 에러:', error);
+    throw error;
+  }
+};
