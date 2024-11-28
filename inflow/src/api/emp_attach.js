@@ -14,7 +14,10 @@ export const saveData = async (data, name) => {
   try {
     let response;
     if (name !== null) {
-      response = await apiClient.post(`/employees/${name}`, data);
+      if (name === 'appointments')
+        response = await apiClient.post(`/appointments`, data);
+      else
+        response = await apiClient.post(`/employees/${name}`, data);
     } else {
       response = await apiClient.post(`/employees`, data);
     }
