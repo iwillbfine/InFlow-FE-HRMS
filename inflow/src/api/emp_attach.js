@@ -74,3 +74,13 @@ export const getLangCode = async () => {
     throw error;
   }
 };
+
+export const getRelationships = async () => {
+  try {
+    const response = await apiClient.get(`/employees/family-members/relationships`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};

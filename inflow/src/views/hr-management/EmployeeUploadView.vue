@@ -37,7 +37,6 @@ const route = useRoute();
 const router = useRouter();
 
 const title = ref('기본 정보');
-console.log(route.path);
 const resetValues = () => {
   title.value = '기본 정보';
   subIdx.value = 0;
@@ -59,8 +58,8 @@ const subMenuList = ref([
   { name: '학력', link: '/hr-management/employee/upload/educations' },
   { name: '자격증', link: '/hr-management/employee/upload/qualifications' },
   { name: '어학', link: '/hr-management/employee/upload/languagetests' },
-  { name: '포상 및 징계', link: '/hr-management/employee/upload/disciplinerewards' },
   { name: '가구원', link: '/hr-management/employee/upload/familymembers' },
+  { name: '포상 및 징계', link: '/hr-management/employee/upload/disciplinerewards' },
 ]);
 
 const subIdx = ref(0);
