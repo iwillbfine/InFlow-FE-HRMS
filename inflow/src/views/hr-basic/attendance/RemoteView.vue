@@ -35,7 +35,7 @@
       <TableCell th fs="1.6rem">상태</TableCell>
       <TableCell th fs="1.6rem">취소 요청</TableCell>
     </TableRow>
-    <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList">
+    <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
       <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
       <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
       <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
@@ -176,10 +176,6 @@ const goMoreList = () => {
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  if (!eid.value) {
-    alert("로그인이 필요합니다.");
-    router.push('/login');
-  }
   fetchRemoteRequestData(eid.value);
 });
 </script>

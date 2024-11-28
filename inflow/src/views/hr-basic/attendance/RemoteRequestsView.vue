@@ -21,13 +21,28 @@
           <TableCell th fs="1.6rem">상태</TableCell>
           <TableCell th fs="1.6rem">취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
           <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">
+            <span v-if="item.cancel_status=='Y'">취소 완료</span>
+            <ButtonItem
+              v-else-if="item.cancel_status=='N' && item.request_status=='ACCEPT'"
+              h="3rem"
+              w="6.4rem"
+              br="0.4rem"
+              fs="1.2rem"
+              bgc="#003566"
+              c="#fff"
+              @click="toggleCancelRequestModal"
+            >
+              취소 요청
+            </ButtonItem>
+            <!-- <span v-else>취소 불가</span> -->
+          </TableCell>
         </TableRow>
       </TableItem>
     </div>
@@ -43,6 +58,7 @@
     </FlexItem>
     <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
   </FlexItem>
+  <CrudModal class="cancel-request-modal" v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
 </template>
 
 <script setup>
@@ -53,10 +69,12 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import SelectYearMonthComponent from '@/components/common/SelectYearMonthComponent.vue';
 import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
 import PaginationComponent from '@/components/common/PaginationComponent.vue';
+import ArrowLeftButton from '@/components/buttons/ArrowLeftButton.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import CrudModal from '@/components/modals/CrudModal.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getRemoteRequestsByEmployeeId } from '@/api/attendance';
-import ArrowLeftButton from '@/components/buttons/ArrowLeftButton.vue';
 
 const eid = ref(null);
 const curPage = ref(1);
@@ -64,6 +82,7 @@ const curMonth = ref('');
 const remoteRequestList = ref([]);
 const pageInfo = ref({});
 const isEmpty = ref(true);
+const isModalOpen = ref(false);
 
 const router = useRouter();
 const route = useRoute();
@@ -112,6 +131,10 @@ const parseRequestStatus = (status) => {
   }
 }
 
+const toggleCancelRequestModal = () => {
+  isModalOpen.value = !isModalOpen.value;
+}
+
 const handleChangePage = (page) => {
   curPage.value = page;
   router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: curMonth.value } });
@@ -150,10 +173,6 @@ watch(
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  if (!eid.value) {
-    alert("로그인이 필요합니다.");
-    router.push('/login');
-  }
 })
 </script>
 
@@ -195,6 +214,12 @@ onMounted(() => {
 
 .pagination {
   min-height: 8rem;
+}
+
+.cancel-request-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>
 

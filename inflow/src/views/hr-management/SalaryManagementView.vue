@@ -1,8 +1,8 @@
 <template>
-  <CommonNav :cur="4"></CommonNav>
+  <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="0" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="7" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
@@ -21,14 +21,19 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const menuList = ref([
-  { name: '자기 평가', link: '/evaluation/personal' },
-  { name: '리더 평가', link: '/evaluation/leader' },
-  { name: '과제 등록 및 조회', link: '/evaluation/task' },
+  { name: '사원 정보 조회', link: '/hr-management/employee/info' },
+  { name: '사원 정보 등록', link: '/hr-management/employee/upload' },
+  { name: '부서 관리', link: '/hr-management/department' },
+  { name: '인사발령', link: '/hr-management/appointment' },
+  { name: '과제 및 평가', link: '/hr-management/evaluation' },
+  { name: '계약서 서명', link: '/hr-management/contract' },
+  { name: '휴가 관리', link: '/hr-management/vacation' },
+  { name: '급여 관리', link: '/hr-management/salary' },
 ]);
 
 const subMenuList = ref([
-  { name: '서브메뉴 1', link: '/evaluation/leader/1' },
-  { name: '서브메뉴 2', link: '/evaluation/leader/2'  },
+  { name: '사원별 급여 조회', link: '/hr-management/salary' },
+  { name: '비정기 수당 항목', link: '/hr-management/salary'  },
 ]);
 
 const router = useRouter();
@@ -52,7 +57,7 @@ onMounted(() => {
     router.push('/login');
   }
 
-  const defaultUrl = '/evaluation/personal';
+  const defaultUrl = '/hr-management/salary';
   if(route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;

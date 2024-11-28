@@ -43,6 +43,7 @@ import LeaveRequestsView from '@/views/hr-basic/attendance/LeaveRequestsView.vue
 import ReturnRequestsView from '@/views/hr-basic/attendance/ReturnRequestsView.vue';
 import BusinessTripRequestsView from '@/views/hr-basic/attendance/BusinessTripRequestsView.vue';
 import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsView.vue';
+import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
 import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
 import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
 
@@ -195,6 +196,11 @@ const routes = [
     component: EmployeeUploadView,
     children: [
       {
+        path: '',
+        name: 'defaultEmployeeInfo',
+        component: EmployeeInfoUploadView,
+      },
+      {
         path: 'employees',
         name: 'EmployeeInfo',
         component: EmployeeInfoUploadView,
@@ -283,6 +289,11 @@ const routes = [
         component: VacationPolicyView,
       },
     ]
+  },
+  {
+    path: '/hr-management/salary',
+    name: 'hr-management-salary',
+    component: SalaryManagementView,
   },
   {
     path: '/evaluation',

@@ -14,7 +14,7 @@ const props = defineProps({
   },
   w: {
     type: String,
-    default: 'auto',
+    default: 'calc(100% - 12rem)',
   },
   b: {
     type: String,
@@ -42,7 +42,7 @@ const props = defineProps({
   },
   fld: {
     type: String,
-    default: 'inherit',
+    default: 'column',
   },
   maxh: {
     type: String,
@@ -82,9 +82,11 @@ const customStyle = computed(() => ({
 
 <style scoped>
 main {
-  padding-top: 2rem;
-  padding-left: 6rem;
-  padding-right: 6rem;
-  padding-bottom: 4rem;
+  position: relative;
+  top: 10rem;
+  left: 12rem;
+  align-items: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 </style>
