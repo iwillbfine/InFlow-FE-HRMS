@@ -28,14 +28,14 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { getEmployeeById } from '@/api/emp_info';
+import { useRouter, useRoute } from 'vue-router';
 
 // 상태 변수
 const eid = ref(null);
 const employeeName = ref(''); // 사원 이름 상태
 
 const router = useRouter();
+const route = useRoute();
 
 const menuList = ref([
   { name: '개인신상관리', link: '/hr-basic/my-info' },
@@ -47,8 +47,8 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '출퇴근 내역', link: '/hr-basic/attendance/commute' },
-  { name: '재택 근무 관리', link: '/hr-basic/attendance/remote' },
-  { name: '초과 근무 관리', link: '/hr-basic/attendance/overtime' },
+  { name: '재택근무 관리', link: '/hr-basic/attendance/remote' },
+  { name: '초과근무 관리', link: '/hr-basic/attendance/overtime' },
   { name: '휴가 관리', link: '/hr-basic/attendance/vacation' },
   { name: '휴직 관리', link: '/hr-basic/attendance/leave' },
   { name: '복직 관리', link: '/hr-basic/attendance/return' },
@@ -60,15 +60,27 @@ const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
+  localStorage.setItem('subIdx', subIdx.value);
 }
 
 // 컴포넌트가 마운트될 때 사원 정보를 가져옴
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
-  if (eid.value == null) {
+  if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+  }
+
+  const defaultUrl = '/hr-basic/attendance';
+  if(route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
+  }
+
+  const savedSubIdx = localStorage.getItem('subIdx');
+  if (savedSubIdx) {
+    subIdx.value = Number(savedSubIdx);
   }
 });
 </script>
