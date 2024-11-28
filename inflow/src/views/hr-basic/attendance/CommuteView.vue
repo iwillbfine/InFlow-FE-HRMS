@@ -215,7 +215,7 @@ onMounted(() => {
 
 .table-wrapper {
   padding: 1.5rem;
-  max-height: 35rem;
+  max-height: 37rem;
   overflow-y: auto;
 }
 

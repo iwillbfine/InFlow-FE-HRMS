@@ -8,7 +8,7 @@
       w="calc(100% - 12rem)"
     >
       <CommonHeader user-name="홍길동"></CommonHeader>
-      <MainItem h="calc(100% - 12rem)" w="100%"></MainItem>
+      <MainItem h="calc(100% - 10rem)" w="100%"></MainItem>
     </FlexItem>
   </div>
 </template>

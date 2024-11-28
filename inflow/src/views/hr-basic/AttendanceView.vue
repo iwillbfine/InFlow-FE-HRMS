@@ -8,7 +8,7 @@
       w="calc(100% - 12rem)"
     >
       <CommonHeader :user-name="employeeName"></CommonHeader>
-      <MainItem h="calc(100% - 12rem)" w="100%">
+      <MainItem h="calc(100% - 10rem)" w="100%">
         <CommonWidget :cur="1" :list="menuList">
           <FlexItem class="widget-content" h="100%" w="100%">
             <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
