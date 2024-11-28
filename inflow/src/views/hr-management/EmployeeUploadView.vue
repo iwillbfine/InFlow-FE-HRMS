@@ -74,7 +74,7 @@ onMounted(() => {
   if (savedSubIdx) {
     subIdx.value = Number(savedSubIdx);
   }
-}
+}); // <- onMounted 함수 닫기
 </script>
 
 <style scoped>
