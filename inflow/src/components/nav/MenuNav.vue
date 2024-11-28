@@ -53,4 +53,8 @@ const selectItem = (item) => {
   align-items: center;
   padding: 1rem;
 }
+
+span {
+  cursor: pointer;
+}
 </style>
