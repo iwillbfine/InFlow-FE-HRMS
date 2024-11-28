@@ -31,14 +31,13 @@ const menuList = ref([
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
 
-const subMenuList = ref([
-  { name: '인사 발령 등록', link: '/hr-management/appointment' },
-  { name: '인사 발령 이력', link: '/hr-management/appointment' },
-]);
-
 const router = useRouter();
 const route = useRoute();
 
+const subMenuList = ref([
+  { name: '인사발령 등록', link: '/hr-management/appointment/upload' },
+  { name: '인사발령 이력', link: '/hr-management/appointment/history' },
+]);
 const subIdx = ref(0);
 
 const handleClicked = (idx) => {
@@ -67,7 +66,7 @@ onMounted(() => {
   if (savedSubIdx) {
     subIdx.value = Number(savedSubIdx);
   }
-});
+}
 </script>
 
 <style scoped>

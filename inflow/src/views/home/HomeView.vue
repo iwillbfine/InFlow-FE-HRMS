@@ -11,7 +11,6 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import { useRouter } from 'vue-router';
-import { getEmployeeById } from '@/api/emp_info';
 
 // 상태 변수
 const eid = ref(null);
@@ -19,26 +18,23 @@ const employeeName = ref(''); // 사원 이름 상태
 
 const router = useRouter();
 
-// 사원 정보를 가져오는 함수
-const fetchEmployeeDetails = async () => {
-  try {
-    const employeeData = await getEmployeeById(eid.value);
-    localStorage.setItem("employeeName", employeeData.name);
-    employeeName.value = employeeData.name; // API 응답에서 이름을 가져옴
-    console.log('사원 정보:', employeeData);
-  } catch (error) {
-    console.error('사원 정보 조회 실패:', error);
-  }
-};
-
-// 컴포넌트가 마운트될 때 사원 정보를 가져옴
+// 컴포넌트가 마운트될 때 로컬 저장소에서 사원 정보를 가져옴
 onMounted(() => {
+  // 사원 ID 확인
   eid.value = localStorage.getItem('employeeId');
-  if (eid.value == null) {
+  if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+  } else {
+    // 사원 이름 설정
+    const name = localStorage.getItem('employeeName');
+    if (name) {
+      employeeName.value = name; // 사원 이름 상태에 로컬 저장소 값 설정
+    } else {
+      console.warn('사원 이름을 찾을 수 없습니다.');
+      employeeName.value = '알 수 없음'; // 이름이 없을 경우 기본값 설정
+    }
   }
-  fetchEmployeeDetails();
 });
 </script>
 

@@ -14,7 +14,10 @@ export const saveData = async (data, name) => {
   try {
     let response;
     if (name !== null) {
-      response = await apiClient.post(`/employees/${name}`, data);
+      if (name === 'appointments')
+        response = await apiClient.post(`/appointments`, data);
+      else
+        response = await apiClient.post(`/employees/${name}`, data);
     } else {
       response = await apiClient.post(`/employees`, data);
     }
@@ -48,6 +51,36 @@ export const getEmpId = async (empCodes) => {
 export const getQualifications = async () => {
   try {
     const response = await apiClient.get(`/employees/qualifications`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getLanguageTests = async () => {
+  try {
+    const response = await apiClient.get(`/employees/language-tests`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getLangCode = async () => {
+  try {
+    const response = await apiClient.get(`/employees/language-tests/languages`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getRelationships = async () => {
+  try {
+    const response = await apiClient.get(`/employees/family-members/relationships`);
     return response.data.content;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);

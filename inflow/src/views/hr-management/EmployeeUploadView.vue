@@ -22,8 +22,8 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 
 const menuList = ref([
   { name: '사원 정보 조회', link: '/hr-management/employee/info' },
@@ -42,8 +42,8 @@ const subMenuList = ref([
   { name: '학력', link: '/hr-management/employee/upload/educations' },
   { name: '자격증', link: '/hr-management/employee/upload/qualifications' },
   { name: '어학', link: '/hr-management/employee/upload/languagetests' },
-  { name: '포상 및 징계', link: '/hr-management/employee/upload/disciplinerewards' },
   { name: '가구원', link: '/hr-management/employee/upload/familymembers' },
+  { name: '포상 및 징계', link: '/hr-management/employee/upload/disciplinerewards' },
 ]);
 
 const subIdx = ref(0);
@@ -74,7 +74,7 @@ onMounted(() => {
   if (savedSubIdx) {
     subIdx.value = Number(savedSubIdx);
   }
-});
+}
 </script>
 
 <style scoped>

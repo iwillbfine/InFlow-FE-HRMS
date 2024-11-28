@@ -44,6 +44,8 @@ import ReturnRequestsView from '@/views/hr-basic/attendance/ReturnRequestsView.v
 import BusinessTripRequestsView from '@/views/hr-basic/attendance/BusinessTripRequestsView.vue';
 import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsView.vue';
 import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
+import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
+import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
 
 const routes = [
   {
@@ -244,6 +246,17 @@ const routes = [
     path: '/hr-management/appointment',
     name: 'hr-management-appointment',
     component: AppointmentManagementView,
+    children: [
+      {
+        path: 'upload',
+        name: 'upload',
+        component: AppointmentsUploadView,
+      },{
+        path: 'history',
+        name: 'history',
+        component: AppointmentsHistoryView,
+      },
+    ],
   },
   {
     path: '/hr-management/evaluation',
