@@ -447,9 +447,9 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transient; /* 투명도 살짝 증가 */
+  background: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
   color: #ffffff;
-  border-radius: 8px; /* 이미지 모서리와 일치시키기 위해 둥글게 */
+  border-radius: 4px; /* 이미지 모서리와 일치시키기 위해 둥글게 */
   font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase; /* 텍스트를 대문자로 */
