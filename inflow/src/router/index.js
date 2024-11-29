@@ -232,11 +232,13 @@ const routes = [
         path: '',
         name: 'hr-basic-salary-default',
         component: SalaryDetailView,
+        props: true
       },
       {
-        path: 'salary-detail',
+        path: 'salary-detail/:eid',
         name: 'hr-basic-salary-detail',
         component: SalaryDetailView,
+        props: true
       },
       {
         path: 'salary-list',

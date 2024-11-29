@@ -1,11 +1,12 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <SelectYearMonthComponent class="select-month-year-section" @month-selected="goSelectMonth"></SelectYearMonthComponent>
+    <SelectYearMonthComponent class="select-month-year-section" @month-selected="goSelectedMonth"></SelectYearMonthComponent>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
       <TableItem class="salary-table" gtc="repeat(4, 1fr)" br="0.5rem">
         <TableRow>
+          <TableCell th fs="1.8rem" gc="span 4">{{ formattedPaidAt }}</TableCell>
           <TableCell th fs="1.8rem" gc="span 2">지급 내역</TableCell>
           <TableCell th fs="1.8rem" gc="span 2">공제 내역</TableCell>
         </TableRow>
@@ -58,15 +59,64 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getPaymentByEmployeeIdAndYearAndMonth } from '@/api/payroll';
 
-// 상태 변수
-const eid = ref(null);
-const curMonth = ref('');
-const curYear = ref('');
-const payments = ref({})
-const isEmpty = ref(false);
+const props = defineProps({
+  eid: {
+    type: String,
+    default: () => localStorage.getItem('employeeId') || ''
+  },
+  year: {
+    type: [String, Number],
+    default: () => new Date().getFullYear()
+  },
+  month: {
+    type: [String, Number],
+    default: () => String(new Date().getMonth() + 1).padStart(2, '0')
+  }
+});
 
+const payments = ref({});
 const router = useRouter();
 const route = useRoute();
+
+const fetchPaymentsData = async () => {
+
+  if (!props.eid) {
+    console.error('사원 id가 필요합니다.');
+    return;
+  }
+
+  try {
+    const response = await getPaymentByEmployeeIdAndYearAndMonth(
+      props.eid,
+      props.query.year,
+      props.query.month
+    );
+    payments.value = response.content;
+  } catch(error) {
+    console.error('Failed to fetch Data:', error);
+  }
+};
+
+const goSelectedMonth = (selectedDate) => {
+  const [year, month] = selectedDate.split('-');
+  router.push({
+    name: 'hr-basic-salary-detail',
+    params: { eid: props.eid },
+    query: { year: year, month: month }
+  });
+};
+
+watch(
+  () => route.query,
+  () => {
+    fetchPaymentsData();
+  },
+  { deep: true, immediate: true }
+);
+
+onMounted(fetchPaymentsData);
+
+const formattedPaidAt = computed(() => formatDate(payments.value.paid_at));
 
 // 총액 계산
 const formattedMonthlySalary = computed(() => formatCurrency(payments.value.monthly_salary || 0));
@@ -80,77 +130,28 @@ const formattedLongTermCare = computed(() => formatCurrency(payments.value.long_
 const formattedEmpInsurance = computed(() => formatCurrency(payments.value.employment_insurance_deductible || 0));
 const formattedIncomeTax = computed(() => formatCurrency(payments.value.income_tax_deductible - payments.value.child_deductible || 0));
 const formattedLocalTax = computed(() => formatCurrency(payments.value.local_income_tax_deductible || 0));
-const formattedTotalPayment = computed(() => formatCurrency(payments.value.monthly_salary + payments.value.non_taxable_amount || 0));
+
+const formattedTotalPayment = computed(() =>
+  formatCurrency(
+    (payments.value.monthly_salary || 0) +
+    (payments.value.non_taxable_amount || 0) +
+    (payments.value.overtime_allowance || 0) +
+    (payments.value.annual_vacation_allowance || 0) +
+    (payments.value.bonus || 0)
+  )
+);
+
 const formattedTotalDeduction = computed(() => formatCurrency(payments.value.total_deductible || 0));
 const formattedActualPayment = computed(() => formatCurrency(payments.value.actual_salary || 0));
 
-const fetchPaymentDate = async(eid, year, month) => {
-  try {
-    const response = await getPaymentByEmployeeIdAndYearAndMonth(eid, year, month);
-    if (response.success) {
-      payments.value = response.content;
-      isEmpty.value = !response.content || Object.keys(response.content).length === 0;
-    } else {
-      payments.value = {};
-      isEmpty.value = true;
-    }
-  } catch (error) {
-    console.error('api 호출 오류: ', error);
-    payments.value = {};
-    isEmpty.value = true;
-  }
-};
-
-const goSelectMonth = (selectedMonth) => {
-  if (!selectedMonth) {
-    console.error('선택한 날짜가 유효하지 않습니다.', selectedMonth);
-    return;
-  }
-
-  // 파싱
-  const [year, month] = selectedMonth.split('-');
-
-  if (!year || !month) {
-    console.error('유효하지 않은 연, 월입니다.', { year, month });
-    return;
-  }
-
-  console.log('파싱된 연월: ', { year, month });
-
-  router.push({
-    path: '/hr-basic/salary/salary-detail',
-    query: { year, month }
-  });
-};
-
-const getCurYear = () => new Date().getFullYear();
-const getCurMonth = () => new Date().getMonth() + 1;
-
-watch(
-  () => route.query,
-  (newQuery) => {
-    const year = parseInt(newQuery.year, 10) || getCurYear();
-    const month = parseInt(newQuery.month, 10) || getCurMonth();
-
-    curYear.value = year;
-    curMonth.value = month;
-
-    if (eid.value) {
-      fetchPaymentDate(eid.value, year, month);
-    }
-  },
-  { immediate: true }
-);
-
-onMounted(() => {
-  eid.value = localStorage.getItem('employeeId');
-  if (!eid.value) {
-    alert('로그인이 필요합니다.');
-    router.push('/login');
-  }
-})
-
+// 통화 포맷팅 함수
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
+const formatDate = (value) => {
+  if (!value) return '지급일: -';
+  const [date] = value.split('T');
+  const [year, month, day] = date.split('-');
+  return `지급일: ${year}년 ${month}월 ${day}일`;
+}
 
 </script>
 

@@ -36,7 +36,7 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '급여 명세서', link: '/hr-basic/salary/salary-detail' },
+  { name: '급여 명세서', link: `/hr-basic/salary/salary-detail/${localStorage.getItem('employeeId')}` },
   { name: '전체 급여 지급내역', link: '/hr-basic/salary/salary-list' },
   { name: '예상 퇴직금 조회', link: '/hr-basic/salary/severance-pay' }
 ]);
@@ -46,6 +46,24 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
+
+  if (idx === 0) {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const employeeId = localStorage.getItem('employeeId');
+
+    router.push({
+      name: 'hr-basic-salary-detail',
+      params: { eid: employeeId },
+      query: {
+        year: year,
+        month: month
+      }
+    });
+  } else {
+    router.push(subMenuList[idx].link);
+  }
 }
 
 onMounted(() => {
