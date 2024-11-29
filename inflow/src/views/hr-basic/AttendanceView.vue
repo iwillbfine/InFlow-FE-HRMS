@@ -5,7 +5,7 @@
     <CommonMenu :cur="1" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
-      <router-view @modal-status-changed="handlePreventScrollListener"></router-view>
+      <router-view></router-view>
     </SectionItem>
   </MainItem>
 </template>
@@ -52,32 +52,6 @@ const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
 }
-
-const preventScroll = (e) => {
-  const modal = document.querySelector(".modal-background");
-
-  // 모달이 존재하고, 이벤트의 타겟이 모달 내부에 있으면 스크롤 허용
-  if (modal && modal.contains(e.target)) {
-    return; // 모달 내부의 스크롤은 차단하지 않음
-  }
-
-  // 모달 외부에서는 스크롤 차단
-  e.preventDefault();
-};
-
-const handlePreventScrollListener = (isModalOpen) => {
-  if (isModalOpen) {
-    // 스크롤 차단
-    window.addEventListener("wheel", preventScroll, { passive: false }); // 마우스 휠
-    window.addEventListener("touchmove", preventScroll, { passive: false }); // 모바일 터치
-    document.body.style.overflow = "hidden"; // 추가적으로 body 스크롤 차단
-  } else {
-    // 스크롤 활성화
-    window.removeEventListener("wheel", preventScroll);
-    window.removeEventListener("touchmove", preventScroll);
-    document.body.style.overflow = ""; // body 스크롤 다시 활성화
-  }
-};
 
 // 컴포넌트가 마운트될 때 사원 정보를 가져옴
 onMounted(() => {

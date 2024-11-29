@@ -58,7 +58,7 @@
     </FlexItem>
     <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
   </FlexItem>
-  <CrudModal class="cancel-request-modal" v-if="isModalOpen" @close="toggleCancelRequestModal">
+  <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal">
     <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
         <TableRow>
           <TableCell th fs="1.6rem">신청 ID</TableCell>
@@ -118,8 +118,6 @@ const pageInfo = ref({});
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 
-const emit = defineEmits(['modal-status-changed']);
-
 const router = useRouter();
 const route = useRoute();
 
@@ -169,7 +167,6 @@ const parseRequestStatus = (status) => {
 
 const toggleCancelRequestModal = () => {
   isModalOpen.value = !isModalOpen.value;
-  emit('modal-status-changed', isModalOpen.value);
 }
 
 const handleChangePage = (page) => {
@@ -251,11 +248,5 @@ onMounted(() => {
 
 .pagination {
   min-height: 8rem;
-}
-
-.cancel-request-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
 }
 </style>
