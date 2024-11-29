@@ -230,18 +230,15 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'hr-basic-salary-default',
-        component: SalaryDetailView,
-        props: true
+        redirect: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}`,
       },
       {
-        path: 'salary-detail/:eid',
+        path: 'detail/:employeeId',
         name: 'hr-basic-salary-detail',
         component: SalaryDetailView,
-        props: true
       },
       {
-        path: 'salary-list',
+        path: 'list',
         name: 'hr-basic-salary-list',
         component: SalaryListView,
       },

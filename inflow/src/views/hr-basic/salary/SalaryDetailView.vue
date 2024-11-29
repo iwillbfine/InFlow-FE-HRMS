@@ -59,63 +59,54 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getPaymentByEmployeeIdAndYearAndMonth } from '@/api/payroll';
 
-const props = defineProps({
-  eid: {
-    type: String,
-    default: () => localStorage.getItem('employeeId') || ''
-  },
-  year: {
-    type: [String, Number],
-    default: () => new Date().getFullYear()
-  },
-  month: {
-    type: [String, Number],
-    default: () => String(new Date().getMonth() + 1).padStart(2, '0')
-  }
-});
-
-const payments = ref({});
 const router = useRouter();
 const route = useRoute();
 
-const fetchPaymentsData = async () => {
+const employeeId = ref(null);
+const year = ref(null);
+const month = ref(null);
+const payments = ref({});
 
-  if (!props.eid) {
-    console.error('사원 id가 필요합니다.');
+const fetchPaymentsData = async () => {
+  if (!employeeId.value || !year.value || !month.value) {
+    console.error('사원 id, 연, 월 정보가 필요합니다.');
     return;
   }
 
   try {
     const response = await getPaymentByEmployeeIdAndYearAndMonth(
-      props.eid,
-      props.query.year,
-      props.query.month
+      employeeId.value,
+      year.value,
+      month.value
     );
-    payments.value = response.content;
+    payments.value = response.content || {};
   } catch(error) {
     console.error('Failed to fetch Data:', error);
   }
 };
 
 const goSelectedMonth = (selectedDate) => {
-  const [year, month] = selectedDate.split('-');
+  const [selectedYear, selectedMonth] = selectedDate.split('-');
+  year.value = selectedYear;
+  month.value = selectedMonth;
+
   router.push({
     name: 'hr-basic-salary-detail',
-    params: { eid: props.eid },
-    query: { year: year, month: month }
+    params: { employeeId: employeeId.value },
+    query: { year: year.value, month: month.value },
   });
 };
 
 watch(
   () => route.query,
   () => {
+    year.value = route.query.year || new Date().getFullYear();
+    month.value = route.query.month || new Date().getMonth() + 1;
+    employeeId.value = route.params.employeeId;
     fetchPaymentsData();
   },
-  { deep: true, immediate: true }
+  { immediate: true }
 );
-
-onMounted(fetchPaymentsData);
-
 const formattedPaidAt = computed(() => formatDate(payments.value.paid_at));
 
 // 총액 계산
@@ -153,6 +144,12 @@ const formatDate = (value) => {
   return `지급일: ${year}년 ${month}월 ${day}일`;
 }
 
+onMounted(() => {
+  employeeId.value = route.params.employeeId;
+  year.value = route.query.year || new Date().getFullYear();
+  month.value = route.query.month || new Date().getMonth() + 1;
+  fetchPaymentsData();
+})
 </script>
 
 <style scoped>

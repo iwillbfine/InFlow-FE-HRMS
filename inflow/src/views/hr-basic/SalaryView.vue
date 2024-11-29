@@ -21,7 +21,7 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 
 // 상태 변수
-const eid = ref(null);
+const employeeId = ref(null);
 const employeeName = ref('');
 
 const router = useRouter();
@@ -36,8 +36,8 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '급여 명세서', link: `/hr-basic/salary/salary-detail/${localStorage.getItem('employeeId')}` },
-  { name: '전체 급여 지급내역', link: '/hr-basic/salary/salary-list' },
+  { name: '급여 명세서', link: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}` },
+  { name: '전체 급여 지급내역', link: '/hr-basic/salary/list' },
   { name: '예상 퇴직금 조회', link: '/hr-basic/salary/severance-pay' }
 ]);
 
@@ -47,29 +47,12 @@ const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
 
-  if (idx === 0) {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const employeeId = localStorage.getItem('employeeId');
-
-    router.push({
-      name: 'hr-basic-salary-detail',
-      params: { eid: employeeId },
-      query: {
-        year: year,
-        month: month
-      }
-    });
-  } else {
-    router.push(subMenuList[idx].link);
-  }
 }
 
 onMounted(() => {
-  eid.value = localStorage.getItem('employeeId');
+  employeeId.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
-  if (!eid.value) {
+  if (!employeeId.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
   }
