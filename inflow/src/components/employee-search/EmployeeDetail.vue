@@ -1,12 +1,12 @@
 <template>
-    <div class="container">
+    <div v-if="employeeCode && typeof employeeCode === 'object' && Object.keys(employeeCode).length > 0" class="container">
         <div class="profile">
             <div class="profile-image">
                 <img src="@/assets/Inflow_profile_img.png" alt="">
             </div>
             <div class="name-and-position">
-                <span>강호동</span>/
-                <span>팀장</span>
+                <span>{{employeeCode.employee_name}}</span>/
+                <span>{{employeeCode.role_name}}</span>
             </div>
         </div>
         <div class="line"></div>
@@ -15,23 +15,39 @@
                 <tbody>
                 <tr>
                     <td class="label">소속 부서</td>
-                    <td>영업부 / 국내영업팀 / 영업1팀</td>
+                    <td>{{employeeCode.department_path}}</td>
                 </tr>
                 <tr>
                     <td class="label">사내 메일</td>
-                    <td>hodonggi@gmail.com</td>
+                    <td>{{employeeCode.employee_email}}</td>
                 </tr>
                 <tr>
                     <td class="label">휴대 번호</td>
-                    <td>010-5533-1142</td>
+                    <td>{{employeeCode.employee_phone_number}}</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    <div v-else>
+        <span>nothing !! </span>
+    </div>
 </template>
 
+
 <script setup>
+import {defineProps, watchEffect} from 'vue';
+
+defineProps({
+    employeeCode: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
+
+
+
 </script>
 
 <style scoped>

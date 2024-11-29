@@ -2,7 +2,8 @@
     <div class="container">
         <div class="one-content" 
                 v-for="employee in employees"
-                :key="employee.employee_name">
+                :key="employee.employee_number"
+                @click="selectEmployee(employee.employee_number)">  <!-- 사원코드 상위에 전달 -->
             <div class="profile-image">
                 <!-- <img :src="employee.profile_image_url || '@/assets/Inflow_profile_img.png'" alt=""> -->
                 <!-- "@/assets/Inflow_profile_img.png"  -->
@@ -24,9 +25,10 @@
 </template>
 
 <script setup>
-import {defineProps} from 'vue';
+import {defineProps, defineEmits} from 'vue';
 
-// props 선언 - 부모에게 전달할 employees props
+console.log("EmployeeList컴포넌트");
+
 defineProps({
     employees: {
         type: Array,
@@ -34,6 +36,15 @@ defineProps({
     },
 });
 
+
+// select 이벤트
+const emit = defineEmits(['select'])
+// selectEmployee 함수
+const selectEmployee = (employeeCode) => {
+    console.log("클릭됨");
+    console.log("전달된 사원코드:", employeeCode);
+    emit('select', employeeCode)
+}
 
 </script>
 
