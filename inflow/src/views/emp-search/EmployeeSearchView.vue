@@ -17,8 +17,14 @@
           <SearchBar  @search="handleSearch" class="search-bar" ></SearchBar>
           <div class="search-content">
             <DepartmentHeirarchy class="heirarchy"></DepartmentHeirarchy>
-            <EmployeeList class="employee-list" :employees="employees"></EmployeeList>
-            <EmployeeDetail class="employee-detail"></EmployeeDetail>
+            <EmployeeList 
+              class="employee-list" 
+              :employees="employees"
+              @select="handleEmployeeDetail"/>
+              <!-- 사원을 선택하면 상세정보 조회됨-->
+            <EmployeeDetail 
+              class="employee-detail"
+              :employeeCode="selectedEmployee" />
           </div>
 
         </div>
@@ -30,7 +36,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref , watch} from 'vue';
 
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
@@ -44,12 +50,13 @@ import EmployeeDetail from '@/components/employee-search/EmployeeDetail.vue';
 
 import apiClient from '@/api/axios';
 
+
+console.log("부모 컴포넌트")
+// 1. 검색창 사원 목록 조회
 // search-bar 컴포넌트에서 받아온 정보 emloyees에 저장
 const employees = ref([]);
-
 // 검색어 처리 함수
 const handleSearch = async(query) => {
-  console.log('검색어:', query); // 로그: 검색어 확인
   try{
     const respnose = await apiClient.get('/departments/search/members', {
       params:{keyword:query}
@@ -60,6 +67,27 @@ const handleSearch = async(query) => {
 
   }
 };
+
+// 2. 사원 목록 -> 사원 상세정보 조회
+const selectedEmployee = ref({});
+
+// 상세정보 API
+const handleEmployeeDetail = async(employeeCode) => {
+  console.log("handleEmployeeDetail 메소드 실행됨, select 이벤트 발생", employeeCode)
+  try{
+    selectedEmployee.value = null; // 데이터 로드 중일 때 null로 설정
+    const response = await apiClient.get(`/departments/search/members/detail/employee-code/${employeeCode}`);
+    selectedEmployee.value = response.data.content[0]; // 첫 번째 객체만 저장
+    console.log("try 구문 실행", selectedEmployee.value);
+  } catch(error){
+    console.error('사원 상세정보를 불러오지 못했습니다.', error);
+  }
+} 
+
+watch(selectedEmployee, (newValue) => {
+    console.log("부모 컴포넌트에서 selectedEmployee 값:", newValue);
+});
+
 </script>
 
 <style scoped>
