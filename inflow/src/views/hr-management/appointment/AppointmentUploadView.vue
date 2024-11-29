@@ -1,5 +1,7 @@
 <template>
   <div class="emp-container">
+    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
     </div>
@@ -60,9 +62,17 @@
 
 
 <script setup>
+import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
 import { getDoc, saveData, getEmpId, getValidData } from '@/api/emp_attach';
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+});
 
 const headerNames = ref([
   "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)", 
@@ -234,6 +244,10 @@ const postData = async () => {
   height: 100vh;
   width: 100%;
   gap: 0.5rem;
+}
+
+.ca {
+  margin-left: 2rem;
 }
 
 .exlbtns1, .exlbtns2 {

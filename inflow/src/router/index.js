@@ -248,13 +248,9 @@ const routes = [
   {
     path: '/hr-management/employee/upload',
     name: 'hr-management-employee-upload',
+    redirect: '/hr-management/employee/upload/employees',
     component: EmployeeUploadView,
     children: [
-      {
-        path: '',
-        name: 'defaultEmployeeInfo',
-        component: EmployeeInfoUploadView,
-      },
       {
         path: 'employees',
         name: 'EmployeeInfo',
@@ -300,6 +296,7 @@ const routes = [
   {
     path: '/hr-management/appointment',
     name: 'hr-management-appointment',
+    redirect: '/hr-management/appointment/upload',
     component: AppointmentManagementView,
     children: [
       {

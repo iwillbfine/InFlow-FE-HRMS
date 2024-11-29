@@ -5,7 +5,9 @@
     <CommonMenu :cur="3" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
-      <router-view></router-view>
+      <router-view v-slot="{ Component }">
+        <component :is="Component" :title="subMenuList[subIdx].name" />
+      </router-view>
     </SectionItem>
   </MainItem>
 </template>
@@ -17,7 +19,7 @@ import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const menuList = ref([
@@ -38,13 +40,12 @@ const subMenuList = ref([
   { name: '인사발령 등록', link: '/hr-management/appointment/upload' },
   { name: '인사발령 이력', link: '/hr-management/appointment/history' },
 ]);
+
 const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
-  localStorage.setItem('subIdx', subIdx.value);
 }
-
 const eid = ref(null);
 const employeeName = ref('');
 
@@ -56,17 +57,30 @@ onMounted(() => {
     router.push('/login');
   }
 
-  const defaultUrl = '/hr-management/vacation';
-  if (route.fullPath === defaultUrl) {
-    localStorage.removeItem('subIdx');
-    return;
+  if (subIdx.value === null) {
+    const matchedIndex = subMenuList.value.findIndex(
+      (item) => item.link === route.path
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+    } else {
+      subIdx.value = 0;
+    }
   }
+});
 
-  const savedSubIdx = localStorage.getItem('subIdx');
-  if (savedSubIdx) {
-    subIdx.value = Number(savedSubIdx);
-  }
-}); // onMounted 블록을 제대로 닫음
+watch(
+  () => route.path,
+  (newPath) => {
+    const matchedIndex = subMenuList.value.findIndex(
+        (item) => item.link === newPath
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

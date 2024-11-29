@@ -87,3 +87,13 @@ export const getRelationships = async () => {
     throw error;
   }
 };
+
+export const getAppHistoryByMonth = async (year, month) => {
+  try {
+    const response = await apiClient.get(`/appointments/history?year=${year}&month=${month}&appointment_item_code=all`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
