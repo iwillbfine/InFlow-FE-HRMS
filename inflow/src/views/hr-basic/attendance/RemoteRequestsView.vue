@@ -58,7 +58,7 @@
     </FlexItem>
     <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
   </FlexItem>
-  <CrudModal class="cancel-request-modal" v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+  <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
 </template>
 
 <script setup>
@@ -214,12 +214,6 @@ onMounted(() => {
 
 .pagination {
   min-height: 8rem;
-}
-
-.cancel-request-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 </style>
 

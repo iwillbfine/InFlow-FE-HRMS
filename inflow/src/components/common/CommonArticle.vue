@@ -65,8 +65,4 @@ const props = defineProps({
 .common-article {
   align-items: center;
 }
-
-.article-content {
-  overflow: auto;
-}
 </style>
