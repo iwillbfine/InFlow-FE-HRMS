@@ -238,7 +238,7 @@ const routes = [
         component: SalaryDetailView,
       },
       {
-        path: 'list',
+        path: 'list/:employeeId',
         name: 'hr-basic-salary-list',
         component: SalaryListView,
       },
