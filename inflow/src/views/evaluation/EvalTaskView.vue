@@ -11,7 +11,6 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, onMounted } from 'vue';
 
 const menuList = ref([
