@@ -30,7 +30,7 @@
         </div>
     </div>
     <div v-else>
-        <span>nothing !! </span>
+        <span> 사원 상세정보가 없습니다. </span>
     </div>
 </template>
 
