@@ -1,6 +1,6 @@
 <template>
-  <HeaderItem class="common-header" fld="row" h="10rem" w="100%" fw="700">
-    <SectionItem class="welcome-section" h="6rem" fs="3.4rem">
+  <HeaderItem class="common-header" fld="row" h="10rem" w="calc(100% - 12rem)" fw="700" bgc="#fff">
+    <SectionItem class="welcome-section" h="6rem" fs="2.8rem">
       <span>{{ props.userName }} 님, 안녕하세요!</span>
     </SectionItem>
     <NavItem class="top-nav" h="4rem">
@@ -32,17 +32,22 @@ const props = defineProps({
 const isResetPwdModalOpen = ref(false);
 
 const changeModalStatus = () => {
+  console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
 }
 </script>
 
 <style scoped>
 .common-header {
+  position: fixed;
+  top: 0;
+  right: 0;
   justify-content: space-between;
   align-items: center;
-  padding-left: 6rem;
-  padding-right: 6rem;
-  padding-top: 4rem;
+  padding-left: 3rem;
+  padding-right: 3em;
+  padding-top: 2rem;
+  z-index: 3;
 }
 
 .top-nav {

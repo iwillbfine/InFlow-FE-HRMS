@@ -43,10 +43,27 @@ import LeaveRequestsView from '@/views/hr-basic/attendance/LeaveRequestsView.vue
 import ReturnRequestsView from '@/views/hr-basic/attendance/ReturnRequestsView.vue';
 import BusinessTripRequestsView from '@/views/hr-basic/attendance/BusinessTripRequestsView.vue';
 import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsView.vue';
+import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
 import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
 import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
 
+// 인사기본- 사원
+import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
+import DisciplineRewardInfoView from '@/views/hr-basic/employee/DisciplineRewardInfoView.vue';
+import EducationInfoView from '@/views/hr-basic/employee/EducationInfoView.vue';
+import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView.vue';
+import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView.vue';
+import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
+
+
 const routes = [
+  {
+    path: '/changuk/profile',
+    name: '인적사항',
+    component: ProfileView,
+  },
+
   {
     path: '/',
     name: 'home',
@@ -72,11 +89,50 @@ const routes = [
     name: 'hr-basic',
     component: MyInfoView,
   },
+  // 인사기본- 사원
   {
     path: '/hr-basic/my-info',
     name: 'hr-basic-my-info',
     component: MyInfoView,
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-my-info-default',
+        component: CareerInfoView,
+      },
+      {
+        path: 'careers',
+        name: 'career',
+        component: CareerInfoView,
+      },
+      {
+        path: 'disciplinerewards',
+        name: 'discipline-reward',
+        component: DisciplineRewardInfoView,
+      },
+      {
+        path: 'educations',
+        name: 'education',
+        component: EducationInfoView,
+      },
+      {
+        path: 'familymembers',
+        name: 'family-member',
+        component: FamilyMemberInfoView,
+      },
+      {
+        path: 'languagetests',
+        name: 'language-test',
+        component: LanguageTestInfoView,
+      },
+      {
+        path: 'qualifications',
+        name: 'qualification',
+        component: QualificationInfoView,
+      },
+    ],
   },
+
   {
     path: '/hr-basic/attendance',
     name: 'hr-basic-attendance',
@@ -195,6 +251,11 @@ const routes = [
     component: EmployeeUploadView,
     children: [
       {
+        path: '',
+        name: 'defaultEmployeeInfo',
+        component: EmployeeInfoUploadView,
+      },
+      {
         path: 'employees',
         name: 'EmployeeInfo',
         component: EmployeeInfoUploadView,
@@ -283,6 +344,11 @@ const routes = [
         component: VacationPolicyView,
       },
     ]
+  },
+  {
+    path: '/hr-management/salary',
+    name: 'hr-management-salary',
+    component: SalaryManagementView,
   },
   {
     path: '/evaluation',

@@ -1,5 +1,5 @@
 <template>
-  <NavItem class="sub-menu-nav" h="4.2rem" w="100%">
+  <NavItem class="sub-menu-nav" h="4.2rem" w="100%" bgc="#fff">
     <UlItem
       class="menu-list"
       h="100%"
@@ -63,10 +63,6 @@ const inactiveStyle = {
 </script>
 
 <style scoped>
-.sub-menu-nav {
-  margin-bottom: 3rem;
-}
-
 .menu-item {
   position: relative;
   justify-content: center;
