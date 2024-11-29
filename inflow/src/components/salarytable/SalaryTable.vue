@@ -128,9 +128,14 @@ const formatCurrency = (value) => `${value.toLocaleString()} 원`;
   text-align: right;
 }
 
-.body.title{
+.body.title {
   justify-content: center;
   align-items: center;
+}
+.body.amount {
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 1rem;
 }
 
 .footer {
