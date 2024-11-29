@@ -30,7 +30,7 @@
           <TableCell class="mid" fs="1.6rem">
             <span v-if="item.cancel_status=='Y'">취소 완료</span>
             <ButtonItem
-              v-else-if="item.cancel_status=='N' && item.request_status=='ACCEPT'"
+              v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
               h="3rem"
               w="6.4rem"
               br="0.4rem"
@@ -41,7 +41,7 @@
             >
               취소 요청
             </ButtonItem>
-            <!-- <span v-else>취소 불가</span> -->
+            <span v-else>-</span>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -87,7 +87,7 @@ const isModalOpen = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-const fetchCommuteDate = async (eid, page, date) => {
+const fetchRemoteRequestData = async (eid, page, date) => {
   const response = await getRemoteRequestsByEmployeeId(eid, page, date);
   if (response.success) {
     remoteRequestList.value = response.content.elements;
@@ -166,7 +166,7 @@ watch(
     eid.value = localStorage.getItem('employeeId');
     curPage.value = newQuery.page || 1;
     curMonth.value = newQuery.date || getCurMonth();
-    fetchCommuteDate(eid.value, curPage.value, curMonth.value)
+    fetchRemoteRequestData(eid.value, curPage.value, curMonth.value)
   },
   { immediate: true }
 )

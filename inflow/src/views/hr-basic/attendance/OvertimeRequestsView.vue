@@ -15,22 +15,22 @@
       <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
         <TableRow>
           <TableCell th fs="1.6rem">신청 ID</TableCell>
-          <TableCell th fs="1.6rem">초과근무 날짜</TableCell>
+          <TableCell th fs="1.6rem">초과근무 시간</TableCell>
           <TableCell th fs="1.6rem">초과근무 사유</TableCell>
           <TableCell th fs="1.6rem">신청일</TableCell>
           <TableCell th fs="1.6rem">상태</TableCell>
           <TableCell th fs="1.6rem">취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in overtimeRequestList" :key="index">
           <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">
             <span v-if="item.cancel_status=='Y'">취소 완료</span>
             <ButtonItem
-              v-else-if="item.cancel_status=='N' && item.request_status=='ACCEPT'"
+              v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
               h="3rem"
               w="6.4rem"
               br="0.4rem"
@@ -41,7 +41,7 @@
             >
               취소 요청
             </ButtonItem>
-            <!-- <span v-else>취소 불가</span> -->
+            <span v-else>-</span>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -68,7 +68,7 @@
           <TableCell th fs="1.6rem">상태</TableCell>
           <TableCell th fs="1.6rem">취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in overtimeRequestList" :key="index">
           <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
@@ -88,7 +88,7 @@
             >
               취소 요청
             </ButtonItem>
-            <!-- <span v-else>취소 불가</span> -->
+            <span v-else>-</span>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -108,12 +108,12 @@ import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import CrudModal from '@/components/modals/CrudModal.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getRemoteRequestsByEmployeeId } from '@/api/attendance';
+import { getOvertimeRequestsByEmployeeId } from '@/api/attendance';
 
 const eid = ref(null);
 const curPage = ref(1);
 const curMonth = ref('');
-const remoteRequestList = ref([]);
+const overtimeRequestList = ref([]);
 const pageInfo = ref({});
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
@@ -121,14 +121,14 @@ const isModalOpen = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-const fetchCommuteDate = async (eid, page, date) => {
-  const response = await getRemoteRequestsByEmployeeId(eid, page, date);
+const fetchOvertimeRequestData = async (eid, page, date) => {
+  const response = await getOvertimeRequestsByEmployeeId(eid, page, date);
   if (response.success) {
-    remoteRequestList.value = response.content.elements;
+    overtimeRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = remoteRequestList.value.isEmpty ? true : false;
+    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
   } else {
-    remoteRequestList.value = [];
+    overtimeRequestList.value = [];
     pageInfo.value = {};
     isEmpty.value = true;
   }
@@ -157,6 +157,17 @@ const parseDate = (dateStr) => {
   return formattedDate;
 }
 
+// 시간만 파싱
+const parseTime = (dateStr) => {
+  const date = new Date(dateStr);
+
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const formattedDate = `${hour}시 ${minute}분`;
+  return formattedDate;
+}
+
 const parseRequestStatus = (status) => {
   switch (status) {
     case 'ACCEPT': return '승인됨';
@@ -171,26 +182,26 @@ const toggleCancelRequestModal = () => {
 
 const handleChangePage = (page) => {
   curPage.value = page;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: curMonth.value } });
+  router.push({ path: '/hr-basic/attendance/overtime/requests', query: { page: curPage.value, date: curMonth.value } });
 }
 
 const goPrevMonth = (prevMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: prevMonth } });
+  router.push({ path: '/hr-basic/attendance/overtime/requests', query: { page: curPage.value, date: prevMonth } });
 }
 
 const goNextMonth = (nextMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: nextMonth } });
+  router.push({ path: '/hr-basic/attendance/overtime/requests', query: { page: curPage.value, date: nextMonth } });
 }
 
 const goSelectedMonth = (selectedMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: selectedMonth } })
+  router.push({ path: '/hr-basic/attendance/overtime/requests', query: { page: curPage.value, date: selectedMonth } })
 }
 
 const goBack = () => {
-  router.push('/hr-basic/attendance/remote');
+  router.push('/hr-basic/attendance/overtime');
 }
 
 // URL 쿼리 변화를 감지하는 watcher
@@ -200,7 +211,7 @@ watch(
     eid.value = localStorage.getItem('employeeId');
     curPage.value = newQuery.page || 1;
     curMonth.value = newQuery.date || getCurMonth();
-    fetchCommuteDate(eid.value, curPage.value, curMonth.value)
+    fetchOvertimeRequestData(eid.value, curPage.value, curMonth.value)
   },
   { immediate: true }
 )
