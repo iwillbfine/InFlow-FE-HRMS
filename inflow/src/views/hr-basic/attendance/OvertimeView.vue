@@ -4,7 +4,7 @@
       <TableRow>
         <TableCell class="h-7" th fs="1.6rem">초과근무 시간</TableCell>
         <TableCell class="h-7 pl-1" fs="1.6rem">
-          <DateDropDown @valid-date-selected="updateSelectedDate"></DateDropDown>
+          <ThirtyMinuteDropDown @valid-time-selected="updateSelectedDate"></ThirtyMinuteDropDown>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -65,8 +65,7 @@
   import FlexItem from '@/components/semantic/FlexItem.vue';
   import ButtonItem from '@/components/semantic/ButtonItem.vue';
   import MoreListButton from '@/components/buttons/MoreListButton.vue';
-  import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
-
+  import ThirtyMinuteDropDown from '@/components/dropdowns/ThirtyMinuteDropDown.vue';
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api/attendance';

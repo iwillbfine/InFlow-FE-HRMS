@@ -1,60 +1,60 @@
 <template>
-<CommonArticle label="재택근무 신청" minh="29rem" w="90%">
-  <TableItem gtc="2fr 4fr">
-    <TableRow>
-      <TableCell class="h-7" th fs="1.6rem">재택근무 날짜</TableCell>
-      <TableCell class="h-7 pl-1" fs="1.6rem">
-        <DateDropDown @valid-date-selected="updateSelectedDate"></DateDropDown>
-      </TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell class="h-7" th fs="1.6rem">재택근무 사유</TableCell>
-      <TableCell class="h-7 pl-1" fs="1.6rem">
-        <input
-          v-model="requestReason"
-          class="reason-input"
-          type="text"
-          name="reason-input"
-          placeholder="사유를 작성해주세요."
-          maxlength="20"
-        />
-      </TableCell>
-    </TableRow>
-  </TableItem>
-  <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
-</CommonArticle>
-<hr/>
-<CommonArticle class="pos-rel" label="재택근무 신청 내역" minh="38rem" w="90%">
-  <MoreListButton @click="goMoreList"></MoreListButton>
-  <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
-    <TableRow>
-      <TableCell th fs="1.6rem">신청 ID</TableCell>
-      <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
-      <TableCell th fs="1.6rem">재택근무 사유</TableCell>
-      <TableCell th fs="1.6rem">신청일</TableCell>
-      <TableCell th fs="1.6rem">상태</TableCell>
-      <TableCell th fs="1.6rem">취소 요청</TableCell>
-    </TableRow>
-    <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
-      <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
-      <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
-      <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-      <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
-      <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-      <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
-    </TableRow>
-  </TableItem>
-  <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      신청 내역이 존재하지 않습니다.
-    </FlexItem>
-</CommonArticle>
+  <CommonArticle label="재택근무 신청" minh="29rem" w="90%">
+    <TableItem gtc="2fr 4fr">
+      <TableRow>
+        <TableCell class="h-7" th fs="1.6rem">재택근무 날짜</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem">
+          <DateDropDown @valid-date-selected="updateSelectedDate"></DateDropDown>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell class="h-7" th fs="1.6rem">재택근무 사유</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem">
+          <input
+            v-model="requestReason"
+            class="reason-input"
+            type="text"
+            name="reason-input"
+            placeholder="사유를 작성해주세요."
+            maxlength="20"
+          />
+        </TableCell>
+      </TableRow>
+    </TableItem>
+    <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
+  </CommonArticle>
+  <hr/>
+  <CommonArticle class="pos-rel" label="재택근무 신청 내역" minh="38rem" w="90%">
+    <MoreListButton @click="goMoreList"></MoreListButton>
+    <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
+      <TableRow>
+        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
+        <TableCell th fs="1.6rem">재택근무 사유</TableCell>
+        <TableCell th fs="1.6rem">신청일</TableCell>
+        <TableCell th fs="1.6rem">상태</TableCell>
+        <TableCell th fs="1.6rem">취소 요청</TableCell>
+      </TableRow>
+      <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
+        <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
+      </TableRow>
+    </TableItem>
+    <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        신청 내역이 존재하지 않습니다.
+      </FlexItem>
+  </CommonArticle>
 </template>
 
 <script setup>
@@ -194,6 +194,7 @@ hr {
   width: 90%;
   margin-bottom: 3rem;
   border: 1px solid #DADADA;
+  z-index: -1;
 }
 
 .h-7 {

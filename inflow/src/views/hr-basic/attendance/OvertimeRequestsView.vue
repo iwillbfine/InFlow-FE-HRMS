@@ -3,7 +3,7 @@
     <ArrowLeftButton h="3.6rem" w="3.6rem" br="50%" @click="goBack"></ArrowLeftButton>
     <ChangeMonthComponent
       :cur-month="curMonth"
-      description="재택근무 신청 내역"
+      description="초과근무 신청 내역"
       @go-prev-month="goPrevMonth"
       @go-next-month="goNextMonth"
     >
