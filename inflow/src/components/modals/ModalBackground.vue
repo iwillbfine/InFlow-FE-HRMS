@@ -10,7 +10,9 @@ import FlexItem from '../semantic/FlexItem.vue';
 
 <style scoped>
 .modal-background {
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   justify-content: center;
   align-items: center;
   z-index: 9999;
