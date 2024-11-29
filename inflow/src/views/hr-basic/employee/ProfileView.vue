@@ -3,28 +3,54 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-        <button @click="editProfile" class="btn">수정</button>
+   <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
       <div class="profile-header">
-        <img :src="employee.photoUrl" alt="Profile Photo" class="profile-photo" />
+         <!-- 프로필 사진 -->
+         <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
+            <img
+            :src="previewPhoto || employee.photoUrl"
+            alt="Profile Photo"
+            class="profile-photo"
+            @click="handlePhotoUpload"
+            />
+            <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">사진 수정</div>
+            <input
+              ref="photoInput"
+              type="file"
+              accept="image/*"
+              style="display: none"
+              @change="onPhotoChange"
+            />
+        </div>
         <table class="employee-info-table">
           <tr>
             <th>사원번호</th>
             <td>{{ employee.employeeCode }}</td>
             <th>성별</th>
             <td>{{ employee.gender }}</td>
-            <th>생년월일</th>
-            <td>{{ employee.birthDate }}</td>
+            <th>휴대폰번호</th>
+            <td>
+              <template v-if="editMode">
+                <input type="text" v-model="form.phone" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.phone }}</template>
+            </td>
           </tr>
           <tr>
             <th>사원명</th>
             <td>{{ employee.employeeName }}</td>
             <th>직무</th>
             <td>{{ employee.jobRole }}</td>
-            <th>퇴사일</th>
-            <td>{{ employee.retirementDate || 'N/A' }}</td>
+            <th>이메일</th>
+            <td>
+              <template v-if="editMode">
+                <input type="email" v-model="form.email" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.email }}</template>
+            </td>
           </tr>
           <tr>
             <th>입사일</th>
@@ -32,21 +58,32 @@
             <th>직위</th>
             <td>{{ employee.position }}</td>
             <th>주소</th>
-            <td>{{ employee.address }}</td>
+            <td>
+              <template v-if="editMode">
+                <input type="text" v-model="form.address" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.address }}</template>
+            </td>
           </tr>
           <tr>
             <th>입사유형</th>
             <td>{{ employee.hireType }}</td>
             <th>직책</th>
             <td>{{ employee.jobTitle }}</td>
-            <th></th>
+            <th>상세주소</th>
+            <td>
+              <template v-if="editMode">
+                <input type="text" v-model="form.detailAddress" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.detailAddress }}</template>
+            </td>
             <td></td>
           </tr>
           <tr>
-            <th>휴대폰번호</th>
-            <td>{{ employee.phone }}</td>
-            <th>이메일</th>
-            <td>{{ employee.email }}</td>
+            <th>생년월일</th>
+            <td>{{ employee.birthDate }}</td>
+            <th>퇴사일</th>
+            <td>{{ employee.retirementDate || 'N/A' }}</td>
             <th></th>
             <td></td>
           </tr>
@@ -58,8 +95,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue'; // 모달 컴포넌트 추가
-import { getEmployeeDetailById } from '@/api/emp_info'; // API 함수 가져오기
+import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
+const editMode = ref(false);
+const hoverPhoto = ref(false);
+const previewPhoto = ref(null);
+// photoInput을 참조할 ref 선언
+const photoInput = ref(null);
 
 const employee = ref({
   employeeCode: '',
@@ -75,8 +116,18 @@ const employee = ref({
   phone: '',
   email: '',
   address: '',
+  detailAddress:'',
   photoUrl: '',
 });
+
+const form = ref({
+  phone: '',
+  email: '',
+  address: '',
+  detailAddress: '',
+  photoFile: null,
+});
+
 
 const fetchEmployeeData = async () => {
   try {
@@ -90,6 +141,9 @@ const fetchEmployeeData = async () => {
 
     // API 호출
     const data = await getEmployeeDetailById(employeeId, token);
+
+    // 여기서 오타를 수정
+    console.log("data", data);
 
     // API 응답 데이터를 employee 객체에 할당
     employee.value = {
@@ -105,8 +159,9 @@ const fetchEmployeeData = async () => {
       position: data.position_name,
       phone: data.phone_number,
       email: data.email,
-      address: `${data.street_address} ${data.detailed_address}`,
-      photoUrl: data.profile_img_url || 'https://via.placeholder.com/150',
+      address: data.street_address,
+      detailAddress: data.detailed_address,
+      photoUrl: data.profile_img_url || 'https://inflow-emp-profile.s3.ap-northeast-2.amazonaws.com/emp_basic_profile.png',
     };
   } catch (error) {
     console.error('fetchEmployeeData 에러:', error);
@@ -115,13 +170,77 @@ const fetchEmployeeData = async () => {
 
 // 페이지 렌더링 시 데이터 로드
 onMounted(() => {
+  console.log('photoInput 초기화 상태:', photoInput.value);
   fetchEmployeeData();
 });
 
-
-const editProfile = () => {
-  alert('프로필 수정 페이지로 이동하는 로직 구현');
+const toggleEditMode = () => {
+  if (editMode.value) {
+    submitForm(); // 수정 요청 시 API 호출
+  } else {
+    // 기존 데이터를 form에 복사
+    form.value = {
+      phone: employee.value.phone,
+      email: employee.value.email,
+      address: employee.value.address,
+      detailAddress: employee.value.detailAddress,
+      photoFile: null,
+    };
+  }
+  editMode.value = !editMode.value; // editMode 상태 변경
 };
+
+const handlePhotoUpload = () => {
+  console.log('handlePhotoUpload 호출됨');
+  if (photoInput.value) {
+    photoInput.value.click(); // ref로 접근
+    console.log('photoInput 클릭 실행됨');
+  } else {
+    console.error('photoInput 참조가 유효하지 않습니다.');
+  }
+};
+
+const onPhotoChange = (event) => {
+  console.log('파일 탐색기 열림');
+  const file = event.target.files[0];
+  if (file) {
+    form.value.photoFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewPhoto.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    console.warn('파일이 선택되지 않았습니다.');
+  }
+};
+
+// 사원 인적사항 수정
+const submitForm = async () => {
+  try {
+    const employeeId = localStorage.getItem('employeeId');
+    const token = localStorage.getItem('accessToken');
+
+    // 모든 데이터를 formData에 추가 (기존 데이터 포함)
+    const formData = new FormData();
+    formData.append('phone', form.value.phone || employee.value.phone);
+    formData.append('email', form.value.email || employee.value.email);
+    formData.append('address', form.value.address || employee.value.address);
+    formData.append('detail_address', form.value.detailAddress || employee.value.detailAdress);
+    if (form.value.photoFile) {
+      formData.append('profile_img', form.value.photoFile|| employee.value.photoUrl);
+    }
+
+    // API 호출
+    const updatedEmployee = await updateEmployeeInfo(employeeId, formData, token);
+    employee.value = updatedEmployee; // 업데이트된 데이터로 갱신
+    alert('수정이 완료되었습니다.');
+  } catch (error) {
+    console.error('수정 요청 에러:', error);
+    alert('수정 요청 중 문제가 발생했습니다.');
+  }
+};
+
 </script>
 
 <style scoped>
@@ -162,13 +281,47 @@ const editProfile = () => {
   gap: 1rem;
   align-items: flex-start;
 }
+.profile-photo-container {
+  position: relative;
+}
 
 .profile-photo {
   width: 12rem; /* 사진 크기 조정 */
   height: 15rem;
   object-fit: cover;
 }
+.photo-edit-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6); /* 투명도 살짝 증가 */
+  color: #ffffff;
+  border-radius: 8px; /* 이미지 모서리와 일치시키기 위해 둥글게 */
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase; /* 텍스트를 대문자로 */
+  transition: opacity 0.3s ease-in-out; /* 부드러운 나타남 효과 */
+  opacity: 0; /* 기본적으로 숨김 */
+  pointer-events: none; /* 클릭 이벤트 차단 */
+}
 
+.profile-photo-container:hover .photo-edit-overlay {
+  opacity: 1; /* 호버 시 보이도록 설정 */
+}
+
+.editable-input {
+  width: 90%;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
 .employee-info-table {
   border-collapse: collapse; /* 셀 간 간격을 제거 */

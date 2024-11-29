@@ -174,3 +174,20 @@ export const getContract = async (contractId, token) => {
     throw error;
   }
 };
+
+// 설명. 11. 사원 정보 수정하기
+export const updateEmployeeInfo = async (employeeId, formData, token) => {
+  try {
+    const response = await apiClient.patch(`/employees/employee-id/${employeeId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Bearer 토큰 헤더 추가
+        'Content-Type': 'multipart/form-data', // form-data 처리
+      },
+    });
+    return response.data.content; // 수정된 사원 정보 반환
+  } catch (error) {
+    console.error('updateEmployeeInfo 에러:', error.response || error);
+    throw error; // 에러를 호출한 쪽으로 전달
+  }
+};
+
