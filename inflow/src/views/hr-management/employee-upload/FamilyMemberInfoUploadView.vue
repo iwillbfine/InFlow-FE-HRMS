@@ -1,5 +1,7 @@
 <template>
   <div class="emp-container">
+    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
     </div>
@@ -60,9 +62,17 @@
 
 
 <script setup>
+import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
 import { getDoc, saveData, getEmpId, getRelationships } from '@/api/emp_attach';
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+});
 
 const headerNames = ref(["사번", "가구원관계", "성명", "생년월일"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
@@ -229,6 +239,10 @@ const postData = async () => {
   gap: 0.5rem;
 }
 
+.ca {
+  margin-left: 2rem;
+}
+
 .exlbtns1, .exlbtns2 {
   display: flex;
   flex-direction: row;
@@ -308,7 +322,7 @@ button p {
   flex-direction: column;
   width: 100%;
   align-items: stretch;
-  padding: 0 0 10px 0;
+  padding: 0 0 2rem 0;
 }
 
 .inboard div {
@@ -398,7 +412,7 @@ input[type="checkbox"]:checked + label::after {
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 10rem;
+  margin-top: 5rem;
 }
 
 .invalid-row {
