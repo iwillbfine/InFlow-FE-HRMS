@@ -608,7 +608,15 @@ onMounted(() => {
   cursor: pointer;
   font-size: 0.9rem;
 }
+.invalid-row {
+  background: #FFD8D8 !important;
+  border: 2px solid red !important;
+}
 
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 .btn-close:hover {
   background: #00509e;
 }
