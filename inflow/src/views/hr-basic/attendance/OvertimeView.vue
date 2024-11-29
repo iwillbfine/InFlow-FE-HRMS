@@ -1,6 +1,6 @@
 <template>
-  <CommonArticle label="초과근무 신청" minh="29rem" w="90%">
-    <TableItem gtc="2fr 4fr">
+  <CommonArticle label="초과근무 신청" w="90%">
+    <TableItem gtc="2fr 6fr">
       <TableRow>
         <TableCell class="h-7" th fs="1.6rem" topl>초과근무 시간</TableCell>
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
@@ -294,6 +294,7 @@ onMounted(() => {
 
 hr {
   width: 90%;
+  margin-top: 3rem;
   margin-bottom: 3rem;
   border: 1px solid #DADADA;
 }
