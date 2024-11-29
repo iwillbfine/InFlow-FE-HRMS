@@ -33,13 +33,46 @@ export const getRemoteRequestPreviewsByEmployeeId = async (eid) => {
   }
 };
 
-// 3. 사원 ID, 페이지번호, 날짜(yyyy-MM)로 재택근무 전체 신청 내역 페이지별 조회
+// 4. 사원 ID, 페이지번호, 날짜(yyyy-MM)로 재택근무 전체 신청 내역 페이지별 조회
 export const getRemoteRequestsByEmployeeId = async (eid, page, date) => {
   try {
     const response = await apiClient.get(`/attendance-requests/commute/remote?eid=${eid}&page=${page}&date=${date}`);
     return response.data;
   } catch (error) {
     console.error('getRemoteRequestsByEmployeeId 에러:', error);
+    throw error;
+  }
+};
+
+// 5. 초과근무 신청
+export const createOvertimeRequest = async (formData) => {
+  try {
+    const response = await apiClient.post(`/attendance-requests/commute/overtime`, formData);
+    return response.data;
+  } catch (error) {
+    console.error('createOvertimeRequest 에러:', error);
+    throw error;
+  }
+};
+
+// 6. 사원 ID로 초과근무 최근 신청 내역 조회
+export const getOvertimeRequestPreviewsByEmployeeId = async (eid) => {
+  try {
+    const response = await apiClient.get(`/attendance-requests/commute/overtime/preview?eid=${eid}`);
+    return response.data;
+  } catch (error) {
+    console.error('getOvertimeRequestPreviewsByEmployeeId 에러:', error);
+    throw error;
+  }
+};
+
+// 7. 사원 ID, 페이지번호, 날짜(yyyy-MM)로 초과근무 전체 신청 내역 페이지별 조회
+export const getOvertimeRequestsByEmployeeId = async (eid, page, date) => {
+  try {
+    const response = await apiClient.get(`/attendance-requests/commute/overtime?eid=${eid}&page=${page}&date=${date}`);
+    return response.data;
+  } catch (error) {
+    console.error('getOvertimeRequestsByEmployeeId 에러:', error);
     throw error;
   }
 };

@@ -41,19 +41,35 @@
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ item.cancel_status }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">
+          <span v-if="item.cancel_status=='Y'">취소 완료</span>
+            <ButtonItem
+              v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
+              h="3rem"
+              w="6.4rem"
+              br="0.4rem"
+              fs="1.2rem"
+              bgc="#003566"
+              c="#fff"
+              @click="toggleCancelRequestModal"
+            >
+              취소 요청
+            </ButtonItem>
+            <span v-else>-</span>
+        </TableCell>
       </TableRow>
     </TableItem>
     <FlexItem
-        v-if="isEmpty"
-        class="empty-message"
-        fld="row"
-        h="6rem"
-        w="100%"
-        fs="1.6rem"
-      >
-        신청 내역이 존재하지 않습니다.
-      </FlexItem>
+      v-if="isEmpty"
+      class="empty-message"
+      fld="row"
+      h="6rem"
+      w="100%"
+      fs="1.6rem"
+    >
+      신청 내역이 존재하지 않습니다.
+    </FlexItem>
+    <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
   </CommonArticle>
 </template>
 
@@ -66,7 +82,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
-
+import CrudModal from '@/components/modals/CrudModal.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api/attendance';
@@ -74,6 +90,7 @@ import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api
 const eid = ref(null);
 const remoteRequestList = ref([]);
 const isEmpty = ref(true);
+const isModalOpen = ref(false);
 
 const selectedDate = ref('');
 const requestReason = ref('');
@@ -91,6 +108,11 @@ const fetchRemoteRequestData = async (eid) => {
     isEmpty.value = true;
   }
 }
+
+const toggleCancelRequestModal = () => {
+  isModalOpen.value = !isModalOpen.value;
+}
+
 // 일까지 파싱
 const parseDate = (dateStr) => {
   const date = new Date(dateStr);
@@ -194,7 +216,6 @@ hr {
   width: 90%;
   margin-bottom: 3rem;
   border: 1px solid #DADADA;
-  z-index: -1;
 }
 
 .h-7 {

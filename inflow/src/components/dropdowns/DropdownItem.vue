@@ -108,7 +108,7 @@ const selectItem = (item) => {
   max-height: 15rem;
   overflow-y: auto;
   box-shadow: 0 0.2rem 0.4rem 0.2rem rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 1;
 }
 
 .dropdown-item {

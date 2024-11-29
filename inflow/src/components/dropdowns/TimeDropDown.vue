@@ -2,7 +2,7 @@
   <FlexItem class="time-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
     <DropdownItem
       v-model:selected-item="selectedHour"
-      placeholder="----"
+      placeholder="--"
       :list="hourList"
       w="6rem"
     ></DropdownItem>
@@ -42,15 +42,15 @@ watch([selectedHour, selectedMinute], () => {
 
 const hourList = ref(
   Array.from({ length: 24 }, (_, i) => ({
-    id: i,
+    id: `${i}`,
     name: `${i}`,
   }))
 );
 
 const minuteList = ref(
-  Array.from({ length: 60 }, (_, i) => ({
-    id: i,
-    name: `${i}`,
+  Array.from({ length: 2 }, (_, i) => ({
+    id: `${i*30}`,
+    name: `${i*30}`,
   }))
 );
 </script>
