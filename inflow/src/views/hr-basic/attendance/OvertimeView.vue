@@ -6,7 +6,7 @@
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem">
           <strong>금일</strong>
           <ThirtyMinuteDropDown @valid-time-selected="updateSelectedStartTime"></ThirtyMinuteDropDown>
-          <span>~</span>
+          <strong>~</strong>
           <strong v-if="isTommorow">익일</strong>
           <ThirtyMinuteDropDown @valid-time-selected="updateSelectedEndTime"></ThirtyMinuteDropDown>
         </TableCell>
@@ -39,7 +39,7 @@
         <TableCell th fs="1.6rem">상태</TableCell>
         <TableCell th fs="1.6rem">취소 요청</TableCell>
       </TableRow>
-      <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
+      <TableRow v-if="!isEmpty" v-for="(item, index) in overtimeRequestList" :key="index">
         <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
@@ -92,7 +92,7 @@ import { useRouter } from 'vue-router';
 import { getOvertimeRequestPreviewsByEmployeeId, createOvertimeRequest } from '@/api/attendance';
 
 const eid = ref(null);
-const remoteRequestList = ref([]);
+const overtimeRequestList = ref([]);
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 const isTommorow = ref(false);
@@ -109,10 +109,10 @@ const fetchOvertimeRequestData = async (eid) => {
   const response = await getOvertimeRequestPreviewsByEmployeeId(eid);
 
   if (response.success) {
-    remoteRequestList.value = response.content;
-    isEmpty.value = remoteRequestList.value.isEmpty ? true : false;
+    overtimeRequestList.value = response.content;
+    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
   } else {
-    remoteRequestList.value = [];
+    overtimeRequestList.value = [];
     isEmpty.value = true;
   }
 }
@@ -266,10 +266,10 @@ const handleOnclick = async () => {
 
   if (response.success) {
     alert("초과근무 신청이 성공적으로 전송되었습니다.");
-    window.location.reload();
   } else {
     alert("초과근무 신청 실패! 다시 시도해주세요.");
   }
+  window.location.reload();
 };
 
 const goMoreList = () => {
