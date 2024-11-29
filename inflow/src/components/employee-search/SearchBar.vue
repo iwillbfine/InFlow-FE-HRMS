@@ -1,7 +1,13 @@
 <template>
     <div class="container">
-        <input class="search-input" placeholder="사원명/부서명/전화번호를 입력해주세요"></input>
-        <button class="search-button">
+        <input 
+            v-model="searchQuery"
+            class="search-input" 
+            placeholder="사원명/부서명/전화번호를 입력해주세요">
+        </input>
+        <button 
+            class="search-button"
+            @click="onSearch">
             검색
         </button>
 
@@ -10,6 +16,19 @@
 </template>
 
 <script setup>
+    import { ref } from 'vue';
+
+    // 입력받은 검색어 저장
+    const searchQuery = ref('');
+
+    // 부모에게 검색어 전달 (사용자 정의 이벤트)
+    const emit = defineEmits(['search']);
+
+    const onSearch = () => {
+        emit('search', searchQuery.value);
+        // 이벤트 발생 (emit 호출 -> search 이름의 이벤트 발생 -> 이벤트와 함꼐 searchQuery.value 전달됨)
+
+    }
 
 </script>
 

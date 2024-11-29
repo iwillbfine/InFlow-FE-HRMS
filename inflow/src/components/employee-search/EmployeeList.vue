@@ -1,17 +1,21 @@
 <template>
     <div class="container">
-        <div class="one-content">
+        <div class="one-content" 
+                v-for="employee in employees"
+                :key="employee.employee_name">
             <div class="profile-image">
+                <!-- <img :src="employee.profile_image_url || '@/assets/Inflow_profile_img.png'" alt=""> -->
+                <!-- "@/assets/Inflow_profile_img.png"  -->
                 <img src="@/assets/Inflow_profile_img.png" alt="">
             </div>
             <div class="profile-detail">
                 <div class="name-and-position">
-                    <span>강호동</span>
+                    <span>{{employee.employee_name}}</span>
                     <span>/</span>
-                    <span>팀장</span>
+                    <span>{{employee.role_name }}</span>
                 </div>
                 <div class="department">
-                    영업부/국내영업팀/영업1팀
+                    {{employee.department_path}}
                 </div>
             </div>
 
@@ -20,6 +24,16 @@
 </template>
 
 <script setup>
+import {defineProps} from 'vue';
+
+// props 선언 - 부모에게 전달할 employees props
+defineProps({
+    employees: {
+        type: Array,
+        required: true,
+    },
+});
+
 
 </script>
 
@@ -31,7 +45,10 @@
     height: 100%;
     display: flex;           
     flex-direction: column;  
-    align-items: center;     
+    align-items: center;  
+    overflow-y: auto; /* 수직 스크롤 활성화 */
+    overflow-x: hidden; /* 수평 스크롤 비활성화 */
+    max-height: 100%; /* 부모 요소의 최대 높이에 맞추기 */
 }
 .one-content{
     width: 98%;
