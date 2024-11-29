@@ -1,5 +1,5 @@
 <template>
-  <FlexItem class="thirty-minute-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
+  <FlexItem class="time-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
     <DropdownItem
       v-model:selected-item="selectedHour"
       placeholder="----"
@@ -48,15 +48,15 @@ const hourList = ref(
 );
 
 const minuteList = ref(
-  Array.from({ length: 2 }, (_, i) => ({
-    id: (i*30)%60,
-    name: `${(i*30)%60}`,
+  Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    name: `${i}`,
   }))
 );
 </script>
 
 <style scoped>
-.thirty-minute-dropdown {
+.time-dropdown {
   justify-content: center;
   align-items: center;
   gap: 1rem;
