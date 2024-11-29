@@ -96,6 +96,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
+
 const editMode = ref(false);
 const hoverPhoto = ref(false);
 const previewPhoto = ref(null);
@@ -116,7 +117,7 @@ const employee = ref({
   phone: '',
   email: '',
   address: '',
-  detailAddress:'',
+  detailAddress: '',
   photoUrl: '',
 });
 
@@ -128,7 +129,7 @@ const form = ref({
   photoFile: null,
 });
 
-
+// API에서 데이터 가져오는 함수
 const fetchEmployeeData = async () => {
   try {
     // 로컬 스토리지에서 employeeId와 accessToken 가져오기
@@ -141,11 +142,9 @@ const fetchEmployeeData = async () => {
 
     // API 호출
     const data = await getEmployeeDetailById(employeeId, token);
+    console.log("API에서 가져온 데이터:", data);
 
-    // 여기서 오타를 수정
-    console.log("data", data);
-
-    // API 응답 데이터를 employee 객체에 할당
+    // API 응답 데이터를 employee 객체에 반영
     employee.value = {
       employeeCode: data.employee_number,
       gender: data.gender === 'FEMALE' ? '여' : '남',
@@ -161,22 +160,53 @@ const fetchEmployeeData = async () => {
       email: data.email,
       address: data.street_address,
       detailAddress: data.detailed_address,
-      photoUrl: data.profile_img_url || 'https://inflow-emp-profile.s3.ap-northeast-2.amazonaws.com/emp_basic_profile.png',
+      photoUrl: data.profile_img_url,
     };
   } catch (error) {
     console.error('fetchEmployeeData 에러:', error);
   }
 };
 
-// 페이지 렌더링 시 데이터 로드
+// 수정 후 데이터를 업데이트하고 다시 조회하는 함수
+const updateEmployeeAndRefresh = async () => {
+  try {
+    const employeeId = localStorage.getItem('employeeId');
+    const token = localStorage.getItem('accessToken');
+
+    // form 데이터를 FormData에 추가
+    const formData = new FormData();
+    formData.append('phone_number', form.value.phone || employee.value.phone);
+    formData.append('email', form.value.email || employee.value.email);
+    formData.append('street_address', form.value.address || employee.value.address);
+    formData.append('detailed_address', form.value.detailAddress || employee.value.detailAddress);
+    if (form.value.photoFile) {
+      formData.append('profile_img', form.value.photoFile);
+    }
+
+    // 수정 요청
+    await updateEmployeeInfo(employeeId, formData, token);
+    console.log("수정 요청 완료. 데이터 다시 조회 중...");
+
+    // 수정 후 데이터 다시 조회
+    await fetchEmployeeData();
+
+    alert('수정이 완료되었습니다.');
+  } catch (error) {
+    console.error('수정 요청 중 에러 발생:', error);
+    alert('수정 요청 중 문제가 발생했습니다.');
+  }
+};
+
+// 컴포넌트가 마운트될 때 데이터 조회
 onMounted(() => {
   console.log('photoInput 초기화 상태:', photoInput.value);
   fetchEmployeeData();
 });
 
+// 수정 모드 토글
 const toggleEditMode = () => {
   if (editMode.value) {
-    submitForm(); // 수정 요청 시 API 호출
+    updateEmployeeAndRefresh(); // 수정 후 다시 데이터 조회
   } else {
     // 기존 데이터를 form에 복사
     form.value = {
@@ -187,13 +217,14 @@ const toggleEditMode = () => {
       photoFile: null,
     };
   }
-  editMode.value = !editMode.value; // editMode 상태 변경
+  editMode.value = !editMode.value; // 수정 모드 상태 변경
 };
 
+// 파일 선택 핸들링
 const handlePhotoUpload = () => {
   console.log('handlePhotoUpload 호출됨');
   if (photoInput.value) {
-    photoInput.value.click(); // ref로 접근
+    photoInput.value.click();
     console.log('photoInput 클릭 실행됨');
   } else {
     console.error('photoInput 참조가 유효하지 않습니다.');
@@ -215,33 +246,8 @@ const onPhotoChange = (event) => {
   }
 };
 
-// 사원 인적사항 수정
-const submitForm = async () => {
-  try {
-    const employeeId = localStorage.getItem('employeeId');
-    const token = localStorage.getItem('accessToken');
-
-    // 모든 데이터를 formData에 추가 (기존 데이터 포함)
-    const formData = new FormData();
-    formData.append('phone', form.value.phone || employee.value.phone);
-    formData.append('email', form.value.email || employee.value.email);
-    formData.append('address', form.value.address || employee.value.address);
-    formData.append('detail_address', form.value.detailAddress || employee.value.detailAdress);
-    if (form.value.photoFile) {
-      formData.append('profile_img', form.value.photoFile|| employee.value.photoUrl);
-    }
-
-    // API 호출
-    const updatedEmployee = await updateEmployeeInfo(employeeId, formData, token);
-    employee.value = updatedEmployee; // 업데이트된 데이터로 갱신
-    alert('수정이 완료되었습니다.');
-  } catch (error) {
-    console.error('수정 요청 에러:', error);
-    alert('수정 요청 중 문제가 발생했습니다.');
-  }
-};
-
 </script>
+
 
 <style scoped>
 .profile-wrapper {
@@ -315,16 +321,18 @@ const submitForm = async () => {
 }
 
 .editable-input {
-  width: 90%;
-  padding: 0.5rem;
-  font-size: 1.2rem;
+  height: 2.2rem; /* 텍스트 높이와 동일하게 설정 */
+  line-height: 2.4rem; /* 가운데 정렬 */
+  font-size: 1.2rem; /* 기존 텍스트와 크기 일치 */
   background: #f5f5f5;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 2px;
+  padding: 0; /* 입력창 내부 여백 제거 */
 }
 
 .employee-info-table {
   border-collapse: collapse; /* 셀 간 간격을 제거 */
+  table-layout: fixed; /* 고정된 레이아웃 */
   width: 100%;
 }
 
