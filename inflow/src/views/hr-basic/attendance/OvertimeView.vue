@@ -2,8 +2,8 @@
   <CommonArticle label="초과근무 신청" minh="29rem" w="90%">
     <TableItem gtc="2fr 4fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">초과근무 시간</TableCell>
-        <TableCell class="h-7 pl-1 g-2" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" topl>초과근무 시간</TableCell>
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <strong>금일</strong>
           <ThirtyMinuteDropDown @valid-time-selected="updateSelectedStartTime"></ThirtyMinuteDropDown>
           <strong>~</strong>
@@ -12,8 +12,8 @@
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">초과근무 사유</TableCell>
-        <TableCell class="h-7 pl-1" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" botl>초과근무 사유</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem" botr>
           <input
             v-model="requestReason"
             class="reason-input"
@@ -32,20 +32,20 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">초과근무 시간</TableCell>
         <TableCell th fs="1.6rem">초과근무 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow v-if="!isEmpty" v-for="(item, index) in overtimeRequestList" :key="index">
-        <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
+        <TableCell class="mid" fs="1.6rem" :botl="index === overtimeRequestList.length - 1">{{ item.attendance_request_id }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell class="mid" fs="1.6rem" :botr="index === overtimeRequestList.length - 1">
           <span v-if="item.cancel_status=='Y'">취소 완료</span>
             <ButtonItem
               v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
