@@ -8,7 +8,7 @@
 <script setup>
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
+import MainItem from '@/components/semantic/MainItem.vue';
 import { ref, onMounted } from 'vue';
 
 const eid = ref(null);

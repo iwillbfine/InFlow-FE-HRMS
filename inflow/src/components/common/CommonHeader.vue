@@ -43,8 +43,8 @@ const changeModalStatus = () => {
   right: 0;
   justify-content: space-between;
   align-items: center;
-  padding-left: 2rem;
-  padding-right: 2em;
+  padding-left: 3rem;
+  padding-right: 3em;
   padding-top: 2rem;
   z-index: 3;
 }
