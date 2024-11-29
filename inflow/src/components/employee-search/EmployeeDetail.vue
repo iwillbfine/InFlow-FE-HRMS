@@ -29,7 +29,7 @@
             </table>
         </div>
     </div>
-    <div v-else>
+    <div v-else class="no-detail">
         <span> 사원 상세정보가 없습니다. </span>
     </div>
 </template>
@@ -120,5 +120,12 @@ defineProps({
 .info-table tr:nth-child(2) .label,
 .info-table tr:nth-child(3) .label {
     border-top: 1.5px solid white; /* 위쪽에 흰색 구분선 */
+}
+
+.no-detail{
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
