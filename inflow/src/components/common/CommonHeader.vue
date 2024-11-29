@@ -32,6 +32,7 @@ const props = defineProps({
 const isResetPwdModalOpen = ref(false);
 
 const changeModalStatus = () => {
+  console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
 }
 </script>
