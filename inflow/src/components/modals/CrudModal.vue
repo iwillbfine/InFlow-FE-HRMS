@@ -88,6 +88,7 @@ onBeforeUnmount(() => {
 .modal-content-container {
   align-items: center;
   gap: 1rem;
+  z-index: 999;
 }
 
 .modal-close {
