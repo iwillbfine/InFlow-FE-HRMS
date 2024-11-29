@@ -28,7 +28,27 @@ import DispatchView from '@/views/hr-basic/attendance/DispatchView.vue';
 import VacationView from '@/views/hr-basic/attendance/VacationView.vue';
 import VacationPaymentView from '@/views/hr-management/vacation/VacationPaymentView.vue';
 import VacationPolicyView from '@/views/hr-management/vacation/VacationPolicyView.vue';
+import CareerInfoUploadView from '@/views/hr-management/employee-upload/CareerInfoUploadView.vue';
+import EducationInfoUploadView from '@/views/hr-management/employee-upload/EducationInfoUploadView.vue';
+import QualificationInfoUploadView from '@/views/hr-management/employee-upload/QualificationInfoUploadView.vue';
+import LanguageTestInfoUploadView from '@/views/hr-management/employee-upload/LanguageTestInfoUploadView.vue';
+import DisciplineRewardInfoUploadView from '@/views/hr-management/employee-upload/DisciplineRewardInfoUploadView.vue';
+import FamilyMemberInfoUploadView from '@/views/hr-management/employee-upload/FamilyMemberInfoUploadView.vue';
 import MyDepartmentView from '@/views/hr-basic/MyDepartmentView.vue';
+import EmployeeInfoUploadView from '@/views/hr-management/employee-upload/EmployeeInfoUploadView.vue';
+import RemoteRequestsView from '@/views/hr-basic/attendance/RemoteRequestsView.vue';
+import OvertimeRequestsView from '@/views/hr-basic/attendance/OvertimeRequestsView.vue';
+import VacationRequestsView from '@/views/hr-basic/attendance/VacationRequestsView.vue';
+import LeaveRequestsView from '@/views/hr-basic/attendance/LeaveRequestsView.vue';
+import ReturnRequestsView from '@/views/hr-basic/attendance/ReturnRequestsView.vue';
+import BusinessTripRequestsView from '@/views/hr-basic/attendance/BusinessTripRequestsView.vue';
+import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsView.vue';
+import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
+import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
+import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
+import SalaryDetailView from '@/views/hr-basic/salary/SalaryDetailView.vue';
+import SalaryListView from '@/views/hr-basic/salary/SalaryListView.vue';
+import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 const routes = [
   {
@@ -82,9 +102,19 @@ const routes = [
         component: RemoteView,
       },
       {
+        path: 'remote/requests',
+        name: 'hr-basic-attendance-remote-requests',
+        component: RemoteRequestsView,
+      },
+      {
         path: 'overtime',
         name: 'hr-basic-attendance-overtime',
         component: OvertimeView,
+      },
+      {
+        path: 'overtime/requests',
+        name: 'hr-basic-attendance-overtime-requests',
+        component: OvertimeRequestsView,
       },
       {
         path: 'vacation',
@@ -92,9 +122,19 @@ const routes = [
         component: VacationView,
       },
       {
+        path: 'vacation/requests',
+        name: 'hr-basic-attendance-vacation-requests',
+        component: VacationRequestsView,
+      },
+      {
         path: 'leave',
         name: 'hr-basic-attendance-leave',
         component: LeaveView,
+      },
+      {
+        path: 'leave/requests',
+        name: 'hr-basic-attendance-leave-requests',
+        component: LeaveRequestsView,
       },
       {
         path: 'return',
@@ -102,14 +142,29 @@ const routes = [
         component: ReturnView,
       },
       {
+        path: 'return/requests',
+        name: 'hr-basic-attendance-return-requests',
+        component: ReturnRequestsView,
+      },
+      {
         path: 'business-trip',
         name: 'hr-basic-attendance-business-trip',
         component: BusinessTripView,
       },
       {
+        path: 'business-trip/requests',
+        name: 'hr-basic-attendance-business-trip-requests',
+        component: BusinessTripRequestsView,
+      },
+      {
         path: 'dispatch',
         name: 'hr-basic-attendance-dispatch',
         component: DispatchView,
+      },
+      {
+        path: 'dispatch/requests',
+        name: 'hr-basic-attendance-dispatch-requests',
+        component: DispatchRequestsView,
       },
     ]
   },
@@ -117,6 +172,28 @@ const routes = [
     path: '/hr-basic/salary',
     name: 'hr-basic-salary',
     component: SalaryView,
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-salary-default',
+        component: SalaryDetailView,
+      },
+      {
+        path: 'salary-detail',
+        name: 'hr-basic-salary-detail',
+        component: SalaryDetailView,
+      },
+      {
+        path: 'salary-list',
+        name: 'hr-basic-salary-list',
+        component: SalaryListView,
+      },
+      {
+        path: 'severance-pay',
+        name: 'hr-basic-severance-pay',
+        component: SeverancePayView,
+      }
+    ]
   },
   {
     path: '/hr-basic/contract',
@@ -142,6 +219,48 @@ const routes = [
     path: '/hr-management/employee/upload',
     name: 'hr-management-employee-upload',
     component: EmployeeUploadView,
+    children: [
+      {
+        path: '',
+        name: 'defaultEmployeeInfo',
+        component: EmployeeInfoUploadView,
+      },
+      {
+        path: 'employees',
+        name: 'EmployeeInfo',
+        component: EmployeeInfoUploadView,
+      },
+      {
+        path: 'careers',
+        name: 'CareerInfo',
+        component: CareerInfoUploadView,
+      },
+      {
+        path: 'educations',
+        name: 'EducationInfo',
+        component: EducationInfoUploadView,
+      },
+      {
+        path: 'qualifications',
+        name: 'QualificationInfo',
+        component: QualificationInfoUploadView,
+      },
+      {
+        path: 'languagetests',
+        name: 'LanguageTestInfo',
+        component: LanguageTestInfoUploadView,
+      },
+      {
+        path: 'disciplinerewards',
+        name: 'DisciplineRewardInfo',
+        component: DisciplineRewardInfoUploadView,
+      },
+      {
+        path: 'familymembers',
+        name: 'FamilyMemberInfo',
+        component: FamilyMemberInfoUploadView,
+      },
+    ],
   },
   {
     path: '/hr-management/department',
@@ -152,6 +271,17 @@ const routes = [
     path: '/hr-management/appointment',
     name: 'hr-management-appointment',
     component: AppointmentManagementView,
+    children: [
+      {
+        path: 'upload',
+        name: 'upload',
+        component: AppointmentsUploadView,
+      },{
+        path: 'history',
+        name: 'history',
+        component: AppointmentsHistoryView,
+      },
+    ],
   },
   {
     path: '/hr-management/evaluation',
@@ -184,6 +314,11 @@ const routes = [
         component: VacationPolicyView,
       },
     ]
+  },
+  {
+    path: '/hr-management/salary',
+    name: 'hr-management-salary',
+    component: SalaryManagementView,
   },
   {
     path: '/evaluation',

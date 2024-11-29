@@ -11,7 +11,7 @@ import { computed } from 'vue';
 const props = defineProps({
   br: {
     type: String,
-    default: '0rem',
+    default: '0.6rem',
   },
   bgc: {
     type: String,
@@ -39,19 +39,6 @@ const customStyle = computed(() => ({
 .table {
   position: relative;
   grid-gap: 0;
-  border-top: 1px solid #dadada !important;
-  border-left: 1px solid #dadada !important;
-  overflow: hidden; /* 추가: overflow 숨기기 */
-}
-
-/* 테두리 둥글게 보이도록 추가 설정 */
-.table::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: inherit; /* 부모 요소의 border-radius 상속 */
+  border: 0.5px solid #dadada !important;
 }
 </style>
