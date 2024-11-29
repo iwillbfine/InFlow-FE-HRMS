@@ -186,10 +186,10 @@ const handleOnclick = async () => {
 
   if (response.success) {
     alert("재택근무 신청이 성공적으로 전송되었습니다.");
-    window.location.reload();
   } else {
     alert("재택근무 신청 실패! 다시 시도해주세요.");
   }
+  window.location.reload();
 };
 
 const goMoreList = () => {
