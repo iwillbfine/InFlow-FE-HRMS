@@ -36,7 +36,7 @@
 
 
 <script setup>
-import {defineProps, watchEffect} from 'vue';
+import { watchEffect } from 'vue';
 
 defineProps({
     employeeCode: {
