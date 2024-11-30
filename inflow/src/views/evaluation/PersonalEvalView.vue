@@ -1,3 +1,4 @@
+<!-- personalEvalView.vue -->
 <template>
   <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
@@ -27,8 +28,8 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '서브메뉴 1', link: '/evaluation/leader/1' },
-  { name: '서브메뉴 2', link: '/evaluation/leader/2'  },
+  { name: '자기평가 조회', link: '/evaluation/personal/1' },
+  { name: '자기평가 등록 및 수정', link: '/evaluation/personal/2'  },
 ]);
 
 const router = useRouter();

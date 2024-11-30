@@ -6,6 +6,7 @@ import AttendanceView from '@/views/hr-basic/AttendanceView.vue';
 import SalaryView from '@/views/hr-basic/SalaryView.vue';
 import ContractView from '@/views/hr-basic/ContractView.vue';
 import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
+import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
 import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
@@ -46,6 +47,7 @@ import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsVi
 import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
 import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
 import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
+import PersonalEvalCreateView from '@/views/evaluation/PersonalEvalCreateView.vue';
 
 const routes = [
   {
@@ -304,7 +306,19 @@ const routes = [
     path: '/evaluation/personal',
     name: 'personal-evaluation',
     component: PersonalEvalView,
-  },
+    children: [
+      {
+        path: '1', // /evaluation/personal/1
+        name: 'self-evaluation-management',
+        component: PersonalEvalFindView
+      },
+      {
+        path: '2', // /evaluation/personal/2
+        name: 'submenu2',
+        component: PersonalEvalCreateView
+      }
+    ]
+},
   {
     path: '/evaluation/leader',
     name: 'leader-evaluation',
