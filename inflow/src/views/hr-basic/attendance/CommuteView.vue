@@ -11,20 +11,20 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="repeat(5, 1fr)" br="0.5rem">
+      <TableItem class="commute-table" gtc="repeat(5, 1fr)">
         <TableRow>
-          <TableCell th fs="1.6rem">일자</TableCell>
+          <TableCell th fs="1.6rem" topl>일자</TableCell>
           <TableCell th fs="1.6rem">출근 시각</TableCell>
           <TableCell th fs="1.6rem">퇴근 시각</TableCell>
           <TableCell th fs="1.6rem">재택여부</TableCell>
-          <TableCell th fs="1.6rem">초과근무 시간</TableCell>
+          <TableCell th fs="1.6rem" topr>초과근무 시간</TableCell>
         </TableRow>
         <TableRow v-if="!isEmpty" v-for="(item, index) in commuteList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_time) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem" :botl="index === commuteList.length - 1">{{ parseDate(item.start_time) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_time) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ parseTime(item.end_time) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item.remote_status }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.overtime ? Math.trunc(item.overtime / 60) + "시간 " + (item.overtime%60) + "분" : "-" }}</TableCell>
+          <TableCell class="mid" fs="1.6rem" :botr="index === commuteList.length - 1">{{ item.overtime ? Math.trunc(item.overtime / 60) + "시간 " + (item.overtime%60) + "분" : "-" }}</TableCell>
         </TableRow>
       </TableItem>
     </div>
