@@ -68,7 +68,7 @@
           <DropdownItem
             w="12rem"
             :list="paidStatusList"
-            placeholder="유급/무급"
+            placeholder="유/무급"
             @update:selected-item="updateSelectedPaidStatus"
           ></DropdownItem>
         </TableCell>
