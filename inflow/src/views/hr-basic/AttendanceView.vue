@@ -3,7 +3,11 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="1" :list="menuList"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
     </SectionItem>
@@ -32,7 +36,7 @@ const menuList = ref([
   { name: '근태 정보', link: '/hr-basic/attendance' },
   { name: '급여 및 수당', link: '/hr-basic/salary' },
   { name: '계약서 서명', link: '/hr-basic/document' },
-  { name: '내 부서 관리', link: '/hr-basic/my-department'},
+  { name: '내 부서 관리', link: '/hr-basic/my-department' },
 ]);
 
 const subMenuList = ref([
@@ -51,19 +55,19 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 // 컴포넌트가 마운트될 때 사원 정보를 가져옴
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/hr-basic/attendance';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }

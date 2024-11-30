@@ -74,7 +74,20 @@ export const getVacationPoliciesByYear = async (year) => {
   }
 };
 
-// 7. 휴가 종류 조회
+// 7. 연도별 비정기 휴가 정책 조회
+export const getIrregularVacationPoliciesByYear = async (year) => {
+  try {
+    const response = await apiClient.get(
+      `/vacation-policies/irregular?year=${year}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getIrregularVacationPoliciesByYear 에러:', error);
+    throw error;
+  }
+};
+
+// 8. 휴가 종류 조회
 export const getVacationTypes = async () => {
   try {
     const response = await apiClient.get(`/vacation-types`);
@@ -85,7 +98,7 @@ export const getVacationTypes = async () => {
   }
 };
 
-// 8. 휴가 지급
+// 9. 휴가 지급
 export const createVacation = async (formData) => {
   try {
     const response = await apiClient.post(`/vacations`, formData);
@@ -96,7 +109,7 @@ export const createVacation = async (formData) => {
   }
 };
 
-// 9. 사원별 잔여 휴가 조회
+// 10. 사원별 잔여 휴가 조회
 export const getLeftVacationsByEmployeeId = async (eid, page) => {
   try {
     const response = await apiClient.get(
@@ -109,7 +122,7 @@ export const getLeftVacationsByEmployeeId = async (eid, page) => {
   }
 };
 
-// 10. 사원별 사용 휴가 조회
+// 11. 사원별 사용 휴가 조회
 export const getUsedVacationsByEmployeeId = async (eid, page) => {
   try {
     const response = await apiClient.get(
@@ -122,7 +135,7 @@ export const getUsedVacationsByEmployeeId = async (eid, page) => {
   }
 };
 
-// 11. 사원별 잔여 휴가 전체 조회
+// 12. 사원별 잔여 휴가 전체 조회
 export const getLeftAllVacationsByEmployeeId = async (eid) => {
   try {
     const response = await apiClient.get(`/vacations/left-all?eid=${eid}`);
