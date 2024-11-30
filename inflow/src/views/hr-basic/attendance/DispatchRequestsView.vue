@@ -1,6 +1,11 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <ArrowLeftButton h="3.6rem" w="3.6rem" br="50%" @click="goBack"></ArrowLeftButton>
+    <ArrowLeftButton
+      h="3.6rem"
+      w="3.6rem"
+      br="50%"
+      @click="goBack"
+    ></ArrowLeftButton>
     <ChangeMonthComponent
       :cur-month="curMonth"
       description="파견 신청 내역"
@@ -8,7 +13,10 @@
       @go-next-month="goNextMonth"
     >
     </ChangeMonthComponent>
-    <SelectYearMonthComponent class="select-year-month-section" @month-selected="goSelectedMonth"></SelectYearMonthComponent>
+    <SelectYearMonthComponent
+      class="select-year-month-section"
+      @month-selected="goSelectedMonth"
+    ></SelectYearMonthComponent>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -22,28 +30,51 @@
           <TableCell th fs="1.6rem">상태</TableCell>
           <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in dispatchRequestList" :key="index">
-          <TableCell class="mid" fs="1.6rem" :botl="index === dispatchRequestList.length-1">{{ item.attendance_request_id }}</TableCell>
+        <TableRow
+          v-for="(item, index) in dispatchRequestList"
+          v-if="!isEmpty"
+          :key="index"
+        >
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botl="index === dispatchRequestList.length - 1"
+            >{{ item.attendance_request_id }}</TableCell
+          >
           <TableCell class="mid" fs="1.6rem">{{ item.destination }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem" :botr="index === dispatchRequestList.length-1">
-            <span v-if="item.cancel_status=='Y'">취소 완료</span>
-              <ButtonItem
-                v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
-                h="3rem"
-                w="6.4rem"
-                br="0.4rem"
-                fs="1.2rem"
-                bgc="#003566"
-                c="#fff"
-                @click="toggleCancelRequestModal"
-              >
-                취소 요청
-              </ButtonItem>
-              <span v-else>-</span>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            item.request_reason
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseDate(item.created_at)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseRequestStatus(item.request_status)
+          }}</TableCell>
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botr="index === dispatchRequestList.length - 1"
+          >
+            <span v-if="item.cancel_status == 'Y'">취소 완료</span>
+            <ButtonItem
+              v-else-if="
+                item.cancel_status == 'N' && item.request_status == 'WAIT'
+              "
+              h="3rem"
+              w="6.4rem"
+              br="0.4rem"
+              fs="1.2rem"
+              bgc="#003566"
+              c="#fff"
+              @click="toggleCancelRequestModal"
+            >
+              취소 요청
+            </ButtonItem>
+            <span v-else>-</span>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -58,7 +89,10 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
+    <PaginationComponent
+      :data="pageInfo"
+      @change-page="handleChangePage"
+    ></PaginationComponent>
   </FlexItem>
   <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
 </template>
@@ -89,7 +123,7 @@ const isModalOpen = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-const fetchBusinessTripRequestData = async (eid, page, date) => {
+const fetchDispatchRequestData = async (eid, page, date) => {
   const response = await getDispatchRequestsByEmployeeId(eid, page, date);
   if (response.success) {
     dispatchRequestList.value = response.content.elements;
@@ -100,7 +134,7 @@ const fetchBusinessTripRequestData = async (eid, page, date) => {
     pageInfo.value = {};
     isEmpty.value = true;
   }
-}
+};
 
 // 이번 달 가져오기
 const getCurMonth = () => {
@@ -109,9 +143,9 @@ const getCurMonth = () => {
   const year = today.getFullYear(); // 연도 가져오기
   const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 가져오기 (0부터 시작하므로 +1, 두 자리로 맞춤)
 
-  const curMonth = `${year}-${month}`
+  const curMonth = `${year}-${month}`;
   return curMonth;
-}
+};
 
 // 일까지 파싱
 const parseDate = (dateStr) => {
@@ -123,43 +157,58 @@ const parseDate = (dateStr) => {
 
   const formattedDate = `${year}년 ${month}월 ${day}일`;
   return formattedDate;
-}
+};
 
 const parseRequestStatus = (status) => {
   switch (status) {
-    case 'ACCEPT': return '승인됨';
-    case 'REJECT': return '반려됨';
-    default: return '대기중';
+    case 'ACCEPT':
+      return '승인됨';
+    case 'REJECT':
+      return '반려됨';
+    default:
+      return '대기중';
   }
-}
+};
 
 const toggleCancelRequestModal = () => {
   isModalOpen.value = !isModalOpen.value;
-}
+};
 
 const handleChangePage = (page) => {
   curPage.value = page;
-  router.push({ path: '/hr-basic/attendance/dispatch/requests', query: { page: curPage.value, date: curMonth.value } });
-}
+  router.push({
+    path: '/hr-basic/attendance/dispatch/requests',
+    query: { page: curPage.value, date: curMonth.value },
+  });
+};
 
 const goPrevMonth = (prevMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/dispatch/requests', query: { page: curPage.value, date: prevMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/dispatch/requests',
+    query: { page: curPage.value, date: prevMonth },
+  });
+};
 
 const goNextMonth = (nextMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/dispatch/requests', query: { page: curPage.value, date: nextMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/dispatch/requests',
+    query: { page: curPage.value, date: nextMonth },
+  });
+};
 
 const goSelectedMonth = (selectedMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/dispatch/requests', query: { page: curPage.value, date: selectedMonth } })
-}
+  router.push({
+    path: '/hr-basic/attendance/dispatch/requests',
+    query: { page: curPage.value, date: selectedMonth },
+  });
+};
 
 const goBack = () => {
   router.push('/hr-basic/attendance/dispatch');
-}
+};
 
 // URL 쿼리 변화를 감지하는 watcher
 watch(
@@ -168,14 +217,14 @@ watch(
     eid.value = localStorage.getItem('employeeId');
     curPage.value = newQuery.page || 1;
     curMonth.value = newQuery.date || getCurMonth();
-    fetchBusinessTripRequestData(eid.value, curPage.value, curMonth.value)
+    fetchDispatchRequestData(eid.value, curPage.value, curMonth.value);
   },
   { immediate: true }
-)
+);
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-})
+});
 </script>
 
 <style scoped>

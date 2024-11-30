@@ -231,6 +231,7 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'hr-basic-salary-default',
         redirect: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}`,
       },
       {
