@@ -373,7 +373,7 @@ onMounted(() => {
 
 <style scoped>
 hr {
-  width: 90%;
+  width: 95%;
   margin-top: 3rem;
   margin-bottom: 3rem;
   border: 1px solid #dadada;
