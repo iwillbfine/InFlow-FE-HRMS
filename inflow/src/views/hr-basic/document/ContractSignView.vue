@@ -1,5 +1,5 @@
 <template>
-    <div class="cotract-wrapper">
+  <div class="cotract-wrapper">
     <CommonArticle label="계약서 목록" minh="29rem" w="90%">
       <TableItem gtc="repeat(5, 1fr)" br="1rem">
         <TableRow bgc="#aaa">
@@ -10,56 +10,71 @@
           <TableCell th fs="1.6rem">등록 및 조회</TableCell>
         </TableRow>
 
-      <!-- 계약서 데이터 반복 렌더링 -->
-      <TableRow v-for="contract in contracts" :key="contract.contract_id">
-        <TableCell class="mid" fs="1.6rem" >{{ contract.contract_type === 'EMPLOYMENT' ? '근로계약서' : '비밀유지서약서' }}</TableCell>
-        <TableCell class="mid" fs="1.6rem" >{{ formatDateTime(contract.created_at) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem" >{{ contract.consent_status === 'Y' ? '동의함' : '비동의' }}</TableCell>
-        <TableCell class="mid" fs="1.6rem" >{{ contract.contract_status  === 'REGISTERED' ? '등록됨' : '서명전' }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
-          <template v-if="contract.file_url">
-            <button @click="selectContract" class="btn">조회</button>
-          </template>
-          <template v-else>
-            <button @click="registerContract" class="btn">등록</button>
-          </template>
-        </TableCell>
+        <!-- 계약서 데이터 반복 렌더링 -->
+        <TableRow v-for="contract in contracts" :key="contract.contract_id">
+          <TableCell class="mid" fs="1.6rem">{{ contract.contract_type === 'EMPLOYMENT' ? '근로계약서' : '비밀유지서약서' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ formatDateTime(contract.created_at) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ contract.consent_status === 'Y' ? '동의함' : '비동의' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ contract.contract_status === 'REGISTERED' ? '등록됨' : '서명전' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">
+            <template v-if="contract.file_url">
+              <button @click="selectContract(contract.contract_id)" class="btn">조회</button>
+            </template>
+            <template v-else>
+              <button @click="openContractModal(contract)" class="btn">등록</button>
+            </template>
+          </TableCell>
+        </TableRow>
+      </TableItem>
+    </CommonArticle>
 
-      </TableRow>
-    </TableItem>
-  </CommonArticle>
+    <!-- EmployeeContractModal -->
+    <EmployeeContractModal
+      v-if="showModal"
+      :contract-data="selectedContract"
+      @close="showModal = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getEmploymentContract, getSecurityAgreement, getContractList } from '@/api/emp_info'; // API 호출 메서드 임포트
+import { getEmploymentContract, getContractList } from '@/api/emp_info'; // API 호출 메서드 임포트
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
+import EmployeeContractModal from '@/views/hr-basic/document/EmployeeContractModal.vue';
 
 // 상태 변수 정의
 const contracts = ref([]);
+const modalData = ref({});
+const showModal = ref(false);
+const selectedContract = ref(null);
 
 // 로컬 스토리지에서 employeeId와 token 가져오기
 const employeeId = localStorage.getItem('employeeId');
 const token = localStorage.getItem('authToken');
 
+// 계약서 목록 조회 함수
 const fetchContractList = async () => {
   try {
-
     const data = await getContractList(employeeId, token);
+    console.log("계약서 불러옴: ",data);
     contracts.value = data;
   } catch (error) {
     console.error('계약서 목록을 가져오는 데 실패했습니다:', error);
   }
 };
 
+// 조회 버튼 클릭 메서드
+const selectContract = () => {
+  window.alert('조회 버튼 호출됨');
+};
+
 // 날짜 포맷 함수
 const formatDateTime = (datetime) => {
   if (!datetime) return '미등록';
-
   const date = new Date(datetime);
   return date.toLocaleString('ko-KR', {
     year: 'numeric',
@@ -67,25 +82,34 @@ const formatDateTime = (datetime) => {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true, // 12시간제를 사용하여 오전/오후 표시
+    hour12: true,
   }).replace(/년|월|일/g, match => match.trim() + ' ');
 };
 
-
-// 조회 버튼 클릭 메서드
-const selectContract = () => {
-  window.alert('조회 버튼 호출됨');
+// "등록" 버튼 클릭 시 호출되는 함수
+const openContractModal = async (contractId) => {
+  try {
+    // API 호출하여 선택된 계약서 데이터 조회
+    const data = await getEmploymentContract(employeeId, token);
+    console.log("등록 버튼 호출됨: ",data);
+    selectedContract.value = {
+      ...data, // API에서 반환된 계약서 데이터
+      contract_id: contractId, // 선택된 계약서 ID 추가
+    };
+    showModal.value = true; // 모달창 열기
+  } catch (error) {
+    console.error('계약서를 조회하는 데 실패했습니다:', error);
+  }
 };
 
-// 등록 버튼 클릭 메서드
-const registerContract = () => {
-  window.alert('등록 버튼 호출됨');
+// 모달 닫기
+const closeContractModal = () => {
+  showModal.value = false;
 };
 
 // 컴포넌트가 마운트되면 계약서 목록을 가져옵니다.
 onMounted(fetchContractList);
 </script>
-
 
 <style scoped>
 .cotract-wrapper {
@@ -94,11 +118,8 @@ onMounted(fetchContractList);
   border-radius: 8px;
   width: 100%;
   height: 100%;
-  /* border: 1px solid #ddd; */
-  }
+}
 
-
-/* 버튼 스타일 */
 .btn {
   padding: 0.2rem 2rem;
   background-color: #003566;
@@ -113,18 +134,23 @@ onMounted(fetchContractList);
   background-color: #00509e;
 }
 
-.table {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  border-collapse: collapse;
-}
-.mid {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
-.table th, .table td {
-  padding: 10px;
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
   text-align: center;
-  border: 1px solid #ddd;
 }
 </style>
