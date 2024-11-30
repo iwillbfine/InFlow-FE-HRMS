@@ -32,7 +32,7 @@
     <EmployeeContractModal
       v-if="showModal"
       :contract-data="selectedContract"
-      @close="showModal = false"
+      @close="handleModalClose"
     />
   </div>
 </template>
@@ -87,14 +87,14 @@ const formatDateTime = (datetime) => {
 };
 
 // "등록" 버튼 클릭 시 호출되는 함수
-const openContractModal = async (contractId) => {
+const openContractModal = async (contract) => {
   try {
     // API 호출하여 선택된 계약서 데이터 조회
     const data = await getEmploymentContract(employeeId, token);
     console.log("등록 버튼 호출됨: ",data);
     selectedContract.value = {
       ...data, // API에서 반환된 계약서 데이터
-      contract_id: contractId, // 선택된 계약서 ID 추가
+      ...contract, // 클릭한 계약서의 정보 추가
     };
     showModal.value = true; // 모달창 열기
   } catch (error) {
@@ -102,9 +102,10 @@ const openContractModal = async (contractId) => {
   }
 };
 
-// 모달 닫기
-const closeContractModal = () => {
+// 모달 닫기 이벤트 핸들러
+const handleModalClose = () => {
   showModal.value = false;
+  fetchContractList(); // 계약서 목록 새로고침
 };
 
 // 컴포넌트가 마운트되면 계약서 목록을 가져옵니다.

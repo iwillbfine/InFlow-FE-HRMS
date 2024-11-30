@@ -4,8 +4,10 @@
         <!-- 상단 버튼 컨트롤 -->
         <div class="viewer-controls">
           <div class="left-controls">
-            <button class="btn save-btn" @click="saveContract">
-              <i class="fas fa-save"></i> 계약서 등록
+            <button class="btn save-btn" @click="saveContract" :disabled="isSubmitting">
+                <i v-if="!isSubmitting" class="fas fa-save"></i>
+                <i v-else class="fas fa-spinner fa-spin"></i>
+                계약서 등록
             </button>
           </div>
           <div class="center-controls">
@@ -136,8 +138,9 @@
 </template>
   
   
-  <script setup>
- import { ref, nextTick, onMounted } from 'vue';
+<script setup>
+import { ref, nextTick, onMounted, defineEmits} from 'vue';
+import { registerEmployeeContract } from "@/api/emp_info";
 
 const props = defineProps({
   contractData: {
@@ -145,6 +148,9 @@ const props = defineProps({
     required: true,
   },
 });
+
+// 상위 컴포넌트로 이벤트 전달을 위해 defineEmits 사용
+const emit = defineEmits(['close']); // 'close' 이벤트 정의
 
 const zoomLevel = ref(1); // 줌 레벨
 const contractViewer = ref(null); // ref 초기화
@@ -262,12 +268,50 @@ const formatDateTime = (datetime) => {
   }).replace(/년|월|일/g, match => match.trim() + ' ');
 };
 
+
+
+// 계약서 등록 메서드
+
+const isSubmitting = ref(false);
+
+// 계약서 등록 메서드
+const saveContract = async () => {
+  try {
+    const token = localStorage.getItem('authToken'); // 인증 토큰 가져오기
+    const contractId = props.contractData.contract_id; // 계약서 ID 가져오기
+    const file = employeeSignature.value; // 서명된 파일 (Base64 이미지 등)
+    
+    if (!file) {
+      alert('서명을 등록해야 계약서를 제출할 수 있습니다.');
+      return;
+    }
+
+    // Base64 데이터를 Blob으로 변환 (예: canvas의 데이터 URL 처리)
+    const blob = await fetch(file).then((res) => res.blob());
+    const fileName = `contract_${contractId}.png`; // 파일 이름 지정
+    const signatureFile = new File([blob], fileName, { type: 'image/png' });
+
+    // API 호출
+    const response = await registerEmployeeContract(contractId, signatureFile, token);
+    console.log('계약서 등록 성공:', response);
+
+    alert('계약서가 성공적으로 등록되었습니다!');
+    emit('close'); // 모달 닫기
+  } catch (error) {
+    console.error('계약서 등록 실패:', error);
+    alert('계약서를 등록하는 데 실패했습니다.');
+  }
+};
+
+
+
 onMounted(() => {
   if (contractViewer.value) {
-    // 초기 설정 또는 디버깅용 로그
-    console.log("contractViewer initialized", contractViewer.value);
+
+    console.log("props.contractData", props.contractData);
   }
 });
+
 
 </script>
 
