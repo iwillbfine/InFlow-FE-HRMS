@@ -15,7 +15,7 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, watch} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -37,7 +37,7 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '급여 명세서', link: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}` },
-  { name: '전체 급여 지급내역', link: '/hr-basic/salary/list' },
+  { name: '전체 급여 지급내역', link: `/hr-basic/salary/list/${localStorage.getItem('employeeId')}` },
   { name: '예상 퇴직금 조회', link: '/hr-basic/salary/severance-pay' }
 ]);
 
@@ -46,8 +46,19 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-
+  router.push(subMenuList.value[idx].link);
 }
+
+// 메인메뉴 변경 감지
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath === '/hr-basic/salary') {
+      subIdx.value = 0;
+      router.push(subMenuList.value[0].link);
+    }
+  }
+)
 
 onMounted(() => {
   employeeId.value = localStorage.getItem('employeeId');
