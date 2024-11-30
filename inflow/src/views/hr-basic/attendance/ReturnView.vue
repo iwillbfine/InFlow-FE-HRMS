@@ -192,6 +192,8 @@ const handleFileUpload = (event) => {
   const uniqueFiles = new Map();
   fileList.value.forEach((file) => uniqueFiles.set(file.name, file));
   fileList.value = Array.from(uniqueFiles.values());
+
+  event.target.value = '';
 };
 
 const handleRemoveFile = (index) => {

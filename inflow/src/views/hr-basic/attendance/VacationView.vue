@@ -2,8 +2,19 @@
   <CommonArticle label="휴가 신청" w="90%">
     <TableItem gtc="2fr 6fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem" topl>휴가 기간</TableCell>
+        <TableCell class="h-7" th fs="1.6rem" topl>휴가 선택</TableCell>
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
+          <DropdownItem
+            placeholder="사용할 휴가를 선택하세요."
+            w="30rem"
+            :list="dropdownVacationList"
+            @update:selected-item="updateSelectedVacation"
+          ></DropdownItem>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell class="h-7" th fs="1.6rem">휴가 기간</TableCell>
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem">
           <DateDropDown
             short
             @valid-date-selected="updateSelectedStartDate"
@@ -80,12 +91,12 @@
         <TableCell th fs="1.6rem">취소 요청</TableCell>
       </TableRow>
       <TableRow
-        v-for="(item, index) in leaveRequestList"
+        v-for="(item, index) in vacationRequestList"
         v-if="!isEmpty"
         :key="index"
       >
         <TableCell class="mid" fs="1.6rem">{{
-          item.attendance_request_id
+          item.vacation_request_id
         }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
@@ -147,15 +158,21 @@ import LiItem from '@/components/semantic/LiItem.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import {
-  getLeaveRequestPreviewsByEmployeeId,
-  createLeaveRequest,
-} from '@/api/attendance';
+  getLeftAllVacationsByEmployeeId,
+  getVacationRequestPreviewsByEmployeeId,
+  createVacationRequest,
+} from '@/api/vacation';
+import DropdownItem from '@/components/dropdowns/DropdownItem.vue';
 
 const eid = ref(null);
-const leaveRequestList = ref([]);
+const dropdownVacationList = ref([]);
+const vacationList = ref([]);
+const vacationRequestList = ref([]);
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 
+const arrayIndex = ref(null);
+const selectedVacation = ref(null);
 const selectedStartDate = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
@@ -163,14 +180,34 @@ const fileList = ref([]);
 
 const router = useRouter();
 
-const fetchLeaveRequestData = async (eid) => {
-  const response = await getLeaveRequestPreviewsByEmployeeId(eid);
+const fetchVacationData = async (eid) => {
+  const response = await getLeftAllVacationsByEmployeeId(eid);
 
   if (response.success) {
-    leaveRequestList.value = response.content;
-    isEmpty.value = leaveRequestList.value.isEmpty ? true : false;
+    vacationList.value = response.content;
+    for (const vacation of vacationList.value) {
+      dropdownVacationList.value.push({
+        id: vacation.vacation_id,
+        name:
+          vacation.vacation_name + ' / 잔여일 수 : ' + vacation.vacation_left,
+      });
+    }
+
+    isEmpty.value = vacationList.value.isEmpty ? true : false;
   } else {
-    leaveRequestList.value = [];
+    vacationList.value = [];
+    isEmpty.value = true;
+  }
+};
+
+const fetchVacationRequestData = async (eid) => {
+  const response = await getVacationRequestPreviewsByEmployeeId(eid);
+
+  if (response.success) {
+    vacationRequestList.value = response.content;
+    isEmpty.value = vacationRequestList.value.isEmpty ? true : false;
+  } else {
+    vacationRequestList.value = [];
     isEmpty.value = true;
   }
 };
@@ -186,6 +223,8 @@ const handleFileUpload = (event) => {
   const uniqueFiles = new Map();
   fileList.value.forEach((file) => uniqueFiles.set(file.name, file));
   fileList.value = Array.from(uniqueFiles.values());
+
+  event.target.value = '';
 };
 
 const handleRemoveFile = (index) => {
@@ -219,6 +258,11 @@ const parseRequestStatus = (status) => {
   }
 };
 
+const updateSelectedVacation = (id, index) => {
+  selectedVacation.value = id;
+  arrayIndex.value = index;
+};
+
 const updateSelectedStartDate = (date) => {
   selectedStartDate.value = date;
 };
@@ -243,6 +287,11 @@ const checkValidDate = () => {
 };
 
 const handleOnclick = async () => {
+  if (!selectedVacation.value) {
+    alert('사용할 휴가를 선택하세요.');
+    return;
+  }
+
   if (!selectedStartDate.value) {
     alert('휴가 시작일자를 선택하세요.');
     return;
@@ -253,12 +302,21 @@ const handleOnclick = async () => {
     return;
   }
 
+  const startDate = new Date(selectedStartDate.value);
+  const endDate = new Date(selectedEndDate.value);
+  const durationDays = (endDate - startDate + 1) / (1000 * 60 * 60 * 24);
+
+  if (vacationList.value[arrayIndex.value].vacation_left < durationDays) {
+    alert('잔여 휴가 일수가 선택한 기간보다 적습니다.');
+    return;
+  }
+
   if (!checkValidDate()) {
     alert('휴가 날짜는 오늘보다 이전일 수 없습니다.');
     return;
   }
 
-  if (new Date(selectedStartDate.value) > new Date(selectedEndDate.value)) {
+  if (startDate > endDate) {
     alert('휴가 종료일자는 휴가 시작일자보다 이전일 수 없습니다.');
     return;
   }
@@ -278,14 +336,15 @@ const handleOnclick = async () => {
   formData.append('start_date', selectedStartDate.value);
   formData.append('end_date', selectedEndDate.value);
   formData.append('employee_id', eid.value);
-  formData.append('attendance_request_type_id', 5);
+  formData.append('vacation_id', selectedVacation.value);
 
   fileList.value.forEach((file) => {
     formData.append(`attachments`, file);
   });
 
-  const response = await createLeaveRequest(formData);
+  const response = await createVacationRequest(formData);
 
+  selectedVacation.value = null; // 무한 요청 방지
   selectedStartDate.value = ''; // 무한 요청 방지
   selectedEndDate.value = ''; // 무한 요청 방지
   requestReason.value = ''; // 무한 요청 방지
@@ -305,7 +364,8 @@ const goMoreList = () => {
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-  fetchLeaveRequestData(eid.value);
+  fetchVacationData(eid.value);
+  fetchVacationRequestData(eid.value);
 });
 </script>
 
