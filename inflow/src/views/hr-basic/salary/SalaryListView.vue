@@ -1,6 +1,5 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <h2></h2>
+  <FlexItem class="content-header" fld="row" h="1rem" w="90%">
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -26,7 +25,7 @@
     <PaginationComponent
       :data="pageInfo"
       @changePage="handlePageChange"
-    />
+    ></PaginationComponent>
   </FlexItem>
 </template>
 
@@ -51,7 +50,7 @@ const pageInfo =ref({});
 
 // api 호출 함수
 const fetchPaymentData = async (employeeId, page) => {
-  if (!employeeId || !page) {
+  if (!employeeId) {
     console.error("유효하지 않은 파라미터");
     return;
   }
@@ -86,7 +85,7 @@ const formatDate = (value) => {
   if (!value) return '지급일: -';
   const [date] = value.split('T');
   const [year, month, day] = date.split('-');
-  return `지급일: ${year}년 ${month}월 ${day}일`;
+  return `${year}년 ${month}월 ${day}일`;
 };
 
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
