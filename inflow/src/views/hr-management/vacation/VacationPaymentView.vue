@@ -98,7 +98,7 @@
           w="100%"
           fs="2rem"
         >
-          사원을 검색해주세요.
+          사원을 선택해주세요.
         </FlexItem>
       </FlexItem>
       <TableItem gtc="2fr 7fr">
@@ -208,8 +208,8 @@ const handleSelected = (item) => {
   selectedEmployee.value = item;
 };
 
-const updateSelectedVacationPolicy = (id) => {
-  selectedVacationPolicy.value = id;
+const updateSelectedVacationPolicy = (_, index) => {
+  selectedVacationPolicy.value = vacationPolicyList.value[index];
 };
 
 const updateSelectedDate = (date) => {
@@ -232,19 +232,28 @@ const handleOnclick = async () => {
     return;
   }
 
-  if (
-    new Date(selectedDate.value).setHours(0, 0, 0, 0) <
-    new Date().setHours(0, 0, 0, 0)
-  ) {
-    alert('휴가 만료일은 오늘보다 이전일 수 없습니다.');
+  const today = new Date();
+  const minimumDate = new Date(
+    today.getTime() +
+      selectedVacationPolicy.value.allocation_days * 24 * 60 * 60 * 1000
+  ); // 밀리초로 날짜 계산
+
+  if (new Date(selectedDate.value) <= minimumDate) {
+    alert(
+      '휴가 만료일은 휴가 지급 날짜에서 지급일 수를 더한 날짜보다 이후여야 합니다.'
+    );
     return;
   }
 
-  const response = await createVacation({
+  const formData = {
     expired_at: selectedDate.value,
-    employee_id: selectedEmployee.value.employee_id,
-    vacation_policy_id: selectedVacationPolicy.value,
-  });
+    employee_id: Number(selectedEmployee.value.department_member_id),
+    vacation_policy_id: Number(selectedVacationPolicy.value.vacation_policy_id),
+  };
+
+  console.log(formData);
+
+  const response = await createVacation(formData);
 
   selectedEmployee.value = null; // 무한 요청 방지
   selectedVacationPolicy.value = null; // 무한 요청 방지
