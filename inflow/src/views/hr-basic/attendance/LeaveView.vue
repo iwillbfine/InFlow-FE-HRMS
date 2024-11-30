@@ -5,10 +5,12 @@
         <TableCell class="h-7" th fs="1.6rem" topl>휴직 기간</TableCell>
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <DateDropDown
+            short
             @valid-date-selected="updateSelectedStartDate"
           ></DateDropDown>
           <strong>~</strong>
           <DateDropDown
+            short
             @valid-date-selected="updateSelectedEndDate"
           ></DateDropDown>
         </TableCell>

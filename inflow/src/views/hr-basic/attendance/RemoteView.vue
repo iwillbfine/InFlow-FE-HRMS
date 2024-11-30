@@ -5,6 +5,7 @@
         <TableCell class="h-7" th fs="1.6rem" topl>재택근무 날짜</TableCell>
         <TableCell class="h-7 pl-1" fs="1.6rem" topr>
           <DateDropDown
+            short
             @valid-date-selected="updateSelectedDate"
           ></DateDropDown>
         </TableCell>
