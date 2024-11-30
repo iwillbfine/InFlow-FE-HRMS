@@ -26,111 +26,113 @@
             />
         </div>
         <table class="employee-info-table">
-          <tr>
-            <th>사원번호</th>
-            <td>{{ employee.employeeCode }}</td>
-            <th>성별</th>
-            <td>{{ employee.gender }}</td>
-            <th>휴대폰번호</th>
-            <td style="position: relative;">
-              <template v-if="editMode">
-                <input
-                  type="text"
-                  v-model="form.phone"
-                  class="editable-input"
-                  :class="{ 'invalid-row': !isValidPhone }"
-                  @input="formatPhone"
-                  @focus="showPhoneModal"
-                  @blur="hidePhoneModal"
-                />
-                <div v-if="isPhoneModalVisible" class="phone-modal">
-                  <div class="phone-modal-content">
-                    <h3>휴대폰 번호 입력 형식</h3>
-                    <ul>
-                      <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
-                      <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
-              <template v-else>{{ employee.phone }}</template>
-            </td>
-          </tr>
-          <tr>
-            <th>사원명</th>
-            <td>{{ employee.employeeName }}</td>
-            <th>직무</th>
-            <td>{{ employee.jobRole }}</td>
-            <th>이메일</th>
-            <td style="position: relative;">
-              <template v-if="editMode">
-                <input
-                  type="email"
-                  v-model="form.email"
-                  class="editable-input"
-                  :class="{ 'invalid-row': !isValidEmail }"
-                  @input="validateEmail"
-                  @focus="showEmailModal"
-                  @blur="hideEmailModal"
-                />
-                <div v-if="isEmailModalVisible" class="email-modal">
-                  <div class="email-modal-content">
-                    <h3>이메일 입력 형식</h3>
-                    <ul>
-                      <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
-                      <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
-                    </ul>
-                  </div>
-                </div>
-              </template>
-              <template v-else>{{ employee.email }}</template>
-            </td>
-          </tr>
-          <tr>
-            <th>입사일</th>
-            <td>{{ employee.hireDate }}</td>
-            <th>직위</th>
-            <td>{{ employee.position }}</td>
-            <th>주소</th>
-              <td>
+          <tbody>
+            <tr>
+              <th>사원번호</th>
+              <td>{{ employee.employeeCode }}</td>
+              <th>성별</th>
+              <td>{{ employee.gender }}</td>
+              <th>휴대폰번호</th>
+              <td style="position: relative;">
                 <template v-if="editMode">
-                  <div class="address-input-group">
-                    <!-- 주소 입력 필드 -->
-                    <input
-                      type="text"
-                      v-model="form.address"
-                      class="editable-input"
-                      readonly
-                      placeholder="주소를 검색하세요"
-                    />
-                    <button class="btn-address" @click="openAddressSearch">주소 검색</button>
+                  <input
+                    type="text"
+                    v-model="form.phone"
+                    class="editable-input"
+                    :class="{ 'invalid-row': !isValidPhone }"
+                    @input="formatPhone"
+                    @focus="showPhoneModal"
+                    @blur="hidePhoneModal"
+                  />
+                  <div v-if="isPhoneModalVisible" class="phone-modal">
+                    <div class="phone-modal-content">
+                      <h3>휴대폰 번호 입력 형식</h3>
+                      <ul>
+                        <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
+                        <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
+                      </ul>
+                    </div>
                   </div>
                 </template>
-                <template v-else>{{ employee.address }} </template>
+                <template v-else>{{ employee.phone }}</template>
               </td>
-          </tr>
-          <tr>
-            <th>입사유형</th>
-            <td>{{ employee.hireType }}</td>
-            <th>직책</th>
-            <td>{{ employee.jobTitle }}</td>
-            <th>상세주소</th>
-            <td>
-              <template v-if="editMode">
-                <input type="text" v-model="form.detailAddress" class="editable-input" />
-              </template>
-              <template v-else>{{ employee.detailAddress }}</template>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>생년월일</th>
-            <td>{{ employee.birthDate }}</td>
-            <th>퇴사일</th>
-            <td>{{ employee.retirementDate || 'N/A' }}</td>
-            <th></th>
-            <td></td>
-          </tr>
+            </tr>
+            <tr>
+              <th>사원명</th>
+              <td>{{ employee.employeeName }}</td>
+              <th>직무</th>
+              <td>{{ employee.jobRole }}</td>
+              <th>이메일</th>
+              <td style="position: relative;">
+                <template v-if="editMode">
+                  <input
+                    type="email"
+                    v-model="form.email"
+                    class="editable-input"
+                    :class="{ 'invalid-row': !isValidEmail }"
+                    @input="validateEmail"
+                    @focus="showEmailModal"
+                    @blur="hideEmailModal"
+                  />
+                  <div v-if="isEmailModalVisible" class="email-modal">
+                    <div class="email-modal-content">
+                      <h3>이메일 입력 형식</h3>
+                      <ul>
+                        <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
+                        <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>{{ employee.email }}</template>
+              </td>
+            </tr>
+            <tr>
+              <th>입사일</th>
+              <td>{{ employee.hireDate }}</td>
+              <th>직위</th>
+              <td>{{ employee.position }}</td>
+              <th>주소</th>
+                <td>
+                  <template v-if="editMode">
+                    <div class="address-input-group">
+                      <!-- 주소 입력 필드 -->
+                      <input
+                        type="text"
+                        v-model="form.address"
+                        class="editable-input"
+                        readonly
+                        placeholder="주소를 검색하세요"
+                      />
+                      <button class="btn-address" @click="openAddressSearch">주소 검색</button>
+                    </div>
+                  </template>
+                  <template v-else>{{ employee.address }} </template>
+                </td>
+            </tr>
+            <tr>
+              <th>입사유형</th>
+              <td>{{ employee.hireType }}</td>
+              <th>직책</th>
+              <td>{{ employee.jobTitle }}</td>
+              <th>상세주소</th>
+              <td>
+                <template v-if="editMode">
+                  <input type="text" v-model="form.detailAddress" class="editable-input" />
+                </template>
+                <template v-else>{{ employee.detailAddress }}</template>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>생년월일</th>
+              <td>{{ employee.birthDate }}</td>
+              <th>퇴사일</th>
+              <td>{{ employee.retirementDate || 'N/A' }}</td>
+              <th></th>
+              <td></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
