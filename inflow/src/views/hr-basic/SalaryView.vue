@@ -15,7 +15,7 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, watch} from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -46,8 +46,19 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-
+  router.push(subMenuList.value[idx].link);
 }
+
+// 메인메뉴 변경 감지
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath === '/hr-basic/salary') {
+      subIdx.value = 0;
+      router.push(subMenuList.value[0].link);
+    }
+  }
+)
 
 onMounted(() => {
   employeeId.value = localStorage.getItem('employeeId');
