@@ -259,7 +259,7 @@ const handleOnclick = async () => {
   }
 
   if (new Date(selectedStartDate.value) > new Date(selectedEndDate.value)) {
-    alert('휴직 종료일자는 출장 시작일자보다 이전일 수 없습니다.');
+    alert('휴직 종료일자는 휴직 시작일자보다 이전일 수 없습니다.');
     return;
   }
 
