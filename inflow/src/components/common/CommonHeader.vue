@@ -32,6 +32,7 @@ const props = defineProps({
 const isResetPwdModalOpen = ref(false);
 
 const changeModalStatus = () => {
+  console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
 }
 </script>
@@ -43,8 +44,8 @@ const changeModalStatus = () => {
   right: 0;
   justify-content: space-between;
   align-items: center;
-  padding-left: 2rem;
-  padding-right: 2em;
+  padding-left: 3rem;
+  padding-right: 3em;
   padding-top: 2rem;
   z-index: 3;
 }

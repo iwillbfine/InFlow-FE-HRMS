@@ -37,7 +37,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  botr: {
+  botl: {
     type: Boolean,
     default: false,
   },
@@ -78,8 +78,8 @@ const customStyle = computed(() => {
   const borderRadius = [
     props.topl ? '0.6rem' : '0',
     props.topr ? '0.6rem' : '0',
-    props.bottomr ? '0.6rem' : '0',
-    props.bottoml ? '0.6rem' : '0',
+    props.botr ? '0.6rem' : '0',
+    props.botl ? '0.6rem' : '0',
   ].join(' ');
 
   baseStyle.borderRadius = borderRadius;

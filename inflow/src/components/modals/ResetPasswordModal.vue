@@ -1,5 +1,5 @@
 <template>
-  <CrudModal h="50rem" w="50rem">
+  <CrudModal h="50rem" w="50rem" @close="closeModal" >
     <!-- 로고 및 타이틀 -->
     <div class="logo-container">
       <img :src="companyLogo" alt="Company Logo" class="company-logo" />

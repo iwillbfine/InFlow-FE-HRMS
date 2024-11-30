@@ -1,6 +1,11 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <ArrowLeftButton h="3.6rem" w="3.6rem" br="50%" @click="goBack"></ArrowLeftButton>
+    <ArrowLeftButton
+      h="3.6rem"
+      w="3.6rem"
+      br="50%"
+      @click="goBack"
+    ></ArrowLeftButton>
     <ChangeMonthComponent
       :cur-month="curMonth"
       description="재택근무 신청 내역"
@@ -8,29 +13,55 @@
       @go-next-month="goNextMonth"
     >
     </ChangeMonthComponent>
-    <SelectYearMonthComponent class="select-year-month-section" @month-selected="goSelectedMonth"></SelectYearMonthComponent>
+    <SelectYearMonthComponent
+      class="select-year-month-section"
+      @month-selected="goSelectedMonth"
+    ></SelectYearMonthComponent>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
       <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
         <TableRow>
-          <TableCell th fs="1.6rem">신청 ID</TableCell>
+          <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
           <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
           <TableCell th fs="1.6rem">재택근무 사유</TableCell>
           <TableCell th fs="1.6rem">신청일</TableCell>
           <TableCell th fs="1.6rem">상태</TableCell>
-          <TableCell th fs="1.6rem">취소 요청</TableCell>
+          <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <span v-if="item.cancel_status=='Y'">취소 완료</span>
+        <TableRow
+          v-for="(item, index) in remoteRequestList"
+          v-if="!isEmpty"
+          :key="index"
+        >
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botl="index === remoteRequestList.length - 1"
+            >{{ item.attendance_request_id }}</TableCell
+          >
+          <TableCell class="mid" fs="1.6rem">{{
+            parseDate(item.start_date)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            item.request_reason
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseDate(item.created_at)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseRequestStatus(item.request_status)
+          }}</TableCell>
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botr="index === remoteRequestList.length - 1"
+          >
+            <span v-if="item.cancel_status == 'Y'">취소 완료</span>
             <ButtonItem
-              v-else-if="item.cancel_status=='N' && item.request_status=='ACCEPT'"
+              v-else-if="
+                item.cancel_status == 'N' && item.request_status == 'WAIT'
+              "
               h="3rem"
               w="6.4rem"
               br="0.4rem"
@@ -41,7 +72,7 @@
             >
               취소 요청
             </ButtonItem>
-            <!-- <span v-else>취소 불가</span> -->
+            <span v-else>-</span>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -56,9 +87,12 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <PaginationComponent :data="pageInfo" @change-page="handleChangePage"></PaginationComponent>
+    <PaginationComponent
+      :data="pageInfo"
+      @change-page="handleChangePage"
+    ></PaginationComponent>
   </FlexItem>
-  <CrudModal class="cancel-request-modal" v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+  <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
 </template>
 
 <script setup>
@@ -87,7 +121,7 @@ const isModalOpen = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-const fetchCommuteDate = async (eid, page, date) => {
+const fetchRemoteRequestData = async (eid, page, date) => {
   const response = await getRemoteRequestsByEmployeeId(eid, page, date);
   if (response.success) {
     remoteRequestList.value = response.content.elements;
@@ -98,7 +132,7 @@ const fetchCommuteDate = async (eid, page, date) => {
     pageInfo.value = {};
     isEmpty.value = true;
   }
-}
+};
 
 // 이번 달 가져오기
 const getCurMonth = () => {
@@ -107,9 +141,9 @@ const getCurMonth = () => {
   const year = today.getFullYear(); // 연도 가져오기
   const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 가져오기 (0부터 시작하므로 +1, 두 자리로 맞춤)
 
-  const curMonth = `${year}-${month}`
+  const curMonth = `${year}-${month}`;
   return curMonth;
-}
+};
 
 // 일까지 파싱
 const parseDate = (dateStr) => {
@@ -121,43 +155,58 @@ const parseDate = (dateStr) => {
 
   const formattedDate = `${year}년 ${month}월 ${day}일`;
   return formattedDate;
-}
+};
 
 const parseRequestStatus = (status) => {
   switch (status) {
-    case 'ACCEPT': return '승인됨';
-    case 'REJECT': return '반려됨';
-    default: return '대기중';
+    case 'ACCEPT':
+      return '승인됨';
+    case 'REJECT':
+      return '반려됨';
+    default:
+      return '대기중';
   }
-}
+};
 
 const toggleCancelRequestModal = () => {
   isModalOpen.value = !isModalOpen.value;
-}
+};
 
 const handleChangePage = (page) => {
   curPage.value = page;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: curMonth.value } });
-}
+  router.push({
+    path: '/hr-basic/attendance/remote/requests',
+    query: { page: curPage.value, date: curMonth.value },
+  });
+};
 
 const goPrevMonth = (prevMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: prevMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/remote/requests',
+    query: { page: curPage.value, date: prevMonth },
+  });
+};
 
 const goNextMonth = (nextMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: nextMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/remote/requests',
+    query: { page: curPage.value, date: nextMonth },
+  });
+};
 
 const goSelectedMonth = (selectedMonth) => {
   curPage.value = 1;
-  router.push({ path: '/hr-basic/attendance/remote/requests', query: { page: curPage.value, date: selectedMonth } })
-}
+  router.push({
+    path: '/hr-basic/attendance/remote/requests',
+    query: { page: curPage.value, date: selectedMonth },
+  });
+};
 
 const goBack = () => {
   router.push('/hr-basic/attendance/remote');
-}
+};
 
 // URL 쿼리 변화를 감지하는 watcher
 watch(
@@ -166,14 +215,14 @@ watch(
     eid.value = localStorage.getItem('employeeId');
     curPage.value = newQuery.page || 1;
     curMonth.value = newQuery.date || getCurMonth();
-    fetchCommuteDate(eid.value, curPage.value, curMonth.value)
+    fetchRemoteRequestData(eid.value, curPage.value, curMonth.value);
   },
   { immediate: true }
-)
+);
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-})
+});
 </script>
 
 <style scoped>
@@ -215,11 +264,4 @@ onMounted(() => {
 .pagination {
   min-height: 8rem;
 }
-
-.cancel-request-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 </style>
-

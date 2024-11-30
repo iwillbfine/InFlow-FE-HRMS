@@ -1,7 +1,7 @@
 <template>
   <SectionItem class="common-menu" fld="column" w="calc(100% - 12rem)" bgc="#fff">
     <MenuNav :cur="props.cur" :list="props.list"></MenuNav>
-    <FlexItem h="4.2rem"w="100%" bgc="#003566" br="0rem 1rem 0rem 0rem"></FlexItem>
+    <FlexItem h="4.2rem" w="100%" bgc="#003566" br="0rem 1rem 0rem 0rem"></FlexItem>
     <FlexItem h="1rem" w="100%" bgc="#fff"></FlexItem>
   </SectionItem>
 </template>
