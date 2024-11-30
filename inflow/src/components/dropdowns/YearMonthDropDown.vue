@@ -22,6 +22,13 @@ import FlexItem from '../semantic/FlexItem.vue';
 import DropdownItem from './DropdownItem.vue';
 import { ref, watch } from 'vue';
 
+const props = defineProps({
+  short: {
+    type: Boolean,
+    default: false,
+  }
+})
+
 const emit = defineEmits(['valid-date-selected']);
 
 const selectedYear = ref(null);
@@ -50,11 +57,18 @@ watch([selectedYear, selectedMonth], () => {
   validateDate();
 });
 
+const currentYear = new Date().getFullYear();
+
 const yearList = ref(
-  Array.from({ length: 200 }, (_, i) => ({
-    id: i + 1901,
-    name: `${i + 1901}`,
-  }))
+  props.short
+    ? Array.from({ length: 21 }, (_, i) => ({
+        id: currentYear + i,
+        name: `${currentYear + i}`,
+      }))
+    : Array.from({ length: 101 }, (_, i) => ({
+        id: 1951 + i,
+        name: `${1951 + i}`,
+      }))
 );
 
 const monthList = ref(

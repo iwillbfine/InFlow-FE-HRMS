@@ -7,7 +7,10 @@
       @go-next-month="goNextMonth"
     >
     </ChangeMonthComponent>
-    <SelectYearMonthComponent class="select-year-month-section" @month-selected="goSelectedMonth"></SelectYearMonthComponent>
+    <SelectYearMonthComponent
+      class="select-year-month-section"
+      @month-selected="goSelectedMonth"
+    ></SelectYearMonthComponent>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -19,12 +22,39 @@
           <TableCell th fs="1.6rem">재택여부</TableCell>
           <TableCell th fs="1.6rem" topr>초과근무 시간</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in commuteList" :key="index">
-          <TableCell class="mid" fs="1.6rem" :botl="index === commuteList.length - 1">{{ parseDate(item.start_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ parseTime(item.end_time) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item.remote_status }}</TableCell>
-          <TableCell class="mid" fs="1.6rem" :botr="index === commuteList.length - 1">{{ item.overtime ? Math.trunc(item.overtime / 60) + "시간 " + (item.overtime%60) + "분" : "-" }}</TableCell>
+        <TableRow
+          v-for="(item, index) in commuteList"
+          v-if="!isEmpty"
+          :key="index"
+        >
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botl="index === commuteList.length - 1"
+            >{{ parseDate(item.start_time) }}</TableCell
+          >
+          <TableCell class="mid" fs="1.6rem">{{
+            parseTime(item.start_time)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            parseTime(item.end_time)
+          }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            item.remote_status
+          }}</TableCell>
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botr="index === commuteList.length - 1"
+            >{{
+              item.overtime
+                ? Math.trunc(item.overtime / 60) +
+                  '시간 ' +
+                  (item.overtime % 60) +
+                  '분'
+                : '-'
+            }}</TableCell
+          >
         </TableRow>
       </TableItem>
     </div>
@@ -60,7 +90,7 @@ const isEmpty = ref(true);
 const router = useRouter();
 const route = useRoute();
 
-const fetchCommuteDate = async (eid, date) => {
+const fetchCommuteData = async (eid, date) => {
   const response = await getCommutesByEmployeeId(eid, date);
   if (response.success) {
     commuteList.value = response.content;
@@ -69,7 +99,7 @@ const fetchCommuteDate = async (eid, date) => {
     commuteList.value = [];
     isEmpty.value = true;
   }
-}
+};
 
 // 이번 달 가져오기
 const getCurMonth = () => {
@@ -78,9 +108,9 @@ const getCurMonth = () => {
   const year = today.getFullYear(); // 연도 가져오기
   const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 가져오기 (0부터 시작하므로 +1, 두 자리로 맞춤)
 
-  const curMonth = `${year}-${month}`
+  const curMonth = `${year}-${month}`;
   return curMonth;
-}
+};
 
 // 일까지 파싱
 const parseDate = (dateStr) => {
@@ -92,30 +122,39 @@ const parseDate = (dateStr) => {
 
   const formattedDate = `${year}년 ${month}월 ${day}일`;
   return formattedDate;
-}
+};
 
 // 시간만 파싱
 const parseTime = (dateStr) => {
   const date = new Date(dateStr);
 
-  const hours = String(date.getHours()).padStart(2, "0"); // 2자리로 패딩
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, '0'); // 2자리로 패딩
+  const minutes = String(date.getMinutes()).padStart(2, '0');
 
   const formattedTime = `${hours}시 ${minutes}분`;
   return formattedTime;
-}
+};
 
 const goPrevMonth = (prevMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: prevMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/commute',
+    query: { date: prevMonth },
+  });
+};
 
 const goNextMonth = (nextMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: nextMonth } });
-}
+  router.push({
+    path: '/hr-basic/attendance/commute',
+    query: { date: nextMonth },
+  });
+};
 
 const goSelectedMonth = (selectedMonth) => {
-  router.push({ path: '/hr-basic/attendance/commute', query: { date: selectedMonth } })
-}
+  router.push({
+    path: '/hr-basic/attendance/commute',
+    query: { date: selectedMonth },
+  });
+};
 
 // URL 쿼리 변화를 감지하는 watcher
 watch(
@@ -123,14 +162,14 @@ watch(
   (newQuery) => {
     eid.value = localStorage.getItem('employeeId');
     curMonth.value = newQuery.date || getCurMonth();
-    fetchCommuteDate(eid.value, curMonth.value)
+    fetchCommuteData(eid.value, curMonth.value);
   },
   { immediate: true }
-)
+);
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
-})
+});
 </script>
 
 <style scoped>
