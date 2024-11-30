@@ -18,7 +18,7 @@ const menuList = ref([
   { name: '개인신상관리', link: '/hr-basic/my-info' },
   { name: '근태 정보', link: '/hr-basic/attendance' },
   { name: '급여 및 수당', link: '/hr-basic/salary' },
-  { name: '계약서 서명', link: '/hr-basic/contract' },
+  { name: '계약서 서명', link: '/hr-basic/document' },
   { name: '내 부서 관리', link: '/hr-basic/my-department'},
 ]);
 

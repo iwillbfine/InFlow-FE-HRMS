@@ -3,7 +3,7 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-   <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
+        <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
@@ -14,7 +14,7 @@
             :src="previewPhoto || employee.photoUrl"
             alt="Profile Photo"
             class="profile-photo"
-            @click="handlePhotoUpload"
+            @click="editMode ? handlePhotoUpload() : null" 
             />
             <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">사진 수정</div>
             <input
@@ -396,8 +396,9 @@ onMounted(() => {
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  width: 95%;
+  width: 100%;
   height: 100%;
+  border: 1px solid #ddd;
 }
 
 .profile-buttons-container {
@@ -434,8 +435,8 @@ onMounted(() => {
 }
 
 .profile-photo {
-  width: 12rem; /* 사진 크기 조정 */
-  height: 15rem;
+  width: 14rem; 
+  height: 16rem;
   object-fit: cover;
 }
 .photo-edit-overlay {
@@ -469,7 +470,6 @@ onMounted(() => {
 }
 
 .btn-address{
-
   padding: 0.2rem 1.2rem;
   background-color: #003566;
   color: #fff;
@@ -503,12 +503,13 @@ onMounted(() => {
 /* 테이블 스타일링 */.employee-info-table {
   border-collapse: collapse; /* 셀 간격을 제거하고 경계선을 하나로 합침 */
   width: 100%;
+  
 }
 
 /* 테이블 스타일링 */
 .employee-info-table th,
 .employee-info-table td {
-  padding: 0.7rem 1.5rem; /* 테이블 셀 간격 조정 */
+  padding: 0.7rem 0.6rem; /* 테이블 셀 간격 조정 */
   font-size: 2rem; /* 기본 글씨 크기 설정 */
   font-weight: 500;
   line-height: 1.5; /* 행 높이 조정 */
@@ -622,4 +623,3 @@ onMounted(() => {
 }
 
 </style>
-
