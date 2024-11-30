@@ -67,21 +67,24 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">복직 날짜</TableCell>
         <TableCell th fs="1.6rem">복직 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow
         v-for="(item, index) in returnRequestList"
         v-if="!isEmpty"
         :key="index"
       >
-        <TableCell class="mid" fs="1.6rem">{{
-          item.attendance_request_id
-        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === returnRequestList.length - 1"
+          >{{ item.attendance_request_id }}</TableCell
+        >
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.end_date)
         }}</TableCell>
@@ -92,7 +95,11 @@
         <TableCell class="mid" fs="1.6rem">{{
           parseRequestStatus(item.request_status)
         }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === returnRequestList.length - 1"
+        >
           <span v-if="item.cancel_status == 'Y'">취소 완료</span>
           <ButtonItem
             v-else-if="
@@ -299,7 +306,6 @@ const handleOnclick = async () => {
     alert('복직 신청서 파일을 업로드해주세요.');
     return;
   }
-
 
   const formData = new FormData();
   formData.append(
