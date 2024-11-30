@@ -45,6 +45,9 @@ import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsVi
 import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
 import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
 import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
+import SalaryDetailView from '@/views/hr-basic/salary/SalaryDetailView.vue';
+import SalaryListView from '@/views/hr-basic/salary/SalaryListView.vue';
+import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
@@ -225,6 +228,27 @@ const routes = [
     path: '/hr-basic/salary',
     name: 'hr-basic-salary',
     component: SalaryView,
+    children: [
+      {
+        path: '',
+        redirect: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}`,
+      },
+      {
+        path: 'detail/:employeeId',
+        name: 'hr-basic-salary-detail',
+        component: SalaryDetailView,
+      },
+      {
+        path: 'list',
+        name: 'hr-basic-salary-list',
+        component: SalaryListView,
+      },
+      {
+        path: 'severance-pay',
+        name: 'hr-basic-severance-pay',
+        component: SeverancePayView,
+      }
+    ]
   },
    // 인사기본- 계약서서명 및 재직 증명서
   {
