@@ -25,8 +25,6 @@
 </template>
 
 <script setup>
-import {defineProps, defineEmits} from 'vue';
-
 console.log("EmployeeList컴포넌트");
 
 defineProps({

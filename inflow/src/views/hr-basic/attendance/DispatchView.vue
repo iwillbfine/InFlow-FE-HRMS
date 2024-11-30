@@ -1,9 +1,9 @@
 <template>
-  <CommonArticle label="파견 신청" minh="35rem" w="90%">
-    <TableItem gtc="2fr 4fr">
+  <CommonArticle label="파견 신청" w="90%">
+    <TableItem gtc="2fr 6fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">파견 기간</TableCell>
-        <TableCell class="h-7 pl-1 g-2" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" topl>파견 기간</TableCell>
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <DateDropDown @valid-date-selected="updateSelectedStartDate"></DateDropDown>
           <strong>~</strong>
           <DateDropDown @valid-date-selected="updateSelectedEndDate"></DateDropDown>
@@ -23,8 +23,8 @@
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">파견 사유</TableCell>
-        <TableCell class="h-7 pl-1" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" botl>파견 사유</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem" botr>
           <input
             v-model="requestReason"
             class="reason-input"
@@ -43,22 +43,22 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 1.5fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">파견지</TableCell>
         <TableCell th fs="1.6rem">파견 기간</TableCell>
         <TableCell th fs="1.6rem">파견 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow v-if="!isEmpty" v-for="(item, index) in dispatchRequestList" :key="index">
-        <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
+        <TableCell class="mid" fs="1.6rem" :botl="index === dispatchRequestList.length - 1">{{ item.attendance_request_id }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.destination }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell class="mid" fs="1.6rem" :botl="index === dispatchRequestList.length - 1">
           <span v-if="item.cancel_status=='Y'">취소 완료</span>
             <ButtonItem
               v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
@@ -259,6 +259,7 @@ onMounted(() => {
 
 hr {
   width: 90%;
+  margin-top: 3rem;
   margin-bottom: 3rem;
   border: 1px solid #DADADA;
 }
