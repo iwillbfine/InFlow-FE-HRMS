@@ -5,7 +5,7 @@
         <TableCell class="h-7" th fs="1.6rem" topl>휴가 선택</TableCell>
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <DropdownItem
-            placeholder="사용할 휴가 선택"
+            placeholder="사용할 휴가를 선택하세요."
             w="30rem"
             :list="dropdownVacationList"
             @update:selected-item="updateSelectedVacation"
