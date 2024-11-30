@@ -101,8 +101,8 @@ export const getEmployeeByNumber = async (employeeNumber, token) => {
 export const getEmploymentCertificate = async (employeeId, purpose, token) => {
   try {
     const response = await apiClient.post('/employees/employment-certificate', {
-      employeeId, // 사원 ID
-      purpose, // 증명서 용도
+      employee_id: employeeId, // 사원 id
+      purpose:purpose, // 증명서 용도
     }, {
       headers: {
         Authorization: `Bearer ${token}`,

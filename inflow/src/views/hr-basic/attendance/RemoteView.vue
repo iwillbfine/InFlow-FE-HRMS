@@ -1,15 +1,18 @@
 <template>
-  <CommonArticle label="재택근무 신청" minh="29rem" w="90%">
-    <TableItem gtc="2fr 4fr">
+  <CommonArticle label="재택근무 신청" w="90%">
+    <TableItem gtc="2fr 5fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">재택근무 날짜</TableCell>
-        <TableCell class="h-7 pl-1" fs="1.6rem">
-          <DateDropDown @valid-date-selected="updateSelectedDate"></DateDropDown>
+        <TableCell class="h-7" th fs="1.6rem" topl>재택근무 날짜</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem" topr>
+          <DateDropDown
+            short
+            @valid-date-selected="updateSelectedDate"
+          ></DateDropDown>
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">재택근무 사유</TableCell>
-        <TableCell class="h-7 pl-1" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" botl>재택근무 사유</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem" botr>
           <input
             v-model="requestReason"
             class="reason-input"
@@ -21,41 +24,72 @@
         </TableCell>
       </TableRow>
     </TableItem>
-    <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
+    <ButtonItem
+      class="submit-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleOnclick"
+      >신청</ButtonItem
+    >
   </CommonArticle>
-  <hr/>
-  <CommonArticle class="pos-rel" label="재택근무 신청 내역" minh="38rem" w="90%">
+  <hr />
+  <CommonArticle class="pos-rel" label="재택근무 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">재택근무 날짜</TableCell>
         <TableCell th fs="1.6rem">재택근무 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
-      <TableRow v-if="!isEmpty" v-for="(item, index) in remoteRequestList" :key="index">
-        <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseDate(item.start_date) }}</TableCell>
+      <TableRow
+        v-for="(item, index) in remoteRequestList"
+        v-if="!isEmpty"
+        :key="index"
+      >
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === remoteRequestList.length - 1"
+          >{{ item.attendance_request_id }}</TableCell
+        >
+        <TableCell class="mid" fs="1.6rem">{{
+          parseDate(item.start_date)
+        }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
-          <span v-if="item.cancel_status=='Y'">취소 완료</span>
-            <ButtonItem
-              v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
-              h="3rem"
-              w="6.4rem"
-              br="0.4rem"
-              fs="1.2rem"
-              bgc="#003566"
-              c="#fff"
-              @click="toggleCancelRequestModal"
-            >
-              취소 요청
-            </ButtonItem>
-            <span v-else>-</span>
+        <TableCell class="mid" fs="1.6rem">{{
+          parseDate(item.created_at)
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{
+          parseRequestStatus(item.request_status)
+        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === remoteRequestList.length - 1"
+        >
+          <span v-if="item.cancel_status == 'Y'">취소 완료</span>
+          <ButtonItem
+            v-else-if="
+              item.cancel_status == 'N' && item.request_status == 'WAIT'
+            "
+            h="3rem"
+            w="6.4rem"
+            br="0.4rem"
+            fs="1.2rem"
+            bgc="#003566"
+            c="#fff"
+            @click="toggleCancelRequestModal"
+          >
+            취소 요청
+          </ButtonItem>
+          <span v-else>-</span>
         </TableCell>
       </TableRow>
     </TableItem>
@@ -85,7 +119,10 @@ import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
 import CrudModal from '@/components/modals/CrudModal.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getRemoteRequestPreviewsByEmployeeId, createRemoteRequest } from '@/api/attendance';
+import {
+  getRemoteRequestPreviewsByEmployeeId,
+  createRemoteRequest,
+} from '@/api/attendance';
 
 const eid = ref(null);
 const remoteRequestList = ref([]);
@@ -107,11 +144,11 @@ const fetchRemoteRequestData = async (eid) => {
     remoteRequestList.value = [];
     isEmpty.value = true;
   }
-}
+};
 
 const toggleCancelRequestModal = () => {
   isModalOpen.value = !isModalOpen.value;
-}
+};
 
 // 일까지 파싱
 const parseDate = (dateStr) => {
@@ -123,19 +160,22 @@ const parseDate = (dateStr) => {
 
   const formattedDate = `${year}년 ${month}월 ${day}일`;
   return formattedDate;
-}
+};
 
 const parseRequestStatus = (status) => {
   switch (status) {
-    case 'ACCEPT': return '승인됨';
-    case 'REJECT': return '반려됨';
-    default: return '대기중';
+    case 'ACCEPT':
+      return '승인됨';
+    case 'REJECT':
+      return '반려됨';
+    default:
+      return '대기중';
   }
-}
+};
 
 const updateSelectedDate = (date) => {
   selectedDate.value = date;
-}
+};
 
 const checkValidDate = () => {
   // selectedDate를 Date 객체로 변환
@@ -155,22 +195,22 @@ const checkValidDate = () => {
 
 const handleOnclick = async () => {
   if (!selectedDate.value) {
-    alert("재택근무 날짜를 선택하세요.");
+    alert('재택근무 날짜를 선택하세요.');
     return;
   }
 
   if (!checkValidDate()) {
-    alert("재택근무 날짜는 오늘보다 이전일 수 없습니다.");
+    alert('재택근무 날짜는 오늘보다 이전일 수 없습니다.');
     return;
   }
 
   if (!requestReason.value) {
-    alert("재택근무 사유를 입력하세요.");
+    alert('재택근무 사유를 입력하세요.');
     return;
   }
 
   if (requestReason.value.length > 20) {
-    alert("신청 사유는 20자 이내로 작성해주세요.");
+    alert('신청 사유는 20자 이내로 작성해주세요.');
     return;
   }
 
@@ -185,9 +225,9 @@ const handleOnclick = async () => {
   requestReason.value = ''; // 무한 요청 방지
 
   if (response.success) {
-    alert("재택근무 신청이 성공적으로 전송되었습니다.");
+    alert('재택근무 신청이 성공적으로 전송되었습니다.');
   } else {
-    alert("재택근무 신청 실패! 다시 시도해주세요.");
+    alert('재택근무 신청 실패! 다시 시도해주세요.');
   }
   window.location.reload();
 };
@@ -214,8 +254,9 @@ onMounted(() => {
 
 hr {
   width: 90%;
+  margin-top: 3rem;
   margin-bottom: 3rem;
-  border: 1px solid #DADADA;
+  border: 1px solid #dadada;
 }
 
 .h-7 {

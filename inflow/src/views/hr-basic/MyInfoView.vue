@@ -27,11 +27,16 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
 
+import { useRouter, useRoute } from 'vue-router';
+const router = useRouter();
+const route = useRoute();
+const subIdx = ref(0);
+
 const menuList = ref([
   { name: '개인신상관리', link: '/hr-basic/my-info' },
   { name: '근태 정보', link: '/hr-basic/attendance' },
   { name: '급여 및 수당', link: '/hr-basic/salary' },
-  { name: '계약서 서명', link: '/hr-basic/contract' },
+  { name: '계약서 서명', link: '/hr-basic/document' },
   { name: '내 부서 관리', link: '/hr-basic/my-department'},
 ]);
 
@@ -47,8 +52,6 @@ const subMenuList = ref([
 const eid = ref(null);
 const employeeName = ref('');
 
-const subIdx = ref(0);
-
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
@@ -60,6 +63,17 @@ onMounted(() => {
   if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+  }
+
+  const defaultUrl = '/hr-basic/my-info';
+  if(route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
+  }
+
+  const savedSubIdx = localStorage.getItem('subIdx');
+  if (savedSubIdx) {
+    subIdx.value = Number(savedSubIdx);
   }
 });
 </script>
