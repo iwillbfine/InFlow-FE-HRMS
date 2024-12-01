@@ -61,6 +61,16 @@ export const getEmpId = async (empCodes) => {
   }
 };
 
+export const getEducationsById = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/educations/${empId}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getQualifications = async () => {
   try {
     const response = await apiClient.get(`/employees/qualifications`);

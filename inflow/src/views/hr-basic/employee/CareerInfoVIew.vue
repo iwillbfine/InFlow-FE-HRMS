@@ -15,7 +15,7 @@
           <TableCell th fs="1.6rem">입사일</TableCell>
           <TableCell th fs="1.6rem">퇴사일</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in appointmentHistory" :key="index">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in careerList" :key="index">
           <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item['company_name'] }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
@@ -48,7 +48,7 @@ import { getCareersById } from '@/api/emp_attach';
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-const appointmentHistory = ref([]);
+const careerList = ref([]);
 const isEmpty = ref(true);
 
 const router = useRouter();
@@ -72,10 +72,10 @@ const fetchDate = async (empId) => {
 
   if (response) {
     const sortedResponse = sortByDate(response);
-    appointmentHistory.value = sortedResponse;
-    isEmpty.value = appointmentHistory.value.length === 0;
+    careerList.value = sortedResponse;
+    isEmpty.value = careerList.value.length === 0;
   } else {
-    appointmentHistory.value = [];
+    careerList.value = [];
     isEmpty.value = true;
   }
 };
@@ -84,17 +84,6 @@ const handleOnclick = () => {
   router.push('/hr-basic/my-info/careers/update');
 };
 
-const goSelectedPoint = (selectedData) => {
-  navigateTo('/hr-management/appointment/history', selectedData);
-};
-
-defineProps({
-  title: {
-    type: String,
-    required: false,
-    default: '',
-  },
-});
 </script>
   
 <style scoped>
