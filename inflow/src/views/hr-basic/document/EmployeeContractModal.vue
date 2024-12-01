@@ -35,9 +35,11 @@
         <div class="contract-container" ref="contractViewer">
           <h2 class="contract-title">표준 근로계약서</h2>
           <div class="contract">
+            <br>
             <p class="intro">
               <span class="highlight">{{ contractData.ceo_name }}</span> (이하 “사업주”라 함)과(와) <span class="highlight">{{ contractData.employee_name }}</span> (이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.
             </p>
+            <br>
             <p><strong>1. 근로계약기간:</strong> <span class="highlight">{{ contractData.contract_start_date }}</span>부터 <span class="highlight">{{ contractData.contract_end_date }}</span>까지</p>
             <p><strong>2. 근 무 장 소:</strong> <span class="highlight">{{ contractData.work_location }}</span></p>
             <p><strong>3. 업무의 내용:</strong> <span class="highlight">{{ contractData.job_description }}</span></p>
@@ -403,7 +405,9 @@ const saveContract = async () => {
 
 </script>
 
-<style scoped>.modal-overlay {
+<style scoped>
+
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
