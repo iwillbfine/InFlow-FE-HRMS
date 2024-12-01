@@ -167,7 +167,7 @@ const fetchBusinessTripRequestData = async (eid) => {
 
   if (response.success) {
     businessTripRequestList.value = response.content;
-    isEmpty.value = businessTripRequestList.value.isEmpty ? true : false;
+    isEmpty.value = businessTripRequestList.value.length === 0 ? true : false;
   } else {
     businessTripRequestList.value = [];
     isEmpty.value = true;

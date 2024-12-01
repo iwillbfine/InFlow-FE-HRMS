@@ -187,7 +187,7 @@ const fetchReturnRequestData = async (eid) => {
 
   if (response.success) {
     returnRequestList.value = response.content;
-    isEmpty.value = returnRequestList.value.isEmpty ? true : false;
+    isEmpty.value = returnRequestList.value.length === 0 ? true : false;
   } else {
     returnRequestList.value = [];
     isEmpty.value = true;

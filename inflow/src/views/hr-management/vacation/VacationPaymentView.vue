@@ -119,7 +119,7 @@ const fetchVacationPolicyData = async (year) => {
       });
     }
 
-    isEmpty.value = vacationPolicyList.value.isEmpty ? true : false;
+    isEmpty.value = vacationPolicyList.value.length === 0 ? true : false;
   } else {
     vacationPolicyList.value = [];
     isEmpty.value = true;

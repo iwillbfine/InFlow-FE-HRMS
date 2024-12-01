@@ -134,7 +134,7 @@ const fetchDispatchRequestData = async (eid, page, date) => {
   if (response.success) {
     dispatchRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = dispatchRequestList.value.isEmpty ? true : false;
+    isEmpty.value = dispatchRequestList.value.length === 0 ? true : false;
   } else {
     dispatchRequestList.value = [];
     pageInfo.value = {};

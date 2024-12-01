@@ -218,7 +218,7 @@ const fetchVacationRequestData = async (eid) => {
 
   if (response.success) {
     vacationRequestList.value = response.content;
-    isEmpty.value = vacationRequestList.value.isEmpty ? true : false;
+    isEmpty.value = vacationRequestList.value.length === 0 ? true : false;
   } else {
     vacationRequestList.value = [];
     isEmpty.value = true;

@@ -235,10 +235,8 @@ const fetchVacationTypeData = async () => {
         name: vacationType.vacation_type_name,
       });
     }
-    isEmpty.value = vacationTypeList.value.isEmpty ? true : false;
   } else {
     vacationTypeList.value = [];
-    isEmpty.value = true;
   }
 };
 
@@ -247,7 +245,7 @@ const fetchVacationPolicyData = async (year) => {
 
   if (response.success) {
     vacationPolicyList.value = response.content;
-    isEmpty.value = vacationPolicyList.value.isEmpty ? true : false;
+    isEmpty.value = vacationPolicyList.value.length === 0 ? true : false;
   } else {
     vacationPolicyList.value = [];
     isEmpty.value = true;

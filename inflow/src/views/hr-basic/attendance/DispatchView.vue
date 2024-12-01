@@ -167,7 +167,7 @@ const fetchDispatchRequestData = async (eid) => {
 
   if (response.success) {
     dispatchRequestList.value = response.content;
-    isEmpty.value = dispatchRequestList.value.isEmpty ? true : false;
+    isEmpty.value = dispatchRequestList.value.length === 0 ? true : false;
   } else {
     dispatchRequestList.value = [];
     isEmpty.value = true;
