@@ -101,8 +101,8 @@ export const getEmployeeByNumber = async (employeeNumber, token) => {
 export const getEmploymentCertificate = async (employeeId, purpose, token) => {
   try {
     const response = await apiClient.post('/employees/employment-certificate', {
-      employeeId, // 사원 ID
-      purpose, // 증명서 용도
+      employee_id: employeeId, // 사원 id
+      purpose:purpose, // 증명서 용도
     }, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -188,6 +188,28 @@ export const updateEmployeeInfo = async (employeeId, formData, token) => {
   } catch (error) {
     console.error('updateEmployeeInfo 에러:', error.response || error);
     throw error; // 에러를 호출한 쪽으로 전달
+  }
+};
+
+
+// 설명. 12. 사원별 계약서 등록
+export const registerEmployeeContract = async (contractId, file, token) => {
+  try {
+    const formData = new FormData();
+    formData.append('contract_id', contractId); // 계약서 ID
+    formData.append('contract_file', file); // 파일
+
+    const response = await apiClient.post('/employees/contracts', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data', // form-data 처리
+      },
+    });
+
+    return response.data; // 성공 메시지 반환
+  } catch (error) {
+    console.error('registerEmployeeContract 에러:', error.response || error);
+    throw error; // 에러 전달
   }
 };
 

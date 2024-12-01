@@ -1,19 +1,23 @@
 <template>
-  <CommonArticle label="초과근무 신청" minh="29rem" w="90%">
-    <TableItem gtc="2fr 4fr">
+  <CommonArticle label="초과근무 신청" w="90%">
+    <TableItem gtc="2fr 6fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">초과근무 시간</TableCell>
-        <TableCell class="h-7 pl-1 g-2" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" topl>초과근무 시간</TableCell>
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <strong>금일</strong>
-          <ThirtyMinuteDropDown @valid-time-selected="updateSelectedStartTime"></ThirtyMinuteDropDown>
+          <ThirtyMinuteDropDown
+            @valid-time-selected="updateSelectedStartTime"
+          ></ThirtyMinuteDropDown>
           <strong>~</strong>
           <strong v-if="isTommorow">익일</strong>
-          <ThirtyMinuteDropDown @valid-time-selected="updateSelectedEndTime"></ThirtyMinuteDropDown>
+          <ThirtyMinuteDropDown
+            @valid-time-selected="updateSelectedEndTime"
+          ></ThirtyMinuteDropDown>
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem">초과근무 사유</TableCell>
-        <TableCell class="h-7 pl-1" fs="1.6rem">
+        <TableCell class="h-7" th fs="1.6rem" botl>초과근무 사유</TableCell>
+        <TableCell class="h-7 pl-1" fs="1.6rem" botr>
           <input
             v-model="requestReason"
             class="reason-input"
@@ -25,41 +29,72 @@
         </TableCell>
       </TableRow>
     </TableItem>
-    <ButtonItem class="submit-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">신청</ButtonItem>
+    <ButtonItem
+      class="submit-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleOnclick"
+      >신청</ButtonItem
+    >
   </CommonArticle>
-  <hr/>
-  <CommonArticle class="pos-rel" label="초과근무 신청 내역" minh="38rem" w="90%">
+  <hr />
+  <CommonArticle class="pos-rel" label="초과근무 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">초과근무 시간</TableCell>
         <TableCell th fs="1.6rem">초과근무 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
-      <TableRow v-if="!isEmpty" v-for="(item, index) in overtimeRequestList" :key="index">
-        <TableCell class="mid" fs="1.6rem">{{ item.attendance_request_id }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date) }}</TableCell>
+      <TableRow
+        v-for="(item, index) in overtimeRequestList"
+        v-if="!isEmpty"
+        :key="index"
+      >
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === overtimeRequestList.length - 1"
+          >{{ item.attendance_request_id }}</TableCell
+        >
+        <TableCell class="mid" fs="1.6rem">{{
+          parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date)
+        }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseDate(item.created_at) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ parseRequestStatus(item.request_status) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
-          <span v-if="item.cancel_status=='Y'">취소 완료</span>
-            <ButtonItem
-              v-else-if="item.cancel_status=='N' && item.request_status=='WAIT'"
-              h="3rem"
-              w="6.4rem"
-              br="0.4rem"
-              fs="1.2rem"
-              bgc="#003566"
-              c="#fff"
-              @click="toggleCancelRequestModal"
-            >
-              취소 요청
-            </ButtonItem>
-            <span v-else>-</span>
+        <TableCell class="mid" fs="1.6rem">{{
+          parseDate(item.created_at)
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{
+          parseRequestStatus(item.request_status)
+        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === overtimeRequestList.length - 1"
+        >
+          <span v-if="item.cancel_status == 'Y'">취소 완료</span>
+          <ButtonItem
+            v-else-if="
+              item.cancel_status == 'N' && item.request_status == 'WAIT'
+            "
+            h="3rem"
+            w="6.4rem"
+            br="0.4rem"
+            fs="1.2rem"
+            bgc="#003566"
+            c="#fff"
+            @click="toggleCancelRequestModal(item)"
+          >
+            취소 요청
+          </ButtonItem>
+          <span v-else>-</span>
         </TableCell>
       </TableRow>
     </TableItem>
@@ -73,7 +108,11 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+    <CancelRequestModal
+      v-if="isModalOpen"
+      :item="tryCancelItem"
+      @close="toggleCancelRequestModal"
+    ></CancelRequestModal>
   </CommonArticle>
 </template>
 
@@ -86,10 +125,13 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import ThirtyMinuteDropDown from '@/components/dropdowns/ThirtyMinuteDropDown.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getOvertimeRequestPreviewsByEmployeeId, createOvertimeRequest } from '@/api/attendance';
+import {
+  getOvertimeRequestPreviewsByEmployeeId,
+  createOvertimeRequest,
+} from '@/api/attendance';
 
 const eid = ref(null);
 const overtimeRequestList = ref([]);
@@ -103,6 +145,8 @@ const selectedEndTime = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
 
+const tryCancelItem = ref(null);
+
 const router = useRouter();
 
 const fetchOvertimeRequestData = async (eid) => {
@@ -110,16 +154,17 @@ const fetchOvertimeRequestData = async (eid) => {
 
   if (response.success) {
     overtimeRequestList.value = response.content;
-    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
+    isEmpty.value = overtimeRequestList.value.length === 0 ? true : false;
   } else {
     overtimeRequestList.value = [];
     isEmpty.value = true;
   }
-}
+};
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
-}
+};
 
 // 일까지 파싱
 const parseDate = (dateStr) => {
@@ -131,7 +176,7 @@ const parseDate = (dateStr) => {
 
   const formattedDate = `${year}년 ${month}월 ${day}일`;
   return formattedDate;
-}
+};
 
 // 시간만 파싱
 const parseTime = (dateStr) => {
@@ -142,24 +187,26 @@ const parseTime = (dateStr) => {
 
   const formattedDate = `${hour}시 ${minute}분`;
   return formattedDate;
-}
+};
 
 const parseRequestStatus = (status) => {
   switch (status) {
-    case 'ACCEPT': return '승인됨';
-    case 'REJECT': return '반려됨';
-    default: return '대기중';
+    case 'ACCEPT':
+      return '승인됨';
+    case 'REJECT':
+      return '반려됨';
+    default:
+      return '대기중';
   }
-}
+};
 
 const updateSelectedStartTime = (time) => {
   selectedStartTime.value = time;
 
   // 현재 날짜와 시간 가져오기
   const currentDate = new Date();
-  selectedStartDate.value =
-  `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}${time}`;
-}
+  selectedStartDate.value = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}${time}`;
+};
 
 const updateSelectedEndTime = (time) => {
   selectedEndTime.value = time;
@@ -169,7 +216,7 @@ const updateSelectedEndTime = (time) => {
 
   // "T" 이후 시간을 분리하여 시각을 가져옵니다
   const timePart = time.substring(1); // "T" 이후 부분만 추출
-  const [hour, minute] = timePart.split(":"); // 시와 분을 분리
+  const [hour, minute] = timePart.split(':'); // 시와 분을 분리
 
   // 시각을 Date 객체로 변환
   const selectedTime = new Date(currentDate);
@@ -188,7 +235,7 @@ const updateSelectedEndTime = (time) => {
     selectedEndDate.value = `${tomorrow.getFullYear()}-${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}${time}`;
     isTommorow.value = true;
   }
-}
+};
 
 const checkValidDate = () => {
   // selectedStartDate와 selectedEndDate가 Date 객체라면 getTime()을 사용하여 시간을 밀리초로 반환
@@ -211,42 +258,49 @@ const checkValidDate = () => {
 
 const handleOnclick = async () => {
   if (!selectedStartTime.value) {
-    alert("초과근무 시작 시간을 선택하세요.");
+    alert('초과근무 시작 시간을 선택하세요.');
     return;
   }
 
   if (!selectedEndTime.value) {
-    alert("초과근무 종료 시간을 선택하세요.");
+    alert('초과근무 종료 시간을 선택하세요.');
     return;
   }
 
   if (selectedStartDate.value) {
+    const today = new Date();
+
     const startDate = new Date(selectedStartDate.value);
     const startHour = startDate.getHours();
 
     if (startHour < 18) {
-      alert("초과근무 시작 시간은 18시 이후여야 합니다.");
+      alert('초과근무 시작 시간은 18시 이후여야 합니다.');
+      return;
+    }
+
+    if (startDate.getTime() < today.getTime()) {
+      alert('시작 시간은 현재 시간보다 이전일 수 없습니다.');
       return;
     }
   }
 
   if (selectedStartTime.value == selectedEndTime.value) {
-    alert("초과근무 시작 시간과 종료시간이 동일합니다.");
+    alert('초과근무 시작 시간과 종료시간이 동일합니다.');
     return;
   }
 
   if (!checkValidDate()) {
-    alert("초과근무 시간은 하루 최대 4시간 까지 입니다.");
+    alert('초과근무 시간은 하루 최대 4시간 까지 입니다.');
     return;
   }
 
   if (!requestReason.value) {
-    alert("초과근무 사유를 입력하세요.");
+    alert('초과근무 사유를 입력하세요.');
     return;
   }
 
   if (requestReason.value.length > 20) {
-    alert("신청 사유는 20자 이내로 작성해주세요.");
+    alert('신청 사유는 20자 이내로 작성해주세요.');
     return;
   }
 
@@ -265,9 +319,9 @@ const handleOnclick = async () => {
   requestReason.value = ''; // 무한 요청 방지
 
   if (response.success) {
-    alert("초과근무 신청이 성공적으로 전송되었습니다.");
+    alert('초과근무 신청이 성공적으로 전송되었습니다.');
   } else {
-    alert("초과근무 신청 실패! 다시 시도해주세요.");
+    alert('초과근무 신청 실패! 다시 시도해주세요.');
   }
   window.location.reload();
 };
@@ -294,8 +348,9 @@ onMounted(() => {
 
 hr {
   width: 90%;
+  margin-top: 3rem;
   margin-bottom: 3rem;
-  border: 1px solid #DADADA;
+  border: 1px solid #dadada;
 }
 
 .h-7 {

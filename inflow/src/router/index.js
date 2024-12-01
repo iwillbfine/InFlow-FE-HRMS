@@ -13,7 +13,6 @@ import EmployeeUploadView from '@/views/hr-management/EmployeeUploadView.vue';
 import DepartmentManagementView from '@/views/hr-management/DepartmentManagementView .vue';
 import AppointmentManagementView from '@/views/hr-management/AppointmentManagementView.vue';
 import EvalManagementView from '@/views/hr-management/EvalManagementView.vue';
-import ContractManagementView from '@/views/hr-management/ContractManagementView.vue';
 import VacationManagementView from '@/views/hr-management/VacationManagementView.vue';
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
 import StatisticsView from '@/views/statistics/StatisticsView.vue';
@@ -46,6 +45,9 @@ import DispatchRequestsView from '@/views/hr-basic/attendance/DispatchRequestsVi
 import SalaryManagementView from '@/views/hr-management/SalaryManagementView.vue';
 import AppointmentsUploadView from '@/views/hr-management/appointment/AppointmentUploadView.vue';
 import AppointmentsHistoryView from '@/views/hr-management/appointment/AppointmentHistoryView.vue';
+import SalaryDetailView from '@/views/hr-basic/salary/SalaryDetailView.vue';
+import SalaryListView from '@/views/hr-basic/salary/SalaryListView.vue';
+import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
@@ -57,6 +59,9 @@ import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView
 import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
 import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
 
+// 인사기본- 계약서
+import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
+import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 
 const routes = [
   {
@@ -135,7 +140,6 @@ const routes = [
       },
     ],
   },
-
   {
     path: '/hr-basic/attendance',
     name: 'hr-basic-attendance',
@@ -227,12 +231,52 @@ const routes = [
     path: '/hr-basic/salary',
     name: 'hr-basic-salary',
     component: SalaryView,
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-salary-default',
+        redirect: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}`,
+      },
+      {
+        path: 'detail/:employeeId',
+        name: 'hr-basic-salary-detail',
+        component: SalaryDetailView,
+      },
+      {
+        path: 'list/:employeeId',
+        name: 'hr-basic-salary-list',
+        component: SalaryListView,
+      },
+      {
+        path: 'severance-pay',
+        name: 'hr-basic-severance-pay',
+        component: SeverancePayView,
+      }
+    ]
   },
+   // 인사기본- 계약서서명 및 재직 증명서
   {
-    path: '/hr-basic/contract',
-    name: 'hr-basic-contract',
+    path: '/hr-basic/document',
+    name: 'hr-basic-document',
     component: ContractView,
-  },
+    children: [
+      {
+        path: '',
+        name: 'hr-basic-document-default',
+        component: ContractSignView,
+      },
+      {
+        path: 'contract',
+        name: 'hr-basic-document-contract',
+        component: ContractSignView,
+      },
+      {
+        path: 'certificate',
+        name: 'hr-basic-document-certificate',
+        component: CertificateView,
+      },
+      ]
+  }, 
   {
     path: '/hr-basic/my-department',
     name: 'hr-basic-my-department',
@@ -317,11 +361,6 @@ const routes = [
     path: '/hr-management/evaluation',
     name: 'hr-management-evaluation',
     component: EvalManagementView,
-  },
-  {
-    path: '/hr-management/contract',
-    name: 'hr-management-contract',
-    component: ContractManagementView,
   },
   {
     path: '/hr-management/vacation',

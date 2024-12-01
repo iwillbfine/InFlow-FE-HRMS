@@ -2,7 +2,7 @@
   <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="7" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="6" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
@@ -26,7 +26,6 @@ const menuList = ref([
   { name: '부서 관리', link: '/hr-management/department' },
   { name: '인사발령', link: '/hr-management/appointment' },
   { name: '과제 및 평가', link: '/hr-management/evaluation' },
-  { name: '계약서 서명', link: '/hr-management/contract' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
