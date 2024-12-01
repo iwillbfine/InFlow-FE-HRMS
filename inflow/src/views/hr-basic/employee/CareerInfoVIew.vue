@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'경력 정보'" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="'경력'" class="ca" w="90%"></CommonArticle>
     <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">수정</ButtonItem>
   </FlexItem>
 
@@ -96,6 +96,10 @@ const handleOnclick = () => {
 
 .content-header ::v-deep(article > div.article-label) {
   font-size: 2rem !important;
+}
+
+.ca {
+  margin-left: 2rem;
 }
 
 .content-body {

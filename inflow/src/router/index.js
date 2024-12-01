@@ -51,14 +51,16 @@ import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
 import DisciplineRewardInfoView from '@/views/hr-basic/employee/DisciplineRewardInfoView.vue';
 import EducationInfoView from '@/views/hr-basic/employee/EducationInfoView.vue';
 import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView.vue';
 import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView.vue';
 import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
-import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
-import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateVIew.vue';
+import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateView.vue';
+import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateView.vue';
+import QualificationInfoUpdateView from '@/views/hr-basic/employee/QualificationInfoUpdateView.vue';
+import LanguageTestInfoUpdateView from '@/views/hr-basic/employee/LanguageTestInfoUpdateView.vue';
 
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
@@ -140,9 +142,19 @@ const routes = [
         component: LanguageTestInfoView,
       },
       {
+        path: 'languagetests/update',
+        name: 'language-test-update',
+        component: LanguageTestInfoUpdateView,
+      },
+      {
         path: 'qualifications',
         name: 'qualification',
         component: QualificationInfoView,
+      },
+      {
+        path: 'qualifications/update',
+        name: 'qualification-update',
+        component: QualificationInfoUpdateView,
       },
     ],
   },
