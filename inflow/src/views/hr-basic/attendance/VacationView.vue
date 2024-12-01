@@ -127,7 +127,7 @@
             fs="1.2rem"
             bgc="#003566"
             c="#fff"
-            @click="toggleCancelRequestModal"
+            @click="toggleCancelRequestModal(item)"
           >
             취소 요청
           </ButtonItem>
@@ -145,7 +145,11 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+    <CancelRequestModal
+      v-if="isModalOpen"
+      :item="tryCancelItem"
+      @close="toggleCancelRequestModal"
+    ></CancelRequestModal>
   </CommonArticle>
 </template>
 
@@ -158,7 +162,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import FileItem from '@/components/common/FileItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
 import LiItem from '@/components/semantic/LiItem.vue';
@@ -184,6 +188,8 @@ const selectedStartDate = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
 const fileList = ref([]);
+
+const tryCancelItem = ref(null);
 
 const router = useRouter();
 
@@ -238,7 +244,8 @@ const handleRemoveFile = (index) => {
   fileList.value.splice(index, 1);
 };
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
 };
 

@@ -273,3 +273,17 @@ export const getLeaveReturnsByEmployeeId = async (eid, page) => {
     throw error;
   }
 };
+
+// 21. 근태 취소 신청
+export const cancelAttendanceRequest = async (id, formData) => {
+  try {
+    const response = await apiClient.patch(
+      `/attendance-requests/${id}`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error('cancelAttendanceRequest 에러:', error);
+    throw error;
+  }
+};

@@ -145,3 +145,17 @@ export const getLeftAllVacationsByEmployeeId = async (eid) => {
     throw error;
   }
 };
+
+// 13. 휴가 신청 취소
+export const cancelVacationRequest = async (id, formData) => {
+  try {
+    const response = await apiClient.patch(
+      `/vacation-requests/${id}`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error('createVacation 에러:', error);
+    throw error;
+  }
+};
