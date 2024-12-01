@@ -58,6 +58,7 @@ import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView
 import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView.vue';
 import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
 import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
+import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateVIew.vue';
 
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
@@ -122,6 +123,11 @@ const routes = [
         path: 'educations',
         name: 'education',
         component: EducationInfoView,
+      },
+      {
+        path: 'educations/update',
+        name: 'education-update',
+        component: EducationInfoUpdateView,
       },
       {
         path: 'familymembers',
