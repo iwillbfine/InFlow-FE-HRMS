@@ -9,7 +9,7 @@
                 @click="toggleExpand">
                 <!-- 하위 부서가 존재하는 경우  -->
                 <!-- <img :src="isExpanded ? '@/assets/icons/fold.png' : '@/assets/icons/unfold.png'" alt="">             -->
-                {{isExpanded ? '&#8250; ' : '⌵'}}
+                {{isExpanded ? '&#8250; ' : '⌵ '}}
             </span>
             <span
                 class="department-name"
