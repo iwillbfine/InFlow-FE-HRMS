@@ -27,9 +27,9 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '평가 내역', link: '/evaluation/leader/1' },
-  { name: '부서 과제 등록 및 할당', link: '/evaluation/leader/2'  },
-  { name: '피드백 등록 및 조회', link: '/evaluation/leader/2'  },
+  { name: '평가 내역', link: '/evaluation/leader/eval-list' },
+  { name: '부서 과제 등록 및 할당', link: '/evaluation/leader/dept-task' },
+  { name: '피드백 등록 및 조회', link: '/evaluation/leader/feedback' }
 ]);
 
 const router = useRouter();

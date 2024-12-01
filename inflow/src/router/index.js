@@ -8,6 +8,9 @@ import ContractView from '@/views/hr-basic/ContractView.vue';
 import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
 import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
 import PersonalEvalCreateAndFindView from '@/views/evaluation/PersonalEvalCreateAndFindView.vue';
+import DeptTaskManageView from '@/views/evaluation/DeptTaskManageView.vue';
+import FeedbackManageView from '@/views/evaluation/FeedbackManageView.vue';
+import LeaderEvalListView from '@/views/evaluation/LeaderEvalListView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
 import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
@@ -413,11 +416,28 @@ const routes = [
       }
     ]
 },
-  {
-    path: '/evaluation/leader',
-    name: 'leader-evaluation',
-    component: LeaderEvalView,
-  },
+{
+  path: '/evaluation/leader',
+  name: 'leader-evaluation', 
+  component: LeaderEvalView,
+  children: [
+    {
+      path: 'eval-list',
+      name: 'leader-evaluation-list',
+      component: LeaderEvalListView
+    },
+    {
+      path: 'dept-task', 
+      name: 'dept-task-management',
+      component: DeptTaskManageView
+    },
+    {
+      path: 'feedback',
+      name: 'feedback-management', 
+      component: FeedbackManageView
+    }
+  ]
+},
   {
     path: '/evaluation/task',
     name: 'evaluation-task',
