@@ -132,7 +132,7 @@ const fetchRemoteRequestData = async (eid, page, date) => {
   if (response.success) {
     remoteRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = remoteRequestList.value.isEmpty ? true : false;
+    isEmpty.value = remoteRequestList.value.length === 0 ? true : false;
   } else {
     remoteRequestList.value = [];
     pageInfo.value = {};

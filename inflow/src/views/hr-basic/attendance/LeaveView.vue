@@ -181,7 +181,7 @@ const fetchLeaveRequestData = async (eid) => {
 
   if (response.success) {
     leaveRequestList.value = response.content;
-    isEmpty.value = leaveRequestList.value.isEmpty ? true : false;
+    isEmpty.value = leaveRequestList.value.length === 0 ? true : false;
   } else {
     leaveRequestList.value = [];
     isEmpty.value = true;

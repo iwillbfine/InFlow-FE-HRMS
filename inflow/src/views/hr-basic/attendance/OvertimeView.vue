@@ -154,7 +154,7 @@ const fetchOvertimeRequestData = async (eid) => {
 
   if (response.success) {
     overtimeRequestList.value = response.content;
-    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
+    isEmpty.value = overtimeRequestList.value.length === 0 ? true : false;
   } else {
     overtimeRequestList.value = [];
     isEmpty.value = true;

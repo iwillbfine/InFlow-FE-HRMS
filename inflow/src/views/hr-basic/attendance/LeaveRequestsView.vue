@@ -132,7 +132,7 @@ const fetchLeaveRequestData = async (eid, page, date) => {
   if (response.success) {
     leaveRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = leaveRequestList.value.isEmpty ? true : false;
+    isEmpty.value = leaveRequestList.value.length === 0 ? true : false;
   } else {
     leaveRequestList.value = [];
     pageInfo.value = {};
