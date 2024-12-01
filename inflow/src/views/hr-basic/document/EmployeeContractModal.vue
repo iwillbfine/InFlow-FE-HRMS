@@ -73,7 +73,7 @@
                       <span>대표자:</span>
                       <span class="highlight">{{ contractData.ceo_name }}</span>
                       <div class="signature-image-container">
-                        <img :src="contractData.ceo_signature" alt="서명" class="signature-image" />
+                        <img :src="contractData.ceo_signature" alt="서명" class="signature-image" crossOrigin="true" />
                         <span class="signature-text">(서명)</span>
                       </div>
                     </div>
@@ -100,41 +100,38 @@
             </div>
           </div>
         </div>
-  
-     <!-- 서명 캔버스 모달 -->
-     <div v-if="isSignaturePadOpen" class="signature-modal-overlay" @click.self="closeSignaturePad">
-  <div class="signature-modal-content">
-    <h3>서명 입력</h3>
-    <div class="signature-container">
-      <canvas
-        ref="signatureCanvas"
-        class="signature-canvas"
-        @mousedown="startDrawing"
-        @mousemove="draw"
-        @mouseup="stopDrawing"
-        @mouseleave="stopDrawing"
-        @touchstart.prevent="startDrawing"
-        @touchmove.prevent="draw"
-        @touchend.prevent="stopDrawing"
-      ></canvas>
-    </div>
-    <div class="modal-actions">
-        <button @click="clearSignature" class="btn clear-btn">
-            <i class="fas fa-eraser"></i> 초기화
-        </button>
-        <button @click="saveSignature" class="btn save-btn">
-            <i class="fas fa-pen-nib"></i> 서명 등록하기
-        </button>
-        <button @click="closeSignaturePad" class="btn close-btn">
-            <i class="fas fa-times"></i> 닫기
-        </button>
-    </div>
-  </div>
+            <!-- 서명 캔버스 모달 -->
+            <div v-if="isSignaturePadOpen" class="signature-modal-overlay" @click.self="closeSignaturePad">
+                <div class="signature-modal-content">
+                    <h3>서명 입력</h3>
+                    <div class="signature-container">
+                    <canvas
+                        ref="signatureCanvas"
+                        class="signature-canvas"
+                        @mousedown="startDrawing"
+                        @mousemove="draw"
+                        @mouseup="stopDrawing"
+                        @mouseleave="stopDrawing"
+                        @touchstart.prevent="startDrawing"
+                        @touchmove.prevent="draw"
+                        @touchend.prevent="stopDrawing"
+                    ></canvas>
+                    </div>
+                    <div class="modal-actions">
+                        <button @click="clearSignature" class="btn clear-btn">
+                            <i class="fas fa-eraser"></i> 초기화
+                        </button>
+                        <button @click="saveSignature" class="btn save-btn">
+                            <i class="fas fa-pen-nib"></i> 서명 등록하기
+                        </button>
+                        <button @click="closeSignaturePad" class="btn close-btn">
+                            <i class="fas fa-times"></i> 닫기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
-
-  </div>
-  </div>
-
 </template>
   
   
@@ -159,6 +156,8 @@ const employeeSignature = ref(""); // 근로자 서명 데이터
 const isSignaturePadOpen = ref(false); // 서명 모달 열림 여부
 const signatureCanvas = ref(null); // 캔버스 참조
 let canvasContext = null; // 캔버스 드로잉 컨텍스트
+
+const isSubmitting = ref(false); // 로딩 상태를 관리하는 변수
 
 // 서명 캔버스 열기
 const openSignaturePad = async () => {
@@ -271,46 +270,135 @@ const formatDateTime = (datetime) => {
 
 
 // 계약서 등록 메서드
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
-const isSubmitting = ref(false);
+// // 계약서 저장 메서드
+// const saveContract = async () => {
+//   try {
+//     const contractId = props.contractData.contract_id; // 계약서 ID 가져오기
 
-// 계약서 등록 메서드
+//     if (!employeeSignature.value) {
+//       alert('서명을 등록해야 계약서를 제출할 수 있습니다.');
+//       return;
+//     }
+
+//     // 계약서 HTML 엘리먼트 가져오기
+//     const contractElement = contractViewer.value;
+//     if (!contractElement) {
+//       alert('계약서 내용을 찾을 수 없습니다.');
+//       return;
+//     }
+
+//     // HTML 캡처 전 스타일 조정
+//     const originalOverflow = contractElement.style.overflow; // 기존 overflow 저장
+//     const originalMaxHeight = contractElement.style.maxHeight; // 기존 maxHeight 저장
+
+//     // 스크롤 제거
+//     contractElement.style.overflow = 'visible';
+//     contractElement.style.maxHeight = 'none';
+
+//     // HTML을 캡처하여 Canvas로 변환 (전체 영역 캡처)
+//     const canvas = await html2canvas(contractElement, {
+//       scale: 2, // 고화질을 위해 배율 설정
+//       useCORS: true, // 크로스 도메인 이미지 문제 해결
+//       scrollY: 0, // 스크롤 위치 무시
+//       windowHeight: contractElement.scrollHeight, // DOM 전체 높이를 기준으로 캡처
+//     });
+
+//     // 원래 스타일 복원
+//     contractElement.style.overflow = originalOverflow;
+//     contractElement.style.maxHeight = originalMaxHeight;
+
+//     const imgData = canvas.toDataURL('image/png'); // Canvas 데이터를 이미지로 변환
+
+//     // PDF에 이미지 추가
+//     const pdf = new jsPDF('p', 'mm', 'a4'); // A4 크기의 PDF 생성
+//     const pdfWidth = 210; // A4 너비 (단위: mm)
+//     const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // 비율 유지
+
+//     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+//     // PDF 파일 다운로드
+//     const pdfFileName = `contract_${contractId}.pdf`;
+//     pdf.save(pdfFileName); // 파일 다운로드
+
+//     alert('PDF 파일이 성공적으로 다운로드되었습니다!');
+//   } catch (error) {
+//     console.error('PDF 생성 실패:', error);
+//     alert('PDF를 생성하는 데 실패했습니다.');
+//   }
+// };
+
 const saveContract = async () => {
   try {
-    const token = localStorage.getItem('authToken'); // 인증 토큰 가져오기
     const contractId = props.contractData.contract_id; // 계약서 ID 가져오기
-    const file = employeeSignature.value; // 서명된 파일 (Base64 이미지 등)
-    
-    if (!file) {
+
+    if (!employeeSignature.value) {
       alert('서명을 등록해야 계약서를 제출할 수 있습니다.');
       return;
     }
 
-    // Base64 데이터를 Blob으로 변환 (예: canvas의 데이터 URL 처리)
-    const blob = await fetch(file).then((res) => res.blob());
-    const fileName = `contract_${contractId}.png`; // 파일 이름 지정
-    const signatureFile = new File([blob], fileName, { type: 'image/png' });
+    // 계약서 HTML 엘리먼트 가져오기
+    const contractElement = contractViewer.value;
+    if (!contractElement) {
+      alert('계약서 내용을 찾을 수 없습니다.');
+      return;
+    }
 
-    // API 호출
-    const response = await registerEmployeeContract(contractId, signatureFile, token);
-    console.log('계약서 등록 성공:', response);
+    // 로딩 상태 시작
+    isSubmitting.value = true;
 
-    alert('계약서가 성공적으로 등록되었습니다!');
-    emit('close'); // 모달 닫기
+    // HTML 캡처 전 스타일 조정
+    const originalOverflow = contractElement.style.overflow; // 기존 overflow 저장
+    const originalMaxHeight = contractElement.style.maxHeight; // 기존 maxHeight 저장
+
+    // 스크롤 제거
+    contractElement.style.overflow = 'visible';
+    contractElement.style.maxHeight = 'none';
+
+    // HTML을 캡처하여 Canvas로 변환 (전체 영역 캡처)
+    const canvas = await html2canvas(contractElement, {
+      scale: 2, // 고화질을 위해 배율 설정
+      useCORS: true, // 크로스 도메인 이미지 문제 해결
+      scrollY: 0, // 스크롤 위치 무시
+      windowHeight: contractElement.scrollHeight, // DOM 전체 높이를 기준으로 캡처
+    });
+
+    // 원래 스타일 복원
+    contractElement.style.overflow = originalOverflow;
+    contractElement.style.maxHeight = originalMaxHeight;
+
+    const imgData = canvas.toDataURL('image/png'); // Canvas 데이터를 이미지로 변환
+
+    // PDF에 이미지 추가
+    const pdf = new jsPDF('p', 'mm', 'a4'); // A4 크기의 PDF 생성
+    const pdfWidth = 210; // A4 너비 (단위: mm)
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // 비율 유지
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    // PDF 파일 Blob 생성
+    const pdfBlob = pdf.output('blob'); // PDF를 Blob 형태로 변환
+
+    // S3에 업로드
+    const accessToken = localStorage.getItem('accessToken'); // 로컬 스토리지에서 토큰 가져오기
+
+    const response = await registerEmployeeContract(contractId, pdfBlob, accessToken);
+
+    alert('PDF 파일이 성공적으로 업로드되었습니다!');
+    console.log('업로드 결과:', response);
+
+    // 모달 닫기
+    emit('close'); // 상위 컴포넌트에 close 이벤트 전달
   } catch (error) {
-    console.error('계약서 등록 실패:', error);
-    alert('계약서를 등록하는 데 실패했습니다.');
+    console.error('PDF 생성 및 업로드 실패:', error);
+    alert('PDF를 생성하거나 업로드하는 데 실패했습니다.');
+  } finally {
+    // 로딩 상태 종료
+    isSubmitting.value = false;
   }
 };
-
-
-
-onMounted(() => {
-  if (contractViewer.value) {
-
-    console.log("props.contractData", props.contractData);
-  }
-});
 
 
 </script>
@@ -359,7 +447,7 @@ onMounted(() => {
   .contract-container {
     overflow-y: auto;
     transform-origin: center top; /* 줌의 기준점을 설정 */
-    max-height: 60vh;
+    max-height: 80vh;
     padding: 5rem;
     border: 1px solid #ddd;
   }
@@ -367,7 +455,7 @@ onMounted(() => {
   .contract {
     font-family: "Arial", sans-serif;
     line-height: 1.8;
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
   
   .highlight {
