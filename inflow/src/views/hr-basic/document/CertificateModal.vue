@@ -35,7 +35,7 @@
               <i class="fas fa-print"></i> 인쇄
             </template>
           </button>
-          
+
         </div>
         <div class="center-controls">
           <button class="btn zoom-in-btn" @click="zoomIn">
@@ -56,26 +56,71 @@
       </div>
 
       <!-- 재직증명서 내용 -->
-      <div class="certificate-container" ref="certificateViewer">
-        <h2 class="certificate-title">재직증명서</h2>
-        <p><strong>사원명:</strong> <span class="highlight">{{ certificateData.employee_name }}</span></p>
-        <p><strong>생년월일:</strong> <span class="highlight">{{ certificateData.birth_date }}</span></p>
-        <p><strong>주소:</strong> <span class="highlight">{{ certificateData.address }}</span></p>
-        <p><strong>부서:</strong> <span class="highlight">{{ certificateData.department_name }}</span></p>
-        <p><strong>직위:</strong> <span class="highlight">{{ certificateData.position_name }}</span></p>
-        <p><strong>발급 목적:</strong> <span class="highlight">{{ certificateData.purpose }}</span></p>
-        <p><strong>회사명:</strong> <span class="highlight">{{ certificateData.company_name }}</span></p>
-        <p><strong>회사 주소:</strong> <span class="highlight">{{ certificateData.company_address }}</span></p>
-        <p><strong>대표자:</strong> <span class="highlight">{{ certificateData.ceo_name }}</span></p>
-        <p><strong>사업자등록번호:</strong> <span class="highlight">{{ certificateData.business_registration_number }}</span></p>
-        <p><strong>발급일:</strong> <span class="highlight">{{ formatDateTime(certificateData.issue_date) }}</span></p>
-        <p class="certificate-content">
-          {{ certificateData.content }}
-        </p>
-        <div class="stamp-container">
-          <img :src="certificateData.company_stamp_url" alt="회사 직인" class="stamp-image" crossOrigin="true"/>
+      <div class="certificate-wrapper" ref="certificateViewer">
+        <div class="certificate-print-wrapper">
+          <h2 class="certificate-title">재직증명서</h2>
+          <div class="certificate-details">
+            <table class="certificate-table">
+              <tr>
+                <td class="label">소속</td>
+                <td class="value">{{ certificateData.department_name }}</td>
+                <td class="label">직위</td>
+                <td class="value">{{ certificateData.position_name }}</td>
+              </tr>
+              <tr>
+                <td class="label">성명</td>
+                <td class="value">{{ certificateData.employee_name }}</td>
+                <td class="label">생년월일</td>
+                <td class="value">{{ certificateData.birth_date }}</td>
+              </tr>
+              <tr>
+                <td class="label">입사일</td>
+                <td class="value">{{ certificateData.join_date }}</td>
+                <td class="label">주소</td>
+                <td class="value">{{ certificateData.address }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="certificate-content">
+            <p>{{ certificateData.content }}</p>
+          </div>
+
+          <div class="certificate-footer">
+            <table class="footer-table">
+              <tr>
+                <td class="label">발급 목적</td>
+                <td class="value">{{ certificateData.purpose }}</td>
+              </tr>
+              <tr>
+                <td class="label">회사명</td>
+                <td class="value">{{ certificateData.company_name }}</td>
+              </tr>
+              <tr>
+                <td class="label">회사 주소</td>
+                <td class="value">{{ certificateData.company_address }}</td>
+              </tr>
+              <tr>
+                <td class="label">사업자등록번호</td>
+                <td class="value">{{ certificateData.business_registration_number }}</td>
+              </tr>
+              <tr>
+                <td class="label">대표자</td>
+                <td class="value">{{ certificateData.ceo_name }}</td>
+              </tr>
+            </table>
+            <div class="stamp-container">
+              <img :src="certificateData.company_stamp_url" alt="회사 직인" class="stamp-image" crossOrigin="true" />
+            </div>
+          </div>
         </div>
       </div>
+
+
+
+
+
+
     </div>
   </div>
 </template>
@@ -199,62 +244,64 @@ const downloadCertificate = async () => {
 
 // 증명서 인쇄
 const printCertificate = async () => {
-  const certificateElement = certificateViewer.value;
-  if (!certificateElement) {
-    alert('증명서를 찾을 수 없습니다.');
-    return;
-  }
+  try {
+    const certificateElement = certificateViewer.value; // 증명서 HTML 요소 가져오기
+    if (!certificateElement) {
+      alert("증명서를 찾을 수 없습니다.");
+      return;
+    }
 
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) return;
+    // 로딩 상태 시작
+    isPrinting.value = true;
 
-  // 로딩 상태 시작
-  isPrinting.value = true;
+    // HTML을 캡처하여 Canvas로 변환
+    const canvas = await html2canvas(certificateElement, {
+      scale: 2, // 고화질
+      useCORS: true, // 크로스 도메인 이미지 해결
+    });
 
-  // 새 창에 증명서 내용을 작성
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>재직증명서</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-          .certificate { max-width: 800px; margin: auto; }
-        </style>
-      </head>
-      <body>
-        ${certificateElement.outerHTML}
-      </body>
-    </html>
-  `);
+    const imgData = canvas.toDataURL("image/png"); // Canvas 데이터를 이미지로 변환
+    const pdf = new jsPDF("p", "mm", "a4"); // A4 용지 PDF 생성
+    const pdfWidth = 210; // A4 너비 (단위: mm)
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // 비율 유지
 
-  printWindow.document.close();
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight); // PDF에 이미지 추가
 
-  // DOM 렌더링 완료 후 인쇄
-  printWindow.onload = async () => {
-    try {
-      printWindow.focus();
-      printWindow.print();
+    // PDF 파일 이름 설정
+    const companyName = props.certificateData.company_name.replace(/[\s]/g, "_");
+    const employeeName = props.certificateData.employee_name.replace(/[\s]/g, "_");
+    const issueDate = props.certificateData.issue_date.replace(/-/g, "");
+    const pdfFileName = `${companyName}_${employeeName}_재직증명서_${issueDate}.pdf`;
 
-      // 인쇄 완료 또는 취소 후 로딩 상태 종료
-      printWindow.onafterprint = () => {
-        isPrinting.value = false;
-        printWindow.close();
-      };
-    } catch (error) {
-      console.error('인쇄 중 오류:', error);
+    // PDF Blob 생성 및 URL 변환
+    const pdfBlob = pdf.output("blob");
+    const pdfURL = URL.createObjectURL(pdfBlob);
+
+    // 새 창에서 PDF 미리보기 열기
+    const printWindow = window.open(pdfURL, "_blank");
+    if (!printWindow) {
+      alert("팝업이 차단되었습니다. 팝업 차단을 해제해주세요.");
       isPrinting.value = false;
-      printWindow.close();
+      return;
     }
-  };
 
-  // 보조적으로 5초 뒤 로딩 상태 종료 및 창 닫기
-  setTimeout(() => {
-    if (!printWindow.closed) {
+    // 로딩 상태 종료
+    printWindow.onload = () => {
       isPrinting.value = false; // 로딩 상태 종료
-      printWindow.close();
-    }
-  }, 5000);
+    };
+
+    // 예비적으로 5초 뒤 로딩 상태 종료
+    setTimeout(() => {
+      isPrinting.value = false;
+    }, 5000);
+  } catch (error) {
+    console.error("PDF 생성 실패:", error);
+    alert("PDF 생성 중 문제가 발생했습니다.");
+    isPrinting.value = false;
+  }
 };
+
+
 
 
 </script>
@@ -330,10 +377,10 @@ const printCertificate = async () => {
 
 .modal-content {
   background: white;
-  padding: 2rem;
+  padding: 1.5rem; /* 패딩 축소 */
   border-radius: 8px;
   width: 90%;
-  max-width: 1200px;
+  max-height: 95vh; /* 세로 최대 높이 설정 */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
@@ -346,43 +393,97 @@ const printCertificate = async () => {
   margin-bottom: 1rem;
 }
 
-.certificate-container {
-  overflow-y: auto;
-  transform-origin: center top;
-  max-height: 80vh;
-  padding: 2rem;
-  border: 1px solid #ddd;
-  font-family: 'Arial', sans-serif;
-  line-height: 1.8;
-  font-size: 1.4rem;
+/* 재직 증명서 CSS */
+.certificate-wrapper {
+  padding: 1rem;
+  font-family: "Arial", sans-serif;
+  background: #f9f9f9;
+}
+
+.certificate-print-wrapper {
+  border: 2px solid #333; /* 테두리 두께 조정 */
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem auto;
+  max-width: 800px;
+  background-color: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .certificate-title {
+  font-size: 2.5rem;
   text-align: center;
-  font-size: 1.8rem;
+  margin-bottom: 2rem;
   font-weight: bold;
+  color: #333;
+  text-decoration: underline;
+}
+
+.certificate-details,
+.certificate-footer {
+  margin-bottom: 2rem;
+}
+
+.certificate-table,
+.footer-table {
+  width: 100%;
+  border-collapse: collapse;
   margin-bottom: 1.5rem;
 }
 
-.highlight {
+.certificate-table td,
+.footer-table td {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+}
+
+.label {
   font-weight: bold;
+  background: #e6f7ff;
   color: #00509e;
+  text-align: center;
+}
+
+.value {
+  text-align: left;
+  color: #333;
 }
 
 .certificate-content {
-  margin-top: 1rem;
+  font-size: 1.4rem;
+  line-height: 1.8;
   text-align: justify;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  color: #444;
 }
 
 .stamp-container {
-  text-align: center;
+  text-align: right;
   margin-top: 2rem;
 }
 
 .stamp-image {
-  max-width: 150px;
+  width: 100px;
   height: auto;
 }
+
+/* 테이블과 텍스트 사이 여백 */
+.certificate-details table,
+.certificate-footer table {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 전문적인 테두리 */
+.certificate-wrapper::after {
+  content: "";
+  display: block;
+  border: 1px dashed #aaa;
+  margin-top: 20px;
+}
+
+/* 재직 증명서 css 끝 */
 
 .btn {
   padding: 0.5rem 1rem;
