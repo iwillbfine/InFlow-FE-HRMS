@@ -9,8 +9,9 @@
                 @click="toggleExpand">
                 <!-- 하위 부서가 존재하는 경우  -->
                 <!-- <img :src="isExpanded ? '@/assets/icons/fold.png' : '@/assets/icons/unfold.png'" alt="">             -->
-                {{isExpanded ? '&#8250; ' : '⌵ '}}
+                {{isExpanded ? '&#8250;' : '⌵'}}
             </span>
+            <span>&nbsp;</span>
             <span
                 class="department-name"
                 @click="selectDepartment(node.department_code)">
@@ -69,19 +70,27 @@
 </script>
 
 <style scoped>
-.node{
-    font-size:2rem;
+.node {
+    font-size: 2rem;
     color: #003566;
     font-weight: 500;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s, color 0.2s; /* 부드러운 전환 효과 */
 }
+
+.node:hover {
+    background-color: #e3f2fd; /* 밝은 파란색 배경 */
+    color: #002d62; /* 어두운 파란색 텍스트 */
+    border-radius: 4px; /* 약간 둥글게 */
+    padding: 4px; /* 약간의 내부 여백 */
+}
+
 .department-name {
     flex-grow: 1;
     cursor: pointer;
 }
-.tree-node{
 
-}
-.sub-department{
-}
+
 </style>
