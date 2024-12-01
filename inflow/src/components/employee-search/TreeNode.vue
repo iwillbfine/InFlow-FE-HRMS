@@ -2,12 +2,12 @@
     <li class="tree-node">
         <div 
             class="node"
-            :style="{ marginLeft: `${level * 20}px` }"
+            :style="{ marginLeft: `${level * 50}px` }"
             @click="toggleExpand">
             <span v-if="node.sub_departments.length > 0">
                 <!-- 하위 부서가 존재하는 경우  -->
                 <!-- <img :src="isExpanded ? '@/assets/icons/fold.png' : '@/assets/icons/unfold.png'" alt="">             -->
-                ({{isExpanded ? '접기' : '펼치기'}})
+                {{isExpanded ? '▼' : '▲'}}
 
             </span>
             <span>{{ node.department_name }}</span>
