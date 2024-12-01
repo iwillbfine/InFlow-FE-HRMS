@@ -36,7 +36,7 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '계약서등록 및 조회', link: '/hr-basic/document/contract' },
+  { name: '계약서 등록 및 조회', link: '/hr-basic/document/contract' },
   { name: '재직 증명서 발급', link: '/hr-basic/document/certificate' },
 ]);
 
