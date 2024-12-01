@@ -3,8 +3,8 @@
         <input 
             v-model="searchQuery"
             class="search-input" 
-            placeholder="사원명/부서명/전화번호를 입력해주세요">
-        </input>
+            placeholder="사원명/부서명/전화번호를 입력해주세요"
+            @keyup.enter="onSearch" />
         <button 
             class="search-button"
             @click="onSearch">

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="employees && employees.length > 0"class="container">
         <div class="one-content" 
                 v-for="employee in employees"
                 :key="employee.employee_number"
@@ -22,6 +22,12 @@
 
         </div>
     </div>
+    <div v-else class="container">
+        <div class="no-list">
+            <span>사원 정보가 없습니다. </span>
+        </div>
+    </div>
+
 </template>
 
 <script setup>
@@ -30,7 +36,9 @@ console.log("EmployeeList컴포넌트");
 defineProps({
     employees: {
         type: Array,
-        required: true,
+        // required: true,
+        default: () => ({}),
+
     },
 });
 
@@ -94,5 +102,12 @@ const selectEmployee = (employeeCode) => {
 }
 .department{
     font-size: 1.7rem;
+}
+
+.no-list{
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

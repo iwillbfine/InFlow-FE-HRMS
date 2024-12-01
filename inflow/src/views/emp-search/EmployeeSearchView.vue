@@ -16,7 +16,10 @@
           <!-- 검색창 -->
           <SearchBar  @search="handleSearch" class="search-bar" ></SearchBar>
           <div class="search-content">
-            <DepartmentHeirarchy class="heirarchy"></DepartmentHeirarchy>
+            <DepartmentHeirarchy 
+              class="department-heirarchy"
+              :departments="allDepartments"
+              @select="handleDepartmentSelect"/> 
             <EmployeeList 
               class="employee-list" 
               :employees="employees"
@@ -36,7 +39,7 @@
 </template>
 
 <script setup>
-import {ref , watch} from 'vue';
+import {ref , watch, onMounted} from 'vue';
 
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
@@ -50,11 +53,21 @@ import EmployeeDetail from '@/components/employee-search/EmployeeDetail.vue';
 
 import apiClient from '@/api/axios';
 
+// 0. 페이지 로드되자마자 모든 사원 목록 로드되도록
+const employees = ref([]);
+onMounted(async () => {
+  try{
+    const response = await apiClient.get('/departments/search/all-members');
+    employees.value = response.data.content;
+    console.log("응답 받은 모든 사원 목록:", employees.value);
+  } catch(error){
+    console.error('전체 사원 목록을 불러오지 못했습니다.', error);
+  }
+})
 
-console.log("부모 컴포넌트")
+
 // 1. 검색창 사원 목록 조회
 // search-bar 컴포넌트에서 받아온 정보 emloyees에 저장
-const employees = ref([]);
 // 검색어 처리 함수
 const handleSearch = async(query) => {
   try{
@@ -62,6 +75,7 @@ const handleSearch = async(query) => {
       params:{keyword:query}
     });
     employees.value = respnose.data.content;
+    console.log("검색어로 응답받은 데이터:", employees.value);
   } catch(error){
     console.error('사원 데이터를 불러오지 못했습니다.',error);
 
@@ -70,7 +84,6 @@ const handleSearch = async(query) => {
 
 // 2. 사원 목록 -> 사원 상세정보 조회
 const selectedEmployee = ref({});
-
 // 상세정보 API
 const handleEmployeeDetail = async(employeeCode) => {
   console.log("handleEmployeeDetail 메소드 실행됨, select 이벤트 발생", employeeCode)
@@ -82,11 +95,36 @@ const handleEmployeeDetail = async(employeeCode) => {
   } catch(error){
     console.error('사원 상세정보를 불러오지 못했습니다.', error);
   }
-} 
+};
 
-watch(selectedEmployee, (newValue) => {
-    console.log("부모 컴포넌트에서 selectedEmployee 값:", newValue);
+// 3. 부서 폴더구조 UI 
+// 페이지 로드되자마자 전체 폴더 구조 조회
+const allDepartments = ref([]);  // 부서 정보 담을 배열 선언
+onMounted(async() => {
+  try{
+    const response = await apiClient.get('/departments/hierarchy');
+    allDepartments.value = response.data.content;
+    console.log("응답 받은 전체 부서:", allDepartments.value);
+  } catch(error){
+    console.error('부서 데이터를 불러오지 못했습니다.', error);
+
+  }
 });
+
+// 4. 부서 선택 시 해당 부서 사원 목록 조회
+const handleDepartmentSelect = async(departmentCode) => {
+  console.log("선택된 부서 코드:", departmentCode);
+  try{
+    const respnose = await apiClient.get('/departments/search/members', {
+      params:{departmentCode}
+    });  
+    employees.value = respnose.data.content;
+    console.log("응답 받은 데이터:",employees.value);
+  } catch(error){
+    console.error('사원 데이터를 불러오지 못했습니다.', error);
+  }
+}
+
 
 </script>
 
@@ -122,7 +160,7 @@ watch(selectedEmployee, (newValue) => {
   overflow: hidden;
 }
 
-.heirarchy{
+.department-heirarchy{
   width: 20%;
   height: 100%;
 }

@@ -153,7 +153,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 .content-header {
   position: relative;
   justify-content: flex-end;
@@ -165,7 +164,7 @@ onMounted(() => {
   margin-top: 2.5rem;
 }
 
-.select-year-month-section {
+.select-month-year-section {
   position: absolute;
   right: 0;
   bottom: 0;

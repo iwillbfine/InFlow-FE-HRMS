@@ -2,8 +2,12 @@
   <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="6" :list="menuList"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <CommonMenu :cur="5" :list="menuList"></CommonMenu>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
     </SectionItem>
@@ -32,7 +36,7 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '휴가 지급', link: '/hr-management/vacation/payment' },
-  { name: '휴가 정책', link: '/hr-management/vacation/policy'  },
+  { name: '휴가 정책', link: '/hr-management/vacation/policy' },
 ]);
 
 const router = useRouter();
@@ -43,7 +47,7 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 const eid = ref(null);
 const employeeName = ref('');
@@ -52,12 +56,12 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/hr-management/vacation';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }

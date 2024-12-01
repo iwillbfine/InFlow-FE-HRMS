@@ -28,6 +28,19 @@ export const saveData = async (data, name) => {
   }
 };
 
+export const updateData = async (data, name) => {
+  try {
+    let response;
+    await apiClient.delete(`/employees/${name}`, {
+      data: data.map(row => row['employee_id'])});
+    response = await apiClient.post(`/employees/${name}`, data);
+    return response.data.content;
+  } catch (error) {
+    console.error('수정 요청 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getValidData = async () => {
   try {
     const response = await apiClient.get(`/validations/`);
@@ -68,6 +81,16 @@ export const getLanguageTests = async () => {
   }
 };
 
+export const getLanguageTestsById = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/language-tests/${empId}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getLangCode = async () => {
   try {
     const response = await apiClient.get(`/employees/language-tests/languages`);
@@ -81,6 +104,26 @@ export const getLangCode = async () => {
 export const getRelationships = async () => {
   try {
     const response = await apiClient.get(`/employees/family-members/relationships`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getAppHistoryByMonth = async (year, month) => {
+  try {
+    const response = await apiClient.get(`/appointments/history?year=${year}&month=${month}&appointment_item_code=all`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getCareersById = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/careers/${empId}`);
     return response.data.content;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);

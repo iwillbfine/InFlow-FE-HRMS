@@ -70,7 +70,7 @@
               fs="1.2rem"
               bgc="#003566"
               c="#fff"
-              @click="toggleCancelRequestModal"
+              @click="toggleCancelRequestModal(item)"
             >
               취소 요청
             </ButtonItem>
@@ -94,7 +94,11 @@
       @change-page="handleChangePage"
     ></PaginationComponent>
   </FlexItem>
-  <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+  <CancelRequestModal
+    v-if="isModalOpen"
+    :item="tryCancelItem"
+    @close="toggleCancelRequestModal"
+  ></CancelRequestModal>
 </template>
 
 <script setup>
@@ -107,7 +111,7 @@ import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
 import PaginationComponent from '@/components/common/PaginationComponent.vue';
 import ArrowLeftButton from '@/components/buttons/ArrowLeftButton.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getBusinessTripRequestsByEmployeeId } from '@/api/attendance';
@@ -120,6 +124,8 @@ const pageInfo = ref({});
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 
+const tryCancelItem = ref(null);
+
 const router = useRouter();
 const route = useRoute();
 
@@ -128,7 +134,7 @@ const fetchBusinessTripRequestData = async (eid, page, date) => {
   if (response.success) {
     businessTripRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = businessTripRequestList.value.isEmpty ? true : false;
+    isEmpty.value = businessTripRequestList.value.length === 0 ? true : false;
   } else {
     businessTripRequestList.value = [];
     pageInfo.value = {};
@@ -170,7 +176,8 @@ const parseRequestStatus = (status) => {
   }
 };
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
 };
 

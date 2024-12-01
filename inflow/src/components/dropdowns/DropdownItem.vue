@@ -33,7 +33,7 @@
         bgc="#fff"
         hc="#fff"
         hbgc="#003566"
-        @click.stop="selectItem(item)"
+        @click.stop="selectItem(item, index)"
       >
         {{ item.name }}
       </LiItem>
@@ -73,9 +73,9 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-const selectItem = (item) => {
+const selectItem = (item, index) => {
   selectedItem.value = item;
-  emit('update:selectedItem', item.id);
+  emit('update:selectedItem', item.id, index);
   isDropdownOpen.value = false;
 };
 </script>
