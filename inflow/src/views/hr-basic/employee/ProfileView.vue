@@ -3,18 +3,18 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-        <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
+    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
       <div class="profile-header">
-         <!-- 프로필 사진 -->
-         <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
+          <!-- 프로필 사진 -->
+          <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
             <img
             :src="previewPhoto || employee.photoUrl"
             alt="Profile Photo"
             class="profile-photo"
-            @click="editMode ? handlePhotoUpload() : null" 
+            @click="handlePhotoUpload"
             />
             <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">사진 수정</div>
             <input
@@ -26,113 +26,111 @@
             />
         </div>
         <table class="employee-info-table">
-          <tbody>
-            <tr>
-              <th>사원번호</th>
-              <td>{{ employee.employeeCode }}</td>
-              <th>성별</th>
-              <td>{{ employee.gender }}</td>
-              <th>휴대폰번호</th>
-              <td style="position: relative;">
-                <template v-if="editMode">
-                  <input
-                    type="text"
-                    v-model="form.phone"
-                    class="editable-input"
-                    :class="{ 'invalid-row': !isValidPhone }"
-                    @input="formatPhone"
-                    @focus="showPhoneModal"
-                    @blur="hidePhoneModal"
-                  />
-                  <div v-if="isPhoneModalVisible" class="phone-modal">
-                    <div class="phone-modal-content">
-                      <h3>휴대폰 번호 입력 형식</h3>
-                      <ul>
-                        <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
-                        <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
-                      </ul>
-                    </div>
+          <tr>
+            <th>사원번호</th>
+            <td>{{ employee.employeeCode }}</td>
+            <th>성별</th>
+            <td>{{ employee.gender }}</td>
+            <th>휴대폰번호</th>
+            <td style="position: relative;">
+              <template v-if="editMode">
+                <input
+                  type="text"
+                  v-model="form.phone"
+                  class="editable-input"
+                  :class="{ 'invalid-row': !isValidPhone }"
+                  @input="formatPhone"
+                  @focus="showPhoneModal"
+                  @blur="hidePhoneModal"
+                />
+                <div v-if="isPhoneModalVisible" class="phone-modal">
+                  <div class="phone-modal-content">
+                    <h3>휴대폰 번호 입력 형식</h3>
+                    <ul>
+                      <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
+                      <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
+                    </ul>
                   </div>
-                </template>
-                <template v-else>{{ employee.phone }}</template>
-              </td>
-            </tr>
-            <tr>
-              <th>사원명</th>
-              <td>{{ employee.employeeName }}</td>
-              <th>직무</th>
-              <td>{{ employee.jobRole }}</td>
-              <th>이메일</th>
-              <td style="position: relative;">
-                <template v-if="editMode">
-                  <input
-                    type="email"
-                    v-model="form.email"
-                    class="editable-input"
-                    :class="{ 'invalid-row': !isValidEmail }"
-                    @input="validateEmail"
-                    @focus="showEmailModal"
-                    @blur="hideEmailModal"
-                  />
-                  <div v-if="isEmailModalVisible" class="email-modal">
-                    <div class="email-modal-content">
-                      <h3>이메일 입력 형식</h3>
-                      <ul>
-                        <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
-                        <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
-                      </ul>
-                    </div>
+                </div>
+              </template>
+              <template v-else>{{ employee.phone }}</template>
+            </td>
+          </tr>
+          <tr>
+            <th>사원명</th>
+            <td>{{ employee.employeeName }}</td>
+            <th>직무</th>
+            <td>{{ employee.jobRole }}</td>
+            <th>이메일</th>
+            <td style="position: relative;">
+              <template v-if="editMode">
+                <input
+                  type="email"
+                  v-model="form.email"
+                  class="editable-input"
+                  :class="{ 'invalid-row': !isValidEmail }"
+                  @input="validateEmail"
+                  @focus="showEmailModal"
+                  @blur="hideEmailModal"
+                />
+                <div v-if="isEmailModalVisible" class="email-modal">
+                  <div class="email-modal-content">
+                    <h3>이메일 입력 형식</h3>
+                    <ul>
+                      <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
+                      <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
+                    </ul>
                   </div>
-                </template>
-                <template v-else>{{ employee.email }}</template>
-              </td>
-            </tr>
-            <tr>
-              <th>입사일</th>
-              <td>{{ employee.hireDate }}</td>
-              <th>직위</th>
-              <td>{{ employee.position }}</td>
-              <th>주소</th>
-                <td>
-                  <template v-if="editMode">
-                    <div class="address-input-group">
-                      <!-- 주소 입력 필드 -->
-                      <input
-                        type="text"
-                        v-model="form.address"
-                        class="editable-input"
-                        readonly
-                        placeholder="주소를 검색하세요"
-                      />
-                      <button class="btn-address" @click="openAddressSearch">주소 검색</button>
-                    </div>
-                  </template>
-                  <template v-else>{{ employee.address }} </template>
-                </td>
-            </tr>
-            <tr>
-              <th>입사유형</th>
-              <td>{{ employee.hireType }}</td>
-              <th>직책</th>
-              <td>{{ employee.jobTitle }}</td>
-              <th>상세주소</th>
+                </div>
+              </template>
+              <template v-else>{{ employee.email }}</template>
+            </td>
+          </tr>
+          <tr>
+            <th>입사일</th>
+            <td>{{ employee.hireDate }}</td>
+            <th>직위</th>
+            <td>{{ employee.position }}</td>
+            <th>주소</th>
               <td>
                 <template v-if="editMode">
-                  <input type="text" v-model="form.detailAddress" class="editable-input" />
+                  <div class="address-input-group">
+                    <!-- 주소 입력 필드 -->
+                    <input
+                      type="text"
+                      v-model="form.address"
+                      class="editable-input"
+                      readonly
+                      placeholder="주소를 검색하세요"
+                    />
+                    <button class="btn-address" @click="openAddressSearch">주소 검색</button>
+                  </div>
                 </template>
-                <template v-else>{{ employee.detailAddress }}</template>
+                <template v-else>{{ employee.address }} </template>
               </td>
-              <td></td>
-            </tr>
-            <tr>
-              <th>생년월일</th>
-              <td>{{ employee.birthDate }}</td>
-              <th>퇴사일</th>
-              <td>{{ employee.retirementDate || 'N/A' }}</td>
-              <th></th>
-              <td></td>
-            </tr>
-          </tbody>
+          </tr>
+          <tr>
+            <th>입사유형</th>
+            <td>{{ employee.hireType }}</td>
+            <th>직책</th>
+            <td>{{ employee.jobTitle }}</td>
+            <th>상세주소</th>
+            <td>
+              <template v-if="editMode">
+                <input type="text" v-model="form.detailAddress" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.detailAddress }}</template>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>생년월일</th>
+            <td>{{ employee.birthDate }}</td>
+            <th>퇴사일</th>
+            <td>{{ employee.retirementDate || 'N/A' }}</td>
+            <th></th>
+            <td></td>
+          </tr>
         </table>
       </div>
     </div>
@@ -398,9 +396,8 @@ onMounted(() => {
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  width: 100%;
+  width: 95%;
   height: 100%;
-  border: 1px solid #ddd;
 }
 
 .profile-buttons-container {
@@ -437,8 +434,8 @@ onMounted(() => {
 }
 
 .profile-photo {
-  width: 14rem; 
-  height: 16rem;
+  width: 12rem; /* 사진 크기 조정 */
+  height: 15rem;
   object-fit: cover;
 }
 .photo-edit-overlay {
@@ -472,6 +469,7 @@ onMounted(() => {
 }
 
 .btn-address{
+
   padding: 0.2rem 1.2rem;
   background-color: #003566;
   color: #fff;
@@ -505,13 +503,12 @@ onMounted(() => {
 /* 테이블 스타일링 */.employee-info-table {
   border-collapse: collapse; /* 셀 간격을 제거하고 경계선을 하나로 합침 */
   width: 100%;
-  
 }
 
 /* 테이블 스타일링 */
 .employee-info-table th,
 .employee-info-table td {
-  padding: 0.7rem 0.6rem; /* 테이블 셀 간격 조정 */
+  padding: 0.7rem 1.5rem; /* 테이블 셀 간격 조정 */
   font-size: 2rem; /* 기본 글씨 크기 설정 */
   font-weight: 500;
   line-height: 1.5; /* 행 높이 조정 */
@@ -625,3 +622,4 @@ onMounted(() => {
 }
 
 </style>
+
