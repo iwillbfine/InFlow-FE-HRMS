@@ -90,7 +90,7 @@
             fs="1.2rem"
             bgc="#003566"
             c="#fff"
-            @click="toggleCancelRequestModal"
+            @click="toggleCancelRequestModal(item)"
           >
             취소 요청
           </ButtonItem>
@@ -108,7 +108,11 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+    <CancelRequestModal
+      v-if="isModalOpen"
+      :item="tryCancelItem"
+      @close="toggleCancelRequestModal"
+    ></CancelRequestModal>
   </CommonArticle>
 </template>
 
@@ -121,7 +125,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import ThirtyMinuteDropDown from '@/components/dropdowns/ThirtyMinuteDropDown.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import {
@@ -141,6 +145,8 @@ const selectedEndTime = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
 
+const tryCancelItem = ref(null);
+
 const router = useRouter();
 
 const fetchOvertimeRequestData = async (eid) => {
@@ -148,14 +154,15 @@ const fetchOvertimeRequestData = async (eid) => {
 
   if (response.success) {
     overtimeRequestList.value = response.content;
-    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
+    isEmpty.value = overtimeRequestList.value.length === 0 ? true : false;
   } else {
     overtimeRequestList.value = [];
     isEmpty.value = true;
   }
 };
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
 };
 

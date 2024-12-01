@@ -53,7 +53,7 @@ import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
 import DisciplineRewardInfoView from '@/views/hr-basic/employee/DisciplineRewardInfoView.vue';
 import EducationInfoView from '@/views/hr-basic/employee/EducationInfoView.vue';
 import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView.vue';
@@ -242,7 +242,7 @@ const routes = [
         component: SalaryDetailView,
       },
       {
-        path: 'list',
+        path: 'list/:employeeId',
         name: 'hr-basic-salary-list',
         component: SalaryListView,
       },
