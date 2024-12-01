@@ -266,7 +266,7 @@ const routes = [
         component: SalaryListView,
       },
       {
-        path: 'severance-pay',
+        path: 'severance-pay/:employeeId',
         name: 'hr-basic-severance-pay',
         component: SeverancePayView,
       }
@@ -294,7 +294,7 @@ const routes = [
         component: CertificateView,
       },
       ]
-  }, 
+  },
   {
     path: '/hr-basic/my-department',
     name: 'hr-basic-my-department',

@@ -117,4 +117,14 @@ onMounted(() => {
   margin-top: 2.5rem;
 }
 
+.mid {
+  justify-content: center;
+  align-items: center;
+}
+
+.amount {
+  justify-content: flex-end;
+  align-items: center;
+}
+
 </style>
