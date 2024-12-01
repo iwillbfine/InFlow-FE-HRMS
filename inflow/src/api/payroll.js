@@ -32,3 +32,29 @@ export const getAllPayments = async(employeeId, page) => {
     throw error;
   }
 };
+
+export const getEstimateWorkingDays = async(employeeId) => {
+  if (!employeeId) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}`);
+  }
+  try {
+    const response = await apiClient.get(`/severance-pay/estimate/${employeeId}`);
+    return response.data;
+  } catch (error) {
+    console.error('getEstimateWorkingDays 에러: ', error);
+    throw error;
+  }
+};
+
+export const calculateSeverancePay = async(employeeId) => {
+  if (!employeeId) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}`);
+  }
+  try {
+    const response = await apiClient.get(`/severance-pay/calculate/${employeeId}`);
+    return response.data;
+  } catch (error) {
+    console.error('calculateSeverancePay 에러: ', error);
+    throw error;
+  }
+};

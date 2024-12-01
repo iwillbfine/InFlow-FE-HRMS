@@ -2,6 +2,7 @@
   <CommonNav></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
+    <MyAttendanceWidget></MyAttendanceWidget>
   </MainItem>
 </template>
 
@@ -10,6 +11,7 @@ import { ref, onMounted } from 'vue'; // 상태 관리 및 생명주기 훅
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
+import MyAttendanceWidget from '@/components/widgets/MyAttendanceWidget.vue';
 import { useRouter } from 'vue-router';
 
 // 상태 변수
@@ -23,7 +25,7 @@ onMounted(() => {
   // 사원 ID 확인
   eid.value = localStorage.getItem('employeeId');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   } else {
     // 사원 이름 설정
@@ -38,5 +40,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
