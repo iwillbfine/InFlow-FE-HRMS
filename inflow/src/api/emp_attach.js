@@ -81,6 +81,16 @@ export const getQualifications = async () => {
   }
 };
 
+export const getQualificationsById = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/qualifications/${empId}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getLanguageTests = async () => {
   try {
     const response = await apiClient.get(`/employees/language-tests`);

@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'경력'" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="'어학'" class="ca" w="90%"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -13,7 +13,7 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
     <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.2fr 1fr 1fr 1fr 1fr" br="0.5rem">
+      <TableItem class="commute-table" gtc="0.5fr 1fr 2fr 1fr 1fr 1.5fr 1.5fr" br="0.5rem">
         <TableRow>
           <TableCell th fs="1.6rem">
             <div class="chk">
@@ -21,12 +21,14 @@
               <label for="headerCheckbox"></label>
             </div>
           </TableCell>
-          <TableCell th fs="1.6rem">회사명</TableCell>
-          <TableCell th fs="1.6rem">직책</TableCell>
-          <TableCell th fs="1.6rem">입사일</TableCell>
-          <TableCell th fs="1.6rem">퇴사일</TableCell>
+          <TableCell th fs="1.6rem">언어</TableCell>
+          <TableCell th fs="1.6rem">어학 자격증</TableCell>
+          <TableCell th fs="1.6rem">자격번호</TableCell>
+          <TableCell th fs="1.6rem">취득일</TableCell>
+          <TableCell th fs="1.6rem">발급기관</TableCell>
+          <TableCell th fs="1.6rem">등급 및 점수</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in careerList" :key="index">
+        <TableRow v-if="!isEmpty" v-for="(item, index) in langTestList" :key="index">
           <TableCell class="mid" fs="1.6rem">
             <div class="chk">
               <input
@@ -40,32 +42,48 @@
           <TableCell class="mid" fs="1.6rem">
             <input
               type="text"
-              v-model="careerList[index]['company_name']"
-              :class="{ 'invalid-row': !isCellValid(careerList[index]['company_name'], 'company_name') }"
+              v-model="langTestList[index]['language_name']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['language_name'], 'language_name') }"
               class="cell-input"
             />
           </TableCell>
           <TableCell class="mid" fs="1.6rem">
             <input
               type="text"
-              v-model="careerList[index]['role_name']"
-              :class="{ 'invalid-row': !isCellValid(careerList[index]['role_name'], 'role_name') }"
+              v-model="langTestList[index]['language_test_name']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['language_test_name'], 'language_test_name') }"
               class="cell-input"
             />
           </TableCell>
           <TableCell class="mid" fs="1.6rem">
             <input
               type="text"
-              v-model="careerList[index]['join_date']"
-              :class="{ 'invalid-row': !isCellValid(careerList[index]['join_date'], 'join_date') }"
+              v-model="langTestList[index]['qualification_number']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['qualification_number'], 'qualification_number') }"
               class="cell-input"
             />
           </TableCell>
           <TableCell class="mid" fs="1.6rem">
             <input
               type="text"
-              v-model="careerList[index]['resignation_date']"
-              :class="{ 'invalid-row': !isCellValid(careerList[index]['resignation_date'], 'resignation_date') }"
+              v-model="langTestList[index]['qualified_at']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['qualified_at'], 'qualified_at') }"
+              class="cell-input"
+            />
+          </TableCell>
+          <TableCell class="mid" fs="1.6rem">
+            <input
+              type="text"
+              v-model="langTestList[index]['issuer']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['issuer'], 'issuer') }"
+              class="cell-input"
+            />
+          </TableCell>
+          <TableCell class="mid" fs="1.6rem">
+            <input
+              type="text"
+              v-model="langTestList[index]['grade_score']"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index]['grade_score'], 'grade_score') }"
               class="cell-input"
             />
           </TableCell>
@@ -80,7 +98,7 @@
       w="100%"
       fs="1.6rem"
     >
-      경력 정보가 존재하지 않습니다.
+      어학 자격증 정보가 존재하지 않습니다.
     </FlexItem>
   </FlexItem>
 </template>
@@ -92,14 +110,17 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
-import { updateData, getCareersById } from '@/api/emp_attach';
+import { updateData, getLangCode, getLanguageTests, getLanguageTestsById } from '@/api/emp_attach';
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const careerList = ref([]);
+const langTestList = ref([]);
 const isEmpty = ref(true);
 const headerCheckbox = ref(false);
 const selectedRows = ref([]);
+const langCodes = ref([]);
+const langs = ref([]);
+const langMap = ref([])
 
 const router = useRouter();
 
@@ -113,7 +134,9 @@ onMounted(() => {
 const isCellValid = (value, header) => {
   if (value === null || value === undefined) return false;
   if (typeof value === 'string' && value.trim() === '') return false;
-  if (header === 'join_date' || header === 'resignation_date') {
+  if (header === 'language_name')  return langs.value?.includes(`${value}`);
+  if (header === 'qualification_number')  return !langCodes.value?.includes(`${value}`);
+  if (header === 'qualified_at') {
     return /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
   return String(value).length > 0;
@@ -121,33 +144,46 @@ const isCellValid = (value, header) => {
 
 const sortByDate = (list) => {
   return list.sort((a, b) => {
-    const dateA = new Date(a['join_date']);
-    const dateB = new Date(b['join_date']);
+    const dateA = new Date(a['qualified_at']);
+    const dateB = new Date(b['qualified_at']);
     return dateA - dateB;
   });
 };
 
 const fetchDate = async () => {
-  const response = await getCareersById(empId.value);
+  const response = await getLanguageTestsById(empId.value);
+  const tmp = await getLanguageTests();
+  const codes = await getLangCode();
+
+  langs.value = codes.map((row) => row.language_name);
+  langCodes.value = tmp
+    .filter((r) => String(r.employee_id) !== empId.value)
+    .map((row) => `${row.qualification_number}`);
+
+
+  langMap.value = codes.reduce((acc, lang) => {
+    acc[lang.language_name] = lang.language_code;
+    return acc;
+  }, {});
 
   if (response) {
     const sortedResponse = sortByDate(response);
-    careerList.value = sortedResponse;
-    isEmpty.value = careerList.value.length === 0;
+    langTestList.value = sortedResponse;
   } else {
-    careerList.value = [];
+    langTestList.value = [];
     isEmpty.value = true;
   }
+  isEmpty.value = langTestList.value.length === 0;
   initializeSelectedRows();
 };
 
-watch(careerList, () => {
-  isEmpty.value = careerList.value.length === 0;
+watch(langTestList, () => {
+  isEmpty.value = langTestList.value.length === 0;
   initializeSelectedRows();
 });
 
 const initializeSelectedRows = () => {
-  selectedRows.value = careerList.value.map(() => false);
+  selectedRows.value = langTestList.value.map(() => false);
   headerCheckbox.value = false;
 };
 
@@ -156,31 +192,41 @@ const toggleAllCheckboxes = () => {
 };
 
 const defaultRow = {
-  company_name: '',
-  role_name: '',
-  join_date: '',
-  resignation_date: '',
+  language_test_name: '',
+  qualification_number: '',
+  issuer: '',
+  qualified_at: '',
+  grade_score: '',
+  language_name: '',
 };
 
 const addRow = () => {
-  careerList.value.push({ ...defaultRow });
+  if (!Array.isArray(langTestList.value)) {
+    langTestList.value = [];
+  }
+  langTestList.value.push({ ...defaultRow });
   initializeSelectedRows();
+  isEmpty.value = langTestList.value.length === 0;
 };
 
 const deleteSelectedRows = () => {
-  careerList.value = careerList.value.filter((_, index) => !selectedRows.value[index]);
+  langTestList.value = langTestList.value.filter((_, index) => !selectedRows.value[index]);
   initializeSelectedRows();
 };
 
 const mapping = () => {
-  return careerList.value.map((row) => ({
-    ...row,
-    employee_id: empId.value,
-  }));
+  return langTestList.value.map((row) => {
+    const { language_name, ...rest } = row;
+    return {
+      ...rest,
+      employee_id: empId.value,
+      language_code: langMap.value[language_name],
+    };
+  });
 };
 
 const postData = async () => {
-  const invalidRows = careerList.value.filter((row) => {
+  const invalidRows = langTestList.value.filter((row) => {
     return Object.entries(row).some(([header, value]) => !isCellValid(value, header));
   });
 
@@ -191,9 +237,9 @@ const postData = async () => {
 
   const data = mapping();
   try {
-    await updateData(data, 'careers');
-    window.alert("경력 정보 수정 요청이 완료되었습니다.");
-    router.push('/hr-basic/my-info/careers');
+    await updateData(data, 'language-tests');
+    window.alert("어학 시험 정보 수정 요청이 완료되었습니다.");
+    router.push('/hr-basic/my-info/languagetests');
     return;
   } catch (error) {
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");

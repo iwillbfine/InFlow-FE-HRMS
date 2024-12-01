@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'학력 정보'" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="'학력'" class="ca" w="90%"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -107,7 +107,6 @@ import { useRouter } from 'vue-router';
 
 const educationList = ref([]);
 const isEmpty = ref(true);
-const chkHeader = ref(false);
 const headerCheckbox = ref(false);
 const selectedRows = ref([]);
 
@@ -144,7 +143,6 @@ const fetchDate = async () => {
   if (response) {
     const sortedResponse = sortByDate(response);
     educationList.value = sortedResponse;
-    console.log(educationList.value);
     isEmpty.value = educationList.value.length === 0;
   } else {
     educationList.value = [];
@@ -160,7 +158,7 @@ watch(educationList, () => {
 
 const initializeSelectedRows = () => {
   selectedRows.value = educationList.value.map(() => false);
-  chkHeader.value = false;
+  headerCheckbox.value = false;
 };
 
 const toggleAllCheckboxes = () => {
@@ -209,7 +207,6 @@ const postData = async () => {
     router.push('/hr-basic/my-info/educations');
     return;
   } catch (error) {
-    console.error("데이터 저장 중 오류 발생:", error);
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
   }
 };
@@ -226,6 +223,10 @@ const postData = async () => {
 
 .content-header ::v-deep(article > div.article-label) {
   font-size: 2rem !important;
+}
+
+.ca {
+  margin-left: 2rem;
 }
 
 .content-body {
