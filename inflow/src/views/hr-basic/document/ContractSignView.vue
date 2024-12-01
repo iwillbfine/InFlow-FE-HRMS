@@ -39,7 +39,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getEmploymentContract, getContractList } from '@/api/emp_info'; // API 호출 메서드 임포트
+import { getEmploymentContract, getContractList, getContract } from '@/api/emp_info'; // API 호출 메서드 임포트
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -68,9 +68,27 @@ const fetchContractList = async () => {
 };
 
 // 조회 버튼 클릭 메서드
-const selectContract = () => {
-  window.alert('조회 버튼 호출됨');
+const selectContract = async (contractId) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken'); // 로컬스토리지에서 토큰 가져오기
+
+    // 계약서 정보 조회 API 호출
+    const contractData = await getContract(contractId, accessToken);
+
+    // file_url 확인
+    if (contractData.file_url) {
+      // 새 창에서 열기
+      window.open(contractData.file_url, '_blank');
+    } else {
+      alert('계약서 파일 URL이 없습니다.');
+    }
+  } catch (error) {
+    console.error('계약서 조회 실패:', error);
+    alert('계약서 정보를 조회하는 데 실패했습니다.');
+  }
 };
+
+
 
 // 날짜 포맷 함수
 const formatDateTime = (datetime) => {
