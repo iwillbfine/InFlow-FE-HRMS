@@ -1,13 +1,19 @@
 <template>
     <div v-if="contractData" class="modal-overlay">
       <div class="modal-content">
+         <!-- 로딩 오버레이 -->
+         <div v-if="isSubmitting" class="loading-overlay">
+          <div class="spinner"></div>
+          <p>계약서를 등록 중입니다. 잠시만 기다려 주세요...</p>
+        </div>
+
         <!-- 상단 버튼 컨트롤 -->
         <div class="viewer-controls">
           <div class="left-controls">
             <button class="btn save-btn" @click="saveContract" :disabled="isSubmitting">
-              <i v-if="!isSubmitting" class="fas fa-save"></i>
-              <i v-else class="fas fa-spinner fa-spin"></i>
-              서약서 등록
+              <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
+              <i v-else class="fas fa-save"></i>
+                계약서 등록
             </button>
           </div>
           <div class="center-controls">
@@ -158,7 +164,7 @@ const openSignaturePad = async () => {
     canvas.height = canvas.offsetHeight;
     canvasContext = canvas.getContext('2d');
     canvasContext.strokeStyle = 'black';
-    canvasContext.lineWidth = 2;
+    canvasContext.lineWidth = 4;
   }
 };
 
@@ -336,6 +342,60 @@ const saveContract = async () => {
   
   <style scoped>
   
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* 로딩 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 로딩 오버레이 스타일 끝*/
+
+
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -492,6 +552,8 @@ const saveContract = async () => {
   justify-content: center;
   align-items: center;
 }
+
+/*서명 파트*/
 .signature-section {
   margin-top: 2rem;
 }
