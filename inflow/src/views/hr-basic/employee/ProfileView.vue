@@ -3,13 +3,13 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-   <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
+    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
       <div class="profile-header">
-         <!-- 프로필 사진 -->
-         <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
+          <!-- 프로필 사진 -->
+          <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
             <img
             :src="previewPhoto || employee.photoUrl"
             alt="Profile Photo"

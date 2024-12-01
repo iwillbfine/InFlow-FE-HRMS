@@ -49,12 +49,13 @@ import AppointmentsHistoryView from '@/views/hr-management/appointment/Appointme
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
 import DisciplineRewardInfoView from '@/views/hr-basic/employee/DisciplineRewardInfoView.vue';
 import EducationInfoView from '@/views/hr-basic/employee/EducationInfoView.vue';
 import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView.vue';
 import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView.vue';
 import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
+import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
 
 
 const routes = [
@@ -87,23 +88,25 @@ const routes = [
   {
     path: '/hr-basic',
     name: 'hr-basic',
+    redirect: '/hr-basic/my-info/careers',
     component: MyInfoView,
   },
   // 인사기본- 사원
   {
     path: '/hr-basic/my-info',
     name: 'hr-basic-my-info',
+    redirect: '/hr-basic/my-info/careers',
     component: MyInfoView,
     children: [
-      {
-        path: '',
-        name: 'hr-basic-my-info-default',
-        component: CareerInfoView,
-      },
       {
         path: 'careers',
         name: 'career',
         component: CareerInfoView,
+      },
+      {
+        path: 'careers/update',
+        name: 'career-update',
+        component: CareerInfoUpdateView,
       },
       {
         path: 'disciplinerewards',
