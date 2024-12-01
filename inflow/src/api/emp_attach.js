@@ -10,6 +10,19 @@ export const getDoc = async (fileType) => {
   }
 };
 
+export const deleteData = async (data, name) => {
+  try {
+    let response;
+    await apiClient.delete(`/employees/${name}`, {
+      data: [...new Set(data.map(row => row.family_member_id))]
+    });
+    return;
+  } catch (error) {
+    console.error('수정 요청 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const saveData = async (data, name) => {
   try {
     let response;
@@ -31,9 +44,13 @@ export const saveData = async (data, name) => {
 export const updateData = async (data, name) => {
   try {
     let response;
-    await apiClient.delete(`/employees/${name}`, {
-      data: data.map(row => row['employee_id'])});
+    if (name !== 'family-members') {
+      await apiClient.delete(`/employees/${name}`, {
+        data: [...new Set(data.map(row => row['employee_id']))]
+      });
+    }
     response = await apiClient.post(`/employees/${name}`, data);
+    console.log(response.data);
     return response.data.content;
   } catch (error) {
     console.error('수정 요청 에러:', error.response?.data || error.message);
@@ -125,6 +142,16 @@ export const getRelationships = async () => {
   try {
     const response = await apiClient.get(`/employees/family-members/relationships`);
     return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getFamilyById = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/family-members/${empId}`);
+    return response.data;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
     throw error;
