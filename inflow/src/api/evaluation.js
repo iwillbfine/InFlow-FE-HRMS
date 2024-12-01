@@ -114,3 +114,42 @@ export const findFinalGrade = async (empId, year, half) => {
     throw error;
   }
 };
+
+// 피드백 생성
+export const createFeedback = async (createFeedbackRequestDTO) => {
+  try {
+    const response = await apiClient.post('/evaluations/feedback/feedbackCreation', createFeedbackRequestDTO);
+    return response.data;
+  } catch (error) {
+    console.error('피드백 생성 중 에러 발생:', error);
+    throw error;
+  }
+};
+
+// 피드백 조회
+export const findFeedbacks = async (empId, year, half) => {
+  try {
+    const response = await apiClient.get('/evaluations/feedback/find', {
+      params: {
+        empId,
+        year,
+        half,
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findFeedbacks 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 피드백 수정
+export const updateFeedback = async (feedbackId, updateFeedbackRequestDTO) => {
+  try {
+    const response = await apiClient.patch(`/evaluations/feedback/${feedbackId}`, updateFeedbackRequestDTO);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('updateFeedback 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};

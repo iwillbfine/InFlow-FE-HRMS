@@ -25,6 +25,8 @@
           </div>
         </div>
       </FlexItem>
+
+      
   
       <!-- 평가 데이터 테이블 -->
       <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
