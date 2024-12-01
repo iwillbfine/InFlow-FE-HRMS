@@ -94,7 +94,7 @@ const fetchCommuteData = async (eid, date) => {
   const response = await getCommutesByEmployeeId(eid, date);
   if (response.success) {
     commuteList.value = response.content;
-    isEmpty.value = commuteList.value.isEmpty ? true : false;
+    isEmpty.value = commuteList.value.length === 0 ? true : false;
   } else {
     commuteList.value = [];
     isEmpty.value = true;

@@ -394,7 +394,7 @@ const saveContract = async () => {
 
     // 로딩 상태 시작
     isSubmitting.value = true;
-    
+
     // HTML 캡처 전 스타일 조정
     const originalOverflow = contractElement.style.overflow; // 기존 overflow 저장
     const originalMaxHeight = contractElement.style.maxHeight; // 기존 maxHeight 저장
@@ -450,6 +450,7 @@ const saveContract = async () => {
 </script>
 
 <style scoped>
+
 /* 로딩 오버레이 스타일 */
 .loading-overlay {
   position: fixed;

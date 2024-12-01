@@ -1,12 +1,14 @@
 <template>
   <div class="emp-container">
+    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
     </div>
     <div class="exlbtns1">
       <button type="button" @click="fileDownload">
         <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 다운로드</p>
+        <p style="font-size: 10px;">양식 다운로드</p>
       </button>
       <button type="button" @click="clickInput">
         <img src="../../../assets/icons/excel_icon.png" />
@@ -60,9 +62,17 @@
 
 
 <script setup>
+import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
 import { getDoc, saveData, getValidData } from '@/api/emp_attach';
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+});
 
 const headerNames = ref([
   "사번", "성별", "성명", "생년월일", "이메일", "휴대폰번호", "입사유형", "계약월급",
@@ -229,6 +239,10 @@ const postData = async () => {
   gap: 0.5rem;
 }
 
+.ca {
+  margin-left: 2rem;
+}
+
 .exlbtns1, .exlbtns2 {
   display: flex;
   flex-direction: row;
@@ -293,6 +307,7 @@ button p {
   padding: 1px;
 }
 
+
 .colboard, .inboard{
   display: flex;
   flex-direction: column;
@@ -309,7 +324,7 @@ button p {
   width: 100%;
   overflow-x: scroll;
   align-items: stretch;
-  padding: 0 0 10px 0;
+  padding: 0 0 2rem 0;
 }
 
 .inboard div {
@@ -399,7 +414,7 @@ input[type="checkbox"]:checked + label::after {
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 10rem;
+  margin-top: 5rem;
 }
 
 .invalid-row {

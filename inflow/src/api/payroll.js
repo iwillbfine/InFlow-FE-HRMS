@@ -17,3 +17,18 @@ export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => 
     throw error;
   }
 };
+
+export const getAllPayments = async(employeeId, page) => {
+  if (!employeeId || !page) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, page=${page}`);
+  }
+  try {
+    const response = await apiClient.get(`/payrolls/all/${employeeId}`, {
+      params: { page },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('getAllPayments 에러: ', error);
+    throw error;
+  }
+};

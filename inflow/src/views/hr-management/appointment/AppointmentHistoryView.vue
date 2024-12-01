@@ -1,402 +1,186 @@
 <template>
-  <div class="emp-container">
-    <div class="tmp">
-      <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
-    </div>
-    <div class="exlbtns1">
-      <button type="button" @click="fileDownload">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 다운로드</p>
-      </button>
-      <button type="button" @click="clickInput">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 업로드</p>
-      </button>
-    </div>
+  <FlexItem class="content-header" fld="row" h="6rem" w="90%">
+    <ChangeMonthComponent
+      class="child1"
+      :cur-month="curMonth"
+      description="인사발령 내역"
+      @go-prev-month="goPrevMonth"
+      @go-next-month="goNextMonth"
+    />
+    <SelectAppTypeComponent
+      :y="curMonth.split('-')[0]"
+      :m="curMonth.split('-')[1]"
+      class="select-data"
+      @selected="goSelectedPoint"
+    />
+  </FlexItem>
 
-    <div class="colboard">
-      <div class="exlbtns2">
-        <button type="button" @click="deleteSelectedRows">
-          <img src="../../../assets/icons/minus_icon.png" />
-          <p>선택 삭제</p>
-        </button>
-        <button type="button" @click="addRow">
-          <img src="../../../assets/icons/plus_icon.png" />
-          <p>행 추가</p>
-        </button>
-      </div>
-
-      <div class="inboard">
-        <div class="colname headers">
-          <div class="chbox">
-            <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
-            <label :for="chkHeader"></label>
-          </div>
-          <div v-for="header in headerNames" :key="header">{{ header }}</div>
-        </div>
-        <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
-          <div class="chbox">
-            <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
-            <label :for="'check' + rowIndex"></label>
-          </div>
-          <div v-for="(value, header) in row" :key="header">
-            <input 
-              type="text" 
-              v-model="rowsData[rowIndex][header]" 
-              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
-          </div>
-        </div>
-      </div>
+  <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
+    <div class="table-wrapper">
+      <TableItem class="commute-table" gtc="repeat(9, 1fr)" br="0.5rem">
+        <TableRow>
+          <TableCell th fs="1.6rem">no</TableCell>
+          <TableCell th fs="1.6rem">일자</TableCell>
+          <TableCell th fs="1.6rem">유형</TableCell>
+          <TableCell th fs="1.6rem">사원</TableCell>
+          <TableCell th fs="1.6rem">부서</TableCell>
+          <TableCell th fs="1.6rem">직무</TableCell>
+          <TableCell th fs="1.6rem">직위</TableCell>
+          <TableCell th fs="1.6rem">직책</TableCell>
+          <TableCell th fs="1.6rem">담당자</TableCell>
+        </TableRow>
+        <TableRow v-if="!isEmpty" v-for="(item, index) in appointmentHistory" :key="index">
+          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['appointed_at'].split(' ')[0] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['appointment_item_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['employee_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['department_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['duty_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['position_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ item['authorizer_name'] }}</TableCell>
+        </TableRow>
+      </TableItem>
     </div>
-
-    <div class="regist">
-      <button type="button" class="rBtn" @click="postData">
-        <p>등록</p>
-      </button>
-    </div>
-  </div>
+    <FlexItem
+      v-if="isEmpty"
+      class="empty-message"
+      fld="row"
+      h="6rem"
+      w="100%"
+      fs="1.6rem"
+    >
+      인사발령 내역이 존재하지 않습니다.
+    </FlexItem>
+  </FlexItem>
 </template>
 
-
 <script setup>
-import * as xlsx from "xlsx";
-import { ref, onMounted } from "vue";
-import { getDoc, saveData, getValidData } from '@/api/emp_attach';
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import SelectAppTypeComponent from '@/components/common/SelectAppTypeComponent.vue';
+import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
+import { ref, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { getAppHistoryByMonth } from '@/api/emp_attach';
 
-const headerNames = ref([
-  "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)", 
-  "발령 직무(CODE)", "발령 직책(CODE)", "발령 직위(CODE)"
-]);
-const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
+const curMonth = ref('');
+const appointmentHistory = ref([]);
+const isEmpty = ref(true);
 
-const chkHeader = ref(false);
-const selectedRows = ref([]);
-const rowsData = ref([]);
-const fileInput = ref(null);
-const workbook = ref(null);
-const validData = ref({});
+const router = useRouter();
+const route = useRoute();
+const selectedType = ref('전체');
 
-const validators = {
-  "발령대상(사번)": (value) => ids.value[value] !== undefined,
-  "인사발령 유형(CODE)": (value) => validData.value.appointment_items?.includes(value),
-  "발령 부서(CODE)": (value) => validData.value.departments?.includes(value),
-  "발령 직무(CODE)": (value) => validData.value.positions?.includes(value),
-  "발령 직책(CODE)": (value) => validData.value.roles?.includes(value),
-  "발령 직위(CODE)": (value) => validData.value.duties?.includes(value),
+const fetchDate = async (date) => {
+  if (!date || typeof date !== 'string' || date.split('-').length < 3) {
+    date = getCurMonth();
+  }
+
+  const [year, month, type = '전체'] = date.split('-');
+  curMonth.value = `${year}-${month}`;
+  selectedType.value = type;
+
+  const response = await getAppHistoryByMonth(year, month);
+
+  if (response) {
+    appointmentHistory.value =
+      type === '전체'
+        ? response
+        : response.filter((row) => row['appointment_item_name'] === type);
+    isEmpty.value = appointmentHistory.value.length === 0;
+  } else {
+    appointmentHistory.value = [];
+    isEmpty.value = true;
+  }
 };
 
-const isCellValid = (value, header) => {
-  if (value === null || value === '') return false;
-  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
-  return validators[header] ? validators[header](value) : true;
+const getCurMonth = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}-전체`;
 };
 
-const getEmpIds = async() => {
-  loading.value = true;
-  validData.value = await getValidData();
-  const tmp = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
-  tmp.forEach((row) => {
-    ids.value[row["employee_number"]] = row["employee_id"];
-    ids.value[row["employee_id"]] = row["employee_number"];
-  });
-  loading.value = false;
-}
-
-const handleFileUpload = (event) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const binaryStr = e.target.result;
-    workbook.value = xlsx.read(binaryStr, { type: "binary" });
-    addToRowsData();
-  };
-  reader.readAsBinaryString(file);
-  event.target.value = "";
+const navigateTo = (path, data) => {
+  router.push({ path, query: { data } });
 };
 
-const addToRowsData = () => {
-  workbook.value.SheetNames.forEach((sheetName) => {
-    const sheet = workbook.value.Sheets[sheetName];
-    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-    const [, ...rows] = data;
-
-    rows.forEach((row) => {
-      const rowObj = {};
-      headerNames.value.forEach((key, index) => {
-        rowObj[key] = row.slice(1)[index] || null;
-      });
-      rowsData.value.push(rowObj);
-    });
-  });
-  removeDuplicateRows();
-  getEmpIds();
-  initializeSelectedRows();
+const goPrevMonth = (prevMonth) => {
+  navigateTo('/hr-management/appointment/history', `${prevMonth}-전체`);
 };
 
-const removeDuplicateRows = () => {
-  const seen = new Set();
-  rowsData.value = rowsData.value.filter((row) => {
-    const rowString = JSON.stringify(row);
-    if (seen.has(rowString)) {
-      return false;
-    }
-    seen.add(rowString);
-    return true;
-  });
-};
-
-const initializeSelectedRows = () => {
-  selectedRows.value = rowsData.value.map(() => false);
-  chkHeader.value = false;
-};
-
-initializeSelectedRows();
-
-const toggleAllCheckboxes = () => {
-  selectedRows.value.fill(chkHeader.value);
-};
-
-const addRow = () => {
-  rowsData.value.push({ ...defaultRow });
-  initializeSelectedRows();
-};
-
-const deleteSelectedRows = () => {
-  rowsData.value = rowsData.value.filter((_, index) => !selectedRows.value[index]);
-  initializeSelectedRows();
-};
-
-
-const mapping = async () => {
-  await getEmpIds();
-  const result = ref([]);
-  rowsData.value.map((row) => { 
-    result.value.push({
-      employee_number: row["발령대상(사번)"],
-      authorizer_id: '현재 로그인한 사원id',
-      department_code: row["발령 부서(CODE)"],
-      position_code: row["발령 직위(CODE)"],
-      role_code: row["발령 직책(CODE)"],
-      duty_code: row["발령 직무(CODE)"],
-      appointment_item_code: row["인사발령 유형(CODE)"],
-  })});
-};
-
-const fileDownload = async () => {
-  const blob = await getDoc("appointment");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "appointment_template.xlsx");
-  link.click();
-};
-
-const postData = async () => {
-  const invalidRows = rowsData.value.some((row) =>
-    Object.entries(row).some(
-      ([header, value]) => !isCellValid(value, header)
-    )
-  );
-
-  if (invalidRows) {
-    window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
+const goNextMonth = (nextMonth) => {
+  const [endYear, endMonth] = getCurMonth().split('-').slice(0,2);
+  const [moveYear, moveMonth] = nextMonth.split('-');
+  if(endYear>moveYear || endYear===moveYear && endMonth>=moveMonth){
+    navigateTo('/hr-management/appointment/history', `${nextMonth}-전체`);
     return;
   }
-  await saveData(mapping(), null);
-  window.alert("인사발령 정보 등록 완료");
-  window.location.reload();
+  else return;
 };
+
+const goSelectedPoint = (selectedData) => {
+  navigateTo('/hr-management/appointment/history', selectedData);
+};
+
+watch(
+  () => route.query,
+  (newData) => {
+    curMonth.value = newData.data || getCurMonth();
+    fetchDate(curMonth.value)
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  curMonth.value = getCurMonth();
+  fetchDate(curMonth.value);
+});
+
+defineProps({
+  title: {
+    type: String,
+    required: false,
+    default: '',
+  },
+});
 </script>
 
-
 <style scoped>
-.emp-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-  gap: 0.5rem;
-}
-
-.exlbtns1, .exlbtns2 {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: 2rem;
-  margin-right: 0.5rem;
-}
-
-.exlbtns1 button, .exlbtns2 button {
-  display: flex;
-  flex-direction: row;
-  justify-content:space-around ;
-  width: 140px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
-}
-
-button {
-  width: 100px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
-}
-
-button p {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.exlbtns2 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.exlbtns2 button {
-  width: 110px;
-  padding: 1px;
-}
-
-.colboard, .inboard{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #FFF;
-  border: solid 2px #2e2f3015;
-}
-
-.inboard {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  overflow-x: scroll;
-  align-items: stretch;
-  padding: 0 0 10px 0;
-}
-
-.inboard div {
-  height: 100%;
-}
-
-.inboard > :last-child {
-  border-radius: 5px;
-  border-bottom: solid 2px #2e2f3015;
-}
-
-.colname {
-  display: grid;
-  grid-template-columns: 50px 150px 50px 100px 130px 250px 160px 100px 120px 300px 150px 100px 100px 100px 100px 100px;
-  height: 50px;
-  justify-content: stretch;
-  justify-items: center;
-  align-items: center;
-  border-collapse: collapse;
-}
-
-.colname > div {
-  padding: 0.5rem;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  border-right: 0.5px solid #dadada;
-}
-
-.headers > div {
-  font-weight: bold;
-  width: 100%;
-  align-content: center;
-}
-
-.rows > div {
-  width: 100%;
-}
-.rows > div > input{
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  flex-shrink: 0;
-  border-radius: 0.977px;
-  border: 0.586px solid #DBDBDB;
-  background: #F8F8F8;
-  box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
-}
-.chbox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.chbox > label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-input[type="checkbox"] {
-  display: none;
-}
-
-input[type="checkbox"] + label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: 1px solid #DBDBDB;
+.content-header {
   position: relative;
-}
-
-input[type="checkbox"]:checked + label::after {
-  content: '✔';
-  font-size: 20px;
-  width: 100%;
-  height: 100%;
-  display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: center;
-  color: #000;
 }
 
-.regist {
-  display: flex;
-  justify-content: center;
-  margin-top: 10rem;
+.select-data {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  gap: 1rem;
+}
+.select-data ::v-deep(.app-his-dropdown .dropdown .dropdown-header) {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  height: 3.6rem;
+  align-items: center;
 }
 
-.invalid-row {
-  background: #FFD8D8 !important;
-  stroke: #F00 !important;
-  border: 2px solid red !important;
+.content-body {
+  width: 80%;
+  margin-top: 2.5rem;
+}
+
+.mid {
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-message {
+  justify-content: center;
+  align-items: center;
 }
 </style>

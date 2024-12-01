@@ -68,7 +68,7 @@
               fs="1.2rem"
               bgc="#003566"
               c="#fff"
-              @click="toggleCancelRequestModal"
+              @click="toggleCancelRequestModal(item)"
             >
               취소 요청
             </ButtonItem>
@@ -92,55 +92,11 @@
       @change-page="handleChangePage"
     ></PaginationComponent>
   </FlexItem>
-  <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal">
-    <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
-      <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
-        <TableCell th fs="1.6rem">초과근무 날짜</TableCell>
-        <TableCell th fs="1.6rem">초과근무 사유</TableCell>
-        <TableCell th fs="1.6rem">신청일</TableCell>
-        <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
-      </TableRow>
-      <TableRow
-        v-for="(item, index) in overtimeRequestList"
-        v-if="!isEmpty"
-        :key="index"
-      >
-        <TableCell class="mid" fs="1.6rem">{{
-          item.attendance_request_id
-        }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{
-          parseDate(item.start_date)
-        }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{
-          parseDate(item.created_at)
-        }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{
-          parseRequestStatus(item.request_status)
-        }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
-          <span v-if="item.cancel_status == 'Y'">취소 완료</span>
-          <ButtonItem
-            v-else-if="
-              item.cancel_status == 'N' && item.request_status == 'ACCEPT'
-            "
-            h="3rem"
-            w="6.4rem"
-            br="0.4rem"
-            fs="1.2rem"
-            bgc="#003566"
-            c="#fff"
-            @click="toggleCancelRequestModal"
-          >
-            취소 요청
-          </ButtonItem>
-          <span v-else>-</span>
-        </TableCell>
-      </TableRow>
-    </TableItem>
-  </CrudModal>
+  <CancelRequestModal
+    v-if="isModalOpen"
+    :item="tryCancelItem"
+    @close="toggleCancelRequestModal"
+  ></CancelRequestModal>
 </template>
 
 <script setup>
@@ -153,7 +109,7 @@ import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
 import PaginationComponent from '@/components/common/PaginationComponent.vue';
 import ArrowLeftButton from '@/components/buttons/ArrowLeftButton.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getOvertimeRequestsByEmployeeId } from '@/api/attendance';
@@ -166,6 +122,8 @@ const pageInfo = ref({});
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 
+const tryCancelItem = ref(null);
+
 const router = useRouter();
 const route = useRoute();
 
@@ -174,7 +132,7 @@ const fetchOvertimeRequestData = async (eid, page, date) => {
   if (response.success) {
     overtimeRequestList.value = response.content.elements;
     pageInfo.value = response.content;
-    isEmpty.value = overtimeRequestList.value.isEmpty ? true : false;
+    isEmpty.value = overtimeRequestList.value.length === 0 ? true : false;
   } else {
     overtimeRequestList.value = [];
     pageInfo.value = {};
@@ -227,7 +185,8 @@ const parseRequestStatus = (status) => {
   }
 };
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
 };
 
