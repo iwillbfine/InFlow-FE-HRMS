@@ -19,7 +19,7 @@
             name="policy_description_input"
             type="text"
             placeholder="휴가에 대한 설명을 입력해주세요."
-            maxlength="30"
+            maxlength="50"
           />
         </TableCell>
       </TableRow>
@@ -290,8 +290,8 @@ const handleOnclick = async () => {
     return;
   }
 
-  if (vacationPolicyDescription.value.length > 40) {
-    alert('휴가 정책에 대한 설명을 30자 이내로 입력해주세요.');
+  if (vacationPolicyDescription.value.length > 50) {
+    alert('휴가 정책에 대한 설명을 50자 이내로 입력해주세요.');
     return;
   }
 
