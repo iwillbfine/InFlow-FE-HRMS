@@ -177,3 +177,13 @@ export const getCareersById = async (empId) => {
     throw error;
   }
 };
+
+export const getDisciplineReward = async (empId) => {
+  try {
+    const response = await apiClient.get(`/employees/attached/${empId}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
