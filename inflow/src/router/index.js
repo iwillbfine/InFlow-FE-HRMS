@@ -7,6 +7,7 @@ import SalaryView from '@/views/hr-basic/SalaryView.vue';
 import ContractView from '@/views/hr-basic/ContractView.vue';
 import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
 import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
+import PersonalEvalCreateAndFindView from '@/views/evaluation/PersonalEvalCreateAndFindView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
 import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
@@ -408,7 +409,7 @@ const routes = [
       {
         path: '2', // /evaluation/personal/2
         name: 'submenu2',
-        component: PersonalEvalCreateView
+        component: PersonalEvalCreateAndFindView
       }
     ]
 },
@@ -421,7 +422,14 @@ const routes = [
     path: '/evaluation/task',
     name: 'evaluation-task',
     component: EvalTaskView,
-  },
+    children: [
+      {
+        path: 'register',
+        name: 'TaskEvalCreate-view',
+        component: PersonalEvalCreateAndFindView
+      }
+    ]
+},
   {
     path: '/statistics',
     name: 'statistics',

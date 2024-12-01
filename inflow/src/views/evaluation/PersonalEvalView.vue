@@ -1,9 +1,8 @@
-<!-- personalEvalView.vue -->
 <template>
   <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="0" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="0" :list="menuList" @menu-clicked="handleMenuClick"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
@@ -18,7 +17,7 @@ import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const menuList = ref([
@@ -28,22 +27,34 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '자기평가 조회', link: '/evaluation/personal/1' },
-  { name: '자기평가 등록 및 수정', link: '/evaluation/personal/2'  },
+  { name: '자기평가 관리', link: '/evaluation/personal/1' },
 ]);
 
 const router = useRouter();
 const route = useRoute();
 
 const subIdx = ref(0);
+const eid = ref(null);
+const employeeName = ref('');
+
+// 메인 메뉴 클릭 핸들러
+const handleMenuClick = (link) => {
+  if (link === '/evaluation/personal') {
+    router.push(subMenuList.value[0].link);
+  }
+};
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
-const eid = ref(null);
-const employeeName = ref('');
+// 라우트 감시
+watch(() => route.path, (newPath) => {
+  if (newPath === '/evaluation/personal') {
+    router.push(subMenuList.value[0].link);
+  }
+});
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
@@ -51,12 +62,12 @@ onMounted(() => {
   if (!eid.value) {
     alert("로그인이 필요합니다.");
     router.push('/login');
+    return;
   }
 
-  const defaultUrl = '/evaluation/personal';
-  if(route.fullPath == defaultUrl) {
-    localStorage.removeItem('subIdx');
-    return;
+  // 초기 로드 시 기본 경로면 첫 번째 서브메뉴로 이동
+  if (route.path === '/evaluation/personal') {
+    router.push(subMenuList.value[0].link);
   }
 
   const savedSubIdx = localStorage.getItem('subIdx');
