@@ -107,7 +107,6 @@ import { useRouter } from 'vue-router';
 
 const educationList = ref([]);
 const isEmpty = ref(true);
-const chkHeader = ref(false);
 const headerCheckbox = ref(false);
 const selectedRows = ref([]);
 
@@ -144,7 +143,6 @@ const fetchDate = async () => {
   if (response) {
     const sortedResponse = sortByDate(response);
     educationList.value = sortedResponse;
-    console.log(educationList.value);
     isEmpty.value = educationList.value.length === 0;
   } else {
     educationList.value = [];
@@ -160,7 +158,7 @@ watch(educationList, () => {
 
 const initializeSelectedRows = () => {
   selectedRows.value = educationList.value.map(() => false);
-  chkHeader.value = false;
+  headerCheckbox.value = false;
 };
 
 const toggleAllCheckboxes = () => {
@@ -209,7 +207,6 @@ const postData = async () => {
     router.push('/hr-basic/my-info/educations');
     return;
   } catch (error) {
-    console.error("데이터 저장 중 오류 발생:", error);
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
   }
 };
