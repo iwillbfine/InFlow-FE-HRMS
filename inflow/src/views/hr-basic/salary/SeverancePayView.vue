@@ -18,9 +18,9 @@
         </TableRow>
       </TableItem>
     </div>
-    <div class="button-wrapper">
-      <ButtonItem class="button" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>
-    </div>
+<!--    <div class="button-wrapper">-->
+<!--      <ButtonItem class="button" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>-->
+<!--    </div>-->
     <div class="severance-table-wrapper">
       <TableItem class="severance-pay-table" gtc="repeat(6, 1fr)" br="0.5rem">
         <TableRow>
@@ -33,20 +33,17 @@
         </TableRow>
         <TableRow>
           <TableCell class="period" fs="1.6rem">
-            {{ severancePay.value.three_months_ago !== "-년 -월 -일" && severancePay.value.severance_date !== "-년 -월 -일"
-            ? formatPeriod(severancePay.value.three_months_ago, severancePay.value.severance_date)
-            : "-년 -월 -일 ~ -년 -월 -일" }}
+            {{ formatPeriod(severancePay.three_months_ago, severancePay.severance_date) }}
           </TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ severancePay.value.total_salary }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ severancePay.value.total_non_taxable_salary }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ severancePay.value.bonus_addition }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ severancePay.value.leave_allowance_addition }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ severancePay.value.severance_pay }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.total_salary) }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.total_non_taxable_salary) }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.bonus_addition) }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.leave_allowance_addition) }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.severance_pay) }}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell th fs="1.8rem" fw="bold" gc="span 6">
-
-          </TableCell>
+          <TableCell th fs="1.8rem" fw="bold" gc="span 6">귀하의 퇴직금 예상치는 {{ formatCurrency(severancePay.severance_pay) }}입니다.</TableCell>
+          <TableCell th fs="1.6rem" gc="span 6">* 본 계산은 예상치로 실제 세금 납부액 및 각종 공제 내역에 따라 달라질 수 있습니다.</TableCell>
         </TableRow>
       </TableItem>
     </div>
@@ -58,74 +55,89 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
-import ButtonItem from "@/components/semantic/ButtonItem.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {getEstimateWorkingDays, calculateSeverancePay} from "@/api/payroll.js";
 
-const route = useRoute();
 const router = useRouter();
 
 // 상태 변수
 const employeeId = ref(null);
 const workingDay = ref({});
-const severancePay = ref({
-  total_salary: "-",
-  total_non_taxable_salary: "-",
-  bonus_addition: "-",
-  leave_allowance_addition: "-",
-  severance_pay: "-",
-  three_months_ago: "-년 -월 -일",
-  severance_date: "-년 -월 -일",
-});
+const severancePay = ref({});
 
 // api 호출
-const fetchWorkingData = async(employeeId) => {
-  if (!employeeId.value) {
-    console.error("유효하지 않은 파라미터");
-    return;
-  }
-  try {
-    const response = await getEstimateWorkingDays(employeeId.value);
-    workingDay.value = response.content || {};
-  } catch (error) {
-    console.error("Failed to fetch workingDay", error);
-  }
-};
+const fetchData = async() => {
+  const id = localStorage.getItem("employeeId");
+  console.log("localStorage에서 가져온 id",id);
 
-const fetchSeverancePay = async(id) => {
-  console.log("fetchSeverancePay 호출, 전달된 employeeId: ", id);
   if (!id) {
-    console.error("유효하지 않은 파라미터", id);
+    alert("로그인이 필요합니다.")
+    router.push("/login")
     return;
   }
+
+  employeeId.value = id;
+
   try {
-    const response = await calculateSeverancePay(id);
-    console.log("fetchSeveracePay 결과: ", response);
+    // 재직일 데이터 호출
+    const workingData = await getEstimateWorkingDays(employeeId.value);
+    workingDay.value = workingData.content || {};
 
-    const content = response.content || {};
-    severancePay.value = {
-        total_salary: content.total_salary || "-",
-        total_non_taxable_salary: content.total_non_taxable_salary || "-",
-        bonus_addition: content.bonus_addition || "-",
-        leave_allowance_addition: content.leave_allowance_addition || "-",
-        severance_pay: content.severance_pay || "-",
-        three_months_ago: content.three_months_ago || "-년 -월 -일",
-        severance_date: content.severance_date || "-년 -월 -일",
-      };
+    // 퇴직금 데이터 호출
+    const severanceData = await calculateSeverancePay(employeeId.value);
+    severancePay.value = severanceData.content || {};
   } catch (error) {
-    console.error("Failed to fetch severancePay", error);
+    console.log("데이터 호출 중 오류 발생", error);
   }
 };
 
-const handleOnclick = () => {
-  console.log("handleOnclick 호출, employeeId: ", employeeId.value);
-  if (!employeeId.value) {
-    console.error('employeeId가 유효하지 않음!!');
-    return;
-  }
-  fetchSeverancePay(employeeId.value);
-};
+// const fetchWorkingData = async(employeeId) => {
+//   if (!employeeId.value) {
+//     console.error("유효하지 않은 파라미터");
+//     return;
+//   }
+//   try {
+//     const response = await getEstimateWorkingDays(employeeId.value);
+//     workingDay.value = response.content || {};
+//   } catch (error) {
+//     console.error("Failed to fetch workingDay", error);
+//   }
+// };
+//
+// const fetchSeverancePay = async(id) => {
+//   console.log("fetchSeverancePay 호출, 전달된 employeeId: ", id);
+//   if (!id) {
+//     console.error("유효하지 않은 파라미터", id);
+//     return;
+//   }
+//   try {
+//     const response = await calculateSeverancePay(id);
+//     console.log("fetchSeveracePay 결과: ", response);
+//
+//     const content = response.content || {};
+//     severancePay.value = {
+//         total_salary: content.total_salary || "-",
+//         total_non_taxable_salary: content.total_non_taxable_salary || "-",
+//         bonus_addition: content.bonus_addition || "-",
+//         leave_allowance_addition: content.leave_allowance_addition || "-",
+//         severance_pay: content.severance_pay || "-",
+//         three_months_ago: content.three_months_ago || "-년 -월 -일",
+//         severance_date: content.severance_date || "-년 -월 -일",
+//       };
+//   } catch (error) {
+//     console.error("Failed to fetch severancePay", error);
+//   }
+// };
+
+// const handleOnclick = () => {
+//   console.log("handleOnclick 호출, employeeId: ", employeeId.value);
+//   if (!employeeId.value) {
+//     console.error('employeeId가 유효하지 않음!!');
+//     return;
+//   }
+//   fetchSeverancePay(employeeId.value);
+// };
 
 const formatDate = (value) => {
   if (!value) return '-년 -월 -일';
@@ -143,6 +155,13 @@ const formatPeriod = (startDate, endDate) => {
   return `${formatDate(startDate)} ~ ${formatDate(endDate)}`;
 };
 
+const formatCurrency = (value) => {
+  if (value === undefined || value === null) {
+    return '- 원'; // 기본값 설정
+  }
+  return `${value.toLocaleString()} 원`;
+};
+
 
 onMounted(() => {
   const id = localStorage.getItem("employeeId");
@@ -153,7 +172,7 @@ onMounted(() => {
     return;
   }
   employeeId.value = id;
-  fetchWorkingData(employeeId.value);
+  fetchData(employeeId.value);
 });
 
 </script>
