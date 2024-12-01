@@ -64,6 +64,7 @@ const handleSearch = async(query) => {
       params:{keyword:query}
     });
     employees.value = respnose.data.content;
+    console.log("검색어로 응답받은 데이터:", employees.value);
   } catch(error){
     console.error('사원 데이터를 불러오지 못했습니다.',error);
 
@@ -104,9 +105,10 @@ const handleDepartmentSelect = async(departmentCode) => {
   console.log("선택된 부서 코드:", departmentCode);
   try{
     const respnose = await apiClient.get('/departments/search/members', {
-      params:{keyword:departmentCode}
+      params:{departmentCode}
     });  
     employees.value = respnose.data.content;
+    console.log("응답 받은 데이터:",employees.value);
   } catch(error){
     console.error('사원 데이터를 불러오지 못했습니다.', error);
   }
