@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'학력 정보'" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="'학력'" class="ca" w="90%"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -223,6 +223,10 @@ const postData = async () => {
 
 .content-header ::v-deep(article > div.article-label) {
   font-size: 2rem !important;
+}
+
+.ca {
+  margin-left: 2rem;
 }
 
 .content-body {

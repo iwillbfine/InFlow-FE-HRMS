@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'자격증 정보'" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="'자격증'" class="ca" w="90%"></CommonArticle>
     <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">수정</ButtonItem>
   </FlexItem>
 
@@ -89,6 +89,9 @@ const handleOnclick = () => {
 </script>
   
 <style scoped>
+.ca {
+  margin-left: 2rem;
+}
 .content-header {
   width: 100%;
   position: relative;
