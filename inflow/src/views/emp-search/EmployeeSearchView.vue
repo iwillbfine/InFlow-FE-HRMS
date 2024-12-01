@@ -53,10 +53,21 @@ import EmployeeDetail from '@/components/employee-search/EmployeeDetail.vue';
 
 import apiClient from '@/api/axios';
 
+// 0. 페이지 로드되자마자 모든 사원 목록 로드되도록
+const employees = ref([]);
+onMounted(async () => {
+  try{
+    const response = await apiClient.get('/departments/search/all-members');
+    employees.value = response.data.content;
+    console.log("응답 받은 모든 사원 목록:", employees.value);
+  } catch(error){
+    console.error('전체 사원 목록을 불러오지 못했습니다.', error);
+  }
+})
+
 
 // 1. 검색창 사원 목록 조회
 // search-bar 컴포넌트에서 받아온 정보 emloyees에 저장
-const employees = ref([]);
 // 검색어 처리 함수
 const handleSearch = async(query) => {
   try{
