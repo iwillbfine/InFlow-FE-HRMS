@@ -45,10 +45,10 @@
   <CommonArticle label="초과근무 연장" w="90%">
     <TableItem gtc="2fr 6fr">
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem" topl
+        <TableCell class="h-7" th fs="1.6rem" topl botl
           >초과근무 종료 시간</TableCell
         >
-        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr botr>
           <strong v-if="isExtendTommorow">익일</strong>
           <ThirtyMinuteDropDown
             @valid-time-selected="updateExtendEndTime"
