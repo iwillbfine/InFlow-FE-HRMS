@@ -83,21 +83,24 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">휴가 기간</TableCell>
         <TableCell th fs="1.6rem">휴가 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow
         v-for="(item, index) in vacationRequestList"
         v-if="!isEmpty"
         :key="index"
       >
-        <TableCell class="mid" fs="1.6rem">{{
-          item.vacation_request_id
-        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === vacationRequestList.length - 1"
+          >{{ item.vacation_request_id }}</TableCell
+        >
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
         }}</TableCell>
@@ -108,7 +111,11 @@
         <TableCell class="mid" fs="1.6rem">{{
           parseRequestStatus(item.request_status)
         }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === vacationRequestList.length - 1"
+        >
           <span v-if="item.cancel_status == 'Y'">취소 완료</span>
           <ButtonItem
             v-else-if="

@@ -72,21 +72,24 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">휴직 기간</TableCell>
         <TableCell th fs="1.6rem">휴직 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow
         v-for="(item, index) in leaveRequestList"
         v-if="!isEmpty"
         :key="index"
       >
-        <TableCell class="mid" fs="1.6rem">{{
-          item.attendance_request_id
-        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === leaveRequestList.length - 1"
+          >{{ item.attendance_request_id }}</TableCell
+        >
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
         }}</TableCell>
@@ -97,7 +100,11 @@
         <TableCell class="mid" fs="1.6rem">{{
           parseRequestStatus(item.request_status)
         }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === leaveRequestList.length - 1"
+        >
           <span v-if="item.cancel_status == 'Y'">취소 완료</span>
           <ButtonItem
             v-else-if="
@@ -280,13 +287,12 @@ const handleOnclick = async () => {
     return;
   }
 
-
   const formData = new FormData();
-  formData.append("request_reason", requestReason.value);
-  formData.append("start_date", selectedStartDate.value);
-  formData.append("end_date", selectedEndDate.value);
-  formData.append("employee_id", eid.value);
-  formData.append("attendance_request_type_id", 5);
+  formData.append('request_reason', requestReason.value);
+  formData.append('start_date', selectedStartDate.value);
+  formData.append('end_date', selectedEndDate.value);
+  formData.append('employee_id', eid.value);
+  formData.append('attendance_request_type_id', 5);
 
   fileList.value.forEach((file) => {
     formData.append(`attachments`, file);
