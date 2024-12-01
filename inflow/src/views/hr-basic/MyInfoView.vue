@@ -19,7 +19,8 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 import { defineCustomElement } from 'vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -27,7 +28,6 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
 
-import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 const subIdx = ref(0);
@@ -44,7 +44,7 @@ const subMenuList = ref([
   { name: '경력', link: '/hr-basic/my-info/careers' },
   { name: '학력', link: '/hr-basic/my-info/educations' },
   { name: '자격증', link: '/hr-basic/my-info/qualifications' },
-  { name: '어학 성적', link: '/hr-basic/my-info/languagetests' },
+  { name: '어학', link: '/hr-basic/my-info/languagetests' },
   { name: '가구원', link: '/hr-basic/my-info/familymembers' },
   { name: '포상 및 징계', link: '/hr-basic/my-info/disciplinerewards' },
 ]);
@@ -61,21 +61,34 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
-  const defaultUrl = '/hr-basic/my-info';
-  if(route.fullPath == defaultUrl) {
-    localStorage.removeItem('subIdx');
-    return;
-  }
-
-  const savedSubIdx = localStorage.getItem('subIdx');
-  if (savedSubIdx) {
-    subIdx.value = Number(savedSubIdx);
+  if (subIdx.value === null) {
+    const matchedIndex = subMenuList.value.findIndex(
+      (item) => item.link === route.path
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+    } else {
+      subIdx.value = 0;
+    }
   }
 });
+
+watch(
+  () => route.path,
+  (newPath) => {
+    const matchedIndex = subMenuList.value.findIndex(
+        (item) => item.link === newPath
+    );
+    if (matchedIndex !== -1) {
+      subIdx.value = matchedIndex;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

@@ -83,21 +83,24 @@
     <MoreListButton @click="goMoreList"></MoreListButton>
     <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem">신청 ID</TableCell>
+        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
         <TableCell th fs="1.6rem">휴가 기간</TableCell>
         <TableCell th fs="1.6rem">휴가 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
-        <TableCell th fs="1.6rem">취소 요청</TableCell>
+        <TableCell th fs="1.6rem" topr>취소 요청</TableCell>
       </TableRow>
       <TableRow
         v-for="(item, index) in vacationRequestList"
         v-if="!isEmpty"
         :key="index"
       >
-        <TableCell class="mid" fs="1.6rem">{{
-          item.vacation_request_id
-        }}</TableCell>
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botl="index === vacationRequestList.length - 1"
+          >{{ item.vacation_request_id }}</TableCell
+        >
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
         }}</TableCell>
@@ -108,7 +111,11 @@
         <TableCell class="mid" fs="1.6rem">{{
           parseRequestStatus(item.request_status)
         }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">
+        <TableCell
+          class="mid"
+          fs="1.6rem"
+          :botr="index === vacationRequestList.length - 1"
+        >
           <span v-if="item.cancel_status == 'Y'">취소 완료</span>
           <ButtonItem
             v-else-if="
@@ -120,7 +127,7 @@
             fs="1.2rem"
             bgc="#003566"
             c="#fff"
-            @click="toggleCancelRequestModal"
+            @click="toggleCancelRequestModal(item)"
           >
             취소 요청
           </ButtonItem>
@@ -138,7 +145,11 @@
     >
       신청 내역이 존재하지 않습니다.
     </FlexItem>
-    <CrudModal v-if="isModalOpen" @close="toggleCancelRequestModal"></CrudModal>
+    <CancelRequestModal
+      v-if="isModalOpen"
+      :item="tryCancelItem"
+      @close="toggleCancelRequestModal"
+    ></CancelRequestModal>
   </CommonArticle>
 </template>
 
@@ -151,7 +162,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import MoreListButton from '@/components/buttons/MoreListButton.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
-import CrudModal from '@/components/modals/CrudModal.vue';
+import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import FileItem from '@/components/common/FileItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
 import LiItem from '@/components/semantic/LiItem.vue';
@@ -177,6 +188,8 @@ const selectedStartDate = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
 const fileList = ref([]);
+
+const tryCancelItem = ref(null);
 
 const router = useRouter();
 
@@ -205,7 +218,7 @@ const fetchVacationRequestData = async (eid) => {
 
   if (response.success) {
     vacationRequestList.value = response.content;
-    isEmpty.value = vacationRequestList.value.isEmpty ? true : false;
+    isEmpty.value = vacationRequestList.value.length === 0 ? true : false;
   } else {
     vacationRequestList.value = [];
     isEmpty.value = true;
@@ -231,7 +244,8 @@ const handleRemoveFile = (index) => {
   fileList.value.splice(index, 1);
 };
 
-const toggleCancelRequestModal = () => {
+const toggleCancelRequestModal = (item) => {
+  tryCancelItem.value = item;
   isModalOpen.value = !isModalOpen.value;
 };
 

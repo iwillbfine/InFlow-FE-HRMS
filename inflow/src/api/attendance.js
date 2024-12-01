@@ -273,3 +273,44 @@ export const getLeaveReturnsByEmployeeId = async (eid, page) => {
     throw error;
   }
 };
+
+// 21. 근태 취소 신청
+export const cancelAttendanceRequest = async (id, formData) => {
+  try {
+    const response = await apiClient.patch(
+      `/attendance-requests/${id}`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error('cancelAttendanceRequest 에러:', error);
+    throw error;
+  }
+};
+
+// 22. 초과근무 연장 신청
+export const extendOvertime = async (id, formData) => {
+  try {
+    const response = await apiClient.patch(
+      `/attendance-requests/commute/overtime/${id}`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error('extendOvertime 에러:', error);
+    throw error;
+  }
+};
+
+// 23. 사원 ID와 날짜(yyyy-MM)로 월별 초과근무 내역 조회
+export const getOvertimesByEmployeeId = async (eid, date) => {
+  try {
+    const response = await apiClient.get(
+      `/commutes/overtime?eid=${eid}&date=${date}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getOvertimesByEmployeeId 에러:', error);
+    throw error;
+  }
+};

@@ -7,7 +7,6 @@
     bgc="#fff"
     :fs="props.fs"
     :fw="props.fw"
-    c="#003566"
   >
     <slot></slot>
   </ArticleItem>
