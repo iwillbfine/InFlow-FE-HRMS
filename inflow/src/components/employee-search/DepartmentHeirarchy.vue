@@ -46,6 +46,8 @@ const selectDepartment = (department) => {
 <style scoped>
 .department-heirarchy>span{
     font-size: 2rem;
+    color: #003566;
+    font-weight: 500;
 }
 .department-heirarchy>ul{
     margin-left: 20px;
