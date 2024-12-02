@@ -6,13 +6,16 @@
     <div class="content-section" w="100%">
       <div class="left">
         <!-- 부서 근태 정보 -->
-        <MyDepartmentAttendance class="department-attendance"/>
+        <MyDepartmentAttendance 
+          class="department-attendance"
+          :attendance-stats="attendanceStats"/>
         <!-- 사원 목록 조회 -->
         <SearchDepartmentMember 
             v-if="isDataLoaded"
             class="search-department-member"
             :members="members"
-            :departmentCode="departmentCode"/>
+            :departmentCode="departmentCode"
+            @updateAttendanceStats="handleUpdateAttendanceStats"/>
       </div>
       <div class="right">
         sdsㅇ
@@ -129,6 +132,13 @@ watch(
     console.log("isDataLoaded watch값:", isDataLoaded.value);
   }
 );
+
+const attendanceStats = ref({ total: 0, working: 0 });
+
+// SearchDepartmentMember로부터 데이터를 전달받는 핸들러
+const handleUpdateAttendanceStats = (stats) => {
+    attendanceStats.value = stats;
+};
 
 </script>
 

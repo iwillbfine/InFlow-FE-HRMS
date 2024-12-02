@@ -155,6 +155,28 @@ watch(
     },
     { immediate: true }
 );
+
+
+/* 근무 인원수 계산해서 부모에게 Emit:*/
+// 부모로 이벤트 전송을 위한 emit
+const emit = defineEmits(['updateAttendanceStats']);
+
+// 근무 상태 계산
+const attendanceStats = computed(() => {
+    const totalMembers = categorizedMembers.value.length;
+    const workingMembers = categorizedMembers.value.filter(
+        (member) => member.workStatus === '근무중'
+    ).length;
+    return {
+        total: totalMembers,
+        working: workingMembers,
+    };
+});
+
+// attendanceStats 변경 시 부모에게 알림
+watch(attendanceStats, (newStats) => {
+    emit('updateAttendanceStats', newStats); // 부모로 전달
+});
 </script>
 
 <style scoped>

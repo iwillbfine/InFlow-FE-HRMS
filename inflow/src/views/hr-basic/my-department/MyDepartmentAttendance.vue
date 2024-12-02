@@ -4,13 +4,19 @@
             <span>오늘의 부서 출근 상태</span>
         </div>
         <div class="detail">
-            <span>13</span>명/
-            <span>16</span>명
+            <span>{{ attendanceStats.working }}</span>명/
+            <span>{{ attendanceStats.total }}</span>명
         </div>
     </div>
 </template>
 
 <script setup>
+const props = defineProps({
+    attendanceStats: {
+        type: Object,
+        required: true,
+    },
+});
 
 </script>
 
