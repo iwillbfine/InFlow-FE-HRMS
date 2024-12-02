@@ -134,6 +134,7 @@ onUnmounted(() => {
 .timer-wrapper {
   align-items: center;
   gap: 1rem;
+  margin-right: 1rem;
 }
 
 .timer {
