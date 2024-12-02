@@ -45,7 +45,7 @@ const subMenuList = ref([
   { name: '학력', link: '/hr-basic/my-info/educations' },
   { name: '자격증', link: '/hr-basic/my-info/qualifications' },
   { name: '어학', link: '/hr-basic/my-info/languagetests' },
-  { name: '가구원', link: '/hr-basic/my-info/familymembers' },
+  { name: '가족', link: '/hr-basic/my-info/familymembers' },
   { name: '포상 및 징계', link: '/hr-basic/my-info/disciplinerewards' },
 ]);
 
