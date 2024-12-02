@@ -203,13 +203,17 @@ const mapping = async () => {
 };
 
 
+// Language Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("language");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "language_form.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("language");
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", "language_form.xlsx");
+    link.click();
+  } catch (error) {
+    console.error("Language Form 다운로드 에러:", error.message);
+  }
 };
 
 const postData = async () => {

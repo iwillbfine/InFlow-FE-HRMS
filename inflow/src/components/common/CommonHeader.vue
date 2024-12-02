@@ -4,6 +4,26 @@
       <span>{{ props.userName }} 님, 안녕하세요!</span>
     </SectionItem>
     <NavItem class="top-nav" h="4rem">
+      <FlexItem class="timer-wrapper" fld="row">
+        <span
+          v-if="remainingTime"
+          class="timer"
+          :class="{ 'low-time': remainingTime <= 300 }"
+        >
+          남은 시간: {{ Math.floor(remainingTime / 60) }}분 {{ remainingTime % 60 }}초
+        </span>
+        <ButtonItem
+          class="extend-btn"
+          h="2.8rem"
+          w="5.6rem"
+          bgc="#aaa"
+          br="0.6rem"
+          fs="1.2rem"
+          c="#fff"
+          @click="extendSession"
+        >연장
+        </ButtonItem>
+      </FlexItem>
       <SettingButton h="4rem" w="4rem" br="50%"></SettingButton>
       <HomeButton h="4rem" w="4rem" br="50%"></HomeButton>
       <AccountDropdown :user-name="userName" @reset-password="changeModalStatus" />
@@ -13,15 +33,19 @@
 </template>
 
 <script setup>
-import HeaderItem from '../semantic/HeaderItem.vue';
-import SectionItem from '../semantic/SectionItem.vue';
-import NavItem from '../semantic/NavItem.vue';
-import SettingButton from '../buttons/SettingButton.vue';
-import HomeButton from '../buttons/HomeButton.vue';
-import AccountDropdown from '../dropdowns/AccountDropdown.vue';
-import ResetPasswordModal from '../modals/ResetPasswordModal.vue';
-import { ref } from 'vue';
+import HeaderItem from '@/components/semantic/HeaderItem.vue';
+import SectionItem from '@/components/semantic/SectionItem.vue';
+import NavItem from '@/components/semantic/NavItem.vue';
+import SettingButton from '@/components/buttons/SettingButton.vue';
+import HomeButton from '@/components/buttons/HomeButton.vue';
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import AccountDropdown from '@/components/dropdowns/AccountDropdown.vue';
+import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+// Props 정의
 const props = defineProps({
   userName: {
     type: String,
@@ -29,12 +53,63 @@ const props = defineProps({
   },
 });
 
+// 모달 상태
 const isResetPwdModalOpen = ref(false);
 
+// 남은 시간 상태
+const remainingTime = ref(null);
+const timer = ref(null);
+const router = useRouter();
+
+// 타이머 업데이트
+const updateTimer = () => {
+  const expireTime = localStorage.getItem('expireTime');
+  if (expireTime) {
+    const currentTime = new Date().getTime();
+    const timeLeft = Math.max(0, expireTime - currentTime);
+    remainingTime.value = Math.floor(timeLeft / 1000);
+
+    if (timeLeft <= 0) {
+      clearSession();
+    }
+  } else {
+    clearSession();
+  }
+};
+
+// 세션 연장
+const extendSession = () => {
+  const currentExpireTime = localStorage.getItem('expireTime');
+  const newExpireTime = new Date().getTime() + 30 * 60 * 1000;
+
+  localStorage.setItem('expireTime', newExpireTime.toString());
+  updateTimer(); // 즉시 타이머 업데이트
+  alert('세션 만료 시간이 연장되었습니다.');
+};
+
+// 세션 초기화
+const clearSession = () => {
+  clearInterval(timer.value);
+  localStorage.clear();
+  alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+  router.push('/login');
+};
+
+// 모달 상태 변경
 const changeModalStatus = () => {
   console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
-}
+};
+
+// 컴포넌트 마운트/언마운트 시 타이머 관리
+onMounted(() => {
+  updateTimer();
+  timer.value = setInterval(updateTimer, 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(timer.value);
+});
 </script>
 
 <style scoped>
@@ -50,7 +125,36 @@ const changeModalStatus = () => {
   z-index: 3;
 }
 
+.welcome-section {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.timer-wrapper {
+  align-items: center;
+  gap: 1rem;
+  margin-right: 1rem;
+}
+
+.timer {
+  font-size: 1.8rem;
+  color: #202020;
+  font-weight: 500;
+}
+
+.timer.low-time {
+  color: #ff4d4f; /* 빨간색 */
+  font-weight: 700; /* 강조 */
+}
+
+.extend-btn:hover {
+  background-color: #888 !important;
+  transition: 0.2s ease-out;
+}
+
 .top-nav {
+  align-items: center;
   gap: 2rem;
 }
 

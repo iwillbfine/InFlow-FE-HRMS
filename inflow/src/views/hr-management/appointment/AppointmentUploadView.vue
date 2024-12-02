@@ -208,14 +208,19 @@ const mapping = async () => {
   return result.value;
 };
 
+// Appointment Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("appointment");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "appointment_template.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("appointment"); // Pre-signed URL 가져오기
+    const link = document.createElement("a"); // 링크 생성
+    link.href = fileUrl; // URL 연결
+    link.setAttribute("download", "appointment_form.xlsx"); // 다운로드 파일 이름 설정
+    link.click(); // 클릭 이벤트 발생
+  } catch (error) {
+    console.error("Appointment Form 다운로드 에러:", error.message);
+  }
 };
+
 
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>

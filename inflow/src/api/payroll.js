@@ -58,3 +58,23 @@ export const calculateSeverancePay = async(employeeId) => {
     throw error;
   }
 };
+
+export const createIrregularAllowance = async(formData) => {
+  try {
+    const response = await apiClient.post('irregular-allowances', formData);
+    return response.data;
+  } catch (error) {
+    console.error("createIrregularAllowance 오류: ", error);
+  }
+};
+
+export const getIrregularAllowance = async(page) => {
+  try {
+    const response = await apiClient.get(`/irregular-allowances`, {
+      params: { page }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("getIrregularAllowance 오류: ", error)
+  }
+}

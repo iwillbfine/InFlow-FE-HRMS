@@ -1,6 +1,6 @@
 <template>
   <FlexItem
-    class="profile"
+    class="d-day"
     fld="row"
     w="100%"
     h="20rem"
@@ -15,7 +15,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 </script>
 
 <style scoped>
-.profile {
+.d-day {
   padding: 1rem;
   box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.2);
 }
