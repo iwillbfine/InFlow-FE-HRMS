@@ -1,5 +1,5 @@
 <template>
-  <WidgetItem label="나의 근태 현황" h="20rem" :w="widgetWidth">
+  <WidgetItem label="나의 근태 현황" h="20rem" w="100%">
     <FlexItem class="widget-content" fld="row" h="100%" w="100%">
       <FlexItem
         v-for="(item, index) in list"
@@ -158,10 +158,6 @@ const getCurMonth = () => {
   return curMonth;
 };
 
-const widgetWidth = computed(() => {
-  return `${list.value.length * 15}rem`;
-});
-
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   const paydayCountdown = calculateDaysUntilPayday();
@@ -175,8 +171,10 @@ onMounted(() => {
 .widget-content {
   justify-content: space-around;
   align-items: center;
+  overflow: auto;
 }
 .content-item {
+  min-width: 11rem;
   align-items: center;
   gap: 1rem;
 }
