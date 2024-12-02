@@ -1,5 +1,4 @@
 <template>
-  <div class="cotract-wrapper">
     <CommonArticle label="계약서 목록" minh="29rem" w="90%">
       <TableItem gtc="repeat(5, 1fr)" br="1rem">
         <TableRow bgc="#aaa">
@@ -54,7 +53,6 @@
       :contract-data="selectedContract"
       @close="handleSecurityModalClose"
     />
-  </div>
 </template>
 
 <script setup>

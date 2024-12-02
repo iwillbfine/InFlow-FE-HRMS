@@ -1,12 +1,10 @@
 <template>
-  <div class="certificate-wrapper">
     <CommonArticle label="재직증명서 발급" minh="29rem" w="90%">
       <TableItem gtc="auto 150px" br="1rem">
         <TableRow bgc="#aaa">
           <TableCell th fs="1.6rem">재직 증명서 요청</TableCell>
           <TableCell th fs="1.6rem">발급하기</TableCell>
         </TableRow>
-
         <TableRow>
           <!-- 텍스트 입력 필드 -->
           <TableCell class="mid" fs="1.6rem">
@@ -37,7 +35,6 @@
       :certificate-data="certificateData"
       @close="closeModal"
     />
-  </div>
 </template>
 
 <script setup>
@@ -115,7 +112,7 @@ const closeModal = () => {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 2px;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   box-sizing: border-box;
 }
 
