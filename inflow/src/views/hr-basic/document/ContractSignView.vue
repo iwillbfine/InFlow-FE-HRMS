@@ -1,5 +1,4 @@
 <template>
-  <div class="cotract-wrapper">
     <CommonArticle label="계약서 목록" minh="29rem" w="90%">
       <TableItem gtc="repeat(5, 1fr)" br="1rem">
         <TableRow bgc="#aaa">
@@ -21,7 +20,20 @@
               <button @click="selectContract(contract.contract_id)" class="btn">조회</button>
             </template>
             <template v-else>
-              <button @click="openContractModal(contract)" class="btn">등록</button>
+              <button
+                v-if="contract.contract_type === 'EMPLOYMENT'"
+                @click="openEmployeeContractModal(contract)"
+                class="btn"
+              >
+                등록
+              </button>
+              <button
+                v-else
+                @click="openSecurityContractModal(contract)"
+                class="btn"
+              >
+                등록
+              </button>
             </template>
           </TableCell>
         </TableRow>
@@ -30,26 +42,34 @@
 
     <!-- EmployeeContractModal -->
     <EmployeeContractModal
-      v-if="showModal"
+      v-if="showEmployeeModal"
       :contract-data="selectedContract"
-      @close="handleModalClose"
+      @close="handleEmployeeModalClose"
     />
-  </div>
+
+    <!-- SecurityContractModal -->
+    <SecurityContractModal
+      v-if="showSecurityModal"
+      :contract-data="selectedContract"
+      @close="handleSecurityModalClose"
+    />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getEmploymentContract, getContractList } from '@/api/emp_info'; // API 호출 메서드 임포트
+import { getEmploymentContract, getContractList, getContract } from '@/api/emp_info'; // API 호출 메서드 임포트
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import EmployeeContractModal from '@/views/hr-basic/document/EmployeeContractModal.vue';
+import SecurityContractModal from '@/views/hr-basic/document/SecurityContractModal.vue';
 
 // 상태 변수 정의
 const contracts = ref([]);
 const modalData = ref({});
-const showModal = ref(false);
+const showEmployeeModal = ref(false);
+const showSecurityModal = ref(false);
 const selectedContract = ref(null);
 
 // 로컬 스토리지에서 employeeId와 token 가져오기
@@ -68,9 +88,27 @@ const fetchContractList = async () => {
 };
 
 // 조회 버튼 클릭 메서드
-const selectContract = () => {
-  window.alert('조회 버튼 호출됨');
+const selectContract = async (contractId) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken'); // 로컬스토리지에서 토큰 가져오기
+
+    // 계약서 정보 조회 API 호출
+    const contractData = await getContract(contractId, accessToken);
+
+    // file_url 확인
+    if (contractData.file_url) {
+      // 새 창에서 열기
+      window.open(contractData.file_url, '_blank');
+    } else {
+      alert('계약서 파일 URL이 없습니다.');
+    }
+  } catch (error) {
+    console.error('계약서 조회 실패:', error);
+    alert('계약서 정보를 조회하는 데 실패했습니다.');
+  }
 };
+
+
 
 // 날짜 포맷 함수
 const formatDateTime = (datetime) => {
@@ -87,27 +125,39 @@ const formatDateTime = (datetime) => {
 };
 
 // "등록" 버튼 클릭 시 호출되는 함수
-const openContractModal = async (contract) => {
+// 근로계약서 등록 모달 열기
+const openEmployeeContractModal = async (contract) => {
   try {
-    // API 호출하여 선택된 계약서 데이터 조회
     const data = await getEmploymentContract(employeeId, token);
-    console.log("등록 버튼 호출됨: ",data);
-    selectedContract.value = {
-      ...data, // API에서 반환된 계약서 데이터
-      ...contract, // 클릭한 계약서의 정보 추가
-    };
-    showModal.value = true; // 모달창 열기
+    selectedContract.value = { ...data, ...contract };
+    showEmployeeModal.value = true;
   } catch (error) {
-    console.error('계약서를 조회하는 데 실패했습니다:', error);
+    console.error("근로계약서를 조회하는 데 실패했습니다:", error);
   }
 };
 
-// 모달 닫기 이벤트 핸들러
-const handleModalClose = () => {
-  showModal.value = false;
-  fetchContractList(); // 계약서 목록 새로고침
+// 비밀유지서약서 등록 모달 열기
+const openSecurityContractModal = async (contract) => {
+  try {
+    const data = await getEmploymentContract(employeeId, token);
+    selectedContract.value = { ...data, ...contract };
+    showSecurityModal.value = true;
+  } catch (error) {
+    console.error("비밀유지서약서를 조회하는 데 실패했습니다:", error);
+  }
 };
 
+// 근로계약서 모달 닫기
+const handleEmployeeModalClose = () => {
+  showEmployeeModal.value = false;
+  fetchContractList();
+};
+
+// 비밀유지서약서 모달 닫기
+const handleSecurityModalClose = () => {
+  showSecurityModal.value = false;
+  fetchContractList();
+};
 // 컴포넌트가 마운트되면 계약서 목록을 가져옵니다.
 onMounted(fetchContractList);
 </script>

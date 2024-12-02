@@ -56,6 +56,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  gtc: {
+    type: String,
+    default: 'repeat(1, 1fr)',
+  },
 });
 
 const customStyle = computed(() => ({
@@ -72,5 +76,6 @@ const customStyle = computed(() => ({
   minHeight: props.minh,
   maxWidth: props.maxw,
   minWidth: props.minw,
+  gridTemplateColumns: props.gtc,
 }));
 </script>

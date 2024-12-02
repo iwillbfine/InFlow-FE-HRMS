@@ -1,20 +1,24 @@
 <template>
   <div class="profile-wrapper">
+     <!-- 로딩 중일 때 표시 -->
+    <LoadingOverlay :isVisible="loading" message="수정 중입니다. 잠시만 기다려 주세요..." />
+
+
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-        <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
+    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
       <div class="profile-header">
-         <!-- 프로필 사진 -->
-         <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
+          <!-- 프로필 사진 -->
+          <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
             <img
             :src="previewPhoto || employee.photoUrl"
             alt="Profile Photo"
             class="profile-photo"
-            @click="editMode ? handlePhotoUpload() : null" 
+            @click="handlePhotoUpload"
             />
             <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">사진 수정</div>
             <input
@@ -24,7 +28,7 @@
               style="display: none"
               @change="onPhotoChange"
             />
-        </div>
+          </div>
         <table class="employee-info-table">
           <tbody>
             <tr>
@@ -57,82 +61,82 @@
                 <template v-else>{{ employee.phone }}</template>
               </td>
             </tr>
-            <tr>
-              <th>사원명</th>
-              <td>{{ employee.employeeName }}</td>
-              <th>직무</th>
-              <td>{{ employee.jobRole }}</td>
-              <th>이메일</th>
-              <td style="position: relative;">
-                <template v-if="editMode">
-                  <input
-                    type="email"
-                    v-model="form.email"
-                    class="editable-input"
-                    :class="{ 'invalid-row': !isValidEmail }"
-                    @input="validateEmail"
-                    @focus="showEmailModal"
-                    @blur="hideEmailModal"
-                  />
-                  <div v-if="isEmailModalVisible" class="email-modal">
-                    <div class="email-modal-content">
-                      <h3>이메일 입력 형식</h3>
-                      <ul>
-                        <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
-                        <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
-                      </ul>
-                    </div>
+          <tr>
+            <th>사원명</th>
+            <td>{{ employee.employeeName }}</td>
+            <th>직무</th>
+            <td>{{ employee.jobRole }}</td>
+            <th>이메일</th>
+            <td style="position: relative;">
+              <template v-if="editMode">
+                <input
+                  type="email"
+                  v-model="form.email"
+                  class="editable-input"
+                  :class="{ 'invalid-row': !isValidEmail }"
+                  @input="validateEmail"
+                  @focus="showEmailModal"
+                  @blur="hideEmailModal"
+                />
+                <div v-if="isEmailModalVisible" class="email-modal">
+                  <div class="email-modal-content">
+                    <h3>이메일 입력 형식</h3>
+                    <ul>
+                      <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
+                      <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
+                    </ul>
                   </div>
-                </template>
-                <template v-else>{{ employee.email }}</template>
-              </td>
-            </tr>
-            <tr>
-              <th>입사일</th>
-              <td>{{ employee.hireDate }}</td>
-              <th>직위</th>
-              <td>{{ employee.position }}</td>
-              <th>주소</th>
-                <td>
-                  <template v-if="editMode">
-                    <div class="address-input-group">
-                      <!-- 주소 입력 필드 -->
-                      <input
-                        type="text"
-                        v-model="form.address"
-                        class="editable-input"
-                        readonly
-                        placeholder="주소를 검색하세요"
-                      />
-                      <button class="btn-address" @click="openAddressSearch">주소 검색</button>
-                    </div>
-                  </template>
-                  <template v-else>{{ employee.address }} </template>
-                </td>
-            </tr>
-            <tr>
-              <th>입사유형</th>
-              <td>{{ employee.hireType }}</td>
-              <th>직책</th>
-              <td>{{ employee.jobTitle }}</td>
-              <th>상세주소</th>
+                </div>
+              </template>
+              <template v-else>{{ employee.email }}</template>
+            </td>
+          </tr>
+          <tr>
+            <th>입사일</th>
+            <td>{{ employee.hireDate }}</td>
+            <th>직위</th>
+            <td>{{ employee.position }}</td>
+            <th>주소</th>
               <td>
                 <template v-if="editMode">
-                  <input type="text" v-model="form.detailAddress" class="editable-input" />
+                  <div class="address-input-group">
+                    <!-- 주소 입력 필드 -->
+                    <input
+                      type="text"
+                      v-model="form.address"
+                      class="editable-input"
+                      readonly
+                      placeholder="주소를 검색하세요"
+                    />
+                    <button class="btn-address" @click="openAddressSearch">주소 검색</button>
+                  </div>
                 </template>
-                <template v-else>{{ employee.detailAddress }}</template>
+                <template v-else>{{ employee.address }} </template>
               </td>
-              <td></td>
-            </tr>
-            <tr>
-              <th>생년월일</th>
-              <td>{{ employee.birthDate }}</td>
-              <th>퇴사일</th>
-              <td>{{ employee.retirementDate || 'N/A' }}</td>
-              <th></th>
-              <td></td>
-            </tr>
-          </tbody>
+          </tr>
+          <tr>
+            <th>입사유형</th>
+            <td>{{ employee.hireType }}</td>
+            <th>직책</th>
+            <td>{{ employee.jobTitle }}</td>
+            <th>상세주소</th>
+            <td>
+              <template v-if="editMode">
+                <input type="text" v-model="form.detailAddress" class="editable-input" />
+              </template>
+              <template v-else>{{ employee.detailAddress }}</template>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>생년월일</th>
+            <td>{{ employee.birthDate }}</td>
+            <th>퇴사일</th>
+            <td>{{ employee.retirementDate || 'N/A' }}</td>
+            <th></th>
+            <td></td>
+          </tr>
+        </tbody>
         </table>
       </div>
     </div>
@@ -142,8 +146,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 
-const editMode = ref(false);
+const loading = ref(false); // 로딩 상태
+const editMode = ref(false); // 편집 가능 모드
 const isPhoneModalVisible = ref(false); // 휴대폰 모달 표시 여부
 const isEmailModalVisible = ref(false); // 이메일 모달 표시 여부
 const hoverPhoto = ref(false);
@@ -218,6 +224,8 @@ const fetchEmployeeData = async () => {
 // 수정 후 데이터를 업데이트하고 다시 조회하는 함수
 const updateEmployeeAndRefresh = async () => {
   try {
+    loading.value = true; // 로딩 시작
+
     const employeeId = localStorage.getItem('employeeId');
     const token = localStorage.getItem('accessToken');
 
@@ -242,6 +250,8 @@ const updateEmployeeAndRefresh = async () => {
   } catch (error) {
     console.error('수정 요청 중 에러 발생:', error);
     alert('수정 요청 중 문제가 발생했습니다.');
+  } finally {
+    loading.value = false; // 로딩 종료
   }
 };
 
@@ -342,12 +352,12 @@ const toggleEditMode = () => {
 
 // 파일 선택 핸들링
 const handlePhotoUpload = () => {
-  console.log('handlePhotoUpload 호출됨');
+  if (!editMode.value) {
+    return; // 수정 모드가 아니면 아무 작업도 하지 않음
+  }
   if (photoInput.value) {
     photoInput.value.click();
-    console.log('photoInput 클릭 실행됨');
   } else {
-    console.error('photoInput 참조가 유효하지 않습니다.');
   }
 };
 
@@ -394,13 +404,65 @@ onMounted(() => {
 
 
 <style scoped>
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* 로딩 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 로딩 오버레이 스타일 끝*/
+
 .profile-wrapper {
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  width: 100%;
+  width: 95%;
   height: 100%;
-  border: 1px solid #ddd;
 }
 
 .profile-buttons-container {
@@ -411,6 +473,8 @@ onMounted(() => {
 }
 
 .profile-label {
+  widows: 100%;
+  height: 4rem;
   font-size: 1.7rem;
   font-weight: 700;
   color: #003566;
@@ -437,8 +501,8 @@ onMounted(() => {
 }
 
 .profile-photo {
-  width: 14rem; 
-  height: 16rem;
+  width: 16rem; /* 사진 크기 조정 */
+  height: 18rem;
   object-fit: cover;
 }
 .photo-edit-overlay {
@@ -472,6 +536,7 @@ onMounted(() => {
 }
 
 .btn-address{
+
   padding: 0.2rem 1.2rem;
   background-color: #003566;
   color: #fff;
@@ -505,13 +570,12 @@ onMounted(() => {
 /* 테이블 스타일링 */.employee-info-table {
   border-collapse: collapse; /* 셀 간격을 제거하고 경계선을 하나로 합침 */
   width: 100%;
-  
 }
 
 /* 테이블 스타일링 */
 .employee-info-table th,
 .employee-info-table td {
-  padding: 0.7rem 0.6rem; /* 테이블 셀 간격 조정 */
+  padding: 0.7rem 1.5rem; /* 테이블 셀 간격 조정 */
   font-size: 2rem; /* 기본 글씨 크기 설정 */
   font-weight: 500;
   line-height: 1.5; /* 행 높이 조정 */
@@ -625,3 +689,4 @@ onMounted(() => {
 }
 
 </style>
+

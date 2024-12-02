@@ -6,6 +6,7 @@
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <strong>금일</strong>
           <ThirtyMinuteDropDown
+            after-work
             @valid-time-selected="updateSelectedStartTime"
           ></ThirtyMinuteDropDown>
           <strong>~</strong>
@@ -39,6 +40,33 @@
       fs="1.6rem"
       @click="handleOnclick"
       >신청</ButtonItem
+    >
+  </CommonArticle>
+  <hr />
+  <CommonArticle label="초과근무 연장" w="90%">
+    <TableItem gtc="2fr 6fr">
+      <TableRow>
+        <TableCell class="h-7" th fs="1.6rem" topl botl
+          >초과근무 종료 시간</TableCell
+        >
+        <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr botr>
+          <strong v-if="isExtendTommorow">익일</strong>
+          <ThirtyMinuteDropDown
+            @valid-time-selected="updateExtendEndTime"
+          ></ThirtyMinuteDropDown>
+        </TableCell>
+      </TableRow>
+    </TableItem>
+    <ButtonItem
+      class="submit-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleExtend"
+      >연장</ButtonItem
     >
   </CommonArticle>
   <hr />
@@ -129,15 +157,21 @@ import CancelRequestModal from '@/components/attendance/CancelRequestModal.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import {
+  getOvertimesByEmployeeId,
   getOvertimeRequestPreviewsByEmployeeId,
+  extendOvertime,
   createOvertimeRequest,
 } from '@/api/attendance';
 
 const eid = ref(null);
+const overtime = ref(null);
+const overtimeList = ref([]);
 const overtimeRequestList = ref([]);
 const isEmpty = ref(true);
 const isModalOpen = ref(false);
 const isTommorow = ref(false);
+const isExtendTommorow = ref(false);
+const isOvertimeNow = ref(false);
 
 const selectedStartTime = ref('');
 const selectedStartDate = ref('');
@@ -145,9 +179,34 @@ const selectedEndTime = ref('');
 const selectedEndDate = ref('');
 const requestReason = ref('');
 
+const extendEndTime = ref('');
+const extendEndDate = ref('');
+
 const tryCancelItem = ref(null);
 
 const router = useRouter();
+
+const fetchOvertimeData = async (eid, date) => {
+  const response = await getOvertimesByEmployeeId(eid, date);
+
+  if (response.success) {
+    overtimeList.value = response.content;
+    if (overtimeList.value.length > 0) {
+      const startTime = new Date(overtimeList.value[0].start_time);
+      const endTime = new Date(overtimeList.value[0].end_time);
+      const now = new Date();
+
+      if (now >= startTime && now <= endTime) {
+        overtime.value = overtimeList.value[0];
+        isOvertimeNow.value = true;
+      } else {
+        isOvertimeNow.value = false;
+      }
+    }
+  } else {
+    overtimeList.value = [];
+  }
+};
 
 const fetchOvertimeRequestData = async (eid) => {
   const response = await getOvertimeRequestPreviewsByEmployeeId(eid);
@@ -200,6 +259,17 @@ const parseRequestStatus = (status) => {
   }
 };
 
+// 이번 달 가져오기
+const getCurMonth = () => {
+  const today = new Date();
+
+  const year = today.getFullYear(); // 연도 가져오기
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 가져오기 (0부터 시작하므로 +1, 두 자리로 맞춤)
+
+  const curMonth = `${year}-${month}`;
+  return curMonth;
+};
+
 const updateSelectedStartTime = (time) => {
   selectedStartTime.value = time;
 
@@ -228,6 +298,7 @@ const updateSelectedEndTime = (time) => {
     selectedEndDate.value = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}${time}`;
     isTommorow.value = false;
   }
+
   // "T00:00"부터 "T17:30" 사이의 시간을 내일 날짜로 설정
   else {
     const tomorrow = new Date();
@@ -237,10 +308,40 @@ const updateSelectedEndTime = (time) => {
   }
 };
 
-const checkValidDate = () => {
+const updateExtendEndTime = (time) => {
+  extendEndTime.value = time;
+
+  // 현재 날짜와 시간 가져오기
+  const currentDate = new Date();
+
+  // "T" 이후 시간을 분리하여 시각을 가져옵니다
+  const timePart = time.substring(1); // "T" 이후 부분만 추출
+  const [hour, minute] = timePart.split(':'); // 시와 분을 분리
+
+  // 시각을 Date 객체로 변환
+  const selectedTime = new Date(currentDate);
+  selectedTime.setHours(hour, minute, 0, 0); // 현재 날짜에 시간만 설정
+
+  // "T18:30" 이후 시간을 오늘 날짜로 설정
+  const timeThreshold = new Date(currentDate.setHours(18, 30, 0, 0)); // 오늘 18:30
+  if (selectedTime >= timeThreshold) {
+    extendEndDate.value = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}${time}`;
+    isExtendTommorow.value = false;
+  }
+
+  // "T00:00"부터 "T17:30" 사이의 시간을 내일 날짜로 설정
+  else {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // 내일 날짜로 설정
+    extendEndDate.value = `${tomorrow.getFullYear()}-${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}${time}`;
+    isExtendTommorow.value = true;
+  }
+};
+
+const checkValidDate = (startDate, endDate) => {
   // selectedStartDate와 selectedEndDate가 Date 객체라면 getTime()을 사용하여 시간을 밀리초로 반환
-  const start = new Date(selectedStartDate.value);
-  const end = new Date(selectedEndDate.value);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
   // 시간 차이를 밀리초 단위로 계산
   const timeDifference = Math.abs(end.getTime() - start.getTime());
@@ -257,6 +358,11 @@ const checkValidDate = () => {
 };
 
 const handleOnclick = async () => {
+  if (isOvertimeNow.value) {
+    alert('이미 초과근무중입니다.');
+    return;
+  }
+
   if (!selectedStartTime.value) {
     alert('초과근무 시작 시간을 선택하세요.');
     return;
@@ -289,7 +395,7 @@ const handleOnclick = async () => {
     return;
   }
 
-  if (!checkValidDate()) {
+  if (!checkValidDate(selectedStartDate.value, selectedEndDate.value)) {
     alert('초과근무 시간은 하루 최대 4시간 까지 입니다.');
     return;
   }
@@ -326,12 +432,57 @@ const handleOnclick = async () => {
   window.location.reload();
 };
 
+const handleExtend = async () => {
+  if (!isOvertimeNow.value) {
+    alert('초과근무중이 아닙니다.');
+    return;
+  }
+
+  if (!extendEndTime.value) {
+    alert('초과근무 종료 시간을 선택해주세요.');
+    return;
+  }
+
+  if (new Date(overtime.value.end_time) >= new Date(extendEndDate.value)) {
+    alert(
+      '연장 종료 시간은 기존 종료 시간보다 이후여야 합니다.' +
+        '\n기존 초과근무 종료 시간 : ' +
+        parseTime(overtime.value.end_time)
+    );
+    return;
+  }
+
+  if (!checkValidDate(overtime.value.start_time, extendEndDate.value)) {
+    alert(
+      '초과근무 시간은 하루 최대 4시간 까지 입니다.' +
+        '\n초과근무 시작 시간 : ' +
+        parseTime(overtime.value.start_time)
+    );
+    return;
+  }
+
+  const response = await extendOvertime(overtime.value.attendance_request_id, {
+    end_time: extendEndDate.value,
+  });
+
+  extendEndTime.value = '';
+  extendEndDate.value = '';
+
+  if (response.success) {
+    alert('초과근무 시간이 성공적으로 연장되었습니다.');
+  } else {
+    alert('초과근무 연장 실패! 다시 시도해주세요.');
+  }
+  window.location.reload();
+};
+
 const goMoreList = () => {
   router.push('/hr-basic/attendance/overtime/requests');
 };
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
+  fetchOvertimeData(eid.value, getCurMonth());
   fetchOvertimeRequestData(eid.value);
 });
 </script>

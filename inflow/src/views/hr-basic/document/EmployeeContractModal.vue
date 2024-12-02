@@ -1,12 +1,15 @@
 <template>
     <div v-if="contractData" class="modal-overlay">
       <div class="modal-content">
+         <!-- 로딩 오버레이 -->
+         <LoadingOverlay :isVisible="isSubmitting" message="계약서를 등록 중입니다. 잠시만 기다려 주세요..." />
+
         <!-- 상단 버튼 컨트롤 -->
         <div class="viewer-controls">
           <div class="left-controls">
             <button class="btn save-btn" @click="saveContract" :disabled="isSubmitting">
-                <i v-if="!isSubmitting" class="fas fa-save"></i>
-                <i v-else class="fas fa-spinner fa-spin"></i>
+              <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
+              <i v-else class="fas fa-save"></i>
                 계약서 등록
             </button>
           </div>
@@ -35,15 +38,52 @@
         <div class="contract-container" ref="contractViewer">
           <h2 class="contract-title">표준 근로계약서</h2>
           <div class="contract">
+            <br>
             <p class="intro">
               <span class="highlight">{{ contractData.ceo_name }}</span> (이하 “사업주”라 함)과(와) <span class="highlight">{{ contractData.employee_name }}</span> (이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.
             </p>
+            <br>
             <p><strong>1. 근로계약기간:</strong> <span class="highlight">{{ contractData.contract_start_date }}</span>부터 <span class="highlight">{{ contractData.contract_end_date }}</span>까지</p>
             <p><strong>2. 근 무 장 소:</strong> <span class="highlight">{{ contractData.work_location }}</span></p>
             <p><strong>3. 업무의 내용:</strong> <span class="highlight">{{ contractData.job_description }}</span></p>
             <p><strong>4. 소정근로시간:</strong> <span class="highlight">{{ contractData.work_start_time }}</span>부터 <span class="highlight">{{ contractData.work_end_time }}</span></p>
             <p><strong>5. 근무일/휴일:</strong> 매주 <span class="highlight">{{ contractData.work_days }}</span>일 근무</p>
-            <p><strong>6. 임 금:</strong> <span class="highlight">{{ contractData.salary_amount }}원</span></p>
+            <p><strong>6. 임 금:</strong></p>
+
+            <div class="salary-section">
+              <ul>
+                <li>
+                  <strong>- 월(일, 시간)급: </strong>
+                  <span class="highlight">{{ contractData.salary_type }}: {{ contractData.salary_amount.toLocaleString() }}원</span>
+                </li>
+                <li>
+                  <strong>- 상여금: </strong>
+                  <span class="highlight">{{ contractData.has_bonus ? '있음' : '없음' }}</span>
+                </li>
+                <li>
+                  <strong>- 기타급여(제수당 등): </strong>
+                  <span class="highlight">{{ contractData.irregular_allowances.length > 0 ? '있음' : '없음' }}</span>
+                </li>
+                <!-- 기타급여 상세 표시 -->
+                <ul v-if="contractData.irregular_allowances.length > 0" class="allowance-list horizontal">
+                  <li v-for="allowance in contractData.irregular_allowances" :key="allowance.irregular_allowance_id">
+                    <span class="highlight">{{ allowance.irregular_allowance_name }}:</span>
+                    <span class="highlight">{{ allowance.amount.toLocaleString() }}원</span>
+                  </li>
+                </ul>
+
+                <li>
+                  <strong>- 임금지급일: </strong>
+                  <span class="highlight">매월 {{ contractData.payment_day }}일 (휴일의 경우는 전일 지급)</span>
+                </li>
+                <li>
+                  <strong>- 지급방법: </strong>
+                  <span class="highlight">{{ contractData.payment_method }}</span>
+                </li>
+              </ul>
+            </div>
+
+
             <p><strong>7. 연차유급휴가:</strong> 연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함</p>
             <p><strong>8. 사회보험 적용여부:</strong></p>
             <ul class="insurance-list">
@@ -63,41 +103,48 @@
             <!-- 서명 섹션 -->
             <div class="signature-section">
               <table class="signature-table">
-                <tr>
-                  <td class="label"><strong>(사업주)</strong></td>
-                  <td>
-                    <p>사업체명: <span class="highlight">{{ contractData.company_name }}</span></p>
-                    <p>주소: <span class="highlight">{{ contractData.company_address }}</span></p>
-                    <p>전화: <span class="highlight">{{ contractData.company_phone_number }}</span></p>
-                    <div class="signature-row">
-                      <span>대표자:</span>
-                      <span class="highlight">{{ contractData.ceo_name }}</span>
-                      <div class="signature-image-container">
-                        <img :src="contractData.ceo_signature" alt="서명" class="signature-image" crossOrigin="true" />
-                        <span class="signature-text">(서명)</span>
+                <!-- 사업주 서명 -->
+                <tbody>
+                  <tr>
+                    <td class="label"><strong>(사업주)</strong></td>
+                    <td>
+                      <p>사업체명: <span class="highlight">{{ contractData.company_name }}</span></p>
+                      <p>주소: <span class="highlight">{{ contractData.company_address }}</span></p>
+                      <p>전화: <span class="highlight">{{ contractData.company_phone_number }}</span></p>
+                      <div class="signature-row">
+                        <span>대표자:</span>
+                        <span class="highlight">{{ contractData.ceo_name }}</span>
+                        <div class="signature-image-container">
+                          <img :src="contractData.ceo_signature" alt="서명" v-if="contractData.ceo_signature" class="signature-image" crossOrigin="true" />
+                          <span class="signature-text">(서명)</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="label"><strong>(근로자)</strong></td>
-                  <td>
-                    <p>주소: <span class="highlight">{{ contractData.employee_address }}</span></p>
-                    <p>연락처: <span class="highlight">{{ contractData.employee_phone_number }}</span></p>
-                    <p>
-                        <div class="signature-row">
-                            <span>성명:</span>
-                       <span class="highlight">{{ contractData.employee_name }}</span>
-                      <div class="signature-image-container">
-                        <img :src="employeeSignature" alt="서명" v-if="employeeSignature" class="signature-image" />
-                        <span class="signature-text">(서명)</span>
+                    </td>
+                  </tr>
+                </tbody>
+                <!-- 근로자 서명 -->
+                <tbody>
+                  <tr>
+                    <td class="label"><strong>(근로자)</strong></td>
+                    <td>
+                      <p>주소: <span class="highlight">{{ contractData.employee_address }}</span></p>
+                      <p>연락처: <span class="highlight">{{ contractData.employee_phone_number }}</span></p>
+                      <div class="signature-row">
+                        <span>성명:</span>
+                        <span class="highlight">{{ contractData.employee_name }}</span>
+                        <div class="signature-image-container">
+                          <img :src="employeeSignature" alt="서명" v-if="employeeSignature" class="signature-image" />
+                          <span class="signature-text">(서명)</span>
+                        </div>
                       </div>
-                    </div>
-                    </p>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
+
+
+
           </div>
         </div>
             <!-- 서명 캔버스 모달 -->
@@ -170,7 +217,7 @@ const openSignaturePad = async () => {
     canvas.height = canvas.offsetHeight;
     canvasContext = canvas.getContext('2d');
     canvasContext.strokeStyle = 'black';
-    canvasContext.lineWidth = 2;
+    canvasContext.lineWidth = 4;
   }
 };
 
@@ -272,63 +319,7 @@ const formatDateTime = (datetime) => {
 // 계약서 등록 메서드
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-
-// // 계약서 저장 메서드
-// const saveContract = async () => {
-//   try {
-//     const contractId = props.contractData.contract_id; // 계약서 ID 가져오기
-
-//     if (!employeeSignature.value) {
-//       alert('서명을 등록해야 계약서를 제출할 수 있습니다.');
-//       return;
-//     }
-
-//     // 계약서 HTML 엘리먼트 가져오기
-//     const contractElement = contractViewer.value;
-//     if (!contractElement) {
-//       alert('계약서 내용을 찾을 수 없습니다.');
-//       return;
-//     }
-
-//     // HTML 캡처 전 스타일 조정
-//     const originalOverflow = contractElement.style.overflow; // 기존 overflow 저장
-//     const originalMaxHeight = contractElement.style.maxHeight; // 기존 maxHeight 저장
-
-//     // 스크롤 제거
-//     contractElement.style.overflow = 'visible';
-//     contractElement.style.maxHeight = 'none';
-
-//     // HTML을 캡처하여 Canvas로 변환 (전체 영역 캡처)
-//     const canvas = await html2canvas(contractElement, {
-//       scale: 2, // 고화질을 위해 배율 설정
-//       useCORS: true, // 크로스 도메인 이미지 문제 해결
-//       scrollY: 0, // 스크롤 위치 무시
-//       windowHeight: contractElement.scrollHeight, // DOM 전체 높이를 기준으로 캡처
-//     });
-
-//     // 원래 스타일 복원
-//     contractElement.style.overflow = originalOverflow;
-//     contractElement.style.maxHeight = originalMaxHeight;
-
-//     const imgData = canvas.toDataURL('image/png'); // Canvas 데이터를 이미지로 변환
-
-//     // PDF에 이미지 추가
-//     const pdf = new jsPDF('p', 'mm', 'a4'); // A4 크기의 PDF 생성
-//     const pdfWidth = 210; // A4 너비 (단위: mm)
-//     const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // 비율 유지
-
-//     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-//     // PDF 파일 다운로드
-//     const pdfFileName = `contract_${contractId}.pdf`;
-//     pdf.save(pdfFileName); // 파일 다운로드
-
-//     alert('PDF 파일이 성공적으로 다운로드되었습니다!');
-//   } catch (error) {
-//     console.error('PDF 생성 실패:', error);
-//     alert('PDF를 생성하는 데 실패했습니다.');
-//   }
-// };
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 
 const saveContract = async () => {
   try {
@@ -386,14 +377,14 @@ const saveContract = async () => {
 
     const response = await registerEmployeeContract(contractId, pdfBlob, accessToken);
 
-    alert('PDF 파일이 성공적으로 업로드되었습니다!');
+    alert('근로계약서가 성공적으로 업로드되었습니다!');
     console.log('업로드 결과:', response);
 
     // 모달 닫기
     emit('close'); // 상위 컴포넌트에 close 이벤트 전달
   } catch (error) {
     console.error('PDF 생성 및 업로드 실패:', error);
-    alert('PDF를 생성하거나 업로드하는 데 실패했습니다.');
+    alert('근로계약서를 생성하거나 업로드하는 데 실패했습니다.');
   } finally {
     // 로딩 상태 종료
     isSubmitting.value = false;
@@ -403,7 +394,63 @@ const saveContract = async () => {
 
 </script>
 
-<style scoped>.modal-overlay {
+<style scoped>
+
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* 로딩 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 로딩 오버레이 스타일 끝*/
+
+
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -560,74 +607,120 @@ const saveContract = async () => {
   align-items: center;
 }
 
-  
+  /*서명 파트*/
   .signature-section {
-    margin-top: 2rem;
-  }
-  
-  .signature-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  
-  .signature-table .label {
-    width: 10%;
-    text-align: left;
-    vertical-align: top;
-    padding-right: 10px;
-    font-weight: bold;
-  }
-  
-  .signature-table td {
-    padding: 8px 0;
-  }
-  
-  .signature-table p {
-    margin: 0.5rem 0;
-    font-size: 1.4rem;
-  }
-  
-  .signature-row {
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 1rem;
-  }
-  
-  .signature-image-container {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 40px;
-  }
-  
-  .signature-image {
-    position: absolute;
-    top: 6px;
-    left: 0;
-    width: 100%;
-    height: auto;
-    z-index: 1;
-  }
-  
-  .signature-text {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 1.4rem;
-    z-index: 0;
-    color: #333;
-  }
-  
+  margin-top: 2rem;
+}
+
+.signature-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.signature-table .label {
+  width: 15%; /* 레이블 셀의 너비 */
+  text-align: left;
+  font-weight: bold;
+  padding-right: 2px;
+  vertical-align: top;
+}
+
+.signature-table td {
+  padding: 8px 0;
+}
+
+.signature-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 텍스트와 서명 간격 */
+  font-size: 1.4rem;
+}
+
+.signature-image-container {
+  position: relative; /* 텍스트와 이미지를 겹치도록 설정 */
+  display: inline-block;
+  width: 70px; /* 서명 이미지 컨테이너 크기 */
+  height: 30px; /* 서명 이미지 컨테이너 높이 */
+}
+
+.signature-image {
+  position: absolute; /* 텍스트 위에 이미지를 겹치게 설정 */
+  top: 0;
+  left: 0;
+  width: 100%; /* 컨테이너 크기에 맞춤 */
+  height: 100%; /* 컨테이너 크기에 맞춤 */
+  object-fit: contain; /* 이미지 비율 유지 */
+  z-index: 1; /* 텍스트 위에 표시 */
+}
+
+.signature-text {
+  position: absolute; /* 서명 텍스트를 컨테이너 안에 고정 */
+  top: 50%; /* 컨테이너의 세로 가운데 */
+  left: 50%; /* 컨테이너의 가로 가운데 */
+  transform: translate(-50%, -50%); /* 완전한 중앙 정렬 */
+  font-size: 1.4rem;
+  color: #333;
+  z-index: 0; /* 이미지 뒤에 표시 */
+  pointer-events: none; /* 클릭 불가능 */
+  pointer-events: none; /* 클릭 불가능 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  line-height: 1; /* 줄 간격 조정 */
+  text-align: center; /* 텍스트 정렬 */
+}
+
   
   /* 서명 캔버스 */
 .signature-canvas {
   cursor: crosshair;
 }
+
+
+
+
+/* 임금관련 css */
+.salary-section {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  line-height: 1.8;
+}
+
+.salary-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.salary-section li {
+  margin-bottom: 0.8rem;
+}
+
+.salary-section .highlight {
+  font-weight: bold;
+  color: #00509e;
+}
+
+.allowance-list {
+  display: flex; /* 가로로 나열 */
+  gap: 3rem; /* 항목 간 간격 */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.allowance-list li {
+  display: flex;
+  align-items: center; /* 텍스트 수직 정렬 */
+  font-size: 1.4rem;
+  margin-left: 2rem;
+}
+
+
+
+
+/* 임금관련 끝 */
+
+
+
+
 
 .modal-actions {
   display: flex; /* 버튼을 가로로 배치 */
