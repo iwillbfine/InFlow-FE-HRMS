@@ -2,7 +2,7 @@
   <CommonNav></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <GridItem class="grid-container" w="80%" gtc="repeat(10, 1fr)">
+    <GridItem class="grid-container" w="85%" gtc="repeat(20, 1fr)">
       <div class="grid-item">
         <MyAttendanceWidget></MyAttendanceWidget>
       </div>
@@ -66,18 +66,18 @@ onMounted(() => {
 }
 
 .grid-item:nth-child(1) {
-  grid-column: span 6;
+  grid-column: span 11;
 }
 
 .grid-item:nth-child(2) {
-  grid-column: span 4;
+  grid-column: span 9;
 }
 
 .grid-item:nth-child(3) {
-  grid-column: span 5;
+  grid-column: span 10;
 }
 
 .grid-item:nth-child(4) {
-  grid-column: span 5;
+  grid-column: span 10;
 }
 </style>

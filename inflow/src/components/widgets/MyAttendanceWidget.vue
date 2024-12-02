@@ -30,10 +30,10 @@ const vacationList = ref([]);
 const overtimeList = ref([]);
 
 const list = ref([
-  { content: '', label: '월급날' },
-  { content: '', label: '근속 일수' },
-  { content: '', label: '연차 현황' },
-  { content: '', label: '초과 근무 시간' },
+  { content: 'D-00', label: '월급날' },
+  { content: '0', label: '근속 일수' },
+  { content: '0/0', label: '연차 현황' },
+  { content: '00:00', label: '초과 근무 시간' },
 ]);
 
 const fetchEmployeeData = async (eid) => {
