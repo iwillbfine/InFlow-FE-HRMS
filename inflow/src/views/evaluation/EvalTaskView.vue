@@ -30,6 +30,7 @@ const menuList = ref([
   { name: '자기 평가', link: '/evaluation/personal' },
   { name: '리더 평가', link: '/evaluation/leader' },
   { name: '과제 등록 및 조회', link: '/evaluation/task' },
+  { name: '평가 관리', link: '/evaluation/policy' },
 ]);
 
 const subMenuList = ref([

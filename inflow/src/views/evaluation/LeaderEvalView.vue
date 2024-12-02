@@ -24,12 +24,13 @@ const menuList = ref([
   { name: '자기 평가', link: '/evaluation/personal' },
   { name: '리더 평가', link: '/evaluation/leader' },
   { name: '과제 등록 및 조회', link: '/evaluation/task' },
+  { name: '평가 관리', link: '/evaluation/policy' },
 ]);
 
 const subMenuList = ref([
   { name: '평가 내역', link: '/evaluation/leader/eval-list' },
-  { name: '부서 과제 등록 및 할당', link: '/evaluation/leader/dept-task' },
-  { name: '피드백 등록 및 조회', link: '/evaluation/leader/feedback' }
+  { name: '부서 과제 등록 및 할당', link: '/evaluation/leader/dept-task'  },
+  { name: '피드백 등록 및 조회', link: '/evaluation/leader/feedback'  },
 ]);
 
 const router = useRouter();

@@ -13,6 +13,9 @@ import FeedbackManageView from '@/views/evaluation/FeedbackManageView.vue';
 import LeaderEvalListView from '@/views/evaluation/LeaderEvalListView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
+import EvalTypeManagementView from '@/views/evaluation/EvalTypeManagementView.vue';
+import EvalPolicyView from '@/views/evaluation/EvalPolicyView.vue';
+import EvalGradeView from '@/views/evaluation/EvalGradeView.vue';
 import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
 import EmployeeUploadView from '@/views/hr-management/EmployeeUploadView.vue';
 import DepartmentManagementView from '@/views/hr-management/DepartmentManagementView .vue';
@@ -66,6 +69,7 @@ import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoVi
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
 import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
+import EvalPolicyManagementView from '@/views/evaluation/EvalPolicyManagementView.vue';
 
 const routes = [
   {
@@ -438,6 +442,7 @@ const routes = [
     }
   ]
 },
+
   {
     path: '/evaluation/task',
     name: 'evaluation-task',
@@ -450,6 +455,30 @@ const routes = [
       }
     ]
 },
+
+{
+  path: '/evaluation/policy',
+  name: 'evaluation-policy',
+  component: EvalPolicyView,
+  children: [
+    {
+      path: 'eval-type', 
+      name: 'eval-type-management',
+      component: EvalTypeManagementView
+    },
+    {
+      path: 'eval-policy', 
+      name: 'eval-policy-management',
+      component: EvalPolicyManagementView
+    },
+    {
+      path: 'eval-grade', 
+      name: 'eval-grade-management',
+      component: EvalGradeView
+    }
+  ]
+},
+
   {
     path: '/statistics',
     name: 'statistics',

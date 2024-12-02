@@ -153,3 +153,25 @@ export const updateFeedback = async (feedbackId, updateFeedbackRequestDTO) => {
     throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
   }
 };
+
+// 과제 유형 등록
+export const createTaskType = async (createTaskTypeRequestDTO) => {
+  try {
+    const response = await apiClient.post(`/evaluations/taskType/create`, createTaskTypeRequestDTO);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('createTaskType 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 모든 과제 유형 조회
+export const findAllTaskTypes = async () => {
+  try {
+    const response = await apiClient.get(`/evaluations/taskType/allTaskType`);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findAllTaskTypes 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
