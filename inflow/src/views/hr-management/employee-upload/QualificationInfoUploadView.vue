@@ -197,16 +197,18 @@ const mapping = async () => {
   return result.value;
 };
 
-
+// Qualification Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("qualification");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "qualification_form.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("qualification");
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", "qualification_form.xlsx");
+    link.click();
+  } catch (error) {
+    console.error("Qualification Form 다운로드 에러:", error.message);
+  }
 };
-
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
     Object.entries(row).some(

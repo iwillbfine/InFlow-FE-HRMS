@@ -202,13 +202,17 @@ const mapping = async () => {
 };
 
 
+// Family Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("family");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "family_form.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("family");
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", "family_form.xlsx");
+    link.click();
+  } catch (error) {
+    console.error("Family Form 다운로드 에러:", error.message);
+  }
 };
 
 const postData = async () => {

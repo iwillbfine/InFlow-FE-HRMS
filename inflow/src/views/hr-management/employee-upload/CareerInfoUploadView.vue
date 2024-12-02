@@ -194,15 +194,18 @@ const mapping = async () => {
 };
 
 
+// Career Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("career");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "career_form.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("career");
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", "career_form.xlsx");
+    link.click();
+  } catch (error) {
+    console.error("Career Form 다운로드 에러:", error.message);
+  }
 };
-
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
     Object.entries(row).some(

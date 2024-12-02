@@ -195,13 +195,17 @@ const mapping = async () => {
 };
 
 
+// Academic Form 다운로드
 const fileDownload = async () => {
-  const blob = await getDoc("academic");
-  const url = URL.createObjectURL(new Blob([blob]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "academic_form.xlsx");
-  link.click();
+  try {
+    const fileUrl = await getDoc("academic");
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute("download", "academic_form.xlsx");
+    link.click();
+  } catch (error) {
+    console.error("Academic Form 다운로드 에러:", error.message);
+  }
 };
 
 const postData = async () => {
