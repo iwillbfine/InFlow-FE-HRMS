@@ -81,7 +81,7 @@ const fetchOvertimeData = async (eid, date) => {
         const diffTime = now - startTime;
         const formattedTime = formatTime(diffTime);
         list.value[3] = { ...list.value[3], content: formattedTime };
-      } else if (isSameDay(endTime, now)) {
+      } else if (now > endTime && isSameDay(endTime, now)) {
         const totalTime = endTime - startTime;
         list.value[3] = {
           ...list.value[3],
@@ -104,7 +104,7 @@ const calculateDaysUntilPayday = () => {
   const year = today.getFullYear();
   const month = today.getMonth();
   const paydayThisMonth = new Date(year, month, 21); // 이번 달 21일
-  
+
   let payday;
   if (today > paydayThisMonth) {
     // 월급날이 이미 지났다면 다음 달 21일로 설정
@@ -113,7 +113,7 @@ const calculateDaysUntilPayday = () => {
     // 아직 월급날이 지나지 않았다면 이번 달 21일로 설정
     payday = paydayThisMonth;
   }
-  
+
   // 남은 날짜 계산
   const diffTime = payday - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 밀리초 → 일수 변환
