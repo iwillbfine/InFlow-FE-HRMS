@@ -28,7 +28,7 @@ const router = useRouter(); // 라우터 객체 생성
 
 // 로그인 처리 함수
 const handleLogin = async () => {
-  
+
   // 입력값 검사
   if (!employeeNumber.value.trim()) {
     invalid.value = true;
@@ -50,11 +50,11 @@ const handleLogin = async () => {
 
     if (response.success) {
       // 로그인 성공 시 API 응답에서 데이터 추출
-      const { 
-        access_token: accessToken, 
-        refresh_token: refreshToken, 
-        employee_id: employeeId, 
-        employee_number: empNumber 
+      const {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        employee_id: employeeId,
+        employee_number: empNumber
       } = response.content;
 
       // 사원 이름 가져오기
@@ -74,6 +74,10 @@ const handleLogin = async () => {
       localStorage.setItem('employeeId', employeeId);
       localStorage.setItem('employeeNumber', empNumber);
       localStorage.setItem('employeeName', employeeName);
+
+      // 세션 만료 시간 설정 (30분 후)
+      const expireTime = new Date().getTime() + 30 * 60 * 1000;
+      localStorage.setItem('expireTime', expireTime);
 
       // 홈 화면으로 이동
       router.push('/');
