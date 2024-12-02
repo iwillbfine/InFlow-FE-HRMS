@@ -500,8 +500,8 @@ onMounted(() => {
 }
 
 .profile-photo {
-  width: 12rem; /* 사진 크기 조정 */
-  height: 15rem;
+  width: 16rem; /* 사진 크기 조정 */
+  height: 18rem;
   object-fit: cover;
 }
 .photo-edit-overlay {
