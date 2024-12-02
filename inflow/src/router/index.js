@@ -67,6 +67,9 @@ import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoVi
 import QualificationInfoUpdateView from '@/views/hr-basic/employee/QualificationInfoUpdateView.vue';
 import LanguageTestInfoUpdateView from '@/views/hr-basic/employee/LanguageTestInfoUpdateView.vue';
 import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberInfoUpdateView.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
+import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
+import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateVIew.vue';
 
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
