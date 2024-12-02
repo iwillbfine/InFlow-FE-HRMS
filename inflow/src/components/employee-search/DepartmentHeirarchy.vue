@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import {ref, defineProps} from 'vue';
+import { ref } from 'vue';
 
 // 재귀적으로 호출되는 컴포넌트
 import TreeNode from '@/components/employee-search/TreeNode.vue';

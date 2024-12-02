@@ -20,10 +20,9 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
-      <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
+      <TableItem gtc="3fr 3fr 1.5fr 1fr 1.25fr">
         <TableRow>
-          <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-          <TableCell th fs="1.6rem">휴가 기간</TableCell>
+          <TableCell th fs="1.6rem" topl>휴가 기간</TableCell>
           <TableCell th fs="1.6rem">휴가 사유</TableCell>
           <TableCell th fs="1.6rem">신청일</TableCell>
           <TableCell th fs="1.6rem">상태</TableCell>
@@ -38,11 +37,8 @@
             class="mid"
             fs="1.6rem"
             :botl="index === vacationRequestList.length - 1"
-            >{{ item.vacation_request_id }}</TableCell
+            >{{ parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)}}</TableCell
           >
-          <TableCell class="mid" fs="1.6rem">{{
-            parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
-          }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{
             item.request_reason
           }}</TableCell>
