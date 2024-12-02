@@ -1,7 +1,8 @@
 <template>
   <CommonNav></CommonNav>
-  <CommonHeader v-if="employee" :user-name="employee.name"></CommonHeader> <!-- employee가 있을 때만 렌더링 -->
-  <MainItem v-if="employee" w="calc(100% - 12rem)" minh="calc(100% - 10rem)"> <!-- employee가 있을 때만 렌더링 -->
+  <LoadingOverlay :is-visible="employee === null" message="로딩 중입니다..."></LoadingOverlay>
+  <CommonHeader v-if="employee" :user-name="employee.name"></CommonHeader>
+  <MainItem v-if="employee" w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <GridItem class="grid-container" w="85%" gtc="repeat(20, 1fr)">
       <div class="grid-item">
         <MyAttendanceWidget v-if="employee" :employee="employee"></MyAttendanceWidget>
@@ -17,7 +18,6 @@
       </div>
     </GridItem>
   </MainItem>
-  <div v-if="!employee">로딩 중...</div> <!-- 로딩 상태 표시 -->
 </template>
 
 <script setup>
@@ -30,6 +30,7 @@ import MyAttendanceWidget from '@/components/widgets/MyAttendanceWidget.vue';
 import ScheduleDdayWidget from '@/components/widgets/ScheduleDdayWidget.vue';
 import MyTeamMemberWidget from '@/components/widgets/MyTeamMemberWidget.vue';
 import MyScheduleWidget from '@/components/widgets/MyScheduleWidget.vue';
+import LoadingOverlay from '@/components/common/LoadingOverlay.vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeById } from '@/api/emp_info';
 

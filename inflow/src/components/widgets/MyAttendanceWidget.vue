@@ -159,8 +159,10 @@ onMounted(() => {
   const paydayCountdown = calculateDaysUntilPayday();
   list.value[0] = { ...list.value[0], content: paydayCountdown };
 
-  const tenureDays = calculateTenureDays(props.employee.join_date);
-  list.value[1] = { ...list.value[1], content: tenureDays.toString() };
+  if (props.employee) {
+    const tenureDays = calculateTenureDays(props.employee.join_date);
+    list.value[1] = { ...list.value[1], content: tenureDays.toString() };
+  }
   fetchVacationData(eid.value);
   fetchOvertimeData(eid.value, getCurMonth());
 });

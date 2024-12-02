@@ -24,9 +24,10 @@
             fld="column"
             h="100%"
           >
-            <span class="emphasize">{{ item.employee_name + ' / ' + item.role_name}}</span>
-            <span class="normal">{{ item.employee_name + ' / ' + item.role_name}}</span>
-            <span class="normal">{{ item.employee_name + ' / ' + item.role_name}}</span>
+            <span class="emphasize">{{ item.employee_name }}</span>
+            <span class="normal">{{ item.role_name }}</span>
+            <span class="sub">{{ item.email }}</span>
+            <span class="sub">{{ item.phone_number }}</span>
           </FlexItem>
         </FlexItem>
       </div>
@@ -80,7 +81,9 @@ const fetchMemberData = async (dcode) => {
 }
 
 onMounted(() => {
-  fetchMemberData(props.dcode);
+  if (props.dcode) {
+    fetchMemberData(props.dcode);
+  }
 });
 </script>
 
@@ -92,6 +95,12 @@ onMounted(() => {
 }
 
 .normal {
+  color: #003566;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.sub {
   color: #4E4E4E;
   font-size: 1.2rem;
   font-weight: 400;
@@ -113,6 +122,12 @@ onMounted(() => {
 .team-member-info {
   justify-content: center;
   gap: 0.5rem;
+}
+
+.profile-img-wrapper img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .empty-message {
