@@ -8,6 +8,7 @@
         <p>재직 증명서를 발급 중 입니다. 잠시만 기다려 주세요...</p>
       </div>
 
+
       <!-- 증명서 인쇄 로딩 오버레이 -->
       <div v-if="isPrinting" class="loading-overlay">
         <div class="spinner"></div>
@@ -61,26 +62,29 @@
           <h2 class="certificate-title">재직증명서</h2>
           <div class="certificate-details">
             <table class="certificate-table">
-              <tr>
-                <td class="label">소속</td>
-                <td class="value">{{ certificateData.department_name }}</td>
-                <td class="label">직위</td>
-                <td class="value">{{ certificateData.position_name }}</td>
-              </tr>
-              <tr>
-                <td class="label">성명</td>
-                <td class="value">{{ certificateData.employee_name }}</td>
-                <td class="label">생년월일</td>
-                <td class="value">{{ certificateData.birth_date }}</td>
-              </tr>
-              <tr>
-                <td class="label">입사일</td>
-                <td class="value">{{ certificateData.join_date }}</td>
-                <td class="label">주소</td>
-                <td class="value">{{ certificateData.address }}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td class="label">소속</td>
+                  <td class="value">{{ certificateData.department_name }}</td>
+                  <td class="label">직위</td>
+                  <td class="value">{{ certificateData.position_name }}</td>
+                </tr>
+                <tr>
+                  <td class="label">성명</td>
+                  <td class="value">{{ certificateData.employee_name }}</td>
+                  <td class="label">생년월일</td>
+                  <td class="value">{{ certificateData.birth_date }}</td>
+                </tr>
+                <tr>
+                  <td class="label">입사일</td>
+                  <td class="value">{{ certificateData.join_date }}</td>
+                  <td class="label">주소</td>
+                  <td class="value">{{ certificateData.address }}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
+
 
           <div class="certificate-content">
             <p>{{ certificateData.content }}</p>
@@ -88,26 +92,28 @@
 
           <div class="certificate-footer">
             <table class="footer-table">
-              <tr>
-                <td class="label">발급 목적</td>
-                <td class="value">{{ certificateData.purpose }}</td>
-              </tr>
-              <tr>
-                <td class="label">회사명</td>
-                <td class="value">{{ certificateData.company_name }}</td>
-              </tr>
-              <tr>
-                <td class="label">회사 주소</td>
-                <td class="value">{{ certificateData.company_address }}</td>
-              </tr>
-              <tr>
-                <td class="label">사업자등록번호</td>
-                <td class="value">{{ certificateData.business_registration_number }}</td>
-              </tr>
-              <tr>
-                <td class="label">대표자</td>
-                <td class="value">{{ certificateData.ceo_name }}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td class="label">발급 목적</td>
+                  <td class="value">{{ certificateData.purpose }}</td>
+                </tr>
+                <tr>
+                  <td class="label">회사명</td>
+                  <td class="value">{{ certificateData.company_name }}</td>
+                </tr>
+                <tr>
+                  <td class="label">회사 주소</td>
+                  <td class="value">{{ certificateData.company_address }}</td>
+                </tr>
+                <tr>
+                  <td class="label">사업자등록번호</td>
+                  <td class="value">{{ certificateData.business_registration_number }}</td>
+                </tr>
+                <tr>
+                  <td class="label">대표자</td>
+                  <td class="value">{{ certificateData.ceo_name }}</td>
+                </tr>
+              </tbody>
             </table>
             <div class="stamp-container">
               <img :src="certificateData.company_stamp_url" alt="회사 직인" class="stamp-image" crossOrigin="true" />
@@ -452,7 +458,8 @@ const printCertificate = async () => {
 .certificate-content {
   font-size: 1.4rem;
   line-height: 1.8;
-  text-align: justify;
+  text-align: center;
+  font-weight: bold;
   margin-bottom: 2rem;
   padding: 0 1rem;
   color: #444;

@@ -76,6 +76,7 @@
           <!-- 서명 섹션 -->
           <div class="signature-section">
             <table class="signature-table">
+              <tbody>
                 <tr>
                 <td class="signature-row">
                     <strong>서약자:</strong>
@@ -86,6 +87,7 @@
                     </div>
                 </td>
                 </tr>
+              </tbody>
             </table>
           </div>
 
@@ -588,15 +590,20 @@ const saveContract = async () => {
 }
 
 .signature-text {
-  position: absolute; /* 절대 위치 */
-  top: 50%; /* 컨테이너의 가운데 정렬 */
-  left: 50%; /* 컨테이너의 가운데 정렬 */
-  transform: translate(-50%, -50%); /* 완전한 가운데 정렬 */
+  position: absolute; /* 서명 텍스트를 컨테이너 안에 고정 */
+  top: 50%; /* 컨테이너의 세로 가운데 */
+  left: 50%; /* 컨테이너의 가로 가운데 */
+  transform: translate(-50%, -50%); /* 완전한 중앙 정렬 */
   font-size: 1.4rem;
   color: #333;
   z-index: 0; /* 이미지 뒤에 표시 */
-  pointer-events: none; /* 클릭 불가능하게 설정 */
+  pointer-events: none; /* 클릭 불가능 */
+  pointer-events: none; /* 클릭 불가능 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  line-height: 1; /* 줄 간격 조정 */
+  text-align: center; /* 텍스트 정렬 */
 }
+
 
   
   /* 서명 캔버스 */

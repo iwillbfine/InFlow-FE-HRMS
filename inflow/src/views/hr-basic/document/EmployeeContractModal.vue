@@ -52,39 +52,39 @@
             <p><strong>4. 소정근로시간:</strong> <span class="highlight">{{ contractData.work_start_time }}</span>부터 <span class="highlight">{{ contractData.work_end_time }}</span></p>
             <p><strong>5. 근무일/휴일:</strong> 매주 <span class="highlight">{{ contractData.work_days }}</span>일 근무</p>
             <p><strong>6. 임 금:</strong></p>
-<div class="salary-section">
-  <ul>
-    <li>
-      <strong>- 월(일, 시간)급: </strong>
-      <span class="highlight">{{ contractData.salary_type }}: {{ contractData.salary_amount.toLocaleString() }}원</span>
-    </li>
-    <li>
-      <strong>- 상여금: </strong>
-      <span class="highlight">{{ contractData.has_bonus ? '있음' : '없음' }}</span>
-    </li>
-    <li>
-      <strong>- 기타급여(제수당 등): </strong>
-      <span class="highlight">{{ contractData.irregular_allowances.length > 0 ? '있음' : '없음' }}</span>
-    </li>
-    <!-- 기타급여 상세 표시 -->
-    <ul v-if="contractData.irregular_allowances.length > 0" class="allowance-list horizontal">
-      <li v-for="allowance in contractData.irregular_allowances" :key="allowance.irregular_allowance_id">
-        <span class="highlight">{{ allowance.irregular_allowance_name }}:</span>
-        <span class="highlight">{{ allowance.amount.toLocaleString() }}원</span>
-      </li>
-    </ul>
 
-    <li>
-      <strong>- 임금지급일: </strong>
-      <span class="highlight">매월 {{ contractData.payment_day }}일 (휴일의 경우는 전일 지급)</span>
-    </li>
-    <li>
-      <strong>- 지급방법: </strong>
-      <span class="highlight">{{ contractData.payment_method }}</span>
-    </li>
-  </ul>
-</div>
+            <div class="salary-section">
+              <ul>
+                <li>
+                  <strong>- 월(일, 시간)급: </strong>
+                  <span class="highlight">{{ contractData.salary_type }}: {{ contractData.salary_amount.toLocaleString() }}원</span>
+                </li>
+                <li>
+                  <strong>- 상여금: </strong>
+                  <span class="highlight">{{ contractData.has_bonus ? '있음' : '없음' }}</span>
+                </li>
+                <li>
+                  <strong>- 기타급여(제수당 등): </strong>
+                  <span class="highlight">{{ contractData.irregular_allowances.length > 0 ? '있음' : '없음' }}</span>
+                </li>
+                <!-- 기타급여 상세 표시 -->
+                <ul v-if="contractData.irregular_allowances.length > 0" class="allowance-list horizontal">
+                  <li v-for="allowance in contractData.irregular_allowances" :key="allowance.irregular_allowance_id">
+                    <span class="highlight">{{ allowance.irregular_allowance_name }}:</span>
+                    <span class="highlight">{{ allowance.amount.toLocaleString() }}원</span>
+                  </li>
+                </ul>
 
+                <li>
+                  <strong>- 임금지급일: </strong>
+                  <span class="highlight">매월 {{ contractData.payment_day }}일 (휴일의 경우는 전일 지급)</span>
+                </li>
+                <li>
+                  <strong>- 지급방법: </strong>
+                  <span class="highlight">{{ contractData.payment_method }}</span>
+                </li>
+              </ul>
+            </div>
 
 
             <p><strong>7. 연차유급휴가:</strong> 연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함</p>
@@ -107,38 +107,42 @@
             <div class="signature-section">
               <table class="signature-table">
                 <!-- 사업주 서명 -->
-                <tr>
-                  <td class="label"><strong>(사업주)</strong></td>
-                  <td>
-                    <p>사업체명: <span class="highlight">{{ contractData.company_name }}</span></p>
-                    <p>주소: <span class="highlight">{{ contractData.company_address }}</span></p>
-                    <p>전화: <span class="highlight">{{ contractData.company_phone_number }}</span></p>
-                    <div class="signature-row">
-                      <span>대표자:</span>
-                      <span class="highlight">{{ contractData.ceo_name }}</span>
-                      <div class="signature-image-container">
-                        <img :src="contractData.ceo_signature" alt="서명" v-if="contractData.ceo_signature" class="signature-image" crossOrigin="true" />
-                        <span class="signature-text">(서명)</span>
+                <tbody>
+                  <tr>
+                    <td class="label"><strong>(사업주)</strong></td>
+                    <td>
+                      <p>사업체명: <span class="highlight">{{ contractData.company_name }}</span></p>
+                      <p>주소: <span class="highlight">{{ contractData.company_address }}</span></p>
+                      <p>전화: <span class="highlight">{{ contractData.company_phone_number }}</span></p>
+                      <div class="signature-row">
+                        <span>대표자:</span>
+                        <span class="highlight">{{ contractData.ceo_name }}</span>
+                        <div class="signature-image-container">
+                          <img :src="contractData.ceo_signature" alt="서명" v-if="contractData.ceo_signature" class="signature-image" crossOrigin="true" />
+                          <span class="signature-text">(서명)</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                </tbody>
                 <!-- 근로자 서명 -->
-                <tr>
-                  <td class="label"><strong>(근로자)</strong></td>
-                  <td>
-                    <p>주소: <span class="highlight">{{ contractData.employee_address }}</span></p>
-                    <p>연락처: <span class="highlight">{{ contractData.employee_phone_number }}</span></p>
-                    <div class="signature-row">
-                      <span>성명:</span>
-                      <span class="highlight">{{ contractData.employee_name }}</span>
-                      <div class="signature-image-container">
-                        <img :src="employeeSignature" alt="서명" v-if="employeeSignature" class="signature-image" />
-                        <span class="signature-text">(서명)</span>
+                <tbody>
+                  <tr>
+                    <td class="label"><strong>(근로자)</strong></td>
+                    <td>
+                      <p>주소: <span class="highlight">{{ contractData.employee_address }}</span></p>
+                      <p>연락처: <span class="highlight">{{ contractData.employee_phone_number }}</span></p>
+                      <div class="signature-row">
+                        <span>성명:</span>
+                        <span class="highlight">{{ contractData.employee_name }}</span>
+                        <div class="signature-image-container">
+                          <img :src="employeeSignature" alt="서명" v-if="employeeSignature" class="signature-image" />
+                          <span class="signature-text">(서명)</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
 
@@ -716,6 +720,10 @@ const saveContract = async () => {
   color: #333;
   z-index: 0; /* 이미지 뒤에 표시 */
   pointer-events: none; /* 클릭 불가능 */
+  pointer-events: none; /* 클릭 불가능 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  line-height: 1; /* 줄 간격 조정 */
+  text-align: center; /* 텍스트 정렬 */
 }
 
   
@@ -750,8 +758,7 @@ const saveContract = async () => {
 
 .allowance-list {
   display: flex; /* 가로로 나열 */
-  flex-wrap: wrap; /* 내용이 길 경우 줄바꿈 */
-  gap: 4rem; /* 항목 간 간격 */
+  gap: 3rem; /* 항목 간 간격 */
   padding: 0;
   margin: 0;
   list-style: none;
