@@ -24,38 +24,39 @@
               style="display: none"
               @change="onPhotoChange"
             />
-        </div>
+          </div>
         <table class="employee-info-table">
-          <tr>
-            <th>사원번호</th>
-            <td>{{ employee.employeeCode }}</td>
-            <th>성별</th>
-            <td>{{ employee.gender }}</td>
-            <th>휴대폰번호</th>
-            <td style="position: relative;">
-              <template v-if="editMode">
-                <input
-                  type="text"
-                  v-model="form.phone"
-                  class="editable-input"
-                  :class="{ 'invalid-row': !isValidPhone }"
-                  @input="formatPhone"
-                  @focus="showPhoneModal"
-                  @blur="hidePhoneModal"
-                />
-                <div v-if="isPhoneModalVisible" class="phone-modal">
-                  <div class="phone-modal-content">
-                    <h3>휴대폰 번호 입력 형식</h3>
-                    <ul>
-                      <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
-                      <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
-                    </ul>
+          <tbody>
+            <tr>
+              <th>사원번호</th>
+              <td>{{ employee.employeeCode }}</td>
+              <th>성별</th>
+              <td>{{ employee.gender }}</td>
+              <th>휴대폰번호</th>
+              <td style="position: relative;">
+                <template v-if="editMode">
+                  <input
+                    type="text"
+                    v-model="form.phone"
+                    class="editable-input"
+                    :class="{ 'invalid-row': !isValidPhone }"
+                    @input="formatPhone"
+                    @focus="showPhoneModal"
+                    @blur="hidePhoneModal"
+                  />
+                  <div v-if="isPhoneModalVisible" class="phone-modal">
+                    <div class="phone-modal-content">
+                      <h3>휴대폰 번호 입력 형식</h3>
+                      <ul>
+                        <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
+                        <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              </template>
-              <template v-else>{{ employee.phone }}</template>
-            </td>
-          </tr>
+                </template>
+                <template v-else>{{ employee.phone }}</template>
+              </td>
+            </tr>
           <tr>
             <th>사원명</th>
             <td>{{ employee.employeeName }}</td>
@@ -131,6 +132,7 @@
             <th></th>
             <td></td>
           </tr>
+        </tbody>
         </table>
       </div>
     </div>
@@ -340,12 +342,12 @@ const toggleEditMode = () => {
 
 // 파일 선택 핸들링
 const handlePhotoUpload = () => {
-  console.log('handlePhotoUpload 호출됨');
+  if (!editMode.value) {
+    return; // 수정 모드가 아니면 아무 작업도 하지 않음
+  }
   if (photoInput.value) {
     photoInput.value.click();
-    console.log('photoInput 클릭 실행됨');
   } else {
-    console.error('photoInput 참조가 유효하지 않습니다.');
   }
 };
 
