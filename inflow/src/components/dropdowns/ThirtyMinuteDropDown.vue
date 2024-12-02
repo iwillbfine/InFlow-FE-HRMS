@@ -27,6 +27,13 @@ const emit = defineEmits(['valid-time-selected']);
 const selectedHour = ref(null);
 const selectedMinute = ref(null);
 
+const props = defineProps({
+  afterWork: {
+    type: Boolean,
+    default: false,
+  }
+})
+
 // 시간 파싱 함수
 const parseTime = () => {
   if (selectedHour.value && selectedMinute.value) {
@@ -41,6 +48,12 @@ watch([selectedHour, selectedMinute], () => {
 });
 
 const hourList = ref(
+  props.afterWork ?
+  Array.from({ length: 6 }, (_, i) => ({
+    id: `${i+18}`,
+    name: `${i+18}`,
+  }))
+  :
   Array.from({ length: 24 }, (_, i) => ({
     id: `${i}`,
     name: `${i}`,

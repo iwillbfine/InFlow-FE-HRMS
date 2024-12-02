@@ -6,6 +6,7 @@
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <strong>금일</strong>
           <ThirtyMinuteDropDown
+            after-work
             @valid-time-selected="updateSelectedStartTime"
           ></ThirtyMinuteDropDown>
           <strong>~</strong>
