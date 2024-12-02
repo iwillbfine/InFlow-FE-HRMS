@@ -67,6 +67,7 @@ import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberIn
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
 import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
+import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowanceView.vue";
 
 const routes = [
   {
@@ -423,6 +424,11 @@ const routes = [
         path: 'salary-list',
         name: 'hr-management-salary-list',
         component: EmployeeSalaryListView,
+      },
+      {
+        path: 'irregular-allowance',
+        name: 'hr-management-salary-irregular-allowance',
+        component: IrregularAllowanceView,
       }
     ]
   },
