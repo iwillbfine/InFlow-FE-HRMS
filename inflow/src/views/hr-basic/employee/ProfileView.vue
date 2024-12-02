@@ -473,6 +473,8 @@ onMounted(() => {
 }
 
 .profile-label {
+  widows: 100%;
+  height: 4rem;
   font-size: 1.7rem;
   font-weight: 700;
   color: #003566;

@@ -377,14 +377,14 @@ const saveContract = async () => {
 
     const response = await registerEmployeeContract(contractId, pdfBlob, accessToken);
 
-    alert('PDF 파일이 성공적으로 업로드되었습니다!');
+    alert('근로계약서가 성공적으로 업로드되었습니다!');
     console.log('업로드 결과:', response);
 
     // 모달 닫기
     emit('close'); // 상위 컴포넌트에 close 이벤트 전달
   } catch (error) {
     console.error('PDF 생성 및 업로드 실패:', error);
-    alert('PDF를 생성하거나 업로드하는 데 실패했습니다.');
+    alert('근로계약서를 생성하거나 업로드하는 데 실패했습니다.');
   } finally {
     // 로딩 상태 종료
     isSubmitting.value = false;
@@ -395,6 +395,60 @@ const saveContract = async () => {
 </script>
 
 <style scoped>
+
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* 로딩 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 로딩 오버레이 스타일 끝*/
+
 
 .modal-overlay {
     position: fixed;
