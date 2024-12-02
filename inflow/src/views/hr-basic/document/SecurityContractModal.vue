@@ -2,10 +2,7 @@
     <div v-if="contractData" class="modal-overlay">
       <div class="modal-content">
          <!-- 로딩 오버레이 -->
-         <div v-if="isSubmitting" class="loading-overlay">
-          <div class="spinner"></div>
-          <p>계약서를 등록 중입니다. 잠시만 기다려 주세요...</p>
-        </div>
+        <LoadingOverlay :isVisible="isSubmitting" message="계약서를 등록 중입니다. 잠시만 기다려 주세요..." />
 
         <!-- 상단 버튼 컨트롤 -->
         <div class="viewer-controls">
@@ -76,6 +73,7 @@
           <!-- 서명 섹션 -->
           <div class="signature-section">
             <table class="signature-table">
+              <tbody>
                 <tr>
                 <td class="signature-row">
                     <strong>서약자:</strong>
@@ -86,6 +84,7 @@
                     </div>
                 </td>
                 </tr>
+              </tbody>
             </table>
           </div>
 
@@ -132,6 +131,7 @@
 <script setup>
 import { ref, nextTick, onMounted, defineEmits} from 'vue';
 import { registerEmployeeContract } from "@/api/emp_info";
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 
 const props = defineProps({
   contractData: {
@@ -340,58 +340,7 @@ const saveContract = async () => {
 
 </script>
   
-  <style scoped>
-  
-/* 로딩 오버레이 스타일 */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  color: white;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 6px solid rgba(255, 255, 255, 0.3);
-  border-top: 6px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-/* 로딩 애니메이션 */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.fa-spinner {
-  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+<style scoped>
 
 /* 로딩 오버레이 스타일 끝*/
 
@@ -588,15 +537,20 @@ const saveContract = async () => {
 }
 
 .signature-text {
-  position: absolute; /* 절대 위치 */
-  top: 50%; /* 컨테이너의 가운데 정렬 */
-  left: 50%; /* 컨테이너의 가운데 정렬 */
-  transform: translate(-50%, -50%); /* 완전한 가운데 정렬 */
+  position: absolute; /* 서명 텍스트를 컨테이너 안에 고정 */
+  top: 50%; /* 컨테이너의 세로 가운데 */
+  left: 50%; /* 컨테이너의 가로 가운데 */
+  transform: translate(-50%, -50%); /* 완전한 중앙 정렬 */
   font-size: 1.4rem;
   color: #333;
   z-index: 0; /* 이미지 뒤에 표시 */
-  pointer-events: none; /* 클릭 불가능하게 설정 */
+  pointer-events: none; /* 클릭 불가능 */
+  pointer-events: none; /* 클릭 불가능 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  line-height: 1; /* 줄 간격 조정 */
+  text-align: center; /* 텍스트 정렬 */
 }
+
 
   
   /* 서명 캔버스 */

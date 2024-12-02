@@ -67,6 +67,7 @@ const selectEmployee = (employeeCode) => {
     overflow-x: hidden; /* 수평 스크롤 비활성화 */
     max-height: 100%; /* 부모 요소의 최대 높이에 맞추기 */
 }
+
 .one-content{
     width: 98%;
     height: auto;
@@ -76,7 +77,15 @@ const selectEmployee = (employeeCode) => {
     margin-top: 7px;
     display: flex;
     padding: 10px;
+    transition: background-color 0.2s ease-in-out; /* 부드러운 색상 전환 효과 */
+    cursor: pointer; /* hover 시 커서 변경 */
 }
+
+/* hover 스타일 */
+.one-content:hover {
+    background-color: #f0f8ff; /* hover 시 연한 파란색 배경 */
+}
+
 .profile-detail{
     display: flex;
     flex-direction: column;

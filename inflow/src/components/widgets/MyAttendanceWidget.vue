@@ -1,5 +1,5 @@
 <template>
-  <WidgetItem label="나의 근태 현황" h="20rem" :w="widgetWidth">
+  <WidgetItem label="나의 근태 현황" h="20rem" w="100%">
     <FlexItem class="widget-content" fld="row" h="100%" w="100%">
       <FlexItem
         v-for="(item, index) in list"
@@ -30,10 +30,10 @@ const vacationList = ref([]);
 const overtimeList = ref([]);
 
 const list = ref([
-  { content: '', label: '월급날' },
-  { content: '', label: '근속 일수' },
-  { content: '', label: '연차 현황' },
-  { content: '', label: '초과 근무 시간' },
+  { content: 'D-00', label: '월급날' },
+  { content: '0', label: '근속 일수' },
+  { content: '0/0', label: '연차 현황' },
+  { content: '00:00', label: '초과 근무 시간' },
 ]);
 
 const fetchEmployeeData = async (eid) => {
@@ -81,7 +81,7 @@ const fetchOvertimeData = async (eid, date) => {
         const diffTime = now - startTime;
         const formattedTime = formatTime(diffTime);
         list.value[3] = { ...list.value[3], content: formattedTime };
-      } else if (isSameDay(endTime, now)) {
+      } else if (now > endTime && isSameDay(endTime, now)) {
         const totalTime = endTime - startTime;
         list.value[3] = {
           ...list.value[3],
@@ -104,7 +104,7 @@ const calculateDaysUntilPayday = () => {
   const year = today.getFullYear();
   const month = today.getMonth();
   const paydayThisMonth = new Date(year, month, 21); // 이번 달 21일
-  
+
   let payday;
   if (today > paydayThisMonth) {
     // 월급날이 이미 지났다면 다음 달 21일로 설정
@@ -113,7 +113,7 @@ const calculateDaysUntilPayday = () => {
     // 아직 월급날이 지나지 않았다면 이번 달 21일로 설정
     payday = paydayThisMonth;
   }
-  
+
   // 남은 날짜 계산
   const diffTime = payday - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 밀리초 → 일수 변환
@@ -158,10 +158,6 @@ const getCurMonth = () => {
   return curMonth;
 };
 
-const widgetWidth = computed(() => {
-  return `${list.value.length * 15}rem`;
-});
-
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   const paydayCountdown = calculateDaysUntilPayday();
@@ -175,8 +171,10 @@ onMounted(() => {
 .widget-content {
   justify-content: space-around;
   align-items: center;
+  overflow: auto;
 }
 .content-item {
+  min-width: 11rem;
   align-items: center;
   gap: 1rem;
 }

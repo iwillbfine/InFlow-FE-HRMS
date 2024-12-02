@@ -3,16 +3,10 @@
     <div class="modal-content">
   
       <!-- 증명서 다운 로딩 오버레이 -->
-      <div v-if="isSubmitting" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>재직 증명서를 발급 중 입니다. 잠시만 기다려 주세요...</p>
-      </div>
+      <LoadingOverlay :isVisible="isSubmitting" message="증명서를 발급 중입니다. 잠시만 기다려 주세요..." />
 
       <!-- 증명서 인쇄 로딩 오버레이 -->
-      <div v-if="isPrinting" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>인쇄 중 입니다. 잠시만 기다려 주세요...</p>
-      </div>
+      <LoadingOverlay :isVisible="isPrinting" message="인쇄 중 입니다. 잠시만 기다려 주세요..." />
 
       <!-- 상단 버튼 컨트롤 -->
       <div class="viewer-controls">
@@ -61,26 +55,29 @@
           <h2 class="certificate-title">재직증명서</h2>
           <div class="certificate-details">
             <table class="certificate-table">
-              <tr>
-                <td class="label">소속</td>
-                <td class="value">{{ certificateData.department_name }}</td>
-                <td class="label">직위</td>
-                <td class="value">{{ certificateData.position_name }}</td>
-              </tr>
-              <tr>
-                <td class="label">성명</td>
-                <td class="value">{{ certificateData.employee_name }}</td>
-                <td class="label">생년월일</td>
-                <td class="value">{{ certificateData.birth_date }}</td>
-              </tr>
-              <tr>
-                <td class="label">입사일</td>
-                <td class="value">{{ certificateData.join_date }}</td>
-                <td class="label">주소</td>
-                <td class="value">{{ certificateData.address }}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td class="label">소속</td>
+                  <td class="value">{{ certificateData.department_name }}</td>
+                  <td class="label">직위</td>
+                  <td class="value">{{ certificateData.position_name }}</td>
+                </tr>
+                <tr>
+                  <td class="label">성명</td>
+                  <td class="value">{{ certificateData.employee_name }}</td>
+                  <td class="label">생년월일</td>
+                  <td class="value">{{ certificateData.birth_date }}</td>
+                </tr>
+                <tr>
+                  <td class="label">입사일</td>
+                  <td class="value">{{ certificateData.join_date }}</td>
+                  <td class="label">주소</td>
+                  <td class="value">{{ certificateData.address }}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
+
 
           <div class="certificate-content">
             <p>{{ certificateData.content }}</p>
@@ -88,26 +85,28 @@
 
           <div class="certificate-footer">
             <table class="footer-table">
-              <tr>
-                <td class="label">발급 목적</td>
-                <td class="value">{{ certificateData.purpose }}</td>
-              </tr>
-              <tr>
-                <td class="label">회사명</td>
-                <td class="value">{{ certificateData.company_name }}</td>
-              </tr>
-              <tr>
-                <td class="label">회사 주소</td>
-                <td class="value">{{ certificateData.company_address }}</td>
-              </tr>
-              <tr>
-                <td class="label">사업자등록번호</td>
-                <td class="value">{{ certificateData.business_registration_number }}</td>
-              </tr>
-              <tr>
-                <td class="label">대표자</td>
-                <td class="value">{{ certificateData.ceo_name }}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td class="label">발급 목적</td>
+                  <td class="value">{{ certificateData.purpose }}</td>
+                </tr>
+                <tr>
+                  <td class="label">회사명</td>
+                  <td class="value">{{ certificateData.company_name }}</td>
+                </tr>
+                <tr>
+                  <td class="label">회사 주소</td>
+                  <td class="value">{{ certificateData.company_address }}</td>
+                </tr>
+                <tr>
+                  <td class="label">사업자등록번호</td>
+                  <td class="value">{{ certificateData.business_registration_number }}</td>
+                </tr>
+                <tr>
+                  <td class="label">대표자</td>
+                  <td class="value">{{ certificateData.ceo_name }}</td>
+                </tr>
+              </tbody>
             </table>
             <div class="stamp-container">
               <img :src="certificateData.company_stamp_url" alt="회사 직인" class="stamp-image" crossOrigin="true" />
@@ -129,6 +128,8 @@
 import { ref, nextTick } from 'vue';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
+
 
 const isSubmitting = ref(false); // 로딩 상태를 관리하는 변수
 const isPrinting = ref(false); // 로딩 상태를 관리하는 변수
@@ -302,65 +303,11 @@ const printCertificate = async () => {
 };
 
 
-
-
 </script>
 
 <style scoped>
 
 
-/* 로딩 오버레이 스타일 */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  color: white;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 6px solid rgba(255, 255, 255, 0.3);
-  border-top: 6px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-/* 로딩 애니메이션 */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.fa-spinner {
-  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 로딩 오버레이 스타일 끝*/
 
 .modal-overlay {
   position: fixed;
@@ -386,12 +333,22 @@ const printCertificate = async () => {
   overflow: hidden;
 }
 
+.center-controls {
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+  align-items: center; /* 수직으로 정렬 */
+  gap: 1rem; /* 버튼 간 간격 */
+  margin-top: 1rem; /* 위쪽 여백 */
+}
+
 .viewer-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
+
+
 
 /* 재직 증명서 CSS */
 .certificate-wrapper {
@@ -452,7 +409,8 @@ const printCertificate = async () => {
 .certificate-content {
   font-size: 1.4rem;
   line-height: 1.8;
-  text-align: justify;
+  text-align: center;
+  font-weight: bold;
   margin-bottom: 2rem;
   padding: 0 1rem;
   color: #444;

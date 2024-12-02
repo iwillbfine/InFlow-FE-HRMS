@@ -75,7 +75,6 @@ const sortByDate = (list) => {
 const fetchDate = async (empId) => {
   const response = await getLanguageTestsById(empId);
   
-
   if (response) {
     const sortedResponse = sortByDate(response);
     langTestList.value = sortedResponse;

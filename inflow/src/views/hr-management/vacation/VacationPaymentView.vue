@@ -8,7 +8,7 @@
         class="profile"
         fld="row"
         w="100%"
-        h="18rem"
+        h="14rem"
         bgc="#fff"
         br="0.6rem"
       >
@@ -16,7 +16,7 @@
           v-if="selectedEmployee"
           class="profile-img-wrapper"
           h="100%"
-          w="13rem"
+          w="10.5rem"
         >
           <img :src="selectedEmployee.profile_image_url" alt="Profile Image" />
         </FigureItem>
@@ -43,8 +43,8 @@
       </FlexItem>
       <TableItem gtc="2fr 7fr">
         <TableRow>
-          <TableCell class="h-8" th fs="1.6rem" topl>휴가 정책</TableCell>
-          <TableCell class="h-8 pl-2" fs="1.6rem" topr>
+          <TableCell class="h-7" th fs="1.6rem" topl>휴가 정책</TableCell>
+          <TableCell class="h-7 pl-2" fs="1.6rem" topr>
             <DropdownItem
               placeholder="적용할 휴가 정책을 선택하세요."
               w="34rem"
@@ -54,8 +54,8 @@
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell class="h-8" th fs="1.6rem" botl>휴가 만료일</TableCell>
-          <TableCell class="h-8 pl-2" fs="1.6rem" botr>
+          <TableCell class="h-7" th fs="1.6rem" botl>휴가 만료일</TableCell>
+          <TableCell class="h-7 pl-2" fs="1.6rem" botr>
             <DateDropDown
               short
               @valid-date-selected="updateSelectedDate"
@@ -206,8 +206,8 @@ onMounted(() => {
   font-weight: 400;
 }
 
-.h-8 {
-  height: 8rem !important;
+.h-7 {
+  height: 7rem !important;
 }
 
 .pl-2 {
@@ -223,7 +223,7 @@ onMounted(() => {
   position: fixed;
   top: 23.6rem;
   right: 2rem;
-  padding: 3rem;
+  padding: 2rem;
 }
 
 .profile {
@@ -244,7 +244,7 @@ onMounted(() => {
 }
 
 .table {
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .submit-btn {
