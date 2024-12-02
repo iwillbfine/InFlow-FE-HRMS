@@ -1,10 +1,8 @@
 <template>
   <div class="profile-wrapper">
      <!-- 로딩 중일 때 표시 -->
-    <div v-if="loading" class="loading-overlay">
-      <div class="spinner"></div>
-      <p>수정 요청 중입니다...</p>
-    </div>
+    <LoadingOverlay :isVisible="loading" message="수정 중입니다. 잠시만 기다려 주세요..." />
+
 
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
@@ -148,6 +146,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 
 const loading = ref(false); // 로딩 상태
 const editMode = ref(false); // 편집 가능 모드

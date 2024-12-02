@@ -6,19 +6,21 @@
   </template>
   
   <script>
-  export default {
+  import { defineComponent } from "vue";
+  
+  export default defineComponent({
     name: "LoadingOverlay",
     props: {
       isVisible: {
         type: Boolean,
-        required: true,
+        required: true, // 필수로 전달해야 함
       },
       message: {
         type: String,
         default: "처리 중입니다. 잠시만 기다려 주세요...",
       },
     },
-  };
+  });
   </script>
   
   <style scoped>

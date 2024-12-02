@@ -3,17 +3,10 @@
     <div class="modal-content">
   
       <!-- 증명서 다운 로딩 오버레이 -->
-      <div v-if="isSubmitting" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>재직 증명서를 발급 중 입니다. 잠시만 기다려 주세요...</p>
-      </div>
-
+      <LoadingOverlay :isVisible="isSubmitting" message="증명서를 발급 중입니다. 잠시만 기다려 주세요..." />
 
       <!-- 증명서 인쇄 로딩 오버레이 -->
-      <div v-if="isPrinting" class="loading-overlay">
-        <div class="spinner"></div>
-        <p>인쇄 중 입니다. 잠시만 기다려 주세요...</p>
-      </div>
+      <LoadingOverlay :isVisible="isPrinting" message="인쇄 중 입니다. 잠시만 기다려 주세요..." />
 
       <!-- 상단 버튼 컨트롤 -->
       <div class="viewer-controls">
@@ -135,6 +128,8 @@
 import { ref, nextTick } from 'vue';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
+
 
 const isSubmitting = ref(false); // 로딩 상태를 관리하는 변수
 const isPrinting = ref(false); // 로딩 상태를 관리하는 변수
@@ -308,65 +303,11 @@ const printCertificate = async () => {
 };
 
 
-
-
 </script>
 
 <style scoped>
 
 
-/* 로딩 오버레이 스타일 */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  color: white;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 6px solid rgba(255, 255, 255, 0.3);
-  border-top: 6px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-/* 로딩 애니메이션 */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.fa-spinner {
-  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 로딩 오버레이 스타일 끝*/
 
 .modal-overlay {
   position: fixed;
@@ -392,12 +333,22 @@ const printCertificate = async () => {
   overflow: hidden;
 }
 
+.center-controls {
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+  align-items: center; /* 수직으로 정렬 */
+  gap: 1rem; /* 버튼 간 간격 */
+  margin-top: 1rem; /* 위쪽 여백 */
+}
+
 .viewer-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
+
+
 
 /* 재직 증명서 CSS */
 .certificate-wrapper {
