@@ -59,14 +59,11 @@ import SeverancePayView from '@/views/hr-basic/salary/SeverancePayView.vue';
 
 // 인사기본- 사원
 import ProfileView from '@/views/hr-basic/employee/ProfileView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
 import DisciplineRewardInfoView from '@/views/hr-basic/employee/DisciplineRewardInfoView.vue';
 import EducationInfoView from '@/views/hr-basic/employee/EducationInfoView.vue';
 import FamilyMemberInfoView from '@/views/hr-basic/employee/FamilyMemberInfoView.vue';
 import LanguageTestInfoView from '@/views/hr-basic/employee/LanguageTestInfoView.vue';
 import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoView.vue';
-import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateView.vue';
-import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateView.vue';
 import QualificationInfoUpdateView from '@/views/hr-basic/employee/QualificationInfoUpdateView.vue';
 import LanguageTestInfoUpdateView from '@/views/hr-basic/employee/LanguageTestInfoUpdateView.vue';
 import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberInfoUpdateView.vue';
