@@ -32,7 +32,7 @@
           <TableCell th fs="1.6rem" fw="bold">퇴직금 예상치</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell class="period" fs="1.6rem">
+          <TableCell class="period" fs="1.5rem">
             {{ formatPeriod(severancePay.three_months_ago, severancePay.severance_date) }}
           </TableCell>
           <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.total_salary) }}</TableCell>
@@ -207,6 +207,16 @@ onMounted(() => {
 
 .mid {
   justify-content: flex-start;
+  align-items: center;
+}
+
+.period {
+  justify-content: center;
+  align-items: center;
+}
+
+.amount {
+  justify-content: flex-end;
   align-items: center;
 }
 

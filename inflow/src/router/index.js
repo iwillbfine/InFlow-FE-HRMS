@@ -66,6 +66,7 @@ import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberIn
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
 import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
+import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
 
 const routes = [
   {
@@ -412,6 +413,18 @@ const routes = [
     path: '/hr-management/salary',
     name: 'hr-management-salary',
     component: SalaryManagementView,
+    children: [
+      {
+        path: '',
+        name: 'hr-management-salary-default',
+        component: EmployeeSalaryListView,
+      },
+      {
+        path: 'salary-list',
+        name: 'hr-management-salary-list',
+        component: EmployeeSalaryListView,
+      }
+    ]
   },
   {
     path: '/evaluation',
