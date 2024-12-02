@@ -1,29 +1,64 @@
 <template>
     <div class="search-department-member">
+        <div class="filter-button">
+            <label>
+                <input 
+                    type="radio" 
+                    name="filter" 
+                    value="전체" 
+                    v-model="selectedFilter"
+                    @change="filterByStatus"
+                >
+                전체
+            </label>
+            <label>
+                <input 
+                    type="radio" 
+                    name="filter" 
+                    value="근무중" 
+                    v-model="selectedFilter"
+                    @change="filterByStatus"
+                >
+                근무중
+            </label>
+            <label>
+                <input 
+                    type="radio" 
+                    name="filter" 
+                    value="부재중" 
+                    v-model="selectedFilter"
+                    @change="filterByStatus"
+                >
+                부재중
+            </label>
+        </div>
         <div class="search-bar">
             <input v-model="searchKeyword" type="text" placeholder="사원명으로 검색">
             <button @click="filterMembers">검색</button>
         </div>
-        <div>
-            <p v-if="isLoading">데이터를 불러오는 중...</p>
-            <div v-else>
+        <div style="width: 100%;">
+            <div style="display: flex;flex-direction: column; width: 100%; align-items: center; justify-content: center;">
                 <div 
                     class="one-member-content"
                     v-for="employee in filteredMembers"
                     :key="employee.employee_number">
                     <div class="detail">
                         <div class="name">
-                            <span>{{employee.employee_name}}</span> <!--{{ employee.employee_name}}-->
+                            <span>{{employee.employee_name}}</span> 
                         </div>
                         <div class="employee-number">
-                            <span>{{ employee.employee_number }}</span>   <!--{{ employee.employee_number }}-->
+                            <span>{{ employee.employee_number }}</span>  
                         </div>
                         <div class="department-path">
-                            <span>{{employee.department_path}}</span> <!--{{ employee.department_path }}-->
+                            <span>{{employee.department_path}}</span>
                         </div>
                     </div>
                     <div class="attendance-status">
-                        <span>{{employee.attendance_status_type_name}}</span>   <!-- {{employee.attenance_status_type_name}}-->
+                        <span 
+                            class="status-icon"
+                            :class="employee.workStatus === '근무중' ? 'work' : 'absent'">
+                        </span>
+                        <span>{{ employee.workStatus }}</span> 
                     </div>
                 </div>
             </div>
@@ -32,10 +67,7 @@
     
 </template>
 <script setup>
-
-
-
-import { ref, watch , onMounted, defineProps} from 'vue';
+import { ref, watch, onMounted, defineProps, computed } from 'vue';
 
 // props 선언
 const props = defineProps({
@@ -46,74 +78,83 @@ const props = defineProps({
     members: Array
 });
 
-
-console.log('멤버스:', props.members);
-
-
 // 상태 관리
-const isLoading = ref(false);   // 기본값 false
-const filteredMembers = ref([]); // 검색된 결과를 따로 저장
-
-// 검색 기능
 const searchKeyword = ref('');
+const filteredMembers = ref([]);
+
+// 근태 상태 분류
+const categorizedMembers = computed(() => {
+    return props.members.map((member) => {
+        const statusName = member.attendance_status_type_name;
+
+        // 근무 상태 분류
+        if (statusName === '정상출근' || statusName === '지각') {
+            return { ...member, workStatus: '근무중' };
+        } else {
+            return { ...member, workStatus: '부재중' };
+        }
+    });
+});
+
+// 상태 추가
+const selectedFilter = ref('전체'); // 기본값 "전체"
+
+// 필터링 로직
+const filterByStatus = () => {
+    if (selectedFilter.value === '전체') {
+        // 전체 목록을 보여줌
+        filteredMembers.value = categorizedMembers.value;
+    } else {
+        // 선택한 상태에 따라 필터링
+        filteredMembers.value = categorizedMembers.value.filter(
+            (member) => member.workStatus === selectedFilter.value
+        );
+    }
+};
+
+
+// 검색 기능과 연계
 const filterMembers = () => {
-    if (!props.members ||props.members.length === 0) {
+    if (!categorizedMembers.value || categorizedMembers.value.length === 0) {
         console.error("members가 유효하지 않습니다.");
         filteredMembers.value = []; // 빈 배열로 초기화
         return;
     }
 
     const keyword = searchKeyword.value.toLowerCase();
-    if (keyword === '') {
-        filteredMembers.value = props.members; // 검색어가 없으면 전체 보여주기
-    } else {
-        filteredMembers.value = props.members.filter((member) =>
+
+    let tempFiltered = categorizedMembers.value;
+
+    // 검색어에 따른 필터링
+    if (keyword !== '') {
+        tempFiltered = tempFiltered.filter((member) =>
             member.employee_name.toLowerCase().includes(keyword)
         );
     }
+
+    // 선택된 필터에 따른 추가 필터링
+    if (selectedFilter.value !== '전체') {
+        tempFiltered = tempFiltered.filter(
+            (member) => member.workStatus === selectedFilter.value
+        );
+    }
+
+    filteredMembers.value = tempFiltered;
 };
-// 검색어가 변경될 때 필터링 실행
-watch(searchKeyword, filterMembers);
 
+// 검색어와 필터 버튼 변경 시 모두 필터링 로직 실행
+watch([searchKeyword, selectedFilter], filterMembers);
 
-// watch(isLoading, (newVal) => {
-//     console.log("isLoading 상태:", newVal);
-// });
-
+// members 변경 시 필터링
 watch(
     () => props.members,
     (newVal) => {
-        console.log("members 변경:", newVal);
         if (newVal && newVal.length > 0) {
-            filteredMembers.value = newVal; // 변경된 데이터 반영
+            filteredMembers.value = categorizedMembers.value; // 변경된 데이터 반영
         }
     },
     { immediate: true }
 );
-
-
-// onMounted(() => {
-//   console.log("부모로부터 전달된 members:", members); // 디버깅용 로그
-//   filteredMembers.value = [...members]; // 초기화
-// });
-
-// watch(filteredMembers, (newVal) => {
-//     console.log("filteredMembers 상태 변경:", newVal);
-// });
-
-
-// watch(
-//     () => members,
-//     (newVal) => {
-//         console.log("members 변경:", newVal);
-//         if (newVal && newVal.length > 0) {
-//             filteredMembers.value = newVal; // 변경된 데이터 반영
-//         }
-//     },
-//     { immediate: true }
-// );
-
-
 </script>
 
 <style scoped>
@@ -145,10 +186,12 @@ watch(
     display: flex;
     justify-content: space-between;
     margin-top: 5px;
+    height: 100%;
 }
 
 .name{
-    font-size: 2rem
+    font-size: 1.6rem;
+    font-weight: 500;
 }
 .employee-number{
     font-size: 1rem;
@@ -160,5 +203,44 @@ watch(
 
 .attendance-status{
     font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.status-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-icon.work { /* 근무중 - 파란 점 */
+    background-color: #22E500
+}
+
+.status-icon.absent { /* 부재중 - 빨간 점 */
+    background-color: #FF4949
+}
+
+.filter-button {
+    display: flex;
+    gap: 6px;
+    margin: 1rem 0;
+    justify-items: flex-end;
+}
+
+.filter-button input[type="radio"] {
+    appearance: auto; /* 브라우저 기본 스타일 활성화 */
+    -webkit-appearance: radio; /* 웹킷 기반 브라우저 스타일 */
+    accent-color: #007bff; /* 라디오 버튼 색상 (브라우저 지원 필요) */
+    margin-right: 5px;
+}
+
+.filter-button label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    cursor: pointer;
 }
 </style>

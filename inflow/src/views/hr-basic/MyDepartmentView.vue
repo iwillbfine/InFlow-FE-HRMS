@@ -145,6 +145,7 @@ watch(
   align-items: center;
   display: flex;
   width: 100%;
+  height: 84vh;
 }
 
 
@@ -155,6 +156,7 @@ watch(
   flex-direction: column;
   background-color: #F8F8F8;
   align-items: center;
+  padding: 1rem;
 }
 
 .right {
@@ -164,14 +166,18 @@ watch(
 }
 
 .department-attendance {
-  width: 95%;
+  width: 100%;
   height: 20%;
+  position: relative;
+  top: 0rem;
+  position: sticky; /* 고정 위치 설정 */
 }
 
 .search-department-member {
   width: 100%;
   height: 80%;
   margin-top: 10px;
+  overflow-y: auto; 
 }
 
 </style>

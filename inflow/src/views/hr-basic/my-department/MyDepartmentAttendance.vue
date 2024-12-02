@@ -19,8 +19,9 @@
     width: 100%;
     height: 100%;
     background-color: #003566;
-    padding: 4rem 3.5rem;
+    /* padding: 4rem 3.5rem; */
     align-items: center;
+    justify-content: center;
     display: flex;
     flex-direction: column;
     border-radius: 4px;
