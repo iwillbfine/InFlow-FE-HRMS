@@ -1,8 +1,6 @@
 <template>
-    <CommonArticle label="평가 유형 등록" w="90%">
-      <div class="date-selector mb-8">
-      </div>
-  
+    <CommonArticle label="평가 등급 등록" w="90%">
+
       <TableItem gtc="2fr 0.3fr">
         <TableRow>
           <TableCell th fs="1.6rem">유형</TableCell>
@@ -39,7 +37,7 @@
   
     <hr />
   
-    <CommonArticle class="pos-rel" label="등록된 유형 목록" w="90%">
+    <CommonArticle class="pos-rel" label="등록된 등급 목록" w="90%">
       <TableItem gtc="0.25fr 2fr">
         <TableRow>
           <TableCell th fs="1.6rem">No</TableCell>
@@ -115,6 +113,7 @@
       console.error('과제 유형 등록 실패:', error);
       alert('과제 유형 등록에 실패하였습니다.');
     }
+
   };
   
   // 컴포넌트 마운트 시 과제 유형 목록 조회

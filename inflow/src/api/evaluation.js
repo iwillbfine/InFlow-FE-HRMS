@@ -175,3 +175,46 @@ export const findAllTaskTypes = async () => {
     throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
   }
 };
+
+// 년도 및 반기별 평가 등급 리스트 조회
+export const findGradeByYearAndHalf = async (year, half) => {
+  try {
+    const response = await apiClient.get(`/evaluations/grade/find`, {
+      params: {
+        year,
+        half,
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findGradeByYearAndHalf 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 등급 생성 함수
+export const createGrade = async (createGradeRequestDTO, year, half) => {
+  try {
+    const response = await apiClient.post(`/evaluations/grade/gradeCreation`, createGradeRequestDTO, {
+      params: {
+        year,
+        half,
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('createGrade 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 등급 수정 함수
+export const updateGrade = async (gradeId, updateGradeRequestDTO) => {
+  try {
+    const response = await apiClient.patch(`/evaluations/grade/${gradeId}`, updateGradeRequestDTO);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('updateGrade 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
