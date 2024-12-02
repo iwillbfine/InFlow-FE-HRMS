@@ -1,5 +1,11 @@
 <template>
   <div class="profile-wrapper">
+     <!-- 로딩 중일 때 표시 -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>수정 요청 중입니다...</p>
+    </div>
+
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
@@ -143,7 +149,8 @@
 import { ref, onMounted, computed } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
 
-const editMode = ref(false);
+const loading = ref(false); // 로딩 상태
+const editMode = ref(false); // 편집 가능 모드
 const isPhoneModalVisible = ref(false); // 휴대폰 모달 표시 여부
 const isEmailModalVisible = ref(false); // 이메일 모달 표시 여부
 const hoverPhoto = ref(false);
@@ -218,6 +225,8 @@ const fetchEmployeeData = async () => {
 // 수정 후 데이터를 업데이트하고 다시 조회하는 함수
 const updateEmployeeAndRefresh = async () => {
   try {
+    loading.value = true; // 로딩 시작
+
     const employeeId = localStorage.getItem('employeeId');
     const token = localStorage.getItem('accessToken');
 
@@ -242,6 +251,8 @@ const updateEmployeeAndRefresh = async () => {
   } catch (error) {
     console.error('수정 요청 중 에러 발생:', error);
     alert('수정 요청 중 문제가 발생했습니다.');
+  } finally {
+    loading.value = false; // 로딩 종료
   }
 };
 
@@ -394,6 +405,59 @@ onMounted(() => {
 
 
 <style scoped>
+/* 로딩 오버레이 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* 로딩 애니메이션 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 로딩 오버레이 스타일 끝*/
+
 .profile-wrapper {
   padding: 2rem;
   background-color: #fff;
