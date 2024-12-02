@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'; // 상태 관리 및 생명주기 훅
+import { ref, onMounted } from 'vue'; // 상태 관리 및 생명주기 훅
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';

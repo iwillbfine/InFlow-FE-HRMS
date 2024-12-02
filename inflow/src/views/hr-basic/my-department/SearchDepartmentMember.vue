@@ -67,7 +67,7 @@
     
 </template>
 <script setup>
-import { ref, watch, onMounted, defineProps, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 
 // props 선언
 const props = defineProps({
