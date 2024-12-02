@@ -20,10 +20,9 @@
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
-      <TableItem gtc="1fr 2fr 4fr 2fr 1fr 1.25fr">
+      <TableItem gtc="2fr 4fr 2fr 1fr 1.25fr">
         <TableRow>
-          <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-          <TableCell th fs="1.6rem">초과근무 시간</TableCell>
+          <TableCell th fs="1.6rem" topl>초과근무 시간</TableCell>
           <TableCell th fs="1.6rem">초과근무 사유</TableCell>
           <TableCell th fs="1.6rem">신청일</TableCell>
           <TableCell th fs="1.6rem">상태</TableCell>
@@ -38,11 +37,10 @@
             class="mid"
             fs="1.6rem"
             :botl="index === overtimeRequestList.length - 1"
-            >{{ item.attendance_request_id }}</TableCell
+            >{{
+              parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date)
+            }}</TableCell
           >
-          <TableCell class="mid" fs="1.6rem">{{
-            parseTime(item.start_date) + ' ~ ' + parseTime(item.end_date)
-          }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{
             item.request_reason
           }}</TableCell>

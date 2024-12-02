@@ -6,7 +6,7 @@
         <TableCell class="h-7 pl-1 g-2" fs="1.6rem" topr>
           <DropdownItem
             placeholder="사용할 휴가를 선택하세요."
-            w="30rem"
+            w="56rem"
             :list="dropdownVacationList"
             @update:selected-item="updateSelectedVacation"
           ></DropdownItem>
@@ -81,10 +81,9 @@
   <hr />
   <CommonArticle class="pos-rel" label="휴가 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
-    <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
+    <TableItem gtc="3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-        <TableCell th fs="1.6rem">휴가 기간</TableCell>
+        <TableCell th fs="1.6rem" topl>휴가 기간</TableCell>
         <TableCell th fs="1.6rem">휴가 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
@@ -99,11 +98,10 @@
           class="mid"
           fs="1.6rem"
           :botl="index === vacationRequestList.length - 1"
-          >{{ item.vacation_request_id }}</TableCell
+          >{{
+            parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
+          }}</TableCell
         >
-        <TableCell class="mid" fs="1.6rem">{{
-          parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
-        }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.created_at)
@@ -202,7 +200,11 @@ const fetchVacationData = async (eid) => {
       dropdownVacationList.value.push({
         id: vacation.vacation_id,
         name:
-          vacation.vacation_name + ' / 잔여일 수 : ' + vacation.vacation_left,
+          vacation.vacation_name +
+          ' / 잔여일 수 : ' +
+          vacation.vacation_left +
+          ' / 만료일 : ' +
+          parseDate(vacation.expired_at),
       });
     }
 
@@ -285,21 +287,6 @@ const updateSelectedEndDate = (date) => {
   selectedEndDate.value = date;
 };
 
-const checkValidDate = () => {
-  const selectedStart = new Date(selectedStartDate.value);
-  const selectedEnd = new Date(selectedEndDate.value);
-
-  // 오늘 날짜를 Date 객체로 변환
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // 시간 비교를 위해 00:00:00으로 설정
-
-  if (selectedStart < today || selectedEnd < today) {
-    return false;
-  }
-
-  return true;
-};
-
 const handleOnclick = async () => {
   if (!selectedVacation.value) {
     alert('사용할 휴가를 선택하세요.');
@@ -325,13 +312,14 @@ const handleOnclick = async () => {
     return;
   }
 
-  if (!checkValidDate()) {
-    alert('휴가 날짜는 오늘보다 이전일 수 없습니다.');
+  if (startDate > endDate) {
+    alert('휴가 종료일자는 휴가 시작일자보다 이전일 수 없습니다.');
     return;
   }
 
-  if (startDate > endDate) {
-    alert('휴가 종료일자는 휴가 시작일자보다 이전일 수 없습니다.');
+  const expireDate = new Date(vacationList.value[arrayIndex.value].expired_at);
+  if (endDate > expireDate) {
+    alert('휴가 종료일자는 휴가 만료일보다 이전이어야 합니다.');
     return;
   }
 
