@@ -1,96 +1,126 @@
 <template>
-    <li class="tree-node">
-        <div class="node"
-            :style="{ marginLeft: `${level * 30}px` }">
+  <li class="tree-node">
+    <div class="node" :style="{ marginLeft: `${level * 30}px` }">
+      <span v-if="node.sub_departments.length > 0" @click="toggleExpand">
+        {{ isExpanded ? '&#8250;' : '⌵' }}
+      </span>
+      <span>&nbsp;</span>
+      <span
+        class="department-name"
+        @click="selectDepartment(node.department_code)"
+      >
+        {{ node.department_name }}
+      </span>
+    </div>
 
-            <!-- 화살표 아이콘 클릭했을때, 토글 상태 변경 -> 목록 보이고/숨기기-->
-            <span 
-                v-if="node.sub_departments.length > 0"
-                @click="toggleExpand">
-                <!-- 하위 부서가 존재하는 경우  -->
-                <!-- <img :src="isExpanded ? '@/assets/icons/fold.png' : '@/assets/icons/unfold.png'" alt="">             -->
-                {{isExpanded ? '&#8250;' : '⌵'}}
-            </span>
-            <span>&nbsp;</span>
-            <span
-                class="department-name"
-                @click="selectDepartment(node.department_code)">
-                {{ node.department_name }}
-            </span>
-
-        </div>
-
-        <!-- 하위 부서가 존재하는 경우 + isExpended값이 true인 경우 -> 하위 부서 목록 쭉 보이기 -->
-        <ul v-if="isExpanded && node.sub_departments.length > 0" class="sub-department">
-            <TreeNode
-                v-for="child in node.sub_departments"
-                :key="child.department_code"
-                :node="child"
-                :level="level + 1" 
-                @select="selectDepartment">
-            </TreeNode>
-        </ul>
-
-    </li>
+    <!-- 트랜지션을 사용하여 하위 부서 목록 애니메이션 -->
+    <transition
+      name="expand"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @leave="leave"
+    >
+      <ul
+        v-if="isExpanded && node.sub_departments.length > 0"
+        class="sub-department"
+      >
+        <TreeNode
+          v-for="child in node.sub_departments"
+          :key="child.department_code"
+          :node="child"
+          :level="level + 1"
+          @select="selectDepartment"
+        />
+      </ul>
+    </transition>
+  </li>
 </template>
 
 <script setup>
-    import {ref} from 'vue';
-    import TreeNode from '@/components/employee-search/TreeNode.vue';
+import { ref } from 'vue';
+import TreeNode from '@/components/employee-search/TreeNode.vue';
 
-    defineProps({
-        node: {
-            type: Object,
-            required: true,
-        },
-        level: {
-        type: Number,
-        default: 0, // 기본 깊이 0
-    }
-    });
+defineProps({
+  node: {
+    type: Object,
+    required: true,
+  },
+  level: {
+    type: Number,
+    default: 0,
+  },
+});
 
-    // 토글 상태 관리 변수 -> 기본값은 false로 들어감
-    const isExpanded = ref(false);
-    // 클릭시 확장 또는 축소
-    const toggleExpand = () => {
-        isExpanded.value = !isExpanded.value;
-        console.log("토글 상태 변동됨");
-        // 클릭하면 isExpanded 상태 변화 
-    }
+const isExpanded = ref(false);
 
-    // 선택된 부서 이벤트 상위로 전달
-    const emit = defineEmits(['select']);
-    const selectDepartment = (department) => {
-        console.log("selectDepartment이벤트 발생:", department);
-        emit('select', department);
-    };
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value;
+};
 
+const emit = defineEmits(['select']);
+const selectDepartment = (department) => {
+  emit('select', department);
+};
 
+// 트랜지션 훅
+const beforeEnter = (el) => {
+  el.style.height = '0';
+  el.style.opacity = '0';
+};
 
+const enter = (el, done) => {
+  const height = el.scrollHeight; // 실제 높이 측정
+  el.style.height = `${height}px`;
+  el.style.opacity = '1';
+  el.style.transition = 'height 0.3s ease, opacity 0.3s ease';
+  setTimeout(() => {
+    el.style.height = null; // 애니메이션 완료 후 초기화
+    done();
+  }, 300);
+};
+
+const leave = (el, done) => {
+  el.style.height = `${el.scrollHeight}px`; // 현재 높이 설정
+  el.style.opacity = '1'; // 현재 불투명도 설정
+  el.style.transition = 'height 0.4s ease, opacity 0.2s ease'; // 트랜지션 설정
+
+  // 애니메이션 시작
+  requestAnimationFrame(() => {
+    el.style.height = '0';
+    el.style.opacity = '0';
+  });
+
+  // 트랜지션 완료 후 초기화
+  setTimeout(() => {
+    done();
+  }, 400); // `height` 트랜지션 시간과 동일하게 설정
+};
 </script>
 
 <style scoped>
 .node {
-    font-size: 2rem;
-    color: #003566;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s, color 0.2s; /* 부드러운 전환 효과 */
+  font-size: 2rem;
+  color: #003566;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.2s ease-in-out;
 }
 
 .node:hover {
-    background-color: #e3f2fd; /* 밝은 파란색 배경 */
-    color: #002d62; /* 어두운 파란색 텍스트 */
-    border-radius: 4px; /* 약간 둥글게 */
-    padding: 4px; /* 약간의 내부 여백 */
+  background-color: #e3f2fd;
+  color: #002d62;
+  border-radius: 4px;
+  padding: 4px;
 }
 
 .department-name {
-    flex-grow: 1;
-    cursor: pointer;
+  flex-grow: 1;
+  cursor: pointer;
 }
 
-
+.sub-department {
+  overflow: hidden;
+}
 </style>
