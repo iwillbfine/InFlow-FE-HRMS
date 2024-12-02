@@ -314,3 +314,14 @@ export const getOvertimesByEmployeeId = async (eid, date) => {
     throw error;
   }
 };
+
+// 24. 출근
+export const checkAndUpdateCommute = async (eid) => {
+  try {
+    const response = await apiClient.post(`/commutes?eid=${eid}`);
+    return response.data;
+  } catch (error) {
+    console.error('checkAndUpdateCommute 에러:', error);
+    throw error;
+  }
+};

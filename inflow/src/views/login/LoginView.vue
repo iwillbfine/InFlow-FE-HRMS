@@ -18,6 +18,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router'; // Vue Router 사용
 import { getEmployeeById } from '@/api/emp_info'; // 사원 정보 조회 API
+import { checkAndUpdateCommute } from '@/api/attendance';
 
 // 상태 변수
 const employeeNumber = ref('');
@@ -78,6 +79,15 @@ const handleLogin = async () => {
       // 세션 만료 시간 설정 (30분 후)
       const expireTime = new Date().getTime() + 30 * 60 * 1000;
       localStorage.setItem('expireTime', expireTime);
+
+      try {
+        const response = await checkAndUpdateCommute(employeeId);
+        if (response.success) {
+          console.log(response.content);
+        }
+      } catch (error) {
+        console.error('출근 처리 실패', error);
+      }
 
       // 홈 화면으로 이동
       router.push('/');
