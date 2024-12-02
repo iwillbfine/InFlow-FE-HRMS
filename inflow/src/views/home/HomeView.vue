@@ -1,10 +1,10 @@
 <template>
   <CommonNav></CommonNav>
-  <CommonHeader :user-name="employeeName"></CommonHeader>
-  <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
+  <CommonHeader v-if="employee" :user-name="employee.name"></CommonHeader> <!-- employee가 있을 때만 렌더링 -->
+  <MainItem v-if="employee" w="calc(100% - 12rem)" minh="calc(100% - 10rem)"> <!-- employee가 있을 때만 렌더링 -->
     <GridItem class="grid-container" w="85%" gtc="repeat(20, 1fr)">
       <div class="grid-item">
-        <MyAttendanceWidget></MyAttendanceWidget>
+        <MyAttendanceWidget v-if="employee" :employee="employee"></MyAttendanceWidget>
       </div>
       <div class="grid-item">
         <ScheduleDdayWidget></ScheduleDdayWidget>
@@ -13,30 +13,38 @@
         <MyScheduleWidget></MyScheduleWidget>
       </div>
       <div class="grid-item">
-        <MyTeamMemberWidget></MyTeamMemberWidget>
+        <MyTeamMemberWidget v-if="employee" :dcode="employee.department_code"></MyTeamMemberWidget>
       </div>
     </GridItem>
   </MainItem>
+  <div v-if="!employee">로딩 중...</div> <!-- 로딩 상태 표시 -->
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'; // 상태 관리 및 생명주기 훅
+import { ref, onMounted, watch } from 'vue'; // 상태 관리 및 생명주기 훅
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
 import GridItem from '@/components/semantic/GridItem.vue';
 import MyAttendanceWidget from '@/components/widgets/MyAttendanceWidget.vue';
 import ScheduleDdayWidget from '@/components/widgets/ScheduleDdayWidget.vue';
 import MyTeamMemberWidget from '@/components/widgets/MyTeamMemberWidget.vue';
 import MyScheduleWidget from '@/components/widgets/MyScheduleWidget.vue';
 import { useRouter } from 'vue-router';
+import { getEmployeeById } from '@/api/emp_info';
 
 // 상태 변수
 const eid = ref(null);
-const employeeName = ref(''); // 사원 이름 상태
-
+const employee = ref(null);
 const router = useRouter();
+
+const fetchEmployeeData = async (eid) => {
+  try {
+    employee.value = await getEmployeeById(eid);
+  } catch (e) {
+    console.error('사원 정보를 가져오는데 실패했습니다.', e);
+  }
+};
 
 // 컴포넌트가 마운트될 때 로컬 저장소에서 사원 정보를 가져옴
 onMounted(() => {
@@ -46,14 +54,7 @@ onMounted(() => {
     alert('로그인이 필요합니다.');
     router.push('/login');
   } else {
-    // 사원 이름 설정
-    const name = localStorage.getItem('employeeName');
-    if (name) {
-      employeeName.value = name; // 사원 이름 상태에 로컬 저장소 값 설정
-    } else {
-      console.warn('사원 이름을 찾을 수 없습니다.');
-      employeeName.value = '알 수 없음'; // 이름이 없을 경우 기본값 설정
-    }
+    fetchEmployeeData(eid.value);
   }
 });
 </script>
@@ -74,10 +75,10 @@ onMounted(() => {
 }
 
 .grid-item:nth-child(3) {
-  grid-column: span 10;
+  grid-column: span 9;
 }
 
 .grid-item:nth-child(4) {
-  grid-column: span 10;
+  grid-column: span 11;
 }
 </style>

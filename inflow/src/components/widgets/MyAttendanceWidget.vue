@@ -20,14 +20,19 @@ import WidgetItem from '@/components/widgets/WidgetItem.vue';
 import InfoCircle from '@/components/common/InfoCircle.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import { ref, computed, onMounted } from 'vue';
-import { getEmployeeById } from '@/api/emp_info';
 import { getLeftAllVacationsByEmployeeId } from '@/api/vacation';
 import { getOvertimesByEmployeeId } from '@/api/attendance';
 
 const eid = ref(null);
-const employee = ref(null);
 const vacationList = ref([]);
 const overtimeList = ref([]);
+
+const props = defineProps({
+  employee: {
+    type: Object,
+    required: true,
+  }
+})
 
 const list = ref([
   { content: 'D-00', label: '월급날' },
@@ -35,16 +40,6 @@ const list = ref([
   { content: '0/0', label: '연차 현황' },
   { content: '00:00', label: '초과 근무 시간' },
 ]);
-
-const fetchEmployeeData = async (eid) => {
-  try {
-    employee.value = await getEmployeeById(eid);
-    const tenureDays = calculateTenureDays(employee.value.join_date);
-    list.value[1] = { ...list.value[1], content: tenureDays.toString() };
-  } catch (e) {
-    console.error('사원 정보를 가져오는데 실패했습니다.', e);
-  }
-};
 
 const fetchVacationData = async (eid) => {
   try {
@@ -160,9 +155,12 @@ const getCurMonth = () => {
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
+
   const paydayCountdown = calculateDaysUntilPayday();
   list.value[0] = { ...list.value[0], content: paydayCountdown };
-  fetchEmployeeData(eid.value);
+
+  const tenureDays = calculateTenureDays(props.employee.join_date);
+  list.value[1] = { ...list.value[1], content: tenureDays.toString() };
   fetchVacationData(eid.value);
   fetchOvertimeData(eid.value, getCurMonth());
 });
@@ -173,6 +171,7 @@ onMounted(() => {
   align-items: center;
   overflow: auto;
 }
+
 .content-item {
   min-width: 11rem;
   align-items: center;
