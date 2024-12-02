@@ -217,9 +217,7 @@ onMounted(() => {
   }
   
   // 현재 년도와 상반기를 기본값으로 설정
-  selectedYear.value = new Date().getFullYear();
-  selectedHalf.value = '1st';
-  
+
   // 초기 과제 목록 로드
   fetchTaskList();
 });

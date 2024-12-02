@@ -218,3 +218,30 @@ export const updateGrade = async (gradeId, updateGradeRequestDTO) => {
     throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
   }
 };
+
+// 평가 정책 생성 함수
+export const createEvaluationPolicy = async (createEvaluationPolicyRequestDTO) => {
+  try {
+    const response = await apiClient.post('/evaluations/evaluationPolicy/policyCreation', createEvaluationPolicyRequestDTO);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('createEvaluationPolicy 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 평가 정책 리스트 조회
+export const findEvaluationPolicyByYearAndHalf = async (year, half) => {
+  try {
+    const response = await apiClient.get('/evaluations/evaluationPolicy/find', {
+      params: {
+        year,
+        half
+      }
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findEvaluationPolicyByYearAndHalf 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
