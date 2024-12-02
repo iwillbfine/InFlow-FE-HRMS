@@ -23,3 +23,29 @@ export const getEmployeesByKeywordOrDepartmentCode = async (keyword) => {
     throw error;
   }
 };
+
+// 3. 부서 구성원 조회(일반)
+export const getEmployeesByDepartmentCode = async (dcode) => {
+  try {
+    const response = await apiClient.get(
+      `/departments/search/members?departmentCode=${dcode}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getEmployeesByDepartmentCode 에러:', error);
+    throw error;
+  }
+};
+
+// 4. 부서 구성원 조회(팀장)
+export const getMyDepartmentMemberListByDepartmentCode = async (departmentCode) => {
+  try {
+    const response = await apiClient.get(
+      `/departments/my-department/${departmentCode}/members`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getMyDepartmentMemberListByDepartmentCode 에러:', error);
+    throw error;
+  }
+}
