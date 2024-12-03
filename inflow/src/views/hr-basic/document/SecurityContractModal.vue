@@ -129,7 +129,7 @@
   
   
 <script setup>
-import { ref, nextTick, onMounted, defineEmits} from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { registerEmployeeContract } from "@/api/emp_info";
 import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 

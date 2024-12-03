@@ -57,10 +57,9 @@
   <hr />
   <CommonArticle class="pos-rel" label="출장 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
-    <TableItem gtc="1fr 1.5fr 3fr 3fr 1.5fr 1fr 1.25fr">
+    <TableItem gtc="1.5fr 3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-        <TableCell th fs="1.6rem">출장지</TableCell>
+        <TableCell th fs="1.6rem" topl>출장지</TableCell>
         <TableCell th fs="1.6rem">출장 기간</TableCell>
         <TableCell th fs="1.6rem">출장 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
@@ -76,9 +75,8 @@
           class="mid"
           fs="1.6rem"
           :botl="index === businessTripRequestList.length - 1"
-          >{{ item.attendance_request_id }}</TableCell
+          >{{ item.destination }}</TableCell
         >
-        <TableCell class="mid" fs="1.6rem">{{ item.destination }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
         }}</TableCell>

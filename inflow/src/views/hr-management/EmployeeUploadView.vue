@@ -30,7 +30,6 @@ const menuList = ref([
   { name: '사원 정보 등록', link: '/hr-management/employee/upload' },
   { name: '부서 관리', link: '/hr-management/department' },
   { name: '인사발령', link: '/hr-management/appointment' },
-  { name: '과제 및 평가', link: '/hr-management/evaluation' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
