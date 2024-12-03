@@ -9,8 +9,8 @@ import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
 import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
 import PersonalEvalCreateAndFindView from '@/views/evaluation/PersonalEvalCreateAndFindView.vue';
 import DeptTaskManageView from '@/views/evaluation/DeptTaskManageView.vue';
-import FeedbackManageView from '@/views/evaluation/FeedbackManageView.vue';
-import LeaderEvalListView from '@/views/evaluation/LeaderEvalListView.vue';
+import FeedbackManageView from '@/views/evaluation/leader/FeedbackManageView.vue';
+import LeaderEvalListView from '@/views/evaluation/leader/LeaderEvalListView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
 import EvalTypeManagementView from '@/views/evaluation/EvalTypeManagementView.vue';
@@ -20,7 +20,6 @@ import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
 import EmployeeUploadView from '@/views/hr-management/EmployeeUploadView.vue';
 import DepartmentManagementView from '@/views/hr-management/DepartmentManagementView .vue';
 import AppointmentManagementView from '@/views/hr-management/AppointmentManagementView.vue';
-import EvalManagementView from '@/views/hr-management/EvalManagementView.vue';
 import VacationManagementView from '@/views/hr-management/VacationManagementView.vue';
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
 import StatisticsView from '@/views/statistics/StatisticsView.vue';
@@ -393,11 +392,6 @@ const routes = [
     ],
   },
   {
-    path: '/hr-management/evaluation',
-    name: 'hr-management-evaluation',
-    component: EvalManagementView,
-  },
-  {
     path: '/hr-management/vacation',
     name: 'hr-management-vacation',
     component: VacationManagementView,
@@ -465,7 +459,7 @@ const routes = [
 },
 {
   path: '/evaluation/leader',
-  name: 'leader-evaluation', 
+  name: 'leader-evaluation',
   component: LeaderEvalView,
   children: [
     {
@@ -474,13 +468,13 @@ const routes = [
       component: LeaderEvalListView
     },
     {
-      path: 'dept-task', 
+      path: 'dept-task',
       name: 'dept-task-management',
       component: DeptTaskManageView
     },
     {
       path: 'feedback',
-      name: 'feedback-management', 
+      name: 'feedback-management',
       component: FeedbackManageView
     }
   ]
@@ -505,17 +499,17 @@ const routes = [
   component: EvalPolicyView,
   children: [
     {
-      path: 'eval-type', 
+      path: 'eval-type',
       name: 'eval-type-management',
       component: EvalTypeManagementView
     },
     {
-      path: 'eval-policy', 
+      path: 'eval-policy',
       name: 'eval-policy-management',
       component: EvalPolicyManagementView
     },
     {
-      path: 'eval-grade', 
+      path: 'eval-grade',
       name: 'eval-grade-management',
       component: EvalGradeView
     }
