@@ -38,61 +38,26 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { ref, watch } from 'vue';
-import { findFeedbacks, findFinalGrade  } from '@/api/evaluation'; // API 함수 import
+import { ref, watch, onMounted } from 'vue';
+import { findFeedbacks, findFinalGrade, getAllTaskTypes } from '@/api/evaluation';
 
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const feedbackContent = ref(null);
-const finalGrade = ref('N/A');
+const finalGrade = ref('-');
+const taskList = ref([]);
+const taskTypes = ref([]);
 
-const taskTypes = ref([
-  { task_type_id: 1, task_type_name: '개인 과제' }
-]);
-
-const taskList = ref([
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트',
-    task_grade: 'A',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트2',
-    task_grade: 'B',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트3',
-    task_grade: 'C',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트4',
-    task_grade: 'A',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트5',
-    task_grade: 'B',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트6',
-    task_grade: 'C',
-  },
-]);
-
-
+// 리더평가용 과제 함수 
 
 // 피드백 조회 함수
 const fetchFeedback = async () => {
   try {
     if (selectedYear.value && selectedHalf.value) {
       const empId = localStorage.getItem('employeeId');
-      const feedbackData  = await findFeedbacks(empId, selectedYear.value, selectedHalf.value);
-      if (feedbackData  && feedbackData .content) {
-        feedbackContent.value = feedbackData.content.content;
+      const response = await findFeedbacks(empId, selectedYear.value, selectedHalf.value);
+      if (response.success && response.content) {
+        feedbackContent.value = response.content.content;
       }
     }
   } catch (error) {
@@ -101,7 +66,7 @@ const fetchFeedback = async () => {
   }
 };
 
-// 최종 등급 조회 함수
+// 평가 반기별 최종 평가 등급 조회 함수
 const fetchFinalGrade = async () => {
   try {
     if (selectedYear.value && selectedHalf.value) {
@@ -111,7 +76,7 @@ const fetchFinalGrade = async () => {
       if (response.success && response.content) {
         finalGrade.value = response.content.fin_grade;
       } else {
-        finalGrade.value = 'N/AA';
+        finalGrade.value = 'N/A';
       }
     }
   } catch (error) {
@@ -120,17 +85,33 @@ const fetchFinalGrade = async () => {
   }
 };
 
-// 년도 선택 핸들러
+// 과제 유형 조회 함수
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if (response.success && response.content) {
+      taskTypes.value = response.content;
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 중 오류 발생:', error);
+    taskTypes.value = [];
+  }
+};
+
 const handleYearSelected = (year) => {
   selectedYear.value = year;
 };
 
-// 반기 선택 핸들러
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
 
-// 년도와 반기 모두 선택되었을 때 피드백 조회
+// 과제 유형 이름 가져오기
+const getTaskTypeName = (typeId) => {
+  const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
+  return foundType ? foundType.task_type_name : '-';
+};
+
 watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
   if (newYear && newHalf) {
     fetchFeedback();
@@ -138,11 +119,9 @@ watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
   }
 });
 
-// 과제 유형 이름 가져오기
-const getTaskTypeName = (typeId) => {
-  const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
-  return foundType ? foundType.task_type_name : '-';
-};
+onMounted(() => {
+  fetchTaskTypes();
+});
 </script>
 
 <style scoped>
