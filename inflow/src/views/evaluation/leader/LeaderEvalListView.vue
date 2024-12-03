@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle class="feedback-article"label="피드백" w="90%">
+  <CommonArticle class="feedback-article" label="평가 결과" w="90%">
     <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
