@@ -6,7 +6,7 @@
     </FlexItem>
     <FlexItem class="article-content-container" fld="row" h="20rem">
       <FlexItem class="feedback-wrapper" w="70%" br="0.6rem" bgc="#EEF4FA" c="#0D0D0D" fs="1.5rem" fw="400">
-        <span>dfasdfasdasdfsadffffffffffffffffffffffffffffffffasdfadsfsadfsadfsadfasdfasdfasdfdasf</span>
+        <span>{{ feedbackContent }}</span>
       </FlexItem>
       <FlexItem class="grade-wrapper" fld="column" w="30%" br="0.6rem" b="1px solid #003566" bgc="#fff" c="#003566">
         <span class="grade-label">최종 등급</span>
@@ -38,10 +38,12 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { findFeedbacks } from '@/api/evaluation'; // API 함수 import
 
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
+const feedbackContent = ref(null);
 
 const taskTypes = ref([
   { task_type_id: 1, task_type_name: '개인 과제' }
@@ -78,20 +80,45 @@ const taskList = ref([
     task_name: '과제 테스트6',
     task_grade: 'C',
   },
-])
+]);
+
+// 피드백 조회 함수
+const fetchFeedback = async () => {
+  try {
+    if (selectedYear.value && selectedHalf.value) {
+      const empId = localStorage.getItem('employeeId');
+      const feedbackData  = await findFeedbacks(empId, selectedYear.value, selectedHalf.value);
+      if (feedbackData  && feedbackData .content) {
+        feedbackContent.value = feedbackData.content.content;
+      }
+    }
+  } catch (error) {
+    console.error('피드백 조회 중 오류 발생:', error);
+    feedbackContent.value = '피드백을 불러오는 중 오류가 발생했습니다.';
+  }
+};
+
+// 년도 선택 핸들러
+const handleYearSelected = (year) => {
+  selectedYear.value = year;
+};
+
+// 반기 선택 핸들러
+const handleHalfSelected = (half) => {
+  selectedHalf.value = half;
+};
+
+// 년도와 반기 모두 선택되었을 때 피드백 조회
+watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
+  if (newYear && newHalf) {
+    fetchFeedback();
+  }
+});
 
 // 과제 유형 이름 가져오기
 const getTaskTypeName = (typeId) => {
   const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
   return foundType ? foundType.task_type_name : '-';
-};
-
-const handleYearSelected = (year) => {
-  selectedYear.value = year;
-};
-
-const handleHalfSelected = (half) => {
-  selectedHalf.value = half;
 };
 </script>
 
