@@ -382,13 +382,20 @@ const routes = [
     component: DepartmentManagementView,
     children: [
       {
+        path: '',
+        name: 'hr-management-department-default',
+        component: DepartmentManagementInformationView,
+        redirect: '/hr-management/department/info',
+
+      },
+      {
         path: 'info',
-        name: 'departmentInfo',
+        name: 'hr-management-department-info',
         component: DepartmentManagementInformationView,
       },
       {
         path: 'add',
-        name: 'departmentAdd',
+        name: 'hr-management-department-add',
         component: DepartmentManagementAddView,
       },
     ],
