@@ -77,7 +77,7 @@
         <HalfDropdown @half-selected="handleHalfSelected" />
       </FlexItem>
   
-      <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.2fr">
+      <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.25fr">
         <TableRow>
           <TableCell th fs="1.6rem">등급</TableCell>
           <TableCell th fs="1.6rem">시작비율</TableCell>
