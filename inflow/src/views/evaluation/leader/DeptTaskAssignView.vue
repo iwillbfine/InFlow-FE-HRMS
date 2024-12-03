@@ -104,7 +104,17 @@ const handleHalfSelected = (half) => {
 </script>
 
 <style scoped>
-.h-8 {
+.emphasize {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.normal {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.h-5 {
 height: 5rem !important;
 }
 

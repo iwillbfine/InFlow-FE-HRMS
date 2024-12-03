@@ -445,7 +445,7 @@ const routes = [
   {
     path: '/evaluation',
     name: 'evaluation',
-    component: PersonalEvalView,
+    redirect: '/evaluation/personal',
   },
   {
     path: '/evaluation/personal',
@@ -453,12 +453,17 @@ const routes = [
     component: PersonalEvalView,
     children: [
       {
-        path: '1', // /evaluation/personal/1
+        path: '',
+        name: 'evaluation-personal-default',
+        component: PersonalEvalFindView
+      },
+      {
+        path: '1',
         name: 'self-evaluation-management',
         component: PersonalEvalFindView
       },
       {
-        path: '2', // /evaluation/personal/2
+        path: '2',
         name: 'submenu2',
         component: PersonalEvalCreateAndFindView
       }
@@ -469,34 +474,43 @@ const routes = [
   name: 'leader-evaluation',
   component: LeaderEvalView,
   children: [
-    {
-      path: 'eval-list',
-      name: 'leader-evaluation-list',
-      component: LeaderEvalListView
-    },
-    {
-      path: 'dept-task/upload',
-      name: 'dept-task-upload',
-      component: DeptTaskUploadView
-    },
-    {
-      path: 'dept-task/assign',
-      name: 'dept-task-assign',
-      component: DeptTaskAssignView
-    },
-    {
-      path: 'feedback',
-      name: 'feedback-management',
-      component: FeedbackManageView
-    }
-  ]
-},
-
+      {
+        path: '',
+        name: 'leader-evaluation-default',
+        component: LeaderEvalListView
+      },
+      {
+        path: 'eval-list',
+        name: 'leader-evaluation-list',
+        component: LeaderEvalListView
+      },
+      {
+        path: 'dept-task/upload',
+        name: 'dept-task-upload',
+        component: DeptTaskUploadView
+      },
+      {
+        path: 'dept-task/assign',
+        name: 'dept-task-assign',
+        component: DeptTaskAssignView
+      },
+      {
+        path: 'feedback',
+        name: 'feedback-management',
+        component: FeedbackManageView
+      }
+    ]
+  },
   {
     path: '/evaluation/task',
     name: 'evaluation-task',
     component: EvalTaskView,
     children: [
+      {
+        path: '',
+        name: 'evaluation-task-default',
+        component: PersonalEvalCreateAndFindView
+      },
       {
         path: 'register',
         name: 'TaskEvalCreate-view',
@@ -504,12 +518,16 @@ const routes = [
       }
     ]
 },
-
 {
   path: '/evaluation/policy',
   name: 'evaluation-policy',
   component: EvalPolicyView,
   children: [
+    {
+      path: '',
+      name: 'eval-policy-default',
+      component: EvalTypeManagementView
+    },
     {
       path: 'eval-type',
       name: 'eval-type-management',

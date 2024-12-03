@@ -50,25 +50,18 @@ const handleClicked = (idx) => {
   localStorage.setItem('subIdx', subIdx.value);
 };
 
-// 라우트 감시
-watch(() => route.path, (newPath) => {
-  if (newPath === '/evaluation/personal') {
-    router.push(subMenuList.value[0].link);
-  }
-});
-
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
-    return;
   }
 
-  // 초기 로드 시 기본 경로면 첫 번째 서브메뉴로 이동
-  if (route.path === '/evaluation/personal') {
-    router.push(subMenuList.value[0].link);
+  const defaultUrl = '/evaluation/personal';
+  if (route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
   }
 
   const savedSubIdx = localStorage.getItem('subIdx');

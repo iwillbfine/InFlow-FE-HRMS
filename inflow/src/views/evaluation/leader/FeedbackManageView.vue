@@ -66,12 +66,13 @@
         </TableItem>
         <TableItem gtc="7fr">
           <TableRow>
-            <TableCell class="h-8" th fs="1.6rem" topl>피드백 내용</TableCell>
+            <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
           </TableRow>
           <TableRow h="100%">
             <TableCell class="h-12 pl-2" fs="1.6rem" botr>
               <textarea
                 v-model="feedbackContent"
+                name="feedback-input"
                 class="feedback-input custom-scrollbar"
                 placeholder="피드백 내용을 입력하세요"
               ></textarea>
@@ -266,7 +267,17 @@
   </script>
 
 <style scoped>
-.h-8 {
+.emphasize {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.normal {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.h-5 {
   height: 5rem !important;
 }
 

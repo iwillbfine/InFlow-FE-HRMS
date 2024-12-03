@@ -1,7 +1,4 @@
 <template>
-  <FlexItem class="title-wrapper" w="90%" c="#003356" fs="2rem" fw="700">
-    <span class="title">과제 등록</span>
-  </FlexItem>
   <CommonArticle class="task-upload-article" label="개인/부서 과제 등록" w="90%">
     <TableItem gtc="3fr 6fr 8fr 2fr">
       <TableRow>
@@ -42,7 +39,7 @@
       >등록</ButtonItem
     >
   </CommonArticle>
-  <CommonArticle label="등록한 과제 목록" w="90%">
+  <CommonArticle label="등록된 과제 목록" w="90%">
     <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
@@ -78,7 +75,6 @@ import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import { ref } from 'vue';
 
-const selectedEmployeeId = ref(null);
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
 
@@ -86,12 +82,6 @@ const taskTypeList = [
   { id: 1, name: '개인 과제' },
   { id: 2, name: '부서 과제' },
 ]
-
-const handleSelected = (employee) => {
-  selectedEmployeeId.value = typeof employee === 'object' ?
-    parseInt(employee.department_member_id) :
-    parseInt(employee);
-};
 
 const handleYearSelected = (year) => {
   selectedYear.value = year;
@@ -117,6 +107,7 @@ const handleHalfSelected = (half) => {
 }
 
 .task-upload-article {
+  margin-top: 1rem;
   margin-bottom: 2rem;
 }
 
