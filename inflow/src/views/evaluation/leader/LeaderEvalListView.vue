@@ -4,10 +4,10 @@
   </FlexItem>
   <CommonArticle class="feedback-article"label="피드백" w="90%">
     <FlexItem class="article-content-container" fld="row" h="20rem">
-      <FlexItem class="feedback-wrapper" w="70%" br="0.3rem" bgc="#EEF4FA" c="#0D0D0D" fs="1.5rem" fw="400">
+      <FlexItem class="feedback-wrapper" w="70%" br="0.6rem" bgc="#EEF4FA" c="#0D0D0D" fs="1.5rem" fw="400">
         <span>dfasdfasdasdfsadffffffffffffffffffffffffffffffffasdfadsfsadfsadfsadfasdfasdfasdfdasf</span>
       </FlexItem>
-      <FlexItem class="grade-wrapper" fld="column" w="30%" br="0.3rem" b="1px solid #003566" bgc="#fff" c="#003566">
+      <FlexItem class="grade-wrapper" fld="column" w="30%" br="0.6rem" b="1px solid #003566" bgc="#fff" c="#003566">
         <span class="grade-label">최종 등급</span>
         <span class="grade">A</span>
       </FlexItem>
@@ -16,14 +16,14 @@
   <CommonArticle class="task-list-article" label="평가 상세" w="90%">
     <TableItem gtc="1fr 2fr 1fr">
       <TableRow>
-        <TableCell th fs="1.6rem">유형</TableCell>
+        <TableCell th fs="1.6rem" topl>유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
-        <TableCell th fs="1.6rem">과제별 등급</TableCell>
+        <TableCell th fs="1.6rem" topr>과제별 등급</TableCell>
       </TableRow>
       <TableRow v-for="(item, index) in taskList" :key="index">
-        <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(item.task_type_id) }}</TableCell>
+        <TableCell class="mid" fs="1.6rem" :botl="index === taskList.length-1">{{ getTaskTypeName(item.task_type_id) }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.task_name }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ item.task_grade }}</TableCell>
+        <TableCell class="mid" fs="1.6rem" :botr="index === taskList.length-1">{{ item.task_grade }}</TableCell>
       </TableRow>
     </TableItem>
   </CommonArticle>
@@ -92,7 +92,7 @@ const getTaskTypeName = (typeId) => {
 }
 
 .feedback-article {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 
 .feedback-wrapper {
