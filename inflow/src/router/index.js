@@ -8,7 +8,6 @@ import ContractView from '@/views/hr-basic/ContractView.vue';
 import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
 import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
 import PersonalEvalCreateAndFindView from '@/views/evaluation/PersonalEvalCreateAndFindView.vue';
-import DeptTaskManageView from '@/views/evaluation/DeptTaskManageView.vue';
 import FeedbackManageView from '@/views/evaluation/leader/FeedbackManageView.vue';
 import LeaderEvalListView from '@/views/evaluation/leader/LeaderEvalListView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
@@ -76,6 +75,8 @@ import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 import EvalPolicyManagementView from '@/views/evaluation/EvalPolicyManagementView.vue';
 import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
 import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowanceView.vue";
+import DeptTaskUploadView from '@/views/evaluation/leader/DeptTaskUploadView.vue';
+import DeptTaskAssignView from '@/views/evaluation/leader/DeptTaskAssignView.vue';
 
 const routes = [
   {
@@ -468,9 +469,14 @@ const routes = [
       component: LeaderEvalListView
     },
     {
-      path: 'dept-task',
-      name: 'dept-task-management',
-      component: DeptTaskManageView
+      path: 'dept-task/upload',
+      name: 'dept-task-upload',
+      component: DeptTaskUploadView
+    },
+    {
+      path: 'dept-task/assign',
+      name: 'dept-task-assign',
+      component: DeptTaskAssignView
     },
     {
       path: 'feedback',
