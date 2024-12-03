@@ -29,12 +29,13 @@
         >연장
         </ButtonItem>
       </FlexItem>
-      <SettingButton h="4rem" w="4rem" br="50%"></SettingButton>
+      <SettingButton h="4rem" w="4rem" br="50%" @click="toggleSettingModalStatus"></SettingButton>
       <HomeButton h="4rem" w="4rem" br="50%"></HomeButton>
       <AccountDropdown :user-name="userName" @reset-password="changeModalStatus" />
     </NavItem>
   </HeaderItem>
   <ResetPasswordModal v-if="isResetPwdModalOpen" class="reset-pwd-modal" @close="changeModalStatus"></ResetPasswordModal>
+  <SettingModal v-if="isSettingModalOpen" @close="toggleSettingModalStatus"></SettingModal>
 </template>
 
 <script setup>
@@ -45,6 +46,7 @@ import SettingButton from '@/components/buttons/SettingButton.vue';
 import HomeButton from '@/components/buttons/HomeButton.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import SettingModal from '@/components/modals/SettingModal.vue';
 import AccountDropdown from '@/components/dropdowns/AccountDropdown.vue';
 import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue';
 import ClockIcon from '@/components/icons/ClockIcon.vue';
@@ -61,6 +63,7 @@ const props = defineProps({
 
 // 모달 상태
 const isResetPwdModalOpen = ref(false);
+const isSettingModalOpen = ref(false);
 
 // 남은 시간 상태
 const remainingTime = ref(null);
@@ -85,7 +88,6 @@ const updateTimer = () => {
 
 // 세션 연장
 const extendSession = () => {
-  const currentExpireTime = localStorage.getItem('expireTime');
   const newExpireTime = new Date().getTime() + 24 * 60 * 60 * 1000;
 
   localStorage.setItem('expireTime', newExpireTime.toString());
@@ -106,6 +108,10 @@ const changeModalStatus = () => {
   console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
 };
+
+const toggleSettingModalStatus = () => {
+  isSettingModalOpen.value = !isSettingModalOpen.value;
+}
 
 // 컴포넌트 마운트/언마운트 시 타이머 관리
 onMounted(() => {
