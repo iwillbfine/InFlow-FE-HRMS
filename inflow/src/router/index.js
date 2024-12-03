@@ -21,7 +21,6 @@ import DepartmentManagementView from '@/views/hr-management/DepartmentManagement
 import AppointmentManagementView from '@/views/hr-management/AppointmentManagementView.vue';
 import VacationManagementView from '@/views/hr-management/VacationManagementView.vue';
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
-import StatisticsView from '@/views/statistics/StatisticsView.vue';
 import LoginView from '@/views/login/LoginView.vue';
 import CommuteView from '@/views/hr-basic/attendance/CommuteView.vue';
 import RemoteView from '@/views/hr-basic/attendance/RemoteView.vue';
