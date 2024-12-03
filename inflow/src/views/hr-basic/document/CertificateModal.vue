@@ -74,6 +74,13 @@
                   <td class="label">주소</td>
                   <td class="value">{{ certificateData.address }}</td>
                 </tr>
+                <tr>
+                  <td class="label">재직기간</td>
+                  <td class="value" colspan="3">
+                    {{ certificateData.join_date }} ~ {{ new Date().toLocaleDateString('ko-KR') }} 
+                    ({{ Math.floor((new Date() - new Date(certificateData.join_date)) / (1000 * 60 * 60 * 24)) }}일)
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -236,10 +243,10 @@ const downloadCertificate = async () => {
     const pdfFileName = `${company_name}_${employee_name}_재직증명서_${issue_date}.pdf`;
     pdf.save(pdfFileName); // 파일 다운로드
 
-    alert('재직 증명서가 성공적으로 발급 됐습니다.');
+    alert('재직증명서가 성공적으로 발급 됐습니다.');
   } catch (error) {
     console.error('PDF 생성 실패:', error);
-    alert('재직 증명서를 생성하는 데 실패했습니다.');
+    alert('재직증명서를 생성하는 데 실패했습니다.');
   } finally {
     // 로딩 상태 종료
     isSubmitting.value = false;
@@ -415,7 +422,7 @@ const printCertificate = async () => {
 }
 
 .certificate-print-wrapper {
-  border: 2px solid #333; /* 테두리 두께 조정 */
+  border: 1.6px solid #333; /* 테두리 두께 조정 */
   border-radius: 10px;
   padding: 1rem;
   margin: 1rem auto;
@@ -424,7 +431,7 @@ const printCertificate = async () => {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.certificate-title {
+.certificate-title { 
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -459,7 +466,9 @@ const printCertificate = async () => {
 }
 
 .value {
+  font-size: 1.2rem;
   text-align: left;
+  font-weight: 500;
   color: #333;
 }
 
