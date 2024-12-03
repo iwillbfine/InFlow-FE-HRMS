@@ -77,6 +77,8 @@ import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 import EvalPolicyManagementView from '@/views/evaluation/EvalPolicyManagementView.vue';
 import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
 import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowanceView.vue";
+import DeptTaskUploadView from '@/views/evaluation/leader/DeptTaskUploadView.vue';
+import DeptTaskAssignView from '@/views/evaluation/leader/DeptTaskAssignView.vue';
 import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
 
 const routes = [
@@ -480,9 +482,14 @@ const routes = [
       component: LeaderEvalListView
     },
     {
-      path: 'dept-task',
-      name: 'dept-task-management',
-      component: DeptTaskManageView
+      path: 'dept-task/upload',
+      name: 'dept-task-upload',
+      component: DeptTaskUploadView
+    },
+    {
+      path: 'dept-task/assign',
+      name: 'dept-task-assign',
+      component: DeptTaskAssignView
     },
     {
       path: 'feedback',

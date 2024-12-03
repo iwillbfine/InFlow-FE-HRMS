@@ -77,7 +77,7 @@ const handleLogin = async () => {
       localStorage.setItem('employeeName', employeeName);
 
       // 세션 만료 시간 설정 (30분 후)
-      const expireTime = new Date().getTime() + 30 * 60 * 1000;
+      const expireTime = new Date().getTime() + 24 * 60 * 60 * 1000;
       localStorage.setItem('expireTime', expireTime);
 
       try {
