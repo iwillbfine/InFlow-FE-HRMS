@@ -1,5 +1,5 @@
 <template>
-    <CommonArticle label="평가 등급 등록" w="90%">
+    <CommonArticle label="평가 유형 등록" w="90%">
 
       <TableItem gtc="2fr 0.3fr">
         <TableRow>
@@ -37,15 +37,28 @@
   
     <hr />
   
-    <CommonArticle class="pos-rel" label="등록된 등급 목록" w="90%">
+    <CommonArticle class="pos-rel" label=" 유형 목록" w="90%">
       <TableItem gtc="0.25fr 2fr">
         <TableRow>
           <TableCell th fs="1.6rem">No</TableCell>
           <TableCell th fs="1.6rem">유형</TableCell>
+          
         </TableRow>
         <TableRow v-for="(type, index) in taskTypes" :key="type.task_type_id" class="task-row">
           <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ type.task_type_name }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ type.task_type_name }}
+
+            <XmarkButton
+              h="2.4rem"
+              w="2.4rem"
+              br="0.4rem"
+              class="delete-btn"
+              bgc="#fff"
+              c="0a0a0a"
+              @click="handleDelete(type.task_type_id)"
+            />
+
+          </TableCell>
         </TableRow>
       </TableItem>
   
@@ -70,7 +83,8 @@
   import TableItem from '@/components/semantic/TableItem.vue';
   import FlexItem from '@/components/semantic/FlexItem.vue';
   import ButtonItem from '@/components/semantic/ButtonItem.vue';
-  import { createTaskType, findAllTaskTypes } from '@/api/evaluation';
+  import XmarkButton from '@/components/buttons/XmarkButton.vue';
+  import { createTaskType, findAllTaskTypes, deleteTaskTypeById  } from '@/api/evaluation';
   
   const taskTypes = ref([]);
   const taskName = ref('');
@@ -88,12 +102,16 @@
     }
   };
   
+
+  
   // 과제 유형 등록
   const handleSubmit = async () => {
     if (!taskName.value.trim()) {
       alert('과제 유형을 입력해주세요.');
       return;
     }
+
+    
   
     try {
       const requestData = {
@@ -115,6 +133,30 @@
     }
 
   };
+
+ // 과제 유형 삭제 처리
+const handleDelete = async (taskTypeId) => {
+  if (!confirm('정말로 이 과제 유형을 삭제하시겠습니까?')) {
+    return;
+  }
+
+  try {
+    const response = await deleteTaskTypeById(taskTypeId);
+    if (response.success) {
+      alert('과제 유형이 성공적으로 삭제되었습니다.');
+      fetchTaskTypes(); // 목록 새로고침
+    } else {
+      alert('과제 유형 삭제에 실패했습니다: ' + (response.message || '알 수 없는 오류가 발생했습니다.'));
+    }
+  } catch (error) {
+    if (error.response?.data?.message) {
+      alert(`과제 유형 삭제 실패: ${error.response.data.message}`);
+    } else {
+      alert('과제 유형 삭제 중 오류가 발생했습니다.');
+    }
+    console.error('과제 유형 삭제 실패:', error);
+  }
+};
   
   // 컴포넌트 마운트 시 과제 유형 목록 조회
   onMounted(() => {
@@ -168,4 +210,14 @@
     align-items: center;
     word-break: keep-all;
   }
+
+.delete-btn {
+  margin-left: 1rem;
+  padding-left: 0rem;
+  justify-content:
+}
+
+.delete-btn:hover {
+  background-color: #f0f0f0;
+}
   </style>
