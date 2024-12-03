@@ -29,6 +29,17 @@ export const getAllTaskTypes = async () => {
   }
 };
 
+// 과제 유형 삭제 함수
+export const deleteTaskTypeById = async (taskTypeId) => {
+  try {
+    const response = await apiClient.delete(`/evaluations/taskType/${taskTypeId}`);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('deleteTaskTypeById 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
 // 개인 과제 항목 리스트 조회
 export const getIndividualTaskItems = async (empId, year, half) => {
   try {
@@ -247,6 +258,28 @@ export const findEvaluationPolicyByYearAndHalf = async (year, half) => {
 };
 
 // 12-03 이후 추가된 함수 ( 기범님이랑 공동 )
+
+// 평가 정책 단건 조회 함수
+export const findEvaluationPolicyById = async (evaluationPolicyId) => {
+  try {
+    const response = await apiClient.get(`/evaluations/evaluationPolicy/${evaluationPolicyId}`);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findEvaluationPolicyById 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
+// 평가 정책 수정 함수
+export const updateEvaluationPolicy = async (evaluationPolicyId, updateEvaluationPolicyRequestDTO) => {
+  try {
+    const response = await apiClient.patch(`/evaluations/evaluationPolicy/${evaluationPolicyId}`, updateEvaluationPolicyRequestDTO);
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('updateEvaluationPolicy 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
 
 
 // 평가등급 단건 조회 함수
