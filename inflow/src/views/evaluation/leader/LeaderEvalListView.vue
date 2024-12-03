@@ -1,8 +1,9 @@
 <template>
-  <FlexItem class="title-wrapper" w="90%" c="#003356" fs="2rem" fw="700">
-    <span class="title">평가 내역</span>
-  </FlexItem>
   <CommonArticle class="feedback-article"label="피드백" w="90%">
+    <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+    </FlexItem>
     <FlexItem class="article-content-container" fld="row" h="20rem">
       <FlexItem class="feedback-wrapper" w="70%" br="0.6rem" bgc="#EEF4FA" c="#0D0D0D" fs="1.5rem" fw="400">
         <span>dfasdfasdasdfsadffffffffffffffffffffffffffffffffasdfadsfsadfsadfsadfasdfasdfasdfdasf</span>
@@ -35,7 +36,12 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
+import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
+import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import { ref } from 'vue';
+
+const selectedYear = ref(null);
+const selectedHalf = ref(null);
 
 const taskTypes = ref([
   { task_type_id: 1, task_type_name: '개인 과제' }
@@ -80,11 +86,18 @@ const getTaskTypeName = (typeId) => {
   return foundType ? foundType.task_type_name : '-';
 };
 
+const handleYearSelected = (year) => {
+  selectedYear.value = year;
+};
+
+const handleHalfSelected = (half) => {
+  selectedHalf.value = half;
+};
 </script>
 
 <style scoped>
-.title-wrapper {
-  margin-bottom: 3rem;
+.common-article {
+  position: relative;
 }
 
 .article-content-container {
@@ -92,6 +105,7 @@ const getTaskTypeName = (typeId) => {
 }
 
 .feedback-article {
+  margin-top: 1rem;
   margin-bottom: 3rem;
 }
 
@@ -121,5 +135,12 @@ const getTaskTypeName = (typeId) => {
 .mid {
   justify-content: center;
   align-items: center;
+}
+
+.year-half-section {
+  position: absolute;
+  top: -1rem;
+  gap: 1rem;
+  right: 0;
 }
 </style>

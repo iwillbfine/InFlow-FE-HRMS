@@ -72,6 +72,7 @@
             <TableCell class="h-12 pl-2" fs="1.6rem" botr>
               <textarea
                 v-model="feedbackContent"
+                name="feedback-input"
                 class="feedback-input custom-scrollbar"
                 placeholder="피드백 내용을 입력하세요"
               ></textarea>
