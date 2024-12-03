@@ -10,7 +10,7 @@
       </FlexItem>
       <FlexItem class="grade-wrapper" fld="column" w="30%" br="0.6rem" b="1px solid #003566" bgc="#fff" c="#003566">
         <span class="grade-label">최종 등급</span>
-        <span class="grade">A</span>
+        <span class="grade">{{ finalGrade }}</span>
       </FlexItem>
     </FlexItem>
   </CommonArticle>
@@ -39,11 +39,12 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import { ref, watch } from 'vue';
-import { findFeedbacks } from '@/api/evaluation'; // API 함수 import
+import { findFeedbacks, findFinalGrade  } from '@/api/evaluation'; // API 함수 import
 
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const feedbackContent = ref(null);
+const finalGrade = ref('N/A');
 
 const taskTypes = ref([
   { task_type_id: 1, task_type_name: '개인 과제' }
@@ -82,6 +83,8 @@ const taskList = ref([
   },
 ]);
 
+
+
 // 피드백 조회 함수
 const fetchFeedback = async () => {
   try {
@@ -95,6 +98,25 @@ const fetchFeedback = async () => {
   } catch (error) {
     console.error('피드백 조회 중 오류 발생:', error);
     feedbackContent.value = '피드백을 불러오는 중 오류가 발생했습니다.';
+  }
+};
+
+// 최종 등급 조회 함수
+const fetchFinalGrade = async () => {
+  try {
+    if (selectedYear.value && selectedHalf.value) {
+      const empId = localStorage.getItem('employeeId');
+      const response = await findFinalGrade(empId, selectedYear.value, selectedHalf.value);
+      
+      if (response.success && response.content) {
+        finalGrade.value = response.content.fin_grade;
+      } else {
+        finalGrade.value = 'N/AA';
+      }
+    }
+  } catch (error) {
+    console.error('최종 등급 조회 중 오류 발생:', error);
+    finalGrade.value = 'N/A';
   }
 };
 
@@ -112,6 +134,7 @@ const handleHalfSelected = (half) => {
 watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
   if (newYear && newHalf) {
     fetchFeedback();
+    fetchFinalGrade();
   }
 });
 
@@ -155,7 +178,7 @@ const getTaskTypeName = (typeId) => {
 
 .grade {
   line-height: 9rem;
-  font-size: 9rem;
+  font-size: 4.5rem;
   font-weight: 700;
 }
 
