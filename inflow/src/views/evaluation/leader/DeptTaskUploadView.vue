@@ -39,7 +39,7 @@
       >등록</ButtonItem
     >
   </CommonArticle>
-  <CommonArticle label="등록한 과제 목록" w="90%">
+  <CommonArticle label="등록된 과제 목록" w="90%">
     <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
