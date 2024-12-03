@@ -5,13 +5,18 @@
     </SectionItem>
     <NavItem class="top-nav" h="4rem">
       <FlexItem class="timer-wrapper" fld="row">
-        <span
+        <FlexItem
           v-if="remainingTime"
           class="timer"
+          fld="row"
+          fs="1.8rem"
+          fw="500"
+          c="#202020"
           :class="{ 'low-time': remainingTime <= 300 }"
         >
-          남은 시간: {{ Math.floor(remainingTime / 60) }}분 {{ remainingTime % 60 }}초
-        </span>
+          <ClockIcon></ClockIcon>
+          <span>{{ Math.floor(remainingTime / 60) }}분 {{ remainingTime % 60 }}초</span>
+        </FlexItem>
         <ButtonItem
           class="extend-btn"
           h="2.8rem"
@@ -42,6 +47,7 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import AccountDropdown from '@/components/dropdowns/AccountDropdown.vue';
 import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue';
+import ClockIcon from '@/components/icons/ClockIcon.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -138,14 +144,17 @@ onUnmounted(() => {
 }
 
 .timer {
-  font-size: 1.8rem;
-  color: #202020;
-  font-weight: 500;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.timer i {
+  margin-top: 0.4rem;
 }
 
 .timer.low-time {
-  color: #ff4d4f; /* 빨간색 */
-  font-weight: 700; /* 강조 */
+  color: #ff4d4f !important; /* 빨간색 */
+  font-weight: 700 !important; /* 강조 */
 }
 
 .extend-btn:hover {
