@@ -8,9 +8,8 @@ import ContractView from '@/views/hr-basic/ContractView.vue';
 import PersonalEvalView from '@/views/evaluation/PersonalEvalView.vue';
 import PersonalEvalFindView from '@/views/evaluation/PersonalEvalFindView.vue';
 import PersonalEvalCreateAndFindView from '@/views/evaluation/PersonalEvalCreateAndFindView.vue';
-import DeptTaskManageView from '@/views/evaluation/DeptTaskManageView.vue';
-import FeedbackManageView from '@/views/evaluation/FeedbackManageView.vue';
-import LeaderEvalListView from '@/views/evaluation/LeaderEvalListView.vue';
+import FeedbackManageView from '@/views/evaluation/leader/FeedbackManageView.vue';
+import LeaderEvalListView from '@/views/evaluation/leader/LeaderEvalListView.vue';
 import LeaderEvalView from '@/views/evaluation/LeaderEvalView.vue';
 import EvalTaskView from '@/views/evaluation/EvalTaskView.vue';
 import EvalTypeManagementView from '@/views/evaluation/EvalTypeManagementView.vue';
@@ -20,7 +19,6 @@ import EmployeeInfoView from '@/views/hr-management/EmployeeInfoView.vue';
 import EmployeeUploadView from '@/views/hr-management/EmployeeUploadView.vue';
 import DepartmentManagementView from '@/views/hr-management/DepartmentManagementView .vue';
 import AppointmentManagementView from '@/views/hr-management/AppointmentManagementView.vue';
-import EvalManagementView from '@/views/hr-management/EvalManagementView.vue';
 import VacationManagementView from '@/views/hr-management/VacationManagementView.vue';
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
 import StatisticsView from '@/views/statistics/StatisticsView.vue';
@@ -394,11 +392,6 @@ const routes = [
         component: AppointmentsHistoryView,
       },
     ],
-  },
-  {
-    path: '/hr-management/evaluation',
-    name: 'hr-management-evaluation',
-    component: EvalManagementView,
   },
   {
     path: '/hr-management/vacation',

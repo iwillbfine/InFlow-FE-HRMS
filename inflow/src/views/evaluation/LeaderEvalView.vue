@@ -29,8 +29,8 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '평가 내역', link: '/evaluation/leader/eval-list' },
-  { name: '부서 과제 등록', link: '/evaluation/leader/dept-task/upload'  },
-  { name: '부서 과제 할당', link: '/evaluation/leader/dept-task/assign'  },
+  { name: '과제 등록', link: '/evaluation/leader/dept-task/upload'  },
+  { name: '사원 과제 할당', link: '/evaluation/leader/dept-task/assign'  },
   { name: '피드백 등록 및 조회', link: '/evaluation/leader/feedback'  },
 ]);
 
