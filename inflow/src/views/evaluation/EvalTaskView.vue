@@ -23,7 +23,7 @@ import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const menuList = ref([
