@@ -57,6 +57,23 @@ export const getIndividualTaskItems = async (empId, year, half) => {
   }
 };
 
+// 부서 과제 항목 리스트 조회
+export const findDepartmentTaskItems = async (year, half, empId) => {
+  try {
+    const response = await apiClient.get('/evaluations/taskItem/departmentTasks', {
+      params: {
+        year,
+        half,
+        empId,
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findDepartmentTaskItems 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
 // 과제 생성
 export const createTaskItem = async (year, half, taskTypeId, createTaskItemRequestDTO) => {
   try {
