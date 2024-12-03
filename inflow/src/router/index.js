@@ -379,6 +379,7 @@ const routes = [
   {
     path: '/hr-management/department',
     name: 'hr-management-department',
+    redirect: '/hr-management/department/info',
     component: DepartmentManagementView,
     children: [
       {
