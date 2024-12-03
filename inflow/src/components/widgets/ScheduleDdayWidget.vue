@@ -31,8 +31,8 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 
 const props = defineProps({
   closestEvent: {
-    type: String,
-    default: '',
+    type: Object,
+    default: null,
   },
 });
 

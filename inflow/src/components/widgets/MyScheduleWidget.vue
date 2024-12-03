@@ -2,23 +2,26 @@
   <WidgetItem label="올해 나의 일정" h="42rem" w="100%">
     <MonthSelectNav @current-month-change="handleMonthChange"></MonthSelectNav>
     <FlexItem class="schedule-list-wrapper" w="100%" h="calc(100% - 5rem)">
-        <UlItem class="schedule-list" w="100%" fld="column">
-          <LiItem
-            v-for="(item, index) in scheduleList"
-            :key="index"
-            class="schedule-item"
-            fld="row"
-            w="100%"
-            h="2.8rem"
-            fs="1.4rem"
-          >
-            <GridItem class="schedule-wrapper" w="100%" gtc="1fr 4fr 1fr">
-              <span>{{ parseMonthAndDay(item.event_date) }}</span>
-              <span>{{ item.event_name }}</span>
-              <strong :class="parseDday(item.event_date).ddayClass">{{ parseDday(item.event_date).ddayLabel }}</strong>
-            </GridItem>
-          </LiItem>
-        </UlItem>
+      <UlItem v-if="scheduleList.length > 0" class="schedule-list" w="100%" fld="column">
+        <LiItem
+          v-for="(item, index) in scheduleList"
+          :key="index"
+          class="schedule-item"
+          fld="row"
+          w="100%"
+          h="2.8rem"
+          fs="1.4rem"
+        >
+          <GridItem class="schedule-wrapper" w="100%" gtc="1fr 4fr 1fr">
+            <span>{{ parseMonthAndDay(item.event_date) }}</span>
+            <span>{{ item.event_name }}</span>
+            <strong :class="parseDday(item.event_date).ddayClass">{{ parseDday(item.event_date).ddayLabel }}</strong>
+          </GridItem>
+        </LiItem>
+      </UlItem>
+      <FlexItem v-else class="empty-message-wrapper" fld="row" w="100%" h="100%" fs="1.6rem" fw="500">
+        <span class="empty-message">일정이 존재하지 않습니다.</span>
+      </FlexItem>
     </FlexItem>
   </WidgetItem>
 </template>
@@ -153,5 +156,13 @@ onMounted(() => {
 
 .black {
   color: black !important;
+}
+
+.empty-message-wrapper {
+  justify-content: center;
+}
+
+.empty-message-wrapper span {
+  margin-top: 2rem;
 }
 </style>

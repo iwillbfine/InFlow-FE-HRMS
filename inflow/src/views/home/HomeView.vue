@@ -37,7 +37,7 @@ import { getEmployeeById } from '@/api/emp_info';
 // 상태 변수
 const eid = ref(null);
 const employee = ref(null);
-const closestEvent = ref('');
+const closestEvent = ref(null);
 const router = useRouter();
 
 const fetchEmployeeData = async (eid) => {
