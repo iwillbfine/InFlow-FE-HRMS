@@ -32,7 +32,7 @@ const menuList = ref([
 const subMenuList = ref([
   { name: '사원별 급여 조회', link: '/hr-management/salary' },
   { name: '비정기 수당 관리', link: '/hr-management/salary/irregular-allowance' },
-  { name: '비과세 급여 관리', link: '/hr-management/salary' }
+  { name: '비과세 급여 관리', link: '/hr-management/salary/non-taxable-payrolls' }
 ]);
 
 const router = useRouter();

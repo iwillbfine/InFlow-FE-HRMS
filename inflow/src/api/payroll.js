@@ -77,4 +77,24 @@ export const getIrregularAllowance = async(page) => {
   } catch (error) {
     console.error("getIrregularAllowance 오류: ", error)
   }
+};
+
+export const getNonTaxablePayrolls = async(page) => {
+  try {
+    const response = await apiClient.get('/non-taxable-payrolls', {
+      params: { page }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("getNonTaxablePayrolls 오류: ", error)
+  }
 }
+
+export const createNonTaxable = async(formData) => {
+  try {
+    const response = await apiClient.post('/non-taxable-payrolls', formData);
+    return response.data;
+  } catch (error) {
+    console.error("createNonTaxable 오류: ", error);
+  }
+};
