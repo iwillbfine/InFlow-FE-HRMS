@@ -3,25 +3,43 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="2" :list="menuList"></CommonMenu>
-    <div class="sub-menu-and-content">
-      <SectionItem class="content-section" w="100%">
-        <!-- 공통 영역: 부서 폴더구조 및 부서 검색 -->
-        <div class="department-heirarchy-content">
-            <DepartmentHeirarchy 
-                class="department-heirarchy"
-                :departments="allDepartments"
-                @select="handleDepartmentSelect"/> 
-        </div>
-        <div class="search-department-content">
-          <router-view></router-view>
-        </div>
-      </SectionItem>
-      <SubMenuNav
+    <div class="content">
+
+      <!-- 왼쪽 -->
+      <!-- 부서 폴더 및 검색 -->
+      <div class="department-heirarchy-content">
+            <!-- 부서 폴더 -->
+              <DepartmentHeirarchy 
+                  class="department-heirarchy"
+                  :departments="allDepartments"
+                  @select="handleDepartmentSelect"/> 
+
+                  <!-- select 이벤트 발생시 
+                  부서 코드 정보가 DepartmentHeirachy -> 부모 -> DepartmentSearch로 이동-->
+
+            <!-- 부서 검색 -->
+              <DepartmentSearch
+                class="department-search"/>
+      </div>
+
+      <!-- 오른쪽 -->
+      <div style="display: flex; flex-direction: column !important; width: 100%;">
+        <!-- 하위 부서 -->
+        <SubMenuNav 
         :cur="subIdx"
         :list="subMenuList"
-        @clicked="handleClicked"
-      ></SubMenuNav>
+        @clicked="handleClicked"/>
+
+          <!-- section 부분-->
+        <SectionItem class="content-section" w="40%">
+          <router-view></router-view>
+        </SectionItem>
+
+      </div>
+
+
     </div>
+
   </MainItem>
 </template>
 
@@ -34,6 +52,8 @@ import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 
 import DepartmentHeirarchy from '@/components/employee-search/DepartmentHeirarchy.vue';
+import DepartmentSearch from './department/DepartmentSearch.vue';
+
 
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
@@ -114,7 +134,6 @@ onMounted(async() => {
 <style scoped>
 
 .sub-menu-nav {
-  position: fixed;
   top: 19.4rem;
   /* width: calc(100% - 12rem) !important; */
   padding-left: 2rem;
@@ -122,13 +141,24 @@ onMounted(async() => {
   z-index: 2;
 }
 
-.sub-menu-and-content{
+.sub-menu-content{
   width: 100%;
   display: flex;
+  flex-direction: row;
+}
+
+.content{
+  position: absolute;
+  display: flex;
+  width: 100%;
+  top: 9rem;
+  padding-left: 3rem;
+  padding-right: 2rem;
+  height: 85vh;
+
 }
 
 .content-section {
-  position: absolute;
   top: 13.5rem;
   right: 0;
   padding-left: 2rem;
@@ -141,15 +171,24 @@ onMounted(async() => {
 }
 
 .department-heirarchy{
-    width: 20%;
-    height: 100%;
+    width: 50%;
+    height: 100% !important;
+    border-right: 1px solid #E1E1E1;
 }
 
+.department-search{
+  width: 50%;
+  height: 100% !important;
+  border-right: 1px solid #E1E1E1
+}
 .department-heirarchy-content{
     display: flex;
-    height: 88%;
+    height: 95% !important;
     width: 100%;
     overflow: hidden;
+    top: 7px;
+    position: relative;
+
 }
 
 
