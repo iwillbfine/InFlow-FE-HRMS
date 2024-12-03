@@ -92,7 +92,7 @@ const getTaskTypeName = (typeId) => {
 }
 
 .feedback-article {
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
 }
 
 .feedback-wrapper {
