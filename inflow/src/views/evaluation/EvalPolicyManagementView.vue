@@ -1,3 +1,4 @@
+<!-- EvalPolicyManagementView.vue -->
 <template>
     <CommonArticle label="평가 정책 등록" w="90%">
       <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
@@ -135,6 +136,7 @@
           <TableCell class="mid" fs="1.6rem">
             {{ formatDate(policy.modifiable_date) }}
           </TableCell>
+
           <TableCell class="button-cell">
             <ButtonItem
               class="submit-btn"
@@ -144,9 +146,9 @@
               br="0.6rem"
               c="#fff"
               fs="1.6rem"
-              @click="handleModify(policy)"
+              @click="handleViewPolicy(policy)"
             >
-              수정
+              상세보기
             </ButtonItem>
           </TableCell>
         </TableRow>
@@ -163,6 +165,13 @@
         등록된 평가 정책이 없습니다.
       </FlexItem>
     </CommonArticle>
+
+    <EvalPolicyUpdateAndViewModal
+  v-if="showPolicyModal"
+  :policy-id="selectedPolicyId"
+  :task-types="taskTypes"
+  @close="closePolicyModal"
+/>
 </template>
 
 <script setup>
@@ -179,6 +188,7 @@ import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TypeDropdown from '@/components/dropdowns/DropdownItem.vue';
 import {getAllTaskTypes, createEvaluationPolicy, findEvaluationPolicyByYearAndHalf } from '@/api/evaluation';
+import EvalPolicyUpdateAndViewModal from './EvalPolicyUpdateAndViewModal.vue';
 
 // 과제 유형 관련 상태
 const taskTypes = ref([]);
@@ -201,6 +211,10 @@ const policyList = ref([]);
 // 등록 폼을 위한 상태
 const registrationYear = ref(null);
 const registrationHalf = ref(null);
+
+// 모달 조회를 위한 상태
+const showPolicyModal = ref(false);
+const selectedPolicyId = ref(null);
 
 watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
   if (newYear && newHalf) {
@@ -301,6 +315,17 @@ const handleRegistrationYearSelected = (year) => {
 const handleRegistrationHalfSelected = (half) => {
   registrationHalf.value = half;
   console.log('등록용 반기 선택:', half);
+};
+
+// 메서드 추가
+const handleViewPolicy = (policy) => {
+  selectedPolicyId.value = policy.evaluation_policy_id;
+  showPolicyModal.value = true;
+};
+
+const closePolicyModal = () => {
+  showPolicyModal.value = false;
+  selectedPolicyId.value = null;
 };
 
 
@@ -512,5 +537,18 @@ hr {
   display: flex;
   justify-content: space-around;
   padding: 1rem;
+}
+
+.button-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  gap: 1rem;
+}
+
+.view-btn {
+  margin-top: 3.2rem;
+  padding: 1rem 0;
 }
 </style>
