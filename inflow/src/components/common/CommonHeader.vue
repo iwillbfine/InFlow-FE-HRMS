@@ -80,7 +80,7 @@ const updateTimer = () => {
 // 세션 연장
 const extendSession = () => {
   const currentExpireTime = localStorage.getItem('expireTime');
-  const newExpireTime = new Date().getTime() + 30 * 60 * 1000;
+  const newExpireTime = new Date().getTime() + 24 * 60 * 60 * 1000;
 
   localStorage.setItem('expireTime', newExpireTime.toString());
   updateTimer(); // 즉시 타이머 업데이트
