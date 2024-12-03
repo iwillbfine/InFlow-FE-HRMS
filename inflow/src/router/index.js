@@ -77,6 +77,7 @@ import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 import EvalPolicyManagementView from '@/views/evaluation/EvalPolicyManagementView.vue';
 import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
 import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowanceView.vue";
+import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
 
 const routes = [
   {
@@ -438,6 +439,11 @@ const routes = [
         path: 'irregular-allowance',
         name: 'hr-management-salary-irregular-allowance',
         component: IrregularAllowanceView,
+      },
+      {
+        path: 'non-taxable-payrolls',
+        name: 'hr-management-salary-non-taxable-payrolls',
+        component: NonTaxableView,
       }
     ]
   },
@@ -465,7 +471,7 @@ const routes = [
 },
 {
   path: '/evaluation/leader',
-  name: 'leader-evaluation', 
+  name: 'leader-evaluation',
   component: LeaderEvalView,
   children: [
     {
@@ -474,13 +480,13 @@ const routes = [
       component: LeaderEvalListView
     },
     {
-      path: 'dept-task', 
+      path: 'dept-task',
       name: 'dept-task-management',
       component: DeptTaskManageView
     },
     {
       path: 'feedback',
-      name: 'feedback-management', 
+      name: 'feedback-management',
       component: FeedbackManageView
     }
   ]
@@ -505,17 +511,17 @@ const routes = [
   component: EvalPolicyView,
   children: [
     {
-      path: 'eval-type', 
+      path: 'eval-type',
       name: 'eval-type-management',
       component: EvalTypeManagementView
     },
     {
-      path: 'eval-policy', 
+      path: 'eval-policy',
       name: 'eval-policy-management',
       component: EvalPolicyManagementView
     },
     {
-      path: 'eval-grade', 
+      path: 'eval-grade',
       name: 'eval-grade-management',
       component: EvalGradeView
     }
