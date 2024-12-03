@@ -9,7 +9,7 @@
       </SectionItem>
     </MainItem>
   </template>
-  
+
   <script setup>
   import CommonNav from '@/components/common/CommonNav.vue';
   import CommonHeader from '@/components/common/CommonHeader.vue';
@@ -19,33 +19,33 @@
   import SectionItem from '@/components/semantic/SectionItem.vue';
   import { ref, onMounted } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  
+
   const menuList = ref([
     { name: '자기 평가', link: '/evaluation/personal' },
     { name: '리더 평가', link: '/evaluation/leader' },
     { name: '과제 등록 및 조회', link: '/evaluation/task' },
     { name: '평가 관리', link: '/evaluation/policy' },
   ]);
-  
+
   const subMenuList = ref([
     { name: '평가 유형 관리', link: '/evaluation/policy/eval-type' },
     { name: '평가 정책 관리', link: '/evaluation/policy/eval-policy' },
     { name: '평가 등급 관리', link: '/evaluation/policy/eval-grade' }
   ]);
-  
+
   const router = useRouter();
   const route = useRoute();
-  
+
   const subIdx = ref(0);
-  
+
   const handleClicked = (idx) => {
     subIdx.value = idx;
     localStorage.setItem('subIdx', subIdx.value);
   }
-  
+
   const eid = ref(null);
   const employeeName = ref('');
-  
+
   onMounted(() => {
     eid.value = localStorage.getItem('employeeId');
     employeeName.value = localStorage.getItem('employeeName');
@@ -53,20 +53,20 @@
       alert("로그인이 필요합니다.");
       router.push('/login');
     }
-  
-    const defaultUrl = '/evaluation/leader';
+
+    const defaultUrl = '/evaluation/policy';
     if(route.fullPath == defaultUrl) {
       localStorage.removeItem('subIdx');
       return;
     }
-  
+
     const savedSubIdx = localStorage.getItem('subIdx');
     if (savedSubIdx) {
       subIdx.value = Number(savedSubIdx);
     }
   });
   </script>
-  
+
   <style scoped>
   .sub-menu-nav {
     position: fixed;
@@ -76,7 +76,7 @@
     padding-right: 2rem;
     z-index: 2;
   }
-  
+
   .content-section {
     position: absolute;
     top: 13.5rem;
@@ -89,4 +89,3 @@
     align-items: center;
   }
   </style>
-  

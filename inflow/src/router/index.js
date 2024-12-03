@@ -517,39 +517,33 @@ const routes = [
         component: PersonalEvalCreateAndFindView
       }
     ]
-},
-{
-  path: '/evaluation/policy',
-  name: 'evaluation-policy',
-  component: EvalPolicyView,
-  children: [
-    {
-      path: '',
-      name: 'eval-policy-default',
-      component: EvalTypeManagementView
-    },
-    {
-      path: 'eval-type',
-      name: 'eval-type-management',
-      component: EvalTypeManagementView
-    },
-    {
-      path: 'eval-policy',
-      name: 'eval-policy-management',
-      component: EvalPolicyManagementView
-    },
-    {
-      path: 'eval-grade',
-      name: 'eval-grade-management',
-      component: EvalGradeView
-    }
-  ]
-},
-
+  },
   {
-    path: '/statistics',
-    name: 'statistics',
-    component: StatisticsView,
+    path: '/evaluation/policy',
+    name: 'evaluation-policy',
+    component: EvalPolicyView,
+    children: [
+      {
+        path: '',
+        name: 'eval-policy-default',
+        component: EvalTypeManagementView
+      },
+      {
+        path: 'eval-type',
+        name: 'eval-type-management',
+        component: EvalTypeManagementView
+      },
+      {
+        path: 'eval-policy',
+        name: 'eval-policy-management',
+        component: EvalPolicyManagementView
+      },
+      {
+        path: 'eval-grade',
+        name: 'eval-grade-management',
+        component: EvalGradeView
+      }
+    ]
   },
 ];
 

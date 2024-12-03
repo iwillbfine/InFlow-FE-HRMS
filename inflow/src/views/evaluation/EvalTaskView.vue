@@ -6,7 +6,7 @@
     <CommonMenu :cur="2" :list="menuList" @menu-clicked="handleMenuClick"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
-      <router-view 
+      <router-view
         :selectedYear="selectedYear"
         :selectedHalf="selectedHalf"
         @year-selected="handleYearSelected"
@@ -65,24 +65,18 @@ const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
 
-watch(() => route.path, (newPath) => {
-  if (newPath === '/evaluation/task') {
-    router.push(subMenuList.value[0].link);
-  }
-});
-
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
-  
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
-    return;
   }
 
-  if (route.path === '/evaluation/task') {
-    router.push(subMenuList.value[0].link);
+  const defaultUrl = '/evaluation/task';
+  if (route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
   }
 
   const savedSubIdx = localStorage.getItem('subIdx');
