@@ -3,6 +3,25 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="2" :list="menuList"></CommonMenu>
+    <div class="sub-menu-and-content">
+      <SectionItem class="content-section" w="100%">
+        <!-- 공통 영역: 부서 폴더구조 및 부서 검색 -->
+        <div class="department-heirarchy-content">
+            <DepartmentHeirarchy 
+                class="department-heirarchy"
+                :departments="allDepartments"
+                @select="handleDepartmentSelect"/> 
+        </div>
+        <div class="search-department-content">
+          <router-view></router-view>
+        </div>
+      </SectionItem>
+      <SubMenuNav
+        :cur="subIdx"
+        :list="subMenuList"
+        @clicked="handleClicked"
+      ></SubMenuNav>
+    </div>
   </MainItem>
 </template>
 
@@ -11,7 +30,15 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
+import SubMenuNav from '@/components/nav/SubMenuNav.vue';
+import SectionItem from '@/components/semantic/SectionItem.vue';
+
+import DepartmentHeirarchy from '@/components/employee-search/DepartmentHeirarchy.vue';
+
 import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import apiClient from '@/api/axios';
+
 
 const menuList = ref([
   { name: '사원 정보 조회', link: '/hr-management/employee/info' },
@@ -21,6 +48,25 @@ const menuList = ref([
   { name: '휴가 관리', link: '/hr-management/vacation' },
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
+
+
+const subMenuList = ref([
+  { name: '부서 정보', link: '/hr-management/department/info' },
+  { name: '부서 추가', link: '/hr-management/department/add' }
+]);
+
+
+const router = useRouter();
+const route = useRoute();
+
+const subIdx = ref(0);
+
+
+const handleClicked = (idx) => {
+  subIdx.value = idx;
+  localStorage.setItem('subIdx', subIdx.value);
+};
+
 
 const eid = ref(null);
 const employeeName = ref('');
@@ -32,8 +78,79 @@ onMounted(() => {
     alert("로그인이 필요합니다.");
     router.push('/login');
   }
+
+
+
+const defaultUrl = '/hr-management/department';
+  if (route.fullPath == defaultUrl) {
+    localStorage.removeItem('subIdx');
+    return;
+  }
+
+  const savedSubIdx = localStorage.getItem('subIdx');
+  if (savedSubIdx) {
+    subIdx.value = Number(savedSubIdx);
+  }
+
 });
+
+
+// 1. 부서 폴더구조 UI 
+// 페이지 로드되자마자 전체 폴더 구조 조회
+const allDepartments = ref([]);  // 부서 정보 담을 배열 선언
+onMounted(async() => {
+    try{
+        const response = await apiClient.get('/departments/hierarchy');
+        allDepartments.value = response.data.content;
+        console.log("응답 받은 전체 부서:", allDepartments.value);
+    } catch(error){
+        console.error('부서 데이터를 불러오지 못했습니다.', error);
+
+    }
+});
+
 </script>
 
 <style scoped>
+
+.sub-menu-nav {
+  position: fixed;
+  top: 19.4rem;
+  /* width: calc(100% - 12rem) !important; */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  z-index: 2;
+}
+
+.sub-menu-and-content{
+  width: 100%;
+  display: flex;
+}
+
+.content-section {
+  position: absolute;
+  top: 13.5rem;
+  right: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+  flex-grow: 1;
+  align-items: center;
+  display: flex
+}
+
+.department-heirarchy{
+    width: 20%;
+    height: 100%;
+}
+
+.department-heirarchy-content{
+    display: flex;
+    height: 88%;
+    width: 100%;
+    overflow: hidden;
+}
+
+
 </style>
