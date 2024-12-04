@@ -43,7 +43,7 @@
         </FlexItem>
       </FlexItem>
 
-      <TableItem class="emp-task" gtc="2fr 3fr 6fr 8fr ">
+      <TableItem class="emp-task" gtc="2fr 3fr 6fr 8fr">
         <TableRow>
           <TableCell th fs="1.6rem" topl>No</TableCell>
           <TableCell th fs="1.6rem">유형</TableCell>
@@ -57,12 +57,17 @@
           </TableCell>
         </TableRow>
 
-        <TableRow v-for="(task, index) in taskList" :key="task.task_eval_id">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
-        </TableRow>
+        <TableRow 
+            v-for="(task, index) in taskList" 
+            :key="task.task_eval_id"
+            class="task-row"
+            @click="openTaskEvalModal(task)"
+          >
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
+          </TableRow>
       </TableItem>
 
       <TableItem gtc="7fr">
@@ -104,6 +109,17 @@
     </CommonArticle>
     <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
   </SectionItem>
+
+  <!-- 템플릿 최하단에 추가 -->
+<TaskEvalCreateAndUpdateModal
+  v-if="isTaskEvalModalOpen"
+  :taskData="selectedTask"
+  :year="selectedYear"
+  :half="selectedHalf"
+  :employeeId="selectedEmployee?.department_member_id"
+  @close="closeTaskEvalModal"
+  @submit="handleTaskEvalSubmit"
+/>
 </template>
 
 <script setup>
@@ -119,7 +135,8 @@ import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback, updateTaskEval, getIndividualTaskItems } from '@/api/evaluation';
+import TaskEvalCreateAndUpdateModal from './TaskEvalCreateAndUpdateModal.vue';
+import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback, getIndividualTaskItems } from '@/api/evaluation';
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -130,6 +147,8 @@ const isLoading = ref(false);
 const feedbackData = ref(null);
 const currentEvaluationId = ref(null);
 const taskList = ref([]);
+const isTaskEvalModalOpen = ref(false);
+const selectedTask = ref(null);
 
 const hasTaskData = computed(() => 
 taskList.value && taskList.value.length > 0);
@@ -139,21 +158,21 @@ const hasFeedback = computed(() => {
 });
 
 
-
-// 과제 점수 입력 제한
-const limitTaskScore = (event, task) => {
-  let score = parseFloat(event.target.value);
-  
-  if (isNaN(score)) {
-    task.score = null;
-    return;
-  }
-
-  if (score > 100) score = 100;
-  else if (score < 0) score = 0;
-  
-  task.score = score;
+// 모달 관련 함수 추가
+const openTaskEvalModal = (task) => {
+ selectedTask.value = {
+   ...task,
+   evaluation_id: currentEvaluationId.value  
+ };
+ isTaskEvalModalOpen.value = true;
 };
+
+const closeTaskEvalModal = () => {
+  isTaskEvalModalOpen.value = false;
+  selectedTask.value = null;
+};
+
+
 
 // 버튼 텍스트 계산
 const buttonText = computed(() => {
@@ -174,6 +193,7 @@ const handleHalfSelected = (half) => {
 
 // 데이터 조회
 watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
+
   const [employeeId, year, half] = newValues;
 
   if (employeeId && year && half) {
@@ -214,39 +234,32 @@ watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
   }
 });
 
+
+const fetchTaskList = async () => {
+  if (!selectedEmployee.value?.department_member_id || !selectedYear.value || !selectedHalf.value) return;
+  
+  try {
+    const tasksResponse = await getIndividualTaskItems(
+      selectedEmployee.value.department_member_id,
+      selectedYear.value,
+      selectedHalf.value
+    );
+    taskList.value = tasksResponse.content || [];
+  } catch (error) {
+    console.error('과제 목록 조회 중 에러:', error);
+    alert('과제 목록 조회 중 오류가 발생했습니다.');
+  }
+};
+
 // 피드백 등록/수정 처리
 const handleOnclick = async () => {
   if (!selectedEmployee.value || !selectedYear.value || !selectedHalf.value || !feedbackContent.value.trim()) {
-    alert('모든 필드를 입력해주세요.');
+    alert('피드백을 입력해주세요.');
     return;
   }
 
   try {
     isLoading.value = true;
-
-    // 선택된 과제의 점수 업데이트
-    if (hasTaskData.value) {
-      const selectedTask = taskList.value[0]; // 단건 처리
-      if (selectedTask?.score) {
-        const updateDTO = {
-          task_eval_id: selectedTask.task_eval_id,
-          task_eval_name: selectedTask.task_eval_name,
-          task_eval_content: selectedTask.task_eval_content,
-          score: selectedTask.score,
-          set_ratio: selectedTask.set_ratio,
-          task_grade: selectedTask.task_grade,
-          performance_input: selectedTask.performance_input,
-          created_at: selectedTask.created_at,
-          rel_eval_status: selectedTask.rel_eval_status,
-          evaluation_id: selectedTask.evaluation_id,
-          modifiable_date: selectedTask.modifiable_date,
-          task_type_id: selectedTask.task_type_id,
-          task_item_id: selectedTask.task_item_id
-        };
-        
-        await updateTaskEval(selectedTask.task_eval_id, updateDTO);
-      }
-    }
 
     // 피드백 처리
     if (feedbackData.value?.content?.feedbackId) {
@@ -291,6 +304,7 @@ const handleOnclick = async () => {
     isLoading.value = false;
   }
 };
+
 </script>
 
 <style scoped>
@@ -321,14 +335,6 @@ const handleOnclick = async () => {
   align-items: center;
 }
 
-.input-wrapper {
-  padding: 1rem;
-}
-
-.input-wrapper input {
-  height: 100%;
-  width: 100%;
-}
 
 .empty-message {
   justify-content: center;
@@ -431,5 +437,14 @@ gap: 1rem;
 .feedback-input:focus::placeholder {
   opacity: 0;
   transition: opacity 0.15s ease-out;
+}
+
+.task-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.task-row:hover {
+  background-color: #f5f5f5;
 }
 </style>
