@@ -178,6 +178,16 @@ export const getAppHistoryByMonth = async (year, month) => {
   }
 };
 
+export const getAppHistoryByPeriod = async (year, month, type) => {
+  try {
+    const response = await apiClient.get(`/appointments/history?year=${year}&month=${month}&appointment_item_code=${type}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getCareersById = async (empId) => {
   try {
     const response = await apiClient.get(`/employees/careers/${empId}`);

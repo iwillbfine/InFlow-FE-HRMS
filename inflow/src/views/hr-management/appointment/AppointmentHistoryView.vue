@@ -7,6 +7,10 @@
       @go-prev-month="goPrevMonth"
       @go-next-month="goNextMonth"
     />
+  </FlexItem>
+
+  <FlexItem class="content-header-btns" fld="row" h="6rem" w="90%">
+    <ButtonItem h="3.6rem" w="9rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" class="dBtn" @click="showDownload">다운로드</ButtonItem> 
     <SelectAppTypeComponent
       :y="curMonth.split('-')[0]"
       :m="curMonth.split('-')[1]"
@@ -14,6 +18,12 @@
       @selected="goSelectedPoint"
     />
   </FlexItem>
+
+  <div v-if="downloadModal" class="modal-overlay" @click="closeModal">
+    <div class="modal-content" @click.stop>
+      <SelectPeriodComponent @selected="hideDownload"></SelectPeriodComponent>
+    </div>
+  </div>
 
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -57,14 +67,17 @@
 
 <script setup>
 import FlexItem from '@/components/semantic/FlexItem.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import SelectAppTypeComponent from '@/components/common/SelectAppTypeComponent.vue';
+import SelectPeriodComponent from '@/components/common/SelectPeriodComponent.vue';
 import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
+import * as XLSX from 'xlsx';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getAppHistoryByMonth } from '@/api/emp_attach';
+import { getAppHistoryByMonth, getAppHistoryByPeriod} from '@/api/emp_attach';
 
 const curMonth = ref('');
 const appointmentHistory = ref([]);
@@ -73,6 +86,17 @@ const isEmpty = ref(true);
 const router = useRouter();
 const route = useRoute();
 const selectedType = ref('전체');
+const downloadModal = ref(false);
+
+const appItems = ref({
+  전체: 'all',
+  강등: 'DEMO',
+  승진: 'PROM',
+  보직변경: 'RCHG',
+  퇴직: 'RETI',
+  특진: 'SPPR',
+  부서이동: 'TRNS',
+});
 
 const fetchDate = async (date) => {
   if (!date || typeof date !== 'string' || date.split('-').length < 3) {
@@ -126,6 +150,71 @@ const goSelectedPoint = (selectedData) => {
   navigateTo('/hr-management/appointment/history', selectedData);
 };
 
+const generateDateRange = (start, end) => {
+  const startDate = new Date(start + '-01');
+  const endDate = new Date(end + '-01');
+  const dates = [];
+
+  while (startDate <= endDate) {
+    const year = startDate.getFullYear();
+    const month = String(startDate.getMonth() + 1).padStart(2, '0');
+    dates.push(`${year}-${month}`);
+    startDate.setMonth(startDate.getMonth() + 1);
+  }
+
+  return dates;
+};
+
+const showDownload = () => {
+  downloadModal.value = true;
+};
+
+const periodData = ref([]);
+
+const downloadExcel = (date) => {
+  const titleRow = [[`발령(${date.type}) 이력 (${date.start} ~ ${date.end})`]];
+  const columnHeaders = [["no", "일자", "유형", "사원", "부서", "직무", "직위", "직책", "담당자"]];
+  const data = periodData.value.map((row, index) => [
+    index+1,
+    row.appointed_at.split(' ')[0],
+    row.appointment_item_name,
+    row.employee_name,
+    row.department_name,
+    row.duty_name,
+    row.position_name,
+    row.role_name,
+    row.authorizer_name,
+  ]);
+  const combinedData = [...titleRow, [], ...columnHeaders, ...data];
+
+  const worksheet = XLSX.utils.aoa_to_sheet(combinedData);
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "발령 이력");
+
+  XLSX.writeFile(workbook, `${date.start}_${date.end}_발령(${date.type})_이력.xlsx`);
+};
+
+
+const hideDownload = async (data) => {
+  const daylist = generateDateRange(data.start, data.end);
+
+  const results = await Promise.all(
+    daylist.map(async (row) => {
+      const [y, m] = row.split('-').map(Number);
+      return getAppHistoryByPeriod(y, m, appItems.value[data.type]);
+    })
+  );
+
+  results.forEach((tmp) => {
+    periodData.value = [...periodData.value, ...tmp];
+  });
+
+  downloadExcel(data);
+
+  downloadModal.value = false;
+};
+
 watch(
   () => route.query,
   (newData) => {
@@ -151,17 +240,54 @@ defineProps({
 
 <style scoped>
 .content-header {
-  position: relative;
   justify-content: center;
   align-items: center;
 }
 
+.content-header-btns {
+  display: flex;
+  flex-direction: column !important;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 1rem; 
+}
+
+/* 모달 오버레이 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 최상위 표시 */
+}
+
+/* 모달 컨텐츠 */
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%; /* 반응형 조정 */
+  text-align: center;
+}
+
+
+.dBtn {
+  padding: 0.3rem !important;
+}
+
 .select-data {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
+
 .select-data ::v-deep(.app-his-dropdown .dropdown .dropdown-header) {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
