@@ -43,13 +43,12 @@
         </FlexItem>
       </FlexItem>
 
-      <TableItem class="emp-task" gtc="2fr 3fr 6fr 8fr 2fr">
+      <TableItem class="emp-task" gtc="2fr 3fr 6fr 8fr ">
         <TableRow>
           <TableCell th fs="1.6rem" topl>No</TableCell>
           <TableCell th fs="1.6rem">유형</TableCell>
           <TableCell th fs="1.6rem">과제명</TableCell>
           <TableCell th fs="1.6rem">과제 내용</TableCell>
-          <TableCell th fs="1.6rem">점수</TableCell>
         </TableRow>
 
         <TableRow v-if="!hasTaskData">
@@ -63,16 +62,6 @@
           <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <FlexItem class="input-wrapper" h="100%" w="100%" bgc="#F8F8F8" b="1px solid #DBDBDB" br="0.1rem">
-              <input 
-                v-model="task.score" 
-                type="text" 
-                maxlength="3" 
-                @input="limitTaskScore($event, task)"
-              >
-            </FlexItem>
-          </TableCell>
         </TableRow>
       </TableItem>
 
