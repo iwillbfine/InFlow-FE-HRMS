@@ -120,8 +120,7 @@ export const findAllTaskItemsByEmpId = async (empId, year, half) => {
   }
 };
 
-// 평가 항목별 평가 생성
-
+// 과제 항목별 평가 생성
 export const createTaskEval = async (createTaskEvalRequestDTO, year, half, employeeId) => {
   try {
     const response = await apiClient.post('/evaluations/taskEval/taskEvalCreation', createTaskEvalRequestDTO, {
