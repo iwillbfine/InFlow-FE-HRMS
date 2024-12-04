@@ -253,6 +253,19 @@ hr {
 }
 
 .task-input::placeholder {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #666;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.task-input:focus::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.task-input::placeholder {
   font-size: 1.6rem;
   color: #666;
 }
