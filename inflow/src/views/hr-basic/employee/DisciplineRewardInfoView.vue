@@ -1,40 +1,38 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'포상 및 징계'" class="ca" w="90%"></CommonArticle>
+  <CommonArticle :label="'포상 및 징계'" class="ca" w="96%" fs="2rem">
     <DisciplineRewardTypeDropDown @selected="getType" class="select-data"></DisciplineRewardTypeDropDown>
-    <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">조회</ButtonItem>
-  </FlexItem>
-
-  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
-    <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.5fr 1fr 1fr 4fr" br="0.5rem">
-        <TableRow>
-          <TableCell th fs="1.6rem">no</TableCell>
-          <TableCell th fs="1.6rem">구분</TableCell>
-          <TableCell th fs="1.6rem">등록일</TableCell>
-          <TableCell th fs="1.6rem">내용</TableCell>
-        </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in showList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['discipline_reward_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['created_at'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['content'] }}</TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-    <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      포상 및 징계 정보가 존재하지 않습니다.
+    <ButtonItem class="read-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">조회</ButtonItem>
+    <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
+      <div class="table-wrapper">
+        <TableItem class="commute-table" gtc="0.5fr 1fr 1fr 4fr" br="0.5rem">
+          <TableRow>
+            <TableCell th fs="1.6rem">No</TableCell>
+            <TableCell th fs="1.6rem">구분</TableCell>
+            <TableCell th fs="1.6rem">등록일</TableCell>
+            <TableCell th fs="1.6rem">내용</TableCell>
+          </TableRow>
+          <TableRow v-if="!isEmpty" v-for="(item, index) in showList" :key="index">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['discipline_reward_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['created_at'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['content'] }}</TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+      <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        포상 및 징계 정보가 존재하지 않습니다.
+      </FlexItem>
     </FlexItem>
-  </FlexItem>
+  </CommonArticle>
 </template>
-  
+
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
@@ -68,7 +66,7 @@ const fetchDate = async (empId) => {
 
   if (response) {
     const sortedResponse = sortByDate(response[0].discipline_rewards.map(row => ({
-        ...row, 
+        ...row,
         created_at: row['created_at'].split('T')[0],
       })));
       drList.value = sortedResponse;
@@ -99,28 +97,27 @@ watch(showList, (newValue) => {
 });
 
 </script>
-  
-<style scoped>
-.content-header {
-  width: 100%;
-  position: relative;
-  justify-content: space-between;
-  align-items: end;
-}
 
-.content-header ::v-deep(article > div.article-label) {
-  font-size: 2rem !important;
+<style scoped>
+.common-article {
+  position: relative;
+  margin-top: 2rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
 }
 
-.content-header ::v-deep(.app-his-dropdown .dropdown .dropdown-header) {
-  margin-top: 0.3rem;
-  margin-right: 1rem;
-  height: 3rem !important;
-  align-items: center;
+.select-data {
+  position: absolute;
+  top: 0;
+  right: 8.6rem;
+}
+
+.read-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .content-body {
@@ -138,4 +135,3 @@ watch(showList, (newValue) => {
   align-items: center;
 }
 </style>
-  
