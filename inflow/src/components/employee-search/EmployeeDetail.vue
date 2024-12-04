@@ -2,11 +2,17 @@
     <div v-if="employeeCode && typeof employeeCode === 'object' && Object.keys(employeeCode).length > 0" class="container">
         <div class="profile">
             <div class="profile-image">
-                <img src="@/assets/Inflow_profile_img.png" alt="">
+                <img 
+                    v-if="employeeCode.profile_img_url && employeeCode.profile_img_url.trim()" 
+                    :src="employeeCode.profile_img_url" 
+                    alt="profile-image"> 
+                <span v-else>이미지를 불러올 수 없습니다.</span>
+                <!-- <img :src="employeeCode.profile_image_url" alt="profile-image">  -->
             </div>
             <div class="name-and-position">
                 <span>{{employeeCode.employee_name}}</span>/
                 <span>{{employeeCode.role_name}}</span>
+                <!-- <span>{{ employeeCode }}</span> -->
             </div>
         </div>
         <div class="line"></div>
@@ -36,18 +42,25 @@
 
 
 <script setup>
-import { watchEffect } from 'vue';
+import {defineProps, watchEffect} from 'vue';
 
-defineProps({
+
+const props = defineProps({
     employeeCode: {
-        type: Object,
-        default: () => ({}),
+        type: Object, 
+        default: () => ({}), // 초기값 빈 객체
     },
 });
 
 
-
-
+// watchEffect(() => {
+//     if (employeeCode && typeof employeeCode === "object" && Object.keys(employeeCode).length > 0) {
+//         console.log("employeeCode:", employeeCode);
+//         console.log("profile_image_url:", employeeCode.profile_image_url);
+//     } else {
+//         console.log("employeeCode 데이터가 아직 준비되지 않음.");
+//     }
+// });
 </script>
 
 <style scoped>

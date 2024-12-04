@@ -11,7 +11,7 @@
       <MainItem h="calc(100% - 10rem)" w="100%">
         <div class="container">
           <div class="title">
-          <span>사원 또는 부서 찾기</span>
+            <span>사원 또는 부서 찾기</span>
           </div>
           <!-- 검색창 -->
           <SearchBar  @search="handleSearch" class="search-bar" ></SearchBar>
@@ -27,6 +27,8 @@
               <!-- 사원을 선택하면 상세정보 조회됨-->
             <EmployeeDetail 
               class="employee-detail"
+              v-if="selectedEmployee"
+              :key="selectedEmployee?.employee_number || 'default-key'" 
               :employeeCode="selectedEmployee" />
           </div>
 
@@ -82,22 +84,8 @@ const handleSearch = async(query) => {
   }
 };
 
-// 2. 사원 목록 -> 사원 상세정보 조회
-const selectedEmployee = ref({});
-// 상세정보 API
-const handleEmployeeDetail = async(employeeCode) => {
-  console.log("handleEmployeeDetail 메소드 실행됨, select 이벤트 발생", employeeCode)
-  try{
-    selectedEmployee.value = null; // 데이터 로드 중일 때 null로 설정
-    const response = await apiClient.get(`/departments/search/members/detail/employee-code/${employeeCode}`);
-    selectedEmployee.value = response.data.content[0]; // 첫 번째 객체만 저장
-    console.log("try 구문 실행", selectedEmployee.value);
-  } catch(error){
-    console.error('사원 상세정보를 불러오지 못했습니다.', error);
-  }
-};
 
-// 3. 부서 폴더구조 UI 
+// 2. 부서 폴더구조 UI 
 // 페이지 로드되자마자 전체 폴더 구조 조회
 const allDepartments = ref([]);  // 부서 정보 담을 배열 선언
 onMounted(async() => {
@@ -111,7 +99,7 @@ onMounted(async() => {
   }
 });
 
-// 4. 부서 선택 시 해당 부서 사원 목록 조회
+// 3. 부서 선택 시 해당 부서 사원 목록 조회
 const handleDepartmentSelect = async(departmentCode) => {
   console.log("선택된 부서 코드:", departmentCode);
   try{
@@ -125,6 +113,23 @@ const handleDepartmentSelect = async(departmentCode) => {
   }
 }
 
+
+// 4. 사원 목록 -> 사원 상세정보 조회
+const selectedEmployee = ref({});
+// 상세정보 API
+const handleEmployeeDetail = async(employeeCode) => {
+  console.log("handleEmployeeDetail 메소드 실행됨, select 이벤트 발생", employeeCode)
+  try{
+    // selectedEmployee.value = null; // 데이터 로드 중일 때 null로 설정
+    const response = await apiClient.get(`/departments/search/members/detail/employee-code/${employeeCode}`);
+    selectedEmployee.value = response.data.content[0]; // 첫 번째 객체만 저장
+    console.log("try 구문 실행", selectedEmployee.value);
+    console.log("이미지:",selectedEmployee.value.profile_img_url);
+    console.log("사원명:", selectedEmployee.value.employee_name);
+  } catch(error){
+    console.error('사원 상세정보를 불러오지 못했습니다.', error);
+  }
+};
 
 </script>
 
@@ -150,6 +155,7 @@ const handleDepartmentSelect = async(departmentCode) => {
 .search-bar{
   margin: 10px 0;
   height: 4.5%;
+  margin-top: 2rem;
 }
 
 /* 컨텐츠 */

@@ -10,6 +10,15 @@
             <!-- 수정 클릭하면 수정할 수 있도록 바뀜, 수정 버튼은 저장으로 바뀜, 저장 클릭하면 저장되었다는 팝업창 뜸-->
             {{ isEditMode ? '저장' : '수정' }}
         </button>
+
+        <button
+            class="button"
+            @click="openDeleteModal"
+            v-if="departmentInfo"
+            style="background-color: rgb(170, 170, 170)">
+            삭제
+
+        </button>
     </div>
     <div style="width: 100%; height: 100%; margin-top: 2rem;">
 
@@ -119,6 +128,34 @@
         </div>
     </div>
 
+    <!-- 삭제 성공 메시지 모달 -->
+    <div v-if="deletedButtonStatus" class="modal-alert">
+        <div class="modal">
+        <p>성공적으로 삭제되었습니다!</p>
+        </div>
+    </div>
+
+
+
+    <!-- 삭제 확인 모달 -->
+    <div 
+        v-if="isDeleteModalVisible" 
+        class="modal-alert"
+        @animationend="handleAnimationEnd">
+        <div 
+            class="delete-modal" 
+            :class="{ 'fade-out': isDeleteModalFading }" 
+            style="padding:3rem;">
+            <p>정말로 삭제하시겠습니까?</p>
+            <div class="modal-buttons">
+                <button @click="deleteDepartment" class="modal-confirm">삭제</button>
+                <button @click="closeDeleteModal" class="modal-confirm" 
+                        style="background-color: #F2F2F2; color: #003566;"
+                >취소</button>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script setup>
@@ -136,6 +173,8 @@
     const isEditMode = ref(false);
     const editableData = ref({});
     const upperDepartments = ref([]); // 상위 부서 목록
+    const isDeleteModalVisible = ref(false); // 삭제 확인 모달 상태
+
 
     // 부서 상세 정보 가져오기
     const fetchDepartmentInfo = async (departmentCode) => {
@@ -170,19 +209,48 @@
             try {
                 const response = await apiClient.patch(`/departments/${departmentInfo.value.department_code}`, editableData.value);
                 departmentInfo.value = response.data.content;
-                console.log('부서 정보가 성공적으로 수정되었습니다.');
-
                 savedButtonStatus.value = true;   
                 // 3초 후 모달창 닫기
                 setTimeout(() => {
                 closeModal();
                 }, 1200);
 
+                setTimeout(() => {
+                    window.location.reload(); // 새로고침
+                }, 1300);
+
             } catch (error) {
                 console.error('부서 정보 수정에 실패했습니다.', error);
             }
         }
         isEditMode.value = !isEditMode.value; // 수정 모드 상태 토글
+    };
+
+    // 삭제 확인 모달 열기
+    const openDeleteModal = () => {
+        isDeleteModalVisible.value = true;
+    };
+
+    // 삭제 확인 모달 닫기
+    const closeDeleteModal = () => {
+        isDeleteModalVisible.value = false;
+    };
+
+    // 부서 삭제 요청
+    const deleteDepartment = async () => {
+        try {
+            await apiClient.delete(`/departments/${departmentInfo.value.department_code}`);
+            console.log('부서가 성공적으로 삭제되었습니다.');
+            closeDeleteModal();
+            departmentInfo.value = null; // 삭제 후 데이터 초기화
+            deletedButtonStatus.value = true;
+            setTimeout(() => {
+                    window.location.reload(); // 새로고침
+                }, 1300);
+            
+        } catch (error) {
+            console.error('부서 삭제에 실패했습니다.', error);
+        }
     };
 
 
@@ -193,6 +261,9 @@
     const closeModal = () => {
         savedButtonStatus.value = false; // 상태 초기화
     };
+
+    // 삭제 완료되면 모달창 띄우고 사라짐
+    const deletedButtonStatus = ref(false);
 
 
 
@@ -209,6 +280,19 @@
     onMounted(() => {
         fetchUpperDepartments(); // 상위 부서 목록 호출
     });
+
+    // 모달 페이드아웃 상태 추가
+    const isDeleteModalFading = ref(false);
+
+
+
+    // 애니메이션 종료 처리
+    const handleAnimationEnd = () => {
+        if (isDeleteModalFading.value) {
+            isDeleteModalVisible.value = false; // 모달 완전 제거
+            isDeleteModalFading.value = false; // 상태 초기화
+        }
+    };
 </script>
 
 <style scoped>
@@ -242,6 +326,7 @@ span{
     border-radius: 3px;
     font-size: 1.3rem;
     align-items: flex-end;
+    margin-left: 8px;
 }
 
 
@@ -300,9 +385,42 @@ span{
     animation: fadeIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s;
 }
 
-.modal p {
-    font-size: 1.2rem;
+.delete-modal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.delete-modal.fade-out {
+    animation: fadeOut 0.3s ease-out;
+}
+
+.delete-modal p {
+    font-size: 1.7rem;
     margin: 0;
+}
+
+.modal p {
+    font-size: 1.7rem;
+    margin: 0;
+}
+.modal-confirm{
+    font-size: 1.5rem;
+    background-color: #003566;
+    color: white;
+    padding: 5px 25px;
+    border-radius: 2px;
+    
+}
+.modal-buttons{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 10px;
 }
 
 /* 모달 페이드 인/아웃 애니메이션 */
