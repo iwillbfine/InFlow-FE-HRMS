@@ -461,8 +461,8 @@ onMounted(() => {
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  width: 95%;
-  height: 100%;
+  width: 100%;
+  height: 28rem;
 }
 
 .profile-buttons-container {
@@ -475,7 +475,7 @@ onMounted(() => {
 .profile-label {
   widows: 100%;
   height: 4rem;
-  font-size: 1.7rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #003566;
 }
