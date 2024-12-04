@@ -2,7 +2,7 @@
   <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="2" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="2" :list="menuList" style="z-index: 99;"></CommonMenu>
     <div class="content">
 
       <!-- 왼쪽 -->
@@ -19,7 +19,8 @@
 
             <!-- 부서 검색 -->
               <DepartmentSearch
-                class="department-search"/>
+                class="department-search"
+                @select="handleDepartmentSelect"/>
       </div>
 
       <!-- 오른쪽 -->
@@ -31,8 +32,9 @@
         @clicked="handleClicked"/>
 
           <!-- section 부분-->
-        <SectionItem class="content-section" w="40%">
-          <router-view></router-view>
+        <SectionItem class="content-section" w="100%">
+          <router-view
+          :selected-department-code="selectedDepartmentCode"/>
         </SectionItem>
 
       </div>
@@ -129,6 +131,18 @@ onMounted(async() => {
     }
 });
 
+
+const selectedDepartmentCode = ref(null);
+// 2. select 이벤트 발생하여 handleDepartmentSelect 메소드 실행
+// 자식 컴포넌트로부터 select 이벤트를 통해 department.department_code 정보가 emit됨
+// 부서 선택 이벤트 처리
+const handleDepartmentSelect = (departmentCode) => {
+  selectedDepartmentCode.value = departmentCode;
+  router.push({ name: 'hr-management-department-info', query: { departmentCode } });
+  console.log("handleDepartmentSelect 함수 실행됨");
+};
+
+
 </script>
 
 <style scoped>
@@ -154,7 +168,7 @@ onMounted(async() => {
   top: 9rem;
   padding-left: 3rem;
   padding-right: 2rem;
-  height: 85vh;
+  height: 80vh;
 
 }
 
@@ -167,7 +181,7 @@ onMounted(async() => {
   padding-bottom: 5rem;
   flex-grow: 1;
   align-items: center;
-  display: flex
+  display: flex;
 }
 
 .department-heirarchy{

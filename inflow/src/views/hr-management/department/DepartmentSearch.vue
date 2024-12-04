@@ -15,11 +15,19 @@
             </div>
         </div>
         <div class="content">
+            <div v-if="!searchKeyword.trim()" class="no-return-container">
+                    <span class="no-return-text" >검색어를 입력해주세요.</span>
+                </div>
+                <div v-else-if="departments.length === 0" class="no-return-container">
+                    <span class="no-return-text" >검색 결과가 없습니다.</span>
+                </div>
+
             <div class="search-list">
                 <div 
                     v-for="department in departments" 
                     :key="department.department_code" 
-                    class="search-list-one-item">
+                    class="search-list-one-item"
+                    @click="selectDepartment(department.department_code)">
                     <span>{{ department.department_path }}</span>
                 </div>
             </div>
@@ -49,17 +57,25 @@ const fetchDepartments = async () => {
         if (response.data.success) {
             departments.value = response.data.content; // 부서 데이터 업데이트
         } else {
-            console.error('API 호출 실패:', response.data.error);
             departments.value = [];
         }
     } catch (error) {
-        console.error('API 호출 중 오류 발생:', error);
         departments.value = [];
     }
 };
 
 // 검색어 변경 감지 및 자동 검색
 watch(searchKeyword, fetchDepartments);
+
+// select 이벤트 정의 
+// 부모로 이벤트 emit
+const emit = defineEmits(['select']);
+const selectDepartment = (departmentCode) => {
+    emit('select', departmentCode);
+    console.log("selectDepartment선택됨: 부모로 emit", departmentCode);
+};
+
+
 </script>
 
 <style scoped>
@@ -84,15 +100,15 @@ watch(searchKeyword, fetchDepartments);
     border: 1px solid #C7C7C7;
     border-radius: 2px;
     display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: space-between; /* 좌우 공간 분배 */
+    align-items: center; 
+    justify-content: space-between; 
 }
 
 .input-css {
     width: 100%;
-    height: 2.5rem; /* 입력 필드의 높이를 설정 */
-    padding: 0.5rem; /* 내부 여백 추가 */
-    font-size: 1.3rem; /* 글자 크기 */
+    height: 2.5rem; 
+    padding: 0.5rem; 
+    font-size: 1.3rem; 
 }
 
 .content{
@@ -105,14 +121,14 @@ watch(searchKeyword, fetchDepartments);
 .input {
     width: 90%;
     display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: center; /* 내용 중앙 정렬 */
+    align-items: center; 
+    justify-content: center; 
 }
 .button {
     width: 10%;
     display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: center; /* 내용 중앙 정렬 */
+    align-items: center; 
+    justify-content: center; 
 }
 
 
@@ -121,8 +137,8 @@ watch(searchKeyword, fetchDepartments);
     color: #C7C7C7 !important;
     font-size: 2rem !important;
     display: flex;
-    align-items: center; /* 버튼 아이콘 수직 정렬 */
-    justify-content: center; /* 버튼 아이콘 가로 정렬 */
+    align-items: center; 
+    justify-content: center; 
 }
 .search-list{
     width: 100%;
@@ -134,7 +150,6 @@ watch(searchKeyword, fetchDepartments);
 }
 .search-list-one-item{
     background-color: white;
-    /* border: 1px solid black; */
     height: 10%;
     border-radius: 2px;
     font-size: 1.8rem;
@@ -150,5 +165,20 @@ watch(searchKeyword, fetchDepartments);
 .search-list-one-item:hover{
     background-color:#e3f2fd;
     padding: 10px;
+}
+
+.no-return-container {
+    display: flex;
+    justify-content: center; /* 수평 정렬 */
+    align-items: center; /* 수직 정렬 */
+    height: 2rem; /* 문구를 위한 고정 높이 */
+    width: 100%; /* 부모 컨테이너에 맞춤 */
+    margin-top: 37rem;
+}
+
+
+.no-return-text{
+    font-size: 1.5rem;
+
 }
 </style>

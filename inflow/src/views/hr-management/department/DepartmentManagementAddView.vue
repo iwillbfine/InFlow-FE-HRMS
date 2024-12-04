@@ -1,3 +1,4 @@
+<!-- 부서 추가 컴포넌트 -->
 <template>
     <div class="detail-content">
         sdfas
