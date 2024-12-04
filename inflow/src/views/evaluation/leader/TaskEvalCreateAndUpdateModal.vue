@@ -1,6 +1,6 @@
 <!-- TaskEvalCreateAndUpdateModal.vue -->
 <template>
-    <CrudModal :h="'50rem'" :w="'80rem'" @close="handleClose">
+    <CrudModal :h="'40rem'" :w="'47rem'" @close="handleClose">
       <h2 class="modal-title">평가하기</h2>
       
       <!-- 등록된 과제 정보 -->
@@ -13,6 +13,8 @@
           <TableCell th fs="1.6rem">과제 내용</TableCell>
           <TableCell fs="1.6rem">{{ taskData.task_content }}</TableCell>
         </TableRow>
+
+        
         <TableRow>
           <TableCell th fs="1.6rem">점수</TableCell>
           <TableCell fs="1.6rem">
@@ -47,7 +49,7 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import CrudModal from '@/components/modals/CrudModal.vue';
   import TableItem from '@/components/semantic/TableItem.vue';
   import TableRow from '@/components/semantic/TableRow.vue';
@@ -119,13 +121,13 @@
       const response = await createTaskEval(requestDTO, props.year, props.half, props.employeeId);
       
       if (response.success) {
-        alert('평가가 성공적으로 저장되었습니다.');
+        alert('평가가 등록되었습니다.');
         emit('submit', response.content);
         emit('close');
       }
     } catch (error) {
-      console.error('평가 저장 중 에러:', error);
-      alert('평가 저장 중 오류가 발생했습니다.');
+      console.error('평가 등록 중 에러:', error);
+      alert('평가 등록 중 오류가 발생했습니다.');
     } finally {
       isLoading.value = false;
     }
@@ -134,6 +136,7 @@
   const handleClose = () => {
     emit('close');
   };
+
   </script>
   
   <style scoped>
@@ -146,12 +149,12 @@
   }
   
   .task-info {
-    padding: 2rem;
+    padding: 0rem;
     margin-bottom: 2rem;
   }
   
   .score-input {
-    width: 100%;
+    width: 30%;
     height: 3rem;
     border: 1px solid #ccc;
     border-radius: 0.4rem;

@@ -48,14 +48,24 @@
           <TableCell th fs="1.6rem">유형</TableCell>
           <TableCell th fs="1.6rem">과제명</TableCell>
           <TableCell th fs="1.6rem" topr>과제 내용</TableCell>
-          <TableCell th fs="1.6rem">가중치</TableCell>
+          <TableCell th fs="1.6rem">비고</TableCell>
         </TableRow>
-        <TableRow>
-          <TableCell class="mid" fs="1.6rem">1</TableCell>
-          <TableCell class="mid" fs="1.6rem">개인 과제</TableCell>
-          <TableCell class="mid" fs="1.6rem">과제 이름입니다.</TableCell>
-          <TableCell class="mid" fs="1.6rem">과제 내용입니다.</TableCell>
-          <TableCell class="mid" fs="1.6rem">0.5</TableCell>
+        <template v-if="!isLoading && taskItems.length > 0">
+          <TableRow v-for="(task, index) in taskItems" :key="task.task_item_id">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">
+              ㅎㅇㅎㅇ 수정중
+            </TableCell>
+          </TableRow>
+        </template>
+        <TableRow v-else-if="isLoading">
+          <TableCell gc="span 5" class="mid" fs="1.6rem">데이터를 불러오는 중입니다...</TableCell>
+        </TableRow>
+        <TableRow v-else>
+          <TableCell  gc="span 5" class="mid" fs="1.6rem">과제 데이터가 없습니다.</TableCell>
         </TableRow>
       </TableItem>
     </CommonArticle>
@@ -76,7 +86,7 @@ import FigureItem from '@/components/semantic/FigureItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback } from '@/api/evaluation';
+import { findDepartmentTaskItems } from '@/api/evaluation';
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -84,23 +94,76 @@ const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const isLoading = ref(false);
 const feedbackData = ref(null);
+const taskItems = ref([]);
+
+// 과제 유형 매핑 - 수정 필요 
+const taskTypes = {
+  1: '개인 과제',
+  2: '팀 과제',
+  3: '부서 과제'
+};
+
+const getTaskTypeName = (typeId) => {
+  return taskTypes[typeId] || '기타';
+};
 
 // 버튼 텍스트 계산
 const buttonText = computed(() => {
   return feedbackData.value?.feedback_id ? '수정' : '등록';
 });
 
+// 과제 목록 조회
+const fetchTaskItems = async () => {
+  if (!selectedYear.value || !selectedHalf.value) return;
+  
+  const employeeId = localStorage.getItem('employeeId');
+  if (!employeeId) {
+    console.error('employeeId가 없습니다.');
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+    const response = await findDepartmentTaskItems(
+      selectedYear.value,
+      selectedHalf.value,
+      Number(employeeId)  // 수정된 부분: employeeId를 직접 사용
+    );
+    
+    if (response.success) {
+      taskItems.value = Array.isArray(response.content) ? response.content : [];
+    } else {
+      taskItems.value = [];
+      console.error('과제 데이터를 불러오는데 실패했습니다.');
+    }
+  } catch (error) {
+    console.error('과제 목록 조회 실패:', error);
+    taskItems.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const handleSelected = (employee) => {
   selectedEmployee.value = employee;
-}
+};
 
 const handleYearSelected = (year) => {
   selectedYear.value = year;
+  if (selectedHalf.value) fetchTaskItems();
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
+  if (selectedYear.value) fetchTaskItems();
 };
+
+// 년도나 반기가 변경될 때 과제 목록 조회
+watch([selectedYear, selectedHalf], () => {
+  if (selectedYear.value && selectedHalf.value) {
+    fetchTaskItems();
+  }
+});
 </script>
 
 <style scoped>
@@ -115,15 +178,15 @@ const handleHalfSelected = (half) => {
 }
 
 .h-5 {
-height: 5rem !important;
+  height: 5rem !important;
 }
 
 .h-12 {
-height: 12rem !important;
+  height: 12rem !important;
 }
 
 .pl-2 {
-padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 .mid {
@@ -159,64 +222,65 @@ padding-left: 2rem;
 }
 
 .feedback-input {
-width: 100%;
-height: 100%;
-padding: 1rem;
-border: 1px solid #ccc;
-border-radius: 0.4rem;
-resize: none;
-font-size: 1.4rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  resize: none;
+  font-size: 1.4rem;
 }
 
 .submit-btn {
-margin-top: 3.2rem;
-align-self: center;
+  margin-top: 3.2rem;
+  align-self: center;
 }
 
 .assign-section {
-margin-left: 36rem;
-padding: 1rem 2rem;
+  margin-left: 36rem;
+  padding: 1rem 2rem;
 }
 
 .year-half-section {
-position: absolute;
-top: 0;
-right: 0;
-margin-top: -1rem;
-gap: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -1rem;
+  gap: 1rem;
 }
 
 .created-feedback {
-margin-top: 2rem;
-box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.1);
-height: 15rem !important;
+  margin-top: 2rem;
+  box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.1);
+  height: 15rem !important;
 }
 
 .feedback-content {
-font-size: 1.4rem;
-line-height: 1.6;
-margin-bottom: 1rem;
-word-wrap: break-word;  /* 긴 단어가 넘어갈 때 줄바꿈 */
-word-break: break-word;  /* 긴 단어가 컨테이너를 넘지 않도록 강제로 줄바꿈 */
-overflow-wrap: break-word;  /* 텍스트가 컨테이너를 넘지 않도록 줄바꿈 */
-white-space: pre-wrap;  /* 줄바꿈을 유지하면서 긴 텍스트가 자동으로 넘어가도록 함 */
-max-height: 100%;  /* 최대 높이를 부모 요소에 맞춤 */
-overflow-y: auto;
-padding: 1.5rem;  /* 내부 여백 추가*/
+  font-size: 1.4rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1.5rem;
 }
+
 .center-message {
-text-align: center;
-color: #888;
-font-size: 1.6rem;
+  text-align: center;
+  color: #888;
+  font-size: 1.6rem;
 }
 
 .created-feedback {
-margin-top: 2rem;
-box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.1);
-height: 15rem;
-display: flex;  /* Flexbox 사용 */
-flex-direction: column;
-justify-content: center;  /* 세로 가운데 정렬 */
-align-items: center;  /* 가로 가운데 정렬 */
+  margin-top: 2rem;
+  box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.1);
+  height: 15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
