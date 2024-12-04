@@ -2,7 +2,7 @@
 
 <template>
 
-    <div>
+    <div class="button-container">
         <button 
             class="button"
             @click="toggleEditMode"
@@ -228,14 +228,22 @@ span{
     font-size: 1.5rem; /* 폰트 크기 */
     color: #555; /* 텍스트 색상 */
 }
+
+.button-container{
+    width: 100%; 
+    display: flex; 
+    justify-content: flex-end; 
+    margin-bottom: 1rem;
+}
 .button{
     background-color: #003566;
-    padding: 0.7rem;
+    padding: 0.7rem 2rem;
     color: white;
     border-radius: 3px;
     font-size: 1.3rem;
     align-items: flex-end;
 }
+
 
 /* 입력 필드 스타일 */
 .editable-input {
