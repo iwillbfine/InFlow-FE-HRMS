@@ -1,40 +1,37 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'가족'" class="ca" w="90%"></CommonArticle>
-    <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">수정</ButtonItem>
-  </FlexItem>
-
-
-  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
-    <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.3fr 2fr 1fr 1fr" br="0.5rem">
-        <TableRow>
-          <TableCell th fs="1.6rem">no</TableCell>
-          <TableCell th fs="1.6rem">성명</TableCell>
-          <TableCell th fs="1.6rem">관계</TableCell>
-          <TableCell th fs="1.6rem">생년월일</TableCell>
-        </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in familyList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['family_relationship_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['birth_date'] }}</TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-    <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      가족 정보가 존재하지 않습니다.
+  <CommonArticle :label="'가족'" class="ca" w="96%" fs="2rem">
+    <ButtonItem class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
+    <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
+      <div class="table-wrapper">
+        <TableItem class="commute-table" gtc="0.3fr 2fr 1fr 1fr" br="0.5rem">
+          <TableRow>
+            <TableCell th fs="1.6rem">No</TableCell>
+            <TableCell th fs="1.6rem">성명</TableCell>
+            <TableCell th fs="1.6rem">관계</TableCell>
+            <TableCell th fs="1.6rem">생년월일</TableCell>
+          </TableRow>
+          <TableRow v-if="!isEmpty" v-for="(item, index) in familyList" :key="index">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['family_relationship_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['birth_date'] }}</TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+      <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        가족 정보가 존재하지 않습니다.
+      </FlexItem>
     </FlexItem>
-  </FlexItem>
+  </CommonArticle>
 </template>
-  
+
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
@@ -70,7 +67,7 @@ const fetchDate = async (empId) => {
 
   if (response) {
     const sortedResponse = sortByDate(response.map(row => ({
-        ...row, 
+        ...row,
         birth_date: row['birth_date'].split('T')[0],
       })));
     familyList.value = sortedResponse;
@@ -87,21 +84,21 @@ const handleOnclick = () => {
 };
 
 </script>
-  
-<style scoped>
-.content-header {
-  width: 100%;
-  position: relative;
-  justify-content: space-between;
-  align-items: end;
-}
 
-.content-header ::v-deep(article > div.article-label) {
-  font-size: 2rem !important;
+<style scoped>
+.common-article {
+  position: relative;
+  margin-top: 2rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.update-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .content-body {
@@ -119,4 +116,3 @@ const handleOnclick = () => {
   align-items: center;
 }
 </style>
-  

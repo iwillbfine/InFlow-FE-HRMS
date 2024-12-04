@@ -19,7 +19,7 @@
     <div class="table-wrapper">
       <TableItem class="commute-table" gtc="repeat(9, 1fr)" br="0.5rem">
         <TableRow>
-          <TableCell th fs="1.6rem">no</TableCell>
+          <TableCell th fs="1.6rem">No</TableCell>
           <TableCell th fs="1.6rem">일자</TableCell>
           <TableCell th fs="1.6rem">유형</TableCell>
           <TableCell th fs="1.6rem">사원</TableCell>
