@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+    <CommonArticle label="가구원" class="ca" w="90%"></CommonArticle>
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -41,12 +41,17 @@
             <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
             <label :for="'check' + rowIndex"></label>
           </div>
-          <div v-for="(value, header) in row" :key="header">
+          <div v-for="(value, header) in row" :key="header" class="cell-container">
             <input 
               type="text" 
               v-model="rowsData[rowIndex][header]" 
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+              class="cell-input"
+              @focus="showModal(rowIndex, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -60,19 +65,11 @@
   </div>
 </template>
 
-
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getEmpId, getRelationships } from '@/api/emp_attach';
-
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
+import { getDoc, saveData, getAllEmpId, getRelationships } from '@/api/emp_attach';
 
 const headerNames = ref(["사번", "가구원관계", "성명", "생년월일"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
@@ -87,6 +84,7 @@ const ids = ref({});
 const relationships = ref([]);
 const rChk = ref([]);
 const loading = ref(true);
+const modalTxt = ref({});
 
 const validators = {
   사번: (value) => ids.value[value] !== undefined,
@@ -107,8 +105,9 @@ const clickInput = () => {
 
 const getEmpIds = async() => {
   loading.value = true;
-  const tmp1 = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  const tmp1 = await getAllEmpId();
   const tmp2 = await getRelationships();
+  console.log(tmp2);
   tmp1.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
     ids.value[row["employee_id"]] = row["employee_number"];
@@ -120,6 +119,24 @@ const getEmpIds = async() => {
   rChk.value = tmp2.map(row => row["family_relationship_name"]);
   loading.value = false;
 }
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
 
 const handleFileUpload = (event) => {
   const file = event.target.files?.[0];
@@ -231,6 +248,16 @@ const postData = async () => {
   window.alert("사원 가구원 정보 등록 완료");
   window.location.reload();
 };
+
+onMounted(async() => {
+  await getEmpIds();
+
+  modalTxt.value = {
+    사번: '유효한 사번을 입력하세요.',
+    가구원관계: `선택:\n- ${(rChk.value || []).join('\n- ')}`,
+    생년월일: '입력 예:\n- YYYY-MM-DD',
+  };
+});
 </script>
 
 
@@ -365,10 +392,12 @@ button p {
 .rows > div {
   width: 100%;
 }
+
 .rows > div > input{
   width: 100%;
   height: 100%;
-  text-align: center;
+  text-align: left;
+  padding-left: 0.5rem;
   flex-shrink: 0;
   border-radius: 0.977px;
   border: 0.586px solid #DBDBDB;
@@ -411,6 +440,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.cell-container {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 10;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .regist {

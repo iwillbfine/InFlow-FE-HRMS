@@ -3,7 +3,7 @@ import apiClient from '@/api/axios';
 export const getDoc = async (fileType) => {
   try {
     const response = await apiClient.get(`/forms/download?file_type=${fileType}`);
-    return response.data.content;
+    return response.data;
   } catch (error) {
     console.error('양식 다운로드 에러:', error.response?.data || error.message);
     throw error;
@@ -61,6 +61,16 @@ export const updateData = async (data, name) => {
 export const getValidData = async () => {
   try {
     const response = await apiClient.get(`/validations/`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getAllEmpId = async () => {
+  try {
+    const response = await apiClient.get(`/employees/`);
     return response.data.content;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);

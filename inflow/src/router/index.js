@@ -21,7 +21,6 @@ import DepartmentManagementView from '@/views/hr-management/DepartmentManagement
 import AppointmentManagementView from '@/views/hr-management/AppointmentManagementView.vue';
 import VacationManagementView from '@/views/hr-management/VacationManagementView.vue';
 import EmployeeSearchView from '@/views/emp-search/EmployeeSearchView.vue';
-import StatisticsView from '@/views/statistics/StatisticsView.vue';
 import LoginView from '@/views/login/LoginView.vue';
 import CommuteView from '@/views/hr-basic/attendance/CommuteView.vue';
 import RemoteView from '@/views/hr-basic/attendance/RemoteView.vue';
@@ -65,9 +64,9 @@ import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoVi
 import QualificationInfoUpdateView from '@/views/hr-basic/employee/QualificationInfoUpdateView.vue';
 import LanguageTestInfoUpdateView from '@/views/hr-basic/employee/LanguageTestInfoUpdateView.vue';
 import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberInfoUpdateView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
-import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
-import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateVIew.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
+import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateView.vue';
+import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateView.vue';
 
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
