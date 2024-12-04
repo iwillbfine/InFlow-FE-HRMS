@@ -41,6 +41,12 @@
           사원을 선택해주세요.
         </FlexItem>
       </FlexItem>
+      <ChangeYearComponent class="change-year"
+        :cur-year="curYear"
+        description="급여 내역"
+        @go-prev-year="goPrevYear"
+        @go-next-year="goNextYear"
+      ></ChangeYearComponent>
       <TableItem class="salary-list" gtc="repeat(6, 1fr)">
         <TableRow>
           <TableCell th fs="1.5rem">지급 연월</TableCell>
@@ -59,10 +65,6 @@
           <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.actual_salary) }}</TableCell>
         </TableRow>
       </TableItem>
-      <PaginationComponent class="pagination"
-        :data="pageInfo"
-        @changePage="handlePageChange"
-      ></PaginationComponent>
     </CommonArticle>
   </SectionItem>
 </template>
@@ -75,42 +77,67 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
-import {onMounted, ref} from "vue";
-import PaginationComponent from "@/components/common/PaginationComponent.vue";
-import {getAllPayments} from "@/api/payroll.js";
+import {ref} from "vue";
+import {getPaymentsByYear} from "@/api/payroll.js";
 import {useRouter} from "vue-router";
+import ChangeYearComponent from "@/components/common/ChangeYearComponent.vue";
 
 const router = useRouter();
 
 const payments = ref([]);
-const pageInfo = ref({});
 
-const curPage = ref(1);
+const curYear = ref('');
 
 const selectedEmployee = ref(null);
 
-const fetchData = async(employeeId, page) => {
-  employeeId = selectedEmployee.value.department_member_id;
-  const response = await getAllPayments(employeeId, page);
-  payments.value = response.content.elements || [];
-  pageInfo.value = response.content;
+const fetchData = async (employeeId, year) => {
+  try {
+    const response = await getPaymentsByYear(employeeId, year);
+    payments.value = response.content || [];
+  } catch (error) {
+    console.error('급여 데이터를 가져오는 중 오류 발생:', error);
+    payments.value = [];
+  }
+};
+
+const getCurYear = () => {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  return year;
 }
 
-const handlePageChange = (page) => {
-  curPage.value = page;
-  fetchData(selectedEmployee.value.department_member_id, curPage.value);
-  router.push({
-    name: "hr-management-salary-list",
-    params: {employeeId: selectedEmployee.value.department_member_id},
-    query: { page: curPage.value }
-  });
-};
+const parseDate = (dateStr) => {
+  const date = new Date(dateStr);
+
+  const year = date.getFullYear();
+
+  const formattedDate = `${year}년`;
+  return formattedDate;
+}
 
 const handleSelected = (item) => {
   selectedEmployee.value = item;
-  console.log("selectedEmployee.value", selectedEmployee.value);
-  fetchData(selectedEmployee.value.department_menber_id, curPage.value);
+  console.log("selectedEmployee.value: ", selectedEmployee.value);
+  if (selectedEmployee.value && curYear.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
 };
+
+const goPrevYear = (prevYear) => {
+  router.push({
+    path: '/hr-management/salary/list',
+    query: { year: prevYear},
+  });
+};
+
+const goNextYear = (nextYear) => {
+  router.push({
+    path: '/hr-management/salary/list',
+    query: { year: nextYear },
+  });
+};
+
 
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
 const formatDate = (value) => {
@@ -151,6 +178,11 @@ const formatDate = (value) => {
   justify-content: center;
   align-items: center;
 }
+
+.change-year {
+  margin-top: 2rem;
+}
+
 .salary-list {
   margin-top: 2rem;
 }
