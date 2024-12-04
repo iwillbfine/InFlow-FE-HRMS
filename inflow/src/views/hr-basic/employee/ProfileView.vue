@@ -7,7 +7,7 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정요청' : '수정' }}</button>
+    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정 요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
@@ -606,7 +606,7 @@ onMounted(() => {
 /* 버튼 스타일 */
 .btn {
   height: 3.6rem;
-  width: 11rem;
+  width: 10rem;
   background-color: #003566;
   color: #fff;
   border: none;
