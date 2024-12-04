@@ -78,6 +78,12 @@ import DeptTaskUploadView from '@/views/evaluation/leader/DeptTaskUploadView.vue
 import DeptTaskAssignView from '@/views/evaluation/leader/DeptTaskAssignView.vue';
 import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
 
+
+// 인사관리 - 부서
+import DepartmentManagementInformationView from '@/views/hr-management/department/DepartmentManagementInformationView.vue';
+import DepartmentManagementAddView from '@/views/hr-management/department/DepartmentManagementAddView.vue';
+
+
 const routes = [
   {
     path: '/changuk/profile',
@@ -373,7 +379,30 @@ const routes = [
   {
     path: '/hr-management/department',
     name: 'hr-management-department',
+    redirect: '/hr-management/department/info',
     component: DepartmentManagementView,
+    children: [
+      {
+        path: '',
+        name: 'hr-management-department-default',
+        component: DepartmentManagementInformationView,
+        redirect: '/hr-management/department/info',
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+
+      },
+      {
+        path: 'info',
+        name: 'hr-management-department-info',
+        component: DepartmentManagementInformationView,
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        // 이 라우터에만 부서코드 정보 전달
+      },
+      {
+        path: 'add',
+        name: 'hr-management-department-add',
+        component: DepartmentManagementAddView,
+      },
+    ],
   },
   {
     path: '/hr-management/appointment',

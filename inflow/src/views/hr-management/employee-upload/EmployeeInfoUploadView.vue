@@ -1,62 +1,59 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
-
-    <div class="tmp">
-      <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
-    </div>
-    <div class="exlbtns1">
-      <button type="button" @click="fileDownload">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p style="font-size: 10px;">양식 다운로드</p>
-      </button>
-      <button type="button" @click="clickInput">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 업로드</p>
-      </button>
-    </div>
-
-    <div class="colboard">
-      <div class="exlbtns2">
-        <button type="button" @click="deleteSelectedRows">
-          <img src="../../../assets/icons/minus_icon.png" />
-          <p>선택 삭제</p>
+    <CommonArticle :label="title" class="ca" w="96%">
+      <div class="tmp">
+        <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
+      </div>
+      <div class="exlbtns1">
+        <button type="button" @click="fileDownload">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 다운로드</p>
         </button>
-        <button type="button" @click="addRow">
-          <img src="../../../assets/icons/plus_icon.png" />
-          <p>행 추가</p>
+        <button type="button" @click="clickInput">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 업로드</p>
         </button>
       </div>
-
-      <div class="inboard">
-        <div class="colname headers">
-          <div class="chbox">
-            <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
-            <label :for="chkHeader"></label>
-          </div>
-          <div v-for="header in headerNames" :key="header">{{ header }}</div>
+      <div class="colboard">
+        <div class="exlbtns2">
+          <button type="button" @click="deleteSelectedRows">
+            <img src="../../../assets/icons/minus_icon.png" />
+            <p>선택 삭제</p>
+          </button>
+          <button type="button" @click="addRow">
+            <img src="../../../assets/icons/plus_icon.png" />
+            <p>행 추가</p>
+          </button>
         </div>
-        <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
-          <div class="chbox">
-            <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
-            <label :for="'check' + rowIndex"></label>
+        <div class="inboard">
+          <div class="colname headers">
+            <div class="chbox">
+              <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
+              <label :for="chkHeader"></label>
+            </div>
+            <div v-for="header in headerNames" :key="header">{{ header }}</div>
           </div>
-          <div v-for="(value, header) in row" :key="header">
-            <input 
-              type="text" 
-              v-model="rowsData[rowIndex][header]" 
-              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+          <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
+            <div class="chbox">
+              <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
+              <label :for="'check' + rowIndex"></label>
+            </div>
+            <div v-for="(value, header) in row" :key="header">
+              <input
+                type="text"
+                v-model="rowsData[rowIndex][header]"
+                :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
+                class="cell-input"/>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="regist">
-      <button type="button" class="rBtn" @click="postData">
-        <p>등록</p>
-      </button>
-    </div>
+      <div class="regist">
+        <button type="button" class="rBtn" @click="postData">
+          <p>등록</p>
+        </button>
+      </div>
+    </CommonArticle>
   </div>
 </template>
 
@@ -238,13 +235,22 @@ const postData = async () => {
 .emp-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100%;
   gap: 0.5rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.common-article {
+  position: relative;
+}
+
+.exlbtns1 {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 
 .exlbtns1, .exlbtns2 {
@@ -252,48 +258,27 @@ const postData = async () => {
   flex-direction: row;
   justify-content: flex-end;
   gap: 2rem;
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
 }
 
 .exlbtns1 button, .exlbtns2 button {
-  display: flex;
-  flex-direction: row;
-  justify-content:space-around ;
-  width: 140px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
+  width: 14.4rem;
+  height: 3.6rem;
   gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
 }
 
 button {
-  width: 100px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  height: 3.6rem;
+  width: 7.2rem;
+  border-radius: 0.6rem;
+  background-color: #003566;
+  border: none;
+  color: #FFF;
+  font-size: 1.6rem;
   cursor: pointer;
-  padding: 1px;
 }
 
 button p {
@@ -312,42 +297,33 @@ button p {
 }
 
 
-.colboard, .inboard{
+.colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
-  border-radius: 5px;
+  border-radius: 0.6rem;
   background: #FFF;
-  border: solid 2px #2e2f3015;
+  font-size: 1.4rem;
+  border: 2px solid #2e2f3015;
+  margin-top: 0.5rem;
 }
 
 .inboard {
   display: flex;
   flex-direction: column;
+  min-height: 27rem;
   width: 100%;
-  overflow-x: scroll;
-  align-items: stretch;
-  padding: 0 0 2rem 0;
-}
-
-.inboard div {
-  height: 100%;
-}
-
-.inboard > :last-child {
-  border-radius: 5px;
-  border-bottom: solid 2px #2e2f3015;
+  overflow-x: auto;
 }
 
 .colname {
   display: grid;
   grid-template-columns: 50px 150px 50px 100px 130px 250px 160px 100px 120px 300px 150px 100px 100px 100px 100px 100px;
-  height: 50px;
+  height: 4.5rem;
   justify-content: stretch;
   justify-items: center;
   align-items: center;
-  border-collapse: collapse;
 }
 
 .colname > div {
@@ -355,18 +331,20 @@ button p {
   text-align: center;
   width: 100%;
   height: 100%;
-  border-right: 0.5px solid #dadada;
+  border: 0.5px solid #dadada;
 }
 
 .headers > div {
   font-weight: bold;
   width: 100%;
   align-content: center;
+  background-color: #f8f8f8;
 }
 
 .rows > div {
   width: 100%;
 }
+
 .rows > div > input{
   width: 100%;
   height: 100%;
@@ -377,11 +355,11 @@ button p {
   background: #F8F8F8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
+
 .chbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .chbox > label {
@@ -401,6 +379,7 @@ input[type="checkbox"] + label {
   width: 20px;
   height: 20px;
   border: 1px solid #DBDBDB;
+  background-color: #fff;
   position: relative;
 }
 
@@ -418,7 +397,7 @@ input[type="checkbox"]:checked + label::after {
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 2rem;
 }
 
 .invalid-row {

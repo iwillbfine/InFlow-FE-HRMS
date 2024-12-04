@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+    <CommonArticle :label="title" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -42,9 +42,9 @@
             <label :for="'check' + rowIndex"></label>
           </div>
           <div v-for="(value, header) in row" :key="header">
-            <input 
-              type="text" 
-              v-model="rowsData[rowIndex][header]" 
+            <input
+              type="text"
+              v-model="rowsData[rowIndex][header]"
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
               class="cell-input"/>
           </div>
@@ -57,6 +57,7 @@
         <p>등록</p>
       </button>
     </div>
+  </CommonArticle>
   </div>
 </template>
 
@@ -190,7 +191,7 @@ const deleteSelectedRows = () => {
 const mapping = async () => {
   await getEmpIds();
   const result = ref([]);
-  rowsData.value.map((row) => { 
+  rowsData.value.map((row) => {
     result.value.push({
       name: row["성명"],
       birth_date: row["생년월일"],
@@ -233,18 +234,26 @@ const postData = async () => {
 };
 </script>
 
-
 <style scoped>
 .emp-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100%;
   gap: 0.5rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.common-article {
+  position: relative;
+}
+
+.exlbtns1 {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 
 .exlbtns1, .exlbtns2 {
@@ -252,48 +261,27 @@ const postData = async () => {
   flex-direction: row;
   justify-content: flex-end;
   gap: 2rem;
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
 }
 
 .exlbtns1 button, .exlbtns2 button {
-  display: flex;
-  flex-direction: row;
-  justify-content:space-around ;
-  width: 140px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
+  width: 14.4rem;
+  height: 3.6rem;
   gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
 }
 
 button {
-  width: 100px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  height: 3.6rem;
+  width: 7.2rem;
+  border-radius: 0.6rem;
+  background-color: #003566;
+  border: none;
+  color: #FFF;
+  font-size: 1.6rem;
   cursor: pointer;
-  padding: 1px;
 }
 
 button p {
@@ -311,41 +299,33 @@ button p {
   padding: 1px;
 }
 
-.colboard, .inboard{
+.colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
-  border-radius: 5px;
+  border-radius: 0.6rem;
   background: #FFF;
-  border: solid 2px #2e2f3015;
+  font-size: 1.4rem;
+  border: 2px solid #2e2f3015;
+  margin-top: 0.5rem;
 }
 
 .inboard {
   display: flex;
   flex-direction: column;
+  min-height: 27rem;
   width: 100%;
-  align-items: stretch;
-  padding: 0 0 2rem 0;
-}
-
-.inboard div {
-  height: 100%;
-}
-
-.inboard > :last-child {
-  border-radius: 5px;
-  border-bottom: solid 2px #2e2f3015;
+  overflow-x: auto;
 }
 
 .colname {
   display: grid;
   grid-template-columns: 50px 150px 2.5fr 2.5fr 2.5fr;
-  height: 50px;
+  height: 4.5rem;
   justify-content: stretch;
   justify-items: center;
   align-items: center;
-  border-collapse: collapse;
 }
 
 .colname > div {
@@ -353,18 +333,20 @@ button p {
   text-align: center;
   width: 100%;
   height: 100%;
-  border-right: 0.5px solid #dadada;
+  border: 0.5px solid #dadada;
 }
 
 .headers > div {
   font-weight: bold;
   width: 100%;
   align-content: center;
+  background-color: #f8f8f8;
 }
 
 .rows > div {
   width: 100%;
 }
+
 .rows > div > input{
   width: 100%;
   height: 100%;
@@ -375,11 +357,11 @@ button p {
   background: #F8F8F8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
+
 .chbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .chbox > label {
@@ -399,6 +381,7 @@ input[type="checkbox"] + label {
   width: 20px;
   height: 20px;
   border: 1px solid #DBDBDB;
+  background-color: #fff;
   position: relative;
 }
 
@@ -416,7 +399,7 @@ input[type="checkbox"]:checked + label::after {
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 2rem;
 }
 
 .invalid-row {
