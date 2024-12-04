@@ -77,76 +77,71 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
-import {ref} from "vue";
-import {getPaymentsByYear} from "@/api/payroll.js";
-import {useRouter} from "vue-router";
+import { ref, onMounted } from "vue";
+import { getPaymentsByYear } from "@/api/payroll.js";
+import { useRouter } from "vue-router";
 import ChangeYearComponent from "@/components/common/ChangeYearComponent.vue";
 
 const router = useRouter();
 
 const payments = ref([]);
-
-const curYear = ref('');
-
+const curYear = ref(''); // 초기 값은 빈 문자열
 const selectedEmployee = ref(null);
 
+// 현재 연도 가져오기
+const getCurYear = () => new Date().getFullYear();
+
+// 데이터 페치 함수
 const fetchData = async (employeeId, year) => {
   try {
     const response = await getPaymentsByYear(employeeId, year);
     payments.value = response.content || [];
   } catch (error) {
-    console.error('급여 데이터를 가져오는 중 오류 발생:', error);
+    console.error("급여 데이터를 가져오는 중 오류 발생:", error);
     payments.value = [];
   }
 };
 
-const getCurYear = () => {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  return year;
-}
-
-const parseDate = (dateStr) => {
-  const date = new Date(dateStr);
-
-  const year = date.getFullYear();
-
-  const formattedDate = `${year}년`;
-  return formattedDate;
-}
-
+// 사원 선택 핸들러
 const handleSelected = (item) => {
   selectedEmployee.value = item;
   console.log("selectedEmployee.value: ", selectedEmployee.value);
-  if (selectedEmployee.value && curYear.value) {
+  if (selectedEmployee.value) {
     fetchData(selectedEmployee.value.department_member_id, curYear.value);
   }
 };
 
-const goPrevYear = (prevYear) => {
-  router.push({
-    path: '/hr-management/salary/list',
-    query: { year: prevYear},
-  });
+// 이전 연도 핸들러
+const goPrevYear = () => {
+  curYear.value -= 1;
+  if (selectedEmployee.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
 };
 
-const goNextYear = (nextYear) => {
-  router.push({
-    path: '/hr-management/salary/list',
-    query: { year: nextYear },
-  });
+// 다음 연도 핸들러
+const goNextYear = () => {
+  curYear.value += 1;
+  if (selectedEmployee.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
 };
 
-
+// 통화 형식 변환
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
+
+// 날짜 형식 변환
 const formatDate = (value) => {
-  if (!value) return '지급일: -';
-  const [date] = value.split('T');
-  const [year, month, day] = date.split('-');
+  if (!value) return "지급일: -";
+  const [date] = value.split("T");
+  const [year, month, day] = date.split("-");
   return `${year}년 ${month}월 ${day}일`;
 };
 
+// 컴포넌트 마운트 시 현재 연도 설정
+onMounted(() => {
+  curYear.value = getCurYear(); // 현재 연도 설정
+});
 </script>
 
 <style scoped>
@@ -185,6 +180,7 @@ const formatDate = (value) => {
 
 .salary-list {
   margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .pagination {

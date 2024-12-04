@@ -25,30 +25,15 @@ const props = defineProps({
   },
 });
 
-// 연도 파싱
-const parseYear = (dateStr) => {
-  const date = new Date(dateStr);
-
-  const year = date.getFullYear();
-  const formattedYear = `${year}년`;
-  return formattedYear;
-}
+const parseYear = (year) => `${year}년`; // 단순 문자열 반환
 
 const goPrevYear = () => {
-  const curDate = new Date(props.curYear + "-01");
-  curDate.setFullYear(curDate.getFullYear() - 1);
-
-  const prevYear = curDate.getFullYear();
-  emit('goPrevYear', prevYear);
-}
+  emit('go-prev-year', props.curYear - 1);
+};
 
 const goNextYear = () => {
-  const curDate = new Date(props.curYear + "-01");
-  curDate.setFullYear(curDate.getFullYear() + 1);
-
-  const nextYear = curDate.getFullYear();
-  emit('goNextYear', nextYear);
-}
+  emit('go-next-year', props.curYear + 1);
+};
 
 </script>
 
