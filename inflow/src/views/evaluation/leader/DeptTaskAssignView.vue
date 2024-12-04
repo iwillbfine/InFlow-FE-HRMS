@@ -48,7 +48,7 @@
           <TableCell th fs="1.6rem">유형</TableCell>
           <TableCell th fs="1.6rem">과제명</TableCell>
           <TableCell th fs="1.6rem" topr>과제 내용</TableCell>
-          <TableCell th fs="1.6rem">비고</TableCell>
+          <TableCell th fs="1.6rem">선택</TableCell>
         </TableRow>
         <template v-if="!isLoading && taskItems.length > 0">
           <TableRow v-for="(task, index) in taskItems" :key="task.task_item_id">
@@ -56,8 +56,12 @@
             <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">
-              ㅎㅇㅎㅇ 수정중
+            <TableCell class="mid checkbox-cell" fs="1.6rem">
+              <div 
+                class="checkbox"
+                :class="{ 'checked': selectedTasks.includes(task.task_item_id) }"
+                @click="toggleTaskSelection(task)"
+              ></div>
             </TableCell>
           </TableRow>
         </template>
@@ -65,11 +69,25 @@
           <TableCell gc="span 5" class="mid" fs="1.6rem">데이터를 불러오는 중입니다...</TableCell>
         </TableRow>
         <TableRow v-else>
-          <TableCell  gc="span 5" class="mid" fs="1.6rem">과제 데이터가 없습니다.</TableCell>
+          <TableCell gc="span 5" class="mid" fs="1.6rem">과제 데이터가 없습니다.</TableCell>
         </TableRow>
       </TableItem>
     </CommonArticle>
-    <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
+    <SearchEmployeeComponent @employee-selected="handleSelected" />
+
+    <ButtonItem
+      class="submit-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleAssignTasks"
+      :disabled="selectedTasks.length === 0 || !selectedEmployee"
+    >
+      과제 할당
+    </ButtonItem>
   </SectionItem>
 </template>
 
@@ -86,17 +104,17 @@ import FigureItem from '@/components/semantic/FigureItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { findDepartmentTaskItems } from '@/api/evaluation';
+import { findDepartmentTaskItems, createTaskItem } from '@/api/evaluation';
 
 // 상태 관리
 const selectedEmployee = ref(null);
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const isLoading = ref(false);
-const feedbackData = ref(null);
 const taskItems = ref([]);
+const selectedTasks = ref([]);
 
-// 과제 유형 매핑 - 수정 필요 
+// 과제 유형 매핑
 const taskTypes = {
   1: '개인 과제',
   2: '팀 과제',
@@ -107,10 +125,51 @@ const getTaskTypeName = (typeId) => {
   return taskTypes[typeId] || '기타';
 };
 
-// 버튼 텍스트 계산
-const buttonText = computed(() => {
-  return feedbackData.value?.feedback_id ? '수정' : '등록';
-});
+// 과제 선택 토글
+const toggleTaskSelection = (task) => {
+  const index = selectedTasks.value.indexOf(task.task_item_id);
+  if (index === -1) {
+    selectedTasks.value.push(task.task_item_id);
+  } else {
+    selectedTasks.value.splice(index, 1);
+  }
+};
+
+// 과제 할당 처리
+const handleAssignTasks = async () => {
+  if (!selectedEmployee.value || selectedTasks.value.length === 0) return;
+
+  try {
+    isLoading.value = true;
+    
+    for (const taskId of selectedTasks.value) {
+      const task = taskItems.value.find(t => t.task_item_id === taskId);
+      if (task) {
+        const createTaskItemRequestDTO = {
+          taskName: task.task_name,
+          taskContent: task.task_content,
+          employeeId: Number(selectedEmployee.value.department_member_id) // department_member_id를 사용
+        };
+
+        console.log('Task Request DTO:', createTaskItemRequestDTO); 
+
+        await createTaskItem(
+          selectedYear.value,
+          selectedHalf.value,
+          task.task_type_id,
+          createTaskItemRequestDTO
+        );
+      }
+    }
+    
+    selectedTasks.value = [];
+    await fetchTaskItems();
+  } catch (error) {
+    console.error('과제 할당 실패:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 // 과제 목록 조회
 const fetchTaskItems = async () => {
@@ -127,7 +186,7 @@ const fetchTaskItems = async () => {
     const response = await findDepartmentTaskItems(
       selectedYear.value,
       selectedHalf.value,
-      Number(employeeId)  // 수정된 부분: employeeId를 직접 사용
+      Number(employeeId)
     );
     
     if (response.success) {
@@ -167,6 +226,39 @@ watch([selectedYear, selectedHalf], () => {
 </script>
 
 <style scoped>
+/* 기존 스타일 유지 */
+
+.checkbox-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  background-color: #F5F5F5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.checkbox.checked {
+  background-color: #003566;
+  border-color: #003566;
+}
+
+.checkbox.checked::after {
+  content: '✓';
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* 나머지 기존 스타일 유지 */
 .emphasize {
   font-size: 2.2rem;
   font-weight: 500;
