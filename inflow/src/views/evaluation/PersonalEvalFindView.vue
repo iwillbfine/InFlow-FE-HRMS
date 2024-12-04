@@ -1,72 +1,60 @@
 <template>
-    <SectionItem class="content-section" w="100%">
-      <!-- 평가 조회 헤더 -->
-      <FlexItem class="content-header" fld="row" h="6rem" w="90%" ai="center" jc="space-between">
-        <div class="header-left">
-          <CommonArticle class="article-title" label="평가 상세" minh="4rem" w="auto" />
-        </div>
-  
-        <div class="search-section">
-          <div class="year-half-section">
-            <YearDropDown @valid-date-selected="handleYearSelected" />
-            <HalfDropdown @half-selected="handleHalfSelected" />
-            <ButtonItem 
-              class="search-btn"
-              h="3.6rem" 
-              w="7.2rem" 
-              bgc="#003566" 
-              br="0.6rem" 
-              c="#fff" 
-              fs="1.6rem" 
-              @click="handleSearch"
-            >
-              조회
-            </ButtonItem>
-          </div>
-        </div>
-      </FlexItem>
+  <CommonArticle class="feedback-article" label="평가 상세" w="90%">
+    <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem 
+        class="search-btn"
+        h="3.6rem" 
+        w="7.2rem" 
+        bgc="#003566" 
+        br="0.6rem" 
+        c="#fff" 
+        fs="1.6rem" 
+        @click="handleSearch"
+      >
+        조회
+      </ButtonItem>
+    </FlexItem>
 
+    <!-- 평가 데이터 테이블 -->
+    <FlexItem class="article-content-container" fld="column">
+      <TableItem gtc="0.5fr 1fr 0.8fr 2fr 2.5fr 0.7fr">
+        <TableRow>
+          <TableCell th fs="1.6rem">No</TableCell>
+          <TableCell th fs="1.6rem">유형</TableCell>
+          <TableCell th fs="1.6rem">가중치</TableCell>
+          <TableCell th fs="1.6rem">과제명</TableCell>
+          <TableCell th fs="1.6rem">과제 내용</TableCell>
+          <TableCell th fs="1.6rem">등급</TableCell>
+        </TableRow>
+        <TableRow v-if="isSearched && !isEmpty" v-for="(task, index) in taskList" :key="task.task_eval_id">
+          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) || '-' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.set_ratio ? `${(task.set_ratio * 100).toFixed(0)}%` : '-' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_eval_name || '-' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_eval_content || '-' }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_grade || 'N/A' }}</TableCell>
+        </TableRow>
+      </TableItem>
       
-  
-      <!-- 평가 데이터 테이블 -->
-      <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
-        <TableItem gtc="0.5fr 1fr 0.8fr 2fr 2.5fr 0.7fr">
-          <TableRow>
-            <TableCell th fs="1.6rem">No</TableCell>
-            <TableCell th fs="1.6rem">유형</TableCell>
-            <TableCell th fs="1.6rem">가중치</TableCell>
-            <TableCell th fs="1.6rem">과제명</TableCell>
-            <TableCell th fs="1.6rem">과제 내용</TableCell>
-            <TableCell th fs="1.6rem">등급</TableCell>
-          </TableRow>
-          <TableRow v-if="isSearched && !isEmpty" v-for="(task, index) in taskList" :key="task.task_eval_id">
-            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) || '-' }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.set_ratio ? `${(task.set_ratio * 100).toFixed(0)}%` : '-' }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_eval_name || '-' }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_eval_content || '-' }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_grade || 'N/A' }}</TableCell>
-          </TableRow>
-        </TableItem>
-        
-        <!-- 데이터가 없을 경우 메시지 -->
-        <FlexItem
-          v-if="isEmpty && isSearched"
-          class="empty-message"
-          fld="row"
-          h="6rem"
-          w="100%"
-          fs="1.6rem"
-        >
-          평가 내역이 존재하지 않습니다.
-        </FlexItem>
+      <!-- 데이터가 없을 경우 메시지 -->
+      <FlexItem
+        v-if="isEmpty && isSearched"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        평가 내역이 존재하지 않습니다.
       </FlexItem>
-    </SectionItem>
+    </FlexItem>
+  </CommonArticle>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import SectionItem from '@/components/semantic/SectionItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
@@ -105,12 +93,6 @@ const handleSearch = async () => {
     return;
   }
 
-  console.log('조회 조건:', {
-    eid: eid.value,
-    year: selectedYear.value,
-    half: selectedHalf.value,
-  });
-
   await loadTaskEvaluation();
   isSearched.value = true;
 };
@@ -121,7 +103,6 @@ const loadTaskEvaluation = async () => {
     const response = await getTaskEvaluation(eid.value, selectedYear.value, selectedHalf.value);
     if (response.success) {
       taskList.value = response.content;
-      console.log('Task List:', taskList.value);
       isEmpty.value = taskList.value.length === 0;
     } else {
       taskList.value = [];
@@ -140,7 +121,6 @@ const fetchTaskTypes = async () => {
     const response = await getAllTaskTypes();
     if (response.success) {
       taskTypes.value = response.content;
-      console.log("Task Types loaded:", taskTypes.value);
     }
   } catch (error) {
     console.error('과제 유형 조회 실패:', error);
@@ -165,43 +145,24 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.content-section {
+.common-article {
   position: relative;
-  top: -2rem;
 }
 
-.content-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
+.feedback-article {
+  margin-top: 1rem;
+  margin-bottom: 3rem;
 }
 
-.article-title {
-  display: flex;
-  align-items: center;
-}
-
-.year-half-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.search-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.content-body {
+.article-content-container {
   margin-top: 2rem;
 }
 
-.table-wrapper {
-  width: 100%;
-  margin: 0 auto;
+.year-half-section {
+  position: absolute;
+  top: -1rem;
+  gap: 1rem;
+  right: 0;
 }
 
 .mid {
@@ -214,5 +175,9 @@ onMounted(async () => {
 .empty-message {
   justify-content: center;
   align-items: center;
+}
+
+.search-btn {
+  margin-left: 1rem;
 }
 </style>
