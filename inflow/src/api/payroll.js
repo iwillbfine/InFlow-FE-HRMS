@@ -18,6 +18,36 @@ export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => 
   }
 };
 
+export const getPeriodicPayments = async(employeeId, startMonth, endMonth) => {
+  if (!employeeId || !startMonth || !endMonth) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startMonth}, endMonth=${endMonth}`);
+  }
+  try {
+    const response = await apiClient.get('/payrolls/period', {
+      params: { startMonth, endMonth },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('getPeriodicPayments 오류: ', error);
+    throw error;
+  }
+};
+
+export const getPaymentsByYear = async(employeeId, year) => {
+  if (!employeeId || !year) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, year=${year}`);
+  }
+  try {
+    const response = await apiClient.get('/payrolls/list', {
+      params: { employeeId, year },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('getPaymentsByYear 오류: ', error);
+    throw error;
+  }
+};
+
 export const getAllPayments = async(employeeId, page) => {
   if (!employeeId || !page) {
     throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, page=${page}`);
