@@ -126,7 +126,6 @@
               </template>
               <template v-else>{{ employee.detailAddress }}</template>
             </td>
-            <td></td>
           </tr>
           <tr>
             <th>생년월일</th>
@@ -458,11 +457,10 @@ onMounted(() => {
 /* 로딩 오버레이 스타일 끝*/
 
 .profile-wrapper {
-  padding: 2rem;
+  margin-top: 2.6rem;
   background-color: #fff;
-  border-radius: 8px;
-  width: 100%;
-  height: 28rem;
+  width: 96%;
+  height: 26rem;
 }
 
 .profile-buttons-container {
@@ -473,7 +471,7 @@ onMounted(() => {
 }
 
 .profile-label {
-  widows: 100%;
+  width: 100%;
   height: 4rem;
   font-size: 2rem;
   font-weight: 700;
@@ -607,17 +605,14 @@ onMounted(() => {
 
 /* 버튼 스타일 */
 .btn {
-  padding: 0.2rem 2rem;
+  height: 3.6rem;
+  width: 11rem;
   background-color: #003566;
   color: #fff;
   border: none;
-  border-radius: 2px;
+  border-radius: 0.6rem;
   cursor: pointer;
-  font-size: 1.2rem;
-}
-
-.btn:hover {
-  background-color: #00509e;
+  font-size: 1.6rem;
 }
 
 /* 모달 스타일 */
