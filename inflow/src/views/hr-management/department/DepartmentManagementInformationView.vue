@@ -128,6 +128,14 @@
         </div>
     </div>
 
+    <!-- 삭제 성공 메시지 모달 -->
+    <div v-if="deletedButtonStatus" class="modal-alert">
+        <div class="modal">
+        <p>성공적으로 삭제되었습니다!</p>
+        </div>
+    </div>
+
+
 
     <!-- 삭제 확인 모달 -->
     <div 
@@ -207,6 +215,10 @@
                 closeModal();
                 }, 1200);
 
+                setTimeout(() => {
+                    window.location.reload(); // 새로고침
+                }, 1300);
+
             } catch (error) {
                 console.error('부서 정보 수정에 실패했습니다.', error);
             }
@@ -231,6 +243,11 @@
             console.log('부서가 성공적으로 삭제되었습니다.');
             closeDeleteModal();
             departmentInfo.value = null; // 삭제 후 데이터 초기화
+            deletedButtonStatus.value = true;
+            setTimeout(() => {
+                    window.location.reload(); // 새로고침
+                }, 1300);
+            
         } catch (error) {
             console.error('부서 삭제에 실패했습니다.', error);
         }
@@ -245,6 +262,8 @@
         savedButtonStatus.value = false; // 상태 초기화
     };
 
+    // 삭제 완료되면 모달창 띄우고 사라짐
+    const deletedButtonStatus = ref(false);
 
 
 
