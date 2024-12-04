@@ -387,12 +387,15 @@ const routes = [
         name: 'hr-management-department-default',
         component: DepartmentManagementInformationView,
         redirect: '/hr-management/department/info',
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
 
       },
       {
         path: 'info',
         name: 'hr-management-department-info',
         component: DepartmentManagementInformationView,
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        // 이 라우터에만 부서코드 정보 전달
       },
       {
         path: 'add',
