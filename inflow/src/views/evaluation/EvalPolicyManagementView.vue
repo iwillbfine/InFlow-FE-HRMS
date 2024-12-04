@@ -227,11 +227,8 @@ const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success) {
-      taskTypes.value = response.content.map(item => ({
-        id: item.task_type_id,
-        name: item.task_type_name
-      })) || [];
-      console.log('변환된 taskTypes:', taskTypes.value);
+      taskTypes.value = response.content;  // 직접 할당
+      console.log('과제 유형 목록:', taskTypes.value);
     } else {
       console.error('과제 유형 조회 실패:', response);
       taskTypes.value = [];
@@ -277,6 +274,7 @@ const handleTypeSelection = (typeId) => {
   selectedTaskType.value = typeId;
   console.log('선택된 과제 유형:', typeId);
 };
+
 // 날짜 핸들러들 수정
 const handleStartDateSelected = (date) => {
   startDate.value = `${date}T00:00:00`; // date는 'YYYY-MM-DD' 형식으로 옴
