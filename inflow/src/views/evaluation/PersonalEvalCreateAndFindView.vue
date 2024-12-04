@@ -265,7 +265,7 @@ hr {
 
 .year-half-section {
 position: absolute;
-top: 0;
+top: 1rem;
 right: 0;
 margin-top: -1rem;
 gap: 1rem;
