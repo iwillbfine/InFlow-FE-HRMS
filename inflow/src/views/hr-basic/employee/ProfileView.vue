@@ -460,7 +460,7 @@ onMounted(() => {
   margin-top: 2.6rem;
   background-color: #fff;
   width: 96%;
-  height: 26rem;
+  height: 27rem;
 }
 
 .profile-buttons-container {
