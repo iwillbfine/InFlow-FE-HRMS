@@ -18,6 +18,18 @@ export const getTaskEvaluation = async (empId, year, half) => {
   }
 };
 
+// 과제별 평가 수정
+export const updateTaskEval = async (taskEvalId, updateTaskEvalRequestDTO) => {
+  try {
+    const response = await apiClient.patch(`/evaluations/taskEval/${taskEvalId}`, updateTaskEvalRequestDTO);
+    return response.data;
+  } catch (error) {
+    console.error('과제별 평가 수정 중 에러 발생:', error);
+    throw error;
+  }
+};
+
+
 // 모든 과제 유형 조회 
 export const getAllTaskTypes = async () => {
   try {

@@ -1,270 +1,308 @@
 <template>
-    <SectionItem class="feedback-section" w="calc(100% - 36rem)">
-      <CommonArticle label="부서원 평가">
-        <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
-          <YearDropDown @valid-date-selected="handleYearSelected" />
-          <HalfDropdown @half-selected="handleHalfSelected" />
+  <SectionItem class="feedback-section" w="calc(100% - 36rem)">
+    <CommonArticle label="부서원 평가">
+      <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+        <YearDropDown @valid-date-selected="handleYearSelected" />
+        <HalfDropdown @half-selected="handleHalfSelected" />
+      </FlexItem>
+      <FlexItem
+        class="profile"
+        fld="row"
+        w="100%"
+        h="14rem"
+        bgc="#fff"
+        br="0.6rem"
+      >
+        <FigureItem
+          v-if="selectedEmployee"
+          class="profile-img-wrapper"
+          h="100%"
+          w="10.5rem"
+        >
+          <img :src="selectedEmployee.profile_image_url" alt="Profile Image" />
+        </FigureItem>
+        <FlexItem
+          v-if="selectedEmployee"
+          class="emp-info"
+          fld="column"
+          h="100%"
+        >
+          <span class="emphasize">{{ selectedEmployee.employee_name }}</span>
+          <span class="normal">{{ selectedEmployee.employee_number }}</span>
+          <span class="normal">{{ selectedEmployee.department_path }}</span>
         </FlexItem>
         <FlexItem
-          class="profile"
+          v-else
+          class="empty-message"
           fld="row"
+          h="100%"
           w="100%"
-          h="14rem"
-          bgc="#fff"
-          br="0.6rem"
+          fs="2rem"
         >
-          <FigureItem
-            v-if="selectedEmployee"
-            class="profile-img-wrapper"
-            h="100%"
-            w="10.5rem"
-          >
-            <img :src="selectedEmployee.profile_image_url" alt="Profile Image" />
-          </FigureItem>
-          <FlexItem
-            v-if="selectedEmployee"
-            class="emp-info"
-            fld="column"
-            h="100%"
-          >
-            <span class="emphasize">{{ selectedEmployee.employee_name }}</span>
-            <span class="normal">{{ selectedEmployee.employee_number }}</span>
-            <span class="normal">{{ selectedEmployee.department_path }}</span>
-          </FlexItem>
-          <FlexItem
-            v-else
-            class="empty-message"
-            fld="row"
-            h="100%"
-            w="100%"
-            fs="2rem"
-          >
-            사원을 선택해주세요.
-          </FlexItem>
+          사원을 선택해주세요.
         </FlexItem>
-        <TableItem class="emp-task"gtc="2fr 3fr 6fr 8fr 2fr 2fr">
-          <TableRow>
-            <TableCell th fs="1.6rem" topl>No</TableCell>
-            <TableCell th fs="1.6rem">유형</TableCell>
-            <TableCell th fs="1.6rem">과제명</TableCell>
-            <TableCell th fs="1.6rem" topr>과제 내용</TableCell>
-            <TableCell th fs="1.6rem">가중치</TableCell>
-            <TableCell th fs="1.6rem">점수</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell class="mid" fs="1.6rem">1</TableCell>
-            <TableCell class="mid" fs="1.6rem">개인 과제</TableCell>
-            <TableCell class="mid" fs="1.6rem">과제 이름입니다.</TableCell>
-            <TableCell class="mid" fs="1.6rem">과제 내용입니다.</TableCell>
-            <TableCell class="mid" fs="1.6rem">0.5</TableCell>
-            <TableCell class="mid" fs="1.6rem">
-              <FlexItem class="input-wrapper" h="100%" w="100%" bgc="#F8F8F8" b="1px solid #DBDBDB" br="0.1rem">
-                <input v-model="taskScore" name="task-grade-input" type="text" maxlength="3" @input="limitTaskScore">
-              </FlexItem>
-            </TableCell>
-          </TableRow>
-        </TableItem>
-        <TableItem gtc="7fr">
-          <TableRow>
-            <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
-          </TableRow>
-          <TableRow h="100%">
-            <TableCell class="h-12 pl-2" fs="1.6rem" botr>
-              <textarea
-                v-model="feedbackContent"
-                name="feedback-input"
-                class="feedback-input custom-scrollbar"
-                placeholder="피드백 내용을 입력하세요"
-              ></textarea>
-            </TableCell>
-          </TableRow>
-        </TableItem>
-        <ButtonItem
-          class="submit-btn"
-          h="3.6rem"
-          w="7.2rem"
-          bgc="#003566"
-          br="0.6rem"
-          c="#fff"
-          fs="1.6rem"
-          :disabled="isLoading"
-          @click="handleOnclick"
-        >
-          {{ isLoading ? '처리중...' : buttonText }}
-        </ButtonItem>
-      </CommonArticle>
-      <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
-    </SectionItem>
-  </template>
+      </FlexItem>
 
-  <script setup>
-  import { ref, watch, computed } from 'vue';
-  import FlexItem from '@/components/semantic/FlexItem.vue';
-  import FigureItem from '@/components/semantic/FigureItem.vue';
-  import SectionItem from '@/components/semantic/SectionItem.vue';
-  import CommonArticle from '@/components/common/CommonArticle.vue';
-  import TableItem from '@/components/semantic/TableItem.vue';
-  import TableRow from '@/components/semantic/TableRow.vue';
-  import TableCell from '@/components/semantic/TableCell.vue';
-  import ButtonItem from '@/components/semantic/ButtonItem.vue';
-  import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
-  import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
-  import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-  import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback } from '@/api/evaluation';
+      <TableItem class="emp-task" gtc="2fr 3fr 6fr 8fr 2fr">
+        <TableRow>
+          <TableCell th fs="1.6rem" topl>No</TableCell>
+          <TableCell th fs="1.6rem">유형</TableCell>
+          <TableCell th fs="1.6rem">과제명</TableCell>
+          <TableCell th fs="1.6rem">과제 내용</TableCell>
+          <TableCell th fs="1.6rem">점수</TableCell>
+        </TableRow>
 
-  // 상태 관리
-  const selectedEmployee = ref(null);
-  const selectedYear = ref(null);
-  const selectedHalf = ref(null);
-  const feedbackContent = ref('');
-  const isLoading = ref(false);
-  const feedbackData = ref(null);
-  const currentEvaluationId = ref(null);
-  const taskScore = ref(null);
+        <TableRow v-if="!hasTaskData">
+          <TableCell gc="span 6" class="mid" fs="1.6rem">
+            해당 사원에게 등록된 과제가 없습니다.
+          </TableCell>
+        </TableRow>
 
-  const limitTaskScore = () => {
-    const score = parseInt(taskScore.value);
-    if (isNaN(score)) {
-      taskScore.value = null;
-      return;
-    }
+        <TableRow v-for="(task, index) in taskList" :key="task.task_eval_id">
+          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">
+            <FlexItem class="input-wrapper" h="100%" w="100%" bgc="#F8F8F8" b="1px solid #DBDBDB" br="0.1rem">
+              <input 
+                v-model="task.score" 
+                type="text" 
+                maxlength="3" 
+                @input="limitTaskScore($event, task)"
+              >
+            </FlexItem>
+          </TableCell>
+        </TableRow>
+      </TableItem>
 
-    if (score> 100) taskScore.value = 100;
-    else if (score < 0) taskScore.value = 0;
-    else taskScore.value = score;
+      <TableItem gtc="7fr">
+  <TableRow>
+    <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
+  </TableRow>
+  <TableRow h="100%">
+    <TableCell 
+      class="h-12 pl-2" 
+      fs="1.6rem" 
+      botr 
+      :class="{ 'feedback-empty': !hasFeedback }"
+      @click="handleFeedbackClick"
+    >
+      <textarea
+        v-model="feedbackContent"
+        name="feedback-input"
+        class="feedback-input custom-scrollbar"
+        :class="{ 'hidden': !isEditing && !hasFeedback }"
+        placeholder="피드백 내용을 입력하세요"
+      ></textarea>
+    </TableCell>
+  </TableRow>
+</TableItem>
 
-    console.log(taskScore.value);
-  };
+      <ButtonItem
+        class="submit-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        :disabled="isLoading"
+        @click="handleOnclick"
+      >
+        {{ isLoading ? '처리중...' : buttonText }}
+      </ButtonItem>
+    </CommonArticle>
+    <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
+  </SectionItem>
+</template>
 
-  // 버튼 텍스트 계산
-  const buttonText = computed(() => {
-    return feedbackData.value?.feedback_id ? '수정' : '등록';
-  });
+<script setup>
+import { ref, watch, computed } from 'vue';
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import FigureItem from '@/components/semantic/FigureItem.vue';
+import SectionItem from '@/components/semantic/SectionItem.vue';
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
+import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
+import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback, updateTaskEval, getIndividualTaskItems } from '@/api/evaluation';
 
-  const handleSelected = (employee) => {
-    selectedEmployee.value = employee;
+// 상태 관리
+const selectedEmployee = ref(null);
+const selectedYear = ref(null);
+const selectedHalf = ref(null);
+const feedbackContent = ref('');
+const isLoading = ref(false);
+const feedbackData = ref(null);
+const currentEvaluationId = ref(null);
+const taskList = ref([]);
+
+const hasTaskData = computed(() => 
+taskList.value && taskList.value.length > 0);
+
+const hasFeedback = computed(() => {
+  return feedbackData.value?.content?.content != null;
+});
+
+
+
+// 과제 점수 입력 제한
+const limitTaskScore = (event, task) => {
+  let score = parseFloat(event.target.value);
+  
+  if (isNaN(score)) {
+    task.score = null;
+    return;
   }
 
-  const handleYearSelected = (year) => {
-    selectedYear.value = year;
-  };
+  if (score > 100) score = 100;
+  else if (score < 0) score = 0;
+  
+  task.score = score;
+};
 
-  const handleHalfSelected = (half) => {
-    selectedHalf.value = half;
-  };
+// 버튼 텍스트 계산
+const buttonText = computed(() => {
+  return feedbackData.value?.content?.feedbackId ? '수정' : '등록';
+});
 
-  // 피드백 조회
-  watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
-    const [employeeId, year, half] = newValues;
+const handleSelected = (employee) => {
+  selectedEmployee.value = employee;
+};
 
-    if (employeeId && year && half) {
-      try {
-        isLoading.value = true;
-        console.log('조회 시작:', { employeeId, year, half });
+const handleYearSelected = (year) => {
+  selectedYear.value = year;
+};
 
-        // 평가 정보 조회
-        const evaluationResponse = await findFinalGrade(employeeId, year, half);
-        currentEvaluationId.value = evaluationResponse?.content?.evaluation_id;
-        console.log('평가 ID:', currentEvaluationId.value);
+const handleHalfSelected = (half) => {
+  selectedHalf.value = half;
+};
 
-        // 피드백 조회
-        const response = await findFeedbacks(employeeId, year, half);
-        feedbackData.value = response.content;
-        console.log('조회된 피드백:', feedbackData.value);
+// 데이터 조회
+watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
+  const [employeeId, year, half] = newValues;
 
-        // 입력 필드 초기화
-        feedbackContent.value = '';
-
-      } catch (error) {
-        console.error('데이터 조회 중 에러:', error);
-        alert('데이터 조회 중 오류가 발생했습니다.');
-      } finally {
-        isLoading.value = false;
-      }
-    }
-  });
-
-  // 피드백 등록/수정 처리
-  const handleOnclick = async () => {
-    if (!selectedEmployee.value || !selectedYear.value || !selectedHalf.value || !feedbackContent.value.trim()) {
-      alert('모든 필드를 입력해주세요.');
-      return;
-    }
-
+  if (employeeId && year && half) {
     try {
       isLoading.value = true;
+      console.log('조회 시작:', { 
+        employeeId: JSON.parse(JSON.stringify(employeeId)), 
+        year, 
+        half 
+      });
 
-      if (feedbackData.value?.feedback_id) {
-        console.log('수정 시작 - 기존 피드백:', feedbackData.value);
+      // 평가 정보 조회
+      const evaluationResponse = await findFinalGrade(employeeId.department_member_id, year, half);
+      currentEvaluationId.value = evaluationResponse?.content?.evaluation_id;
+      
+      // 과제 목록 조회
+      const tasksResponse = await getIndividualTaskItems(employeeId.department_member_id, year, half);
+      console.log('과제 목록 응답:', tasksResponse);    // 데이터 넘어오는거 확인하기 위함
+      taskList.value = tasksResponse.content || [];
 
-        // UpdateFeedbackRequestDTO 형식에 맞춰 데이터 구성
-        const updateDTO = {
-          feedback_id: parseInt(feedbackData.value.feedback_id),
-          evaluation_id: parseInt(currentEvaluationId.value),
-          content: feedbackContent.value.trim()
-        };
+      // 피드백 조회
+      const feedbackResponse = await findFeedbacks(employeeId.department_member_id, year, half);
+      feedbackData.value = feedbackResponse;
 
-        console.log('수정 요청 데이터:', updateDTO);
-
-        try {
-          const response = await updateFeedback(updateDTO.feedback_id, updateDTO);
-          console.log('수정 응답:', response);
-
-          if (response.success) {
-            alert('피드백이 성공적으로 수정되었습니다.');
-            feedbackData.value = response.content;
-            feedbackContent.value = '';
-          }
-        } catch (updateError) {
-          console.error('수정 중 에러:', updateError);
-          throw updateError;
-        }
+      // 기존 피드백이 있으면 textarea에 표시
+      if (feedbackResponse.content?.content) {
+        feedbackContent.value = feedbackResponse.content.content;
       } else {
-        // 새 피드백 등록
-        if (!currentEvaluationId.value) {
-          throw new Error('evaluation_id가 존재하지 않습니다.');
-        }
-
-        const createDTO = {
-          evaluation_id: parseInt(currentEvaluationId.value),
-          content: feedbackContent.value.trim(),
-        };
-
-        console.log('등록 요청 데이터:', createDTO);
-
-        const response = await createFeedback(createDTO);
-        if (response.success) {
-          alert('피드백이 성공적으로 등록되었습니다.');
-          feedbackData.value = response.content;
-          feedbackContent.value = '';
-        }
+        feedbackContent.value = '';
       }
-
-      // 피드백 데이터 새로고침
-      const refreshedFeedback = await findFeedbacks(
-        selectedEmployee.value,
-        selectedYear.value,
-        selectedHalf.value
-      );
-      feedbackData.value = refreshedFeedback.content;
 
     } catch (error) {
-      console.error('피드백 처리 중 에러:', error);
-      if (error.response) {
-        console.error('서버 응답:', error.response);
-        alert(error.response.data.error || '서버에서 오류가 발생했습니다.');
-      } else if (error.request) {
-        console.error('요청 객체:', error.request);
-        alert('서버로부터 응답을 받지 못했습니다.');
-      } else {
-        console.error('에러 객체:', error);
-        alert('요청 처리 중 오류가 발생했습니다.');
-      }
+      console.error('데이터 조회 중 에러:', error);
+      alert('데이터 조회 중 오류가 발생했습니다.');
     } finally {
       isLoading.value = false;
     }
-  };
-  </script>
+  }
+});
+
+// 피드백 등록/수정 처리
+const handleOnclick = async () => {
+  if (!selectedEmployee.value || !selectedYear.value || !selectedHalf.value || !feedbackContent.value.trim()) {
+    alert('모든 필드를 입력해주세요.');
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+
+    // 선택된 과제의 점수 업데이트
+    if (hasTaskData.value) {
+      const selectedTask = taskList.value[0]; // 단건 처리
+      if (selectedTask?.score) {
+        const updateDTO = {
+          task_eval_id: selectedTask.task_eval_id,
+          task_eval_name: selectedTask.task_eval_name,
+          task_eval_content: selectedTask.task_eval_content,
+          score: selectedTask.score,
+          set_ratio: selectedTask.set_ratio,
+          task_grade: selectedTask.task_grade,
+          performance_input: selectedTask.performance_input,
+          created_at: selectedTask.created_at,
+          rel_eval_status: selectedTask.rel_eval_status,
+          evaluation_id: selectedTask.evaluation_id,
+          modifiable_date: selectedTask.modifiable_date,
+          task_type_id: selectedTask.task_type_id,
+          task_item_id: selectedTask.task_item_id
+        };
+        
+        await updateTaskEval(selectedTask.task_eval_id, updateDTO);
+      }
+    }
+
+    // 피드백 처리
+    if (feedbackData.value?.content?.feedbackId) {
+      const updateDTO = {
+        feedback_id: parseInt(feedbackData.value.content.feedbackId),
+        evaluation_id: parseInt(currentEvaluationId.value),
+        content: feedbackContent.value.trim()
+      };
+
+      const response = await updateFeedback(updateDTO.feedback_id, updateDTO);
+      if (response.success) {
+        alert('피드백이 성공적으로 수정되었습니다.');
+        feedbackData.value = response;
+      }
+    } else {
+      if (!currentEvaluationId.value) {
+        throw new Error('evaluation_id가 존재하지 않습니다.');
+      }
+
+      const createDTO = {
+        evaluation_id: parseInt(currentEvaluationId.value),
+        content: feedbackContent.value.trim(),
+      };
+
+      const response = await createFeedback(createDTO);
+      if (response.success) {
+        alert('피드백이 성공적으로 등록되었습니다.');
+        feedbackData.value = response;
+      }
+    }
+
+  } catch (error) {
+    console.error('처리 중 에러:', error);
+    if (error.response) {
+      alert(error.response.data.error || '서버에서 오류가 발생했습니다.');
+    } else if (error.request) {
+      alert('서버로부터 응답을 받지 못했습니다.');
+    } else {
+      alert('요청 처리 중 오류가 발생했습니다.');
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>
 
 <style scoped>
 .emphasize {
@@ -338,6 +376,7 @@
   border-radius: 0.4rem;
   resize: none;
   font-size: 1.4rem;
+  text-align: left; /* 실제 입력 텍스트는 왼쪽 정렬 유지 */
 }
 
 .submit-btn {
@@ -394,5 +433,14 @@ gap: 1rem;
   flex-direction: column;
   justify-content: center;  /* 세로 가운데 정렬 */
   align-items: center;  /* 가로 가운데 정렬 */
+}
+
+.feedback-input::placeholder {
+  text-align: center;
+}
+
+.feedback-input:focus::placeholder {
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
 }
 </style>
