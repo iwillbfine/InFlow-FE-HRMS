@@ -3,6 +3,7 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="0" :list="menuList"></CommonMenu>
+    <MyInfoComponent :employee_id="1"></MyInfoComponent>
   </MainItem>
 </template>
 
@@ -11,6 +12,7 @@ import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
+import MyInfoComponent from '@/components/common/MyInfoComponent.vue';
 import { ref, onMounted } from 'vue';
 
 const menuList = ref([

@@ -82,6 +82,7 @@ import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
 // 인사관리 - 부서
 import DepartmentManagementInformationView from '@/views/hr-management/department/DepartmentManagementInformationView.vue';
 import DepartmentManagementAddView from '@/views/hr-management/department/DepartmentManagementAddView.vue';
+import PeriodicSalaryView from "@/views/hr-basic/salary/PeriodicSalaryView.vue";
 
 
 const routes = [
@@ -121,69 +122,62 @@ const routes = [
   {
     path: '/hr-basic/my-info',
     name: 'hr-basic-my-info',
-    props: true,
     redirect: '/hr-basic/my-info/careers',
     component: MyInfoView,
     children: [
       {
         path: 'careers',
-        name: 'career',
-        props: true,
+        name: 'hr-basic-career',
         component: CareerInfoView,
       },
       {
         path: 'careers/update',
-        name: 'career-update',
+        name: 'hr-basic-career-update',
         component: CareerInfoUpdateView,
       },
       {
         path: 'disciplinerewards',
-        name: 'discipline-reward',
-        props: true,
+        name: 'hr-basic-discipline-reward',
         component: DisciplineRewardInfoView,
       },
       {
         path: 'educations',
-        name: 'education',
-        props: true,
+        name: 'hr-basic-education',
         component: EducationInfoView,
       },
       {
         path: 'educations/update',
-        name: 'education-update',
+        name: 'hr-basic-education-update',
         component: EducationInfoUpdateView,
       },
       {
         path: 'familymembers',
-        name: 'family-member',
-        props: true,
+        name: 'hr-basic-family-member',
         component: FamilyMemberInfoView,
       },
       {
         path: 'familymembers/update',
-        name: 'family-member-update',
+        name: 'hr-basic-family-member-update',
         component: FamilyMemberInfoUpdateView,
       },
       {
         path: 'languagetests',
-        name: 'language-test',
-        props: true,
+        name: 'hr-basic-language-test',
         component: LanguageTestInfoView,
       },
       {
         path: 'languagetests/update',
-        name: 'language-test-update',
+        name: 'hr-basic-language-test-update',
         component: LanguageTestInfoUpdateView,
       },
       {
         path: 'qualifications',
-        name: 'qualification',
-        props: true,
+        name: 'hr-basic-qualification',
         component: QualificationInfoView,
       },
       {
         path: 'qualifications/update',
-        name: 'qualification-update',
+        name: 'hr-basic-qualification-update',
         component: QualificationInfoUpdateView,
       },
     ],
@@ -299,6 +293,11 @@ const routes = [
         path: 'severance-pay/:employeeId',
         name: 'hr-basic-severance-pay',
         component: SeverancePayView,
+      },
+      {
+        path: 'period',
+        name: 'hr-basic-salary-period',
+        component: PeriodicSalaryView,
       }
     ]
   },
@@ -333,12 +332,53 @@ const routes = [
   {
     path: '/hr-management',
     name: 'hr-management',
+    redirect: '/hr-management/employee/info/careers',
     component: EmployeeInfoView,
   },
   {
     path: '/hr-management/employee/info',
     name: 'hr-management-employee-info',
+    props: true,
+    redirect: '/hr-management/employee/info/careers',
     component: EmployeeInfoView,
+    children: [
+      {
+        path: 'careers',
+        name: 'career',
+        props: true,
+        component: CareerInfoView,
+      },
+      {
+        path: 'disciplinerewards',
+        name: 'discipline-reward',
+        props: true,
+        component: DisciplineRewardInfoView,
+      },
+      {
+        path: 'educations',
+        name: 'education',
+        props: true,
+        component: EducationInfoView,
+      },
+      {
+        path: 'familymembers',
+        name: 'family-member',
+        props: true,
+        component: FamilyMemberInfoView,
+      },
+      {
+        path: 'languagetests',
+        name: 'language-test',
+        props: true,
+        component: LanguageTestInfoView,
+      },
+      {
+        path: 'qualifications',
+        name: 'qualification',
+        props: true,
+        component: QualificationInfoView,
+      },
+    ],
   },
   {
     path: '/hr-management/employee/upload',
@@ -394,14 +434,14 @@ const routes = [
         name: 'hr-management-department-default',
         component: DepartmentManagementInformationView,
         redirect: '/hr-management/department/info',
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
 
       },
       {
         path: 'info',
         name: 'hr-management-department-info',
         component: DepartmentManagementInformationView,
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
         // 이 라우터에만 부서코드 정보 전달
       },
       {
