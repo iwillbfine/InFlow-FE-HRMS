@@ -6,9 +6,9 @@
     <CommonMenu :list="menuList" />
     
     <SectionItem class="content-section" w="100%">
-      <ProfileView :employee_id="props.employee_id"></ProfileView>
+      <ProfileView></ProfileView>
       <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
-      <router-view :employee_id="props.employee_id"></router-view>
+      <router-view></router-view>
     </SectionItem>
     
   </MainItem>
@@ -22,7 +22,6 @@ import MainItem from '@/components/semantic/MainItem.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-import { defineCustomElement } from 'vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 
@@ -48,13 +47,6 @@ const subMenuList = ref([
   { name: '가족', link: '/hr-basic/my-info/familymembers' },
   { name: '포상 및 징계', link: '/hr-basic/my-info/disciplinerewards' },
 ]);
-
-const props = defineProps({
-  employee_id: {
-    type: String,
-    required: false,
-  },
-});
 
 const eid = ref(null);
 const employeeName = ref('');
