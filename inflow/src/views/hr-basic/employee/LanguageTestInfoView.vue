@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle :label="'어학'" class="ca" w="96%" fs="2rem">
+  <CommonArticle label="어학" class="ca" w="96%" fs="2rem">
     <ButtonItem class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
       <div class="table-wrapper">
@@ -56,9 +56,18 @@ const router = useRouter();
 const route = useRoute();
 const langCodes = ref([]);
 
+const employeeId = ref('');
+
+const props = defineProps({
+  employee_id: {
+    type: String,
+    required: false,
+  },
+});
+
 onMounted(async() => {
-  const employeeId = localStorage.getItem('employeeId');
-  fetchDate(employeeId);
+  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
 });
 
 const sortByDate = (list) => {
@@ -83,7 +92,12 @@ const fetchDate = async (empId) => {
 };
 
 const handleOnclick = () => {
-  router.push('/hr-basic/my-info/languagetests/update');
+  router.push({
+      path: '/hr-basic/my-info/languagetests/update',
+      query: {
+        employee_id: employeeId.value,
+      },
+    });
 };
 
 </script>

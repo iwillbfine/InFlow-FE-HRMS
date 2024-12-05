@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="96%">
-    <CommonArticle :label="'가족'" class="ca" w="100%" fs="2rem"></CommonArticle>
+    <CommonArticle label="가족" class="ca" w="100%" fs="2rem"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -36,29 +36,17 @@
               <label :for="'check' + index"></label>
             </div>
           </TableCell>
-          <TableCell class="mid" fs="1.6rem">
+          <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
             <input
               type="text"
-              v-model="familyList[index]['name']"
-              :class="{ 'invalid-row': !isCellValid(familyList[index]['name'], 'name') }"
+              v-model="familyList[index][header]"
+              :class="{ 'invalid-row': !isCellValid(familyList[index][header], header) }"
               class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="familyList[index]['family_relationship_name']"
-              :class="{ 'invalid-row': !isCellValid(familyList[index]['family_relationship_name'], 'family_relationship_name') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="familyList[index]['birth_date']"
-              :class="{ 'invalid-row': !isCellValid(familyList[index]['birth_date'], 'birth_date') }"
-              class="cell-input"
-            />
+              @focus="showModal(index, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === index && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -83,9 +71,9 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
-import { updateData, deleteData, getRelationships, getFamilyById } from '@/api/emp_attach';
+import { updateData, getRelationships, getFamilyById } from '@/api/emp_attach';
 import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const familyList = ref([]);
 const isEmpty = ref(true);
@@ -94,14 +82,10 @@ const selectedRows = ref([]);
 const relationships = ref([]);
 const memList = ref([]);
 
+const route = useRoute();
 const router = useRouter();
 
 const empId = ref('');
-
-onMounted(() => {
-  empId.value = localStorage.getItem('employeeId');
-  fetchDate(empId.value);
-});
 
 const isCellValid = (value, header) => {
   if (value === null || value === undefined) return false;
@@ -111,6 +95,33 @@ const isCellValid = (value, header) => {
     return /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
   return String(value).length > 0;
+};
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const modalTxt = ref({});
+
+const setModalTxt = () => {
+  return {
+    birth_date: '입력 예:\n- YYYY-MM-DD',
+    family_relationship_name: `선택:\n- ${(memList.value || []).join('\n- ')}`,
+  };
+};
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
 };
 
 const sortByDate = (list) => {
@@ -137,7 +148,8 @@ const fetchDate = async () => {
   memList.value = tmp.map(row => row.family_relationship_name);
   if (response) {
     const sortedResponse = sortByDate(response.map(row => ({
-        ...row,
+        name: row['name'],
+        family_relationship_name: row['family_relationship_name'],
         birth_date: row['birth_date'].split('T')[0],
       })));
     familyList.value = sortedResponse;
@@ -206,15 +218,25 @@ const postData = async () => {
 
   const data = mapping();
   try {
-    await deleteData(original.value, 'family-members');
-    await updateData(data, 'family-members');
+    await updateData(original.value.map(row => row.family_member_id), data, 'family-members');
     window.alert("가족 정보 수정 요청이 완료되었습니다.");
-    router.push('/hr-basic/my-info/familymembers');
+    router.push({
+      path: '/hr-basic/my-info/familymembers',
+      query: {
+        employee_id: empId.value,
+      },
+    });
     return;
   } catch (error) {
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
   }
 };
+
+onMounted(async() => {
+  empId.value = route.query.employee_id || localStorage.getItem('employeeId');
+  await fetchDate(empId.value);
+  modalTxt.value = setModalTxt();
+});
 
 </script>
 
@@ -285,7 +307,8 @@ button p {
 input {
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 1px;
   border: 0.586px solid #DBDBDB;
@@ -328,6 +351,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.mid {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 9999;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .invalid-row {
