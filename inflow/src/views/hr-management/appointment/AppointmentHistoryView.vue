@@ -1,68 +1,70 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="90%">
-    <ChangeMonthComponent
-      class="child1"
-      :cur-month="curMonth"
-      description="인사발령 내역"
-      @go-prev-month="goPrevMonth"
-      @go-next-month="goNextMonth"
-    />
-  </FlexItem>
-
-  <FlexItem class="content-header-btns" fld="row" h="6rem" w="90%">
-    <ButtonItem h="3.6rem" w="9rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" class="dBtn" @click="showDownload">다운로드</ButtonItem> 
-    <SelectAppTypeComponent
-      :y="curMonth.split('-')[0]"
-      :m="curMonth.split('-')[1]"
-      class="select-data"
-      @selected="goSelectedPoint"
-    />
-  </FlexItem>
-
-  <div v-if="downloadModal" class="modal-overlay" @click="closeModal">
-    <div class="modal-content" @click.stop>
-      <SelectPeriodComponent @selected="hideDownload"></SelectPeriodComponent>
-    </div>
-  </div>
-
-  <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
-    <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="repeat(9, 1fr)" br="0.5rem">
-        <TableRow>
-          <TableCell th fs="1.6rem">No</TableCell>
-          <TableCell th fs="1.6rem">일자</TableCell>
-          <TableCell th fs="1.6rem">유형</TableCell>
-          <TableCell th fs="1.6rem">사원</TableCell>
-          <TableCell th fs="1.6rem">부서</TableCell>
-          <TableCell th fs="1.6rem">직무</TableCell>
-          <TableCell th fs="1.6rem">직위</TableCell>
-          <TableCell th fs="1.6rem">직책</TableCell>
-          <TableCell th fs="1.6rem">담당자</TableCell>
-        </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in appointmentHistory" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['appointed_at'].split(' ')[0] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['appointment_item_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['employee_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['department_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['duty_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['position_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['authorizer_name'] }}</TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-    <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      인사발령 내역이 존재하지 않습니다.
+  <div class="wrapper">
+    <FlexItem class="content-header" fld="row" h="6rem" w="96%">
+      <ChangeMonthComponent
+        class="child1"
+        :cur-month="curMonth"
+        description="인사발령 내역"
+        @go-prev-month="goPrevMonth"
+        @go-next-month="goNextMonth"
+      />
     </FlexItem>
-  </FlexItem>
+  
+    <ButtonItem h="3.6rem" w="9rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" class="dBtn" @click="showDownload">다운로드</ButtonItem> 
+    <FlexItem class="content-header-btns" fld="row" h="6rem" w="96%">
+      <SelectAppTypeComponent
+        :y="curMonth.split('-')[0]"
+        :m="curMonth.split('-')[1]"
+        class="select-data"
+        @selected="goSelectedPoint"
+      />
+    </FlexItem>
+  
+    <div v-if="downloadModal" class="modal-overlay" @click="closeModal">
+      <div class="modal-content">
+        <SelectPeriodComponent @selected="hideDownload"></SelectPeriodComponent>
+      </div>
+    </div>
+  
+    <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
+      <div class="table-wrapper">
+        <TableItem class="commute-table" gtc="repeat(9, 1fr)" br="0.5rem">
+          <TableRow>
+            <TableCell th fs="1.6rem">No</TableCell>
+            <TableCell th fs="1.6rem">일자</TableCell>
+            <TableCell th fs="1.6rem">유형</TableCell>
+            <TableCell th fs="1.6rem">사원</TableCell>
+            <TableCell th fs="1.6rem">부서</TableCell>
+            <TableCell th fs="1.6rem">직무</TableCell>
+            <TableCell th fs="1.6rem">직위</TableCell>
+            <TableCell th fs="1.6rem">직책</TableCell>
+            <TableCell th fs="1.6rem">담당자</TableCell>
+          </TableRow>
+          <TableRow v-if="!isEmpty" v-for="(item, index) in appointmentHistory" :key="index">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['appointed_at'].split(' ')[0] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['appointment_item_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['employee_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['department_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['duty_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['position_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['authorizer_name'] }}</TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+      <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        인사발령 내역이 존재하지 않습니다.
+      </FlexItem>
+    </FlexItem>
+  </div>
 </template>
 
 <script setup>
@@ -228,18 +230,19 @@ onMounted(() => {
   curMonth.value = getCurMonth();
   fetchDate(curMonth.value);
 });
-
-defineProps({
-  title: {
-    type: String,
-    required: false,
-    default: '',
-  },
-});
 </script>
 
 <style scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .content-header {
+  position: relative;
   justify-content: center;
   align-items: center;
 }
@@ -248,7 +251,7 @@ defineProps({
   display: flex;
   flex-direction: column !important;
   align-items: flex-end;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 1rem; 
 }
 
@@ -277,9 +280,11 @@ defineProps({
   text-align: center;
 }
 
-
 .dBtn {
+  position: absolute;
   padding: 0.3rem !important;
+  right: 5rem;
+  top: 5.5rem;;
 }
 
 .select-data {
@@ -289,15 +294,14 @@ defineProps({
 }
 
 .select-data ::v-deep(.app-his-dropdown .dropdown .dropdown-header) {
-  padding-top: 0.25rem;
+  margin: none;
   padding-bottom: 0.25rem;
   height: 3.6rem;
   align-items: center;
 }
 
 .content-body {
-  width: 80%;
-  margin-top: 2.5rem;
+  width: 96% !important;
 }
 
 .mid {

@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle label="인사발령 등록" class="ca" w="96%"></CommonArticle>
+    <CommonArticle label="인사발령 등록" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -62,6 +62,7 @@
         <p>등록</p>
       </button>
     </div>
+  </CommonArticle>
   </div>
 </template>
 
@@ -71,13 +72,6 @@ import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
 import { getDoc, saveData, getAllEmpId, getValidData } from '@/api/emp_attach';
-
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
 
 const headerNames = ref([
   "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)",
@@ -295,13 +289,22 @@ onMounted(async() => {
 .emp-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100%;
   gap: 0.5rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.common-article {
+  position: relative;
+}
+
+.exlbtns1 {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 
 .exlbtns1, .exlbtns2 {
@@ -309,29 +312,13 @@ onMounted(async() => {
   flex-direction: row;
   justify-content: flex-end;
   gap: 2rem;
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
 }
 
 .exlbtns1 button, .exlbtns2 button {
-  display: flex;
-  flex-direction: row;
-  justify-content:space-around ;
-  width: 140px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
+  width: 14.4rem;
+  height: 3.6rem;
   gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
 }
 
 button {
@@ -380,18 +367,7 @@ button p {
   flex-direction: column;
   min-height: 27rem;
   width: 100%;
-  align-items: stretch;
-  padding: 0 0 10px 0;
-  overflow: visible;
-}
-
-.inboard div {
-  height: 100%;
-}
-
-.inboard > :last-child {
-  border-radius: 5px;
-  border-bottom: solid 2px #2e2f3015;
+  overflow-x: auto;
 }
 
 .colname {
