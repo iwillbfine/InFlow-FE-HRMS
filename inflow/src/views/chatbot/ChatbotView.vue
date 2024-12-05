@@ -11,7 +11,11 @@
           class="chat-item"
           :class="{'user-chat': item.type === 'user', 'bot-chat': item.type === 'bot'}"
         >
-          <!-- 메시지에서 bold 처리 -->
+          <FlexItem  v-if="item.type === 'bot'" class="item-header" fld="row" w="100%" bgc="transparent" c="#888" fs="2rem">
+            <RobotIcon></RobotIcon>
+            <CheckButton v-if="isCopied" h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem"></CheckButton>
+            <CopyButton v-else h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem" @click="handleCopy(item.message)"></CopyButton>
+          </FlexItem>
           <span v-html="parseBoldText(item.message)"></span>
         </li>
       </UlItem>
@@ -40,6 +44,9 @@ import FlexItem from '@/components/semantic/FlexItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import ArrowUpButton from '@/components/buttons/ArrowUpButton.vue';
+import CopyButton from '@/components/buttons/CopyButton.vue';
+import CheckButton from '@/components/buttons/CheckButton.vue';
+import RobotIcon from '@/components/icons/RobotIcon.vue';
 import { ref, onMounted, nextTick } from 'vue';
 import { chatbotQuery } from '@/api/chatbot';
 
@@ -49,6 +56,7 @@ const employeeName = ref('');
 const message = ref(''); // textarea 내용
 const textarea = ref(null); // textarea DOM 참조
 const isInit = ref(true);
+const isCopied = ref(false);
 
 const chatList = ref([]);
 
@@ -107,6 +115,23 @@ const handleKeydown = (event) => {
     }
   }
 };
+
+const handleCopy = (message) => {
+  navigator.clipboard.writeText(message)
+    .then(() => {
+      isCopied.value = true;
+      setTimeout(() => {
+        handleReturn(); // 500ms 후 다시 초기 상태로
+      }, 3000);
+    })
+    .catch((error) => {
+      console.error("클립보드 복사 실패:", error);
+    });
+};
+
+const handleReturn = () => {
+  isCopied.value = false;
+}
 
 const handleSubmit = () => {
   if (!message.value) return;
@@ -182,6 +207,8 @@ onMounted(() => {
 }
 
 .chat-item {
+  display: flex;
+  flex-direction: column;
   width: 38rem;
   min-height: 5rem;
   border-radius: 2.5rem;
@@ -237,5 +264,11 @@ onMounted(() => {
 
 .submit-btn {
   align-self: flex-end;
+}
+
+.item-header {
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <ButtonItem
-    class="arrow-left-btn"
+    class="caret-right-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"
