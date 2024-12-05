@@ -140,9 +140,6 @@
             editableData.value.upper_department_code = selectedDepartment
                 ? selectedDepartment.department_code
                 : null;
-
-
-
             const response = await apiClient.post('/departments/add-department', editableData.value);
             
             if (response.data.success) {
@@ -151,8 +148,12 @@
                 setTimeout(() => {
                     closeModal();
                 }, 1200);
+                 // 2. 모달이 닫힌 후 새로고침
+                setTimeout(() => {
+                    window.location.reload(); // 새로고침
+                }, 1500);
                 console.log('부서 정보가 성공적으로 추가되었습니다.');
-                console.log("추가된 부서 정보:", response.data.content)
+                console.log("추가된 부서 정보:", response.data.content);
             } else {
                 console.error('추가 실패:', response.data.error.message);
                 alert(`추가 실패: ${response.data.error.message}`); // 에러 메시지 표시
@@ -279,7 +280,7 @@ span{
 }
 
 .modal p {
-    font-size: 1.2rem;
+    font-size: 1.7rem;
     margin: 0;
 }
 
