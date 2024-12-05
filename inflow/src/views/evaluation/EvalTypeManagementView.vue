@@ -38,30 +38,32 @@
     <hr />
   
     <CommonArticle class="pos-rel" label=" 유형 목록" w="90%">
-      <TableItem gtc="0.25fr 2fr">
+      <TableItem gtc="0.25fr 2fr 0.25fr">
         <TableRow>
           <TableCell th fs="1.6rem">No</TableCell>
           <TableCell th fs="1.6rem">유형</TableCell>
+          <TableCell th fs="1.6rem">관리</TableCell>
           
         </TableRow>
         <TableRow v-for="(type, index) in taskTypes" :key="type.task_type_id" class="task-row">
           <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ type.task_type_name }}
-
-            <XmarkButton
-              h="2.4rem"
-              w="2.4rem"
-              br="0.4rem"
-              class="delete-btn"
-              bgc="#fff"
-              c="0a0a0a"
+          <TableCell class="mid" fs="1.6rem">{{ type.task_type_name }}</TableCell>
+          <TableCell class="button-cell">
+            <ButtonItem
+              class="submit-btn"
+              h="3.6rem"
+              w="7.2rem"
+              bgc="#003566"
+              br="0.6rem"
+              c="#fff"
+              fs="1.6rem"
               @click="handleDelete(type.task_type_id)"
-            />
-
+            >
+              삭제
+            </ButtonItem>
           </TableCell>
         </TableRow>
       </TableItem>
-  
       <FlexItem
         v-if="taskTypes.length === 0"
         class="empty-message"
@@ -214,7 +216,7 @@ const handleDelete = async (taskTypeId) => {
 .delete-btn {
   margin-left: 1rem;
   padding-left: 0rem;
-  justify-content:
+  justify-content: center;
 }
 
 .delete-btn:hover {

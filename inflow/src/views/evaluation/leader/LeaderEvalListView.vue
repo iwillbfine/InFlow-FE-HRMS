@@ -15,7 +15,7 @@
     </FlexItem>
   </CommonArticle>
   <CommonArticle class="task-list-article" label="평가 상세" w="90%">
-    <TableItem gtc="1fr 2fr 1fr">
+    <TableItem gtc="0.5fr 2fr 0.5fr">
       <TableRow>
         <TableCell th fs="1.6rem" topl>유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
@@ -23,8 +23,8 @@
       </TableRow>
       <TableRow v-for="(item, index) in taskList" :key="index">
         <TableCell class="mid" fs="1.6rem" :botl="index === taskList.length-1">{{ getTaskTypeName(item.task_type_id) }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ item.task_name }}</TableCell>
-        <TableCell class="mid" fs="1.6rem" :botr="index === taskList.length-1">{{ item.task_grade }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{ item.task_eval_name }}</TableCell>
+        <TableCell class="mid" fs="1.6rem" :botr="index === taskList.length-1">{{ item.task_grade || 'N/A' }}</TableCell>
       </TableRow>
     </TableItem>
   </CommonArticle>
@@ -39,7 +39,7 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import { ref, watch, onMounted } from 'vue';
-import { findFeedbacks, findFinalGrade, getAllTaskTypes } from '@/api/evaluation';
+import { findFeedbacks, findFinalGrade, getAllTaskTypes,findTaskEvalByEvaluationId } from '@/api/evaluation';
 
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
@@ -47,6 +47,7 @@ const feedbackContent = ref(null);
 const finalGrade = ref('-');
 const taskList = ref([]);
 const taskTypes = ref([]);
+const evaluationId = ref(null);
 
 // 리더평가용 과제 함수 
 
@@ -66,7 +67,7 @@ const fetchFeedback = async () => {
   }
 };
 
-// 평가 반기별 최종 평가 등급 조회 함수
+// 평가 반기별 최종 평가 등급 조회 함수 수정
 const fetchFinalGrade = async () => {
   try {
     if (selectedYear.value && selectedHalf.value) {
@@ -75,13 +76,17 @@ const fetchFinalGrade = async () => {
       
       if (response.success && response.content) {
         finalGrade.value = response.content.fin_grade;
+        evaluationId.value = response.content.evaluation_id; // 평가 ID 저장
+        await fetchTaskList(); // 평가 ID를 받아온 후 과제 리스트 조회
       } else {
         finalGrade.value = 'N/A';
+        taskList.value = [];
       }
     }
   } catch (error) {
     console.error('최종 등급 조회 중 오류 발생:', error);
     finalGrade.value = 'N/A';
+    taskList.value = [];
   }
 };
 
@@ -98,12 +103,21 @@ const fetchTaskTypes = async () => {
   }
 };
 
-const handleYearSelected = (year) => {
-  selectedYear.value = year;
-};
+// 과제 리스트 조회 함수 추가
+const fetchTaskList = async () => {
+  try {
+    if (!evaluationId.value) return;
 
-const handleHalfSelected = (half) => {
-  selectedHalf.value = half;
+    const response = await findTaskEvalByEvaluationId(evaluationId.value);
+    if (response.success) {
+      taskList.value = response.content;
+    } else {
+      taskList.value = [];
+    }
+  } catch (error) {
+    console.error('과제 리스트 조회 중 오류 발생:', error);
+    taskList.value = [];
+  }
 };
 
 // 과제 유형 이름 가져오기
@@ -118,6 +132,15 @@ watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
     fetchFinalGrade();
   }
 });
+
+const handleYearSelected = (year) => {
+  selectedYear.value = year;
+};
+
+const handleHalfSelected = (half) => {
+  selectedHalf.value = half;
+};
+
 
 onMounted(() => {
   fetchTaskTypes();
