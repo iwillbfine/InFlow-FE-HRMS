@@ -18,13 +18,13 @@ export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => 
   }
 };
 
-export const getPeriodicPayments = async(employeeId, startMonth, endMonth) => {
-  if (!employeeId || !startMonth || !endMonth) {
-    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startMonth}, endMonth=${endMonth}`);
+export const getPeriodicPayments = async(employeeId, startDate, endDate) => {
+  if (!employeeId || !startDate || !endDate) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startDate}, endMonth=${endDate}`);
   }
   try {
     const response = await apiClient.get('/payrolls/period', {
-      params: { startMonth, endMonth },
+      params: { employeeId, startDate, endDate },
     });
     return response.data;
   } catch (error) {

@@ -1,5 +1,26 @@
 <template>
   <FlexItem class="content-header" fld="row" h="1rem" w="90%">
+    <YearMonthDropDown
+      label="시작 월"
+      @valid-date-selected="updateStartMonth"
+    ></YearMonthDropDown>
+    <div class="text">~</div>
+    <YearMonthDropDown
+      label="종료 월"
+      @valid-date-selected="updateEndMonth"
+    ></YearMonthDropDown>
+    <ButtonItem
+      class="btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleOnclick"
+    >
+      조회
+    </ButtonItem>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
@@ -22,11 +43,6 @@
         </TableRow>
       </TableItem>
     </div>
-    <PaginationComponent
-      class="pagination"
-      :data="pageInfo"
-      @changePage="handlePageChange"
-    ></PaginationComponent>
   </FlexItem>
 </template>
 
@@ -35,52 +51,46 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
-import {useRoute, useRouter} from "vue-router";
-import {onMounted, ref, watch} from "vue";
-import PaginationComponent from "@/components/common/PaginationComponent.vue";
-import {getAllPayments} from "@/api/payroll.js";
+import YearMonthDropDown from "@/components/dropdowns/YearMonthDropDown.vue";
+import ButtonItem from "@/components/semantic/ButtonItem.vue";
+import {ref} from "vue";
+import {getPeriodicPayments} from "@/api/payroll.js";
 
-const route = useRoute();
-const router = useRouter();
-
-// 상태 변수
-const employeeId = ref(null);
-const curPage = ref(1);
 const payments = ref([]);
-const pageInfo =ref({});
+const startDate = ref('');
+const endDate = ref('');
 
-// api 호출 함수
-const fetchPaymentData = async (employeeId, page) => {
-  if (!employeeId) {
-    console.error("유효하지 않은 파라미터");
+// 시작 월 선택
+const updateStartMonth = (date) => {
+  startDate.value = date;
+};
+
+// 종료 월 선택
+const updateEndMonth = (date) => {
+  endDate.value = date;
+};
+
+// 조회 버튼 클릭
+const handleOnclick = async () => {
+  if (!startDate.value || !endDate.value) {
+    alert("시작 월과 종료 월을 모두 선택해주세요.");
     return;
   }
+
   try {
-    const response = await getAllPayments(employeeId, page);
-    payments.value = response.content.elements || [];
-    pageInfo.value = response.content;
+    const employeeId = localStorage.getItem("employeeId");
+    if (!employeeId) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    const response = await getPeriodicPayments(employeeId, startDate.value, endDate.value);
+    payments.value = response.content || [];
   } catch (error) {
-    console.error("Failed to fetch payments", error);
+    console.error("급여 데이터를 가져오는 중 오류 발생:", error);
+    payments.value = [];
   }
 };
-
-const handlePageChange = (page) => {
-  curPage.value = page;
-  fetchPaymentData(employeeId.value, curPage.value);
-  router.push({
-    name: 'hr-basic-salary-list',
-    params: {employeeId: employeeId.value},
-    query: { page: curPage.value } });
-};
-
-watch(
-  () => route.query.page,
-  (newPage) => {
-    curPage.value = parseInt(newPage, 10) || 1;
-    fetchPaymentData(employeeId.value, curPage.value);
-  },
-  { immediate: true }
-)
 
 const formatDate = (value) => {
   if (!value) return '지급일: -';
@@ -91,26 +101,23 @@ const formatDate = (value) => {
 
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
 
-onMounted(() => {
-  employeeId.value = localStorage.getItem('employeeId');
-  curPage.value = parseInt(route.query.page, 10) || 1;
-
-  if (!employeeId.value) {
-    alert("로그인이 필요합니다.");
-    router.push("/login");
-    return;
-  }
-
-  fetchPaymentData(employeeId.value, curPage.value);
-});
-
 </script>
 
 <style scoped>
 .content-header {
-  position: relative;
-  justify-content: center;
+  margin-top: 2rem;
+  justify-content: flex-end;
   align-items: center;
+}
+
+.text {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  font-size: 2rem;
+}
+
+.btn {
+  margin-left: 2rem;
 }
 
 .content-body {
@@ -126,11 +133,6 @@ onMounted(() => {
 .amount {
   justify-content: flex-end;
   align-items: center;
-}
-
-.pagination {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 </style>

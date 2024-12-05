@@ -42,7 +42,7 @@
     <TableItem gtc="1fr 3fr 2fr">
       <TableRow>
         <TableCell th fs="1.7rem">No</TableCell>
-        <TableCell th fw="1.7rem">비정기 수당명</TableCell>
+        <TableCell th fs="1.7rem">비과세 항목명</TableCell>
         <TableCell th fs="1.7rem">금액</TableCell>
       </TableRow>
       <TableRow

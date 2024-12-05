@@ -82,6 +82,7 @@ import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
 // 인사관리 - 부서
 import DepartmentManagementInformationView from '@/views/hr-management/department/DepartmentManagementInformationView.vue';
 import DepartmentManagementAddView from '@/views/hr-management/department/DepartmentManagementAddView.vue';
+import PeriodicSalaryView from "@/views/hr-basic/salary/PeriodicSalaryView.vue";
 
 
 const routes = [
@@ -299,6 +300,11 @@ const routes = [
         path: 'severance-pay/:employeeId',
         name: 'hr-basic-severance-pay',
         component: SeverancePayView,
+      },
+      {
+        path: 'period',
+        name: 'hr-basic-salary-period',
+        component: PeriodicSalaryView,
       }
     ]
   },
@@ -394,14 +400,14 @@ const routes = [
         name: 'hr-management-department-default',
         component: DepartmentManagementInformationView,
         redirect: '/hr-management/department/info',
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
 
       },
       {
         path: 'info',
         name: 'hr-management-department-info',
         component: DepartmentManagementInformationView,
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
         // 이 라우터에만 부서코드 정보 전달
       },
       {
