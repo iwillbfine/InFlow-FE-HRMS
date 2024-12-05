@@ -6,9 +6,9 @@
     <CommonMenu :list="menuList" />
     
     <SectionItem class="content-section" w="100%">
-      <ProfileView></ProfileView>
+      <ProfileView :employee_id="props.employee_id"></ProfileView>
       <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
-      <router-view></router-view>
+      <router-view :employee_id="props.employee_id"></router-view>
     </SectionItem>
     
   </MainItem>
@@ -48,6 +48,13 @@ const subMenuList = ref([
   { name: '가족', link: '/hr-basic/my-info/familymembers' },
   { name: '포상 및 징계', link: '/hr-basic/my-info/disciplinerewards' },
 ]);
+
+const props = defineProps({
+  employee_id: {
+    type: String,
+    required: false,
+  },
+});
 
 const eid = ref(null);
 const employeeName = ref('');
