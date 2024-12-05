@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="96%">
-    <CommonArticle :label="'어학'" class="ca" w="100%" fs="2rem"></CommonArticle>
+    <CommonArticle label="어학" class="ca" w="100%" fs="2rem"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -39,53 +39,17 @@
               <label :for="'check' + index"></label>
             </div>
           </TableCell>
-          <TableCell class="mid" fs="1.6rem">
+          <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
             <input
               type="text"
-              v-model="langTestList[index]['language_name']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['language_name'], 'language_name') }"
+              v-model="langTestList[index][header]"
+              :class="{ 'invalid-row': !isCellValid(langTestList[index][header], header) }"
               class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="langTestList[index]['language_test_name']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['language_test_name'], 'language_test_name') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="langTestList[index]['qualification_number']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['qualification_number'], 'qualification_number') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="langTestList[index]['qualified_at']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['qualified_at'], 'qualified_at') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="langTestList[index]['issuer']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['issuer'], 'issuer') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="langTestList[index]['grade_score']"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index]['grade_score'], 'grade_score') }"
-              class="cell-input"
-            />
+              @focus="showModal(index, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === index && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -112,7 +76,7 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { updateData, getLangCode, getLanguageTests, getLanguageTestsById } from '@/api/emp_attach';
 import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const langTestList = ref([]);
 const isEmpty = ref(true);
@@ -122,24 +86,48 @@ const langCodes = ref([]);
 const langs = ref([]);
 const langMap = ref([])
 
+const route = useRoute();
 const router = useRouter();
 
 const empId = ref('');
 
-onMounted(() => {
-  empId.value = localStorage.getItem('employeeId');
-  fetchDate(empId.value);
-});
-
 const isCellValid = (value, header) => {
   if (value === null || value === undefined) return false;
   if (typeof value === 'string' && value.trim() === '') return false;
-  if (header === 'language_name')  return langs.value?.includes(`${value}`);
+  if (header === 'language_name')  return langs.value.map((row) => row.language_name)?.includes(`${value}`);
   if (header === 'qualification_number')  return !langCodes.value?.includes(`${value}`);
   if (header === 'qualified_at') {
     return /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
   return String(value).length > 0;
+};
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const modalTxt = ref({});
+
+const setModalTxt = () => {
+  return {
+    qualified_at: '입력 예:\n- YYYY-MM-DD',
+    qualification_number: '유효한 자격번호를 입력하세요.',
+    language_name: '선택:\n- '+(langs.value?.map(row => row.language_name) || []).join('\n- '),
+  };
+};
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
 };
 
 const sortByDate = (list) => {
@@ -150,12 +138,14 @@ const sortByDate = (list) => {
   });
 };
 
+const origin = ref([]);
+
 const fetchDate = async () => {
   const response = await getLanguageTestsById(empId.value);
   const tmp = await getLanguageTests();
   const codes = await getLangCode();
-
-  langs.value = codes.map((row) => row.language_name);
+  origin.value = response;
+  langs.value = codes;
   langCodes.value = tmp
     .filter((r) => String(r.employee_id) !== empId.value)
     .map((row) => `${row.qualification_number}`);
@@ -168,7 +158,14 @@ const fetchDate = async () => {
 
   if (response) {
     const sortedResponse = sortByDate(response);
-    langTestList.value = sortedResponse;
+    langTestList.value = sortedResponse.map(row => ({
+      language_name: row['language_name'],
+      language_test_name: row['language_test_name'],
+      qualification_number: row['qualification_number'],
+      qualified_at: row['qualified_at'],
+      issuer: row['issuer'],
+      grade_score: row['grade_score'],
+    }));
   } else {
     langTestList.value = [];
     isEmpty.value = true;
@@ -192,12 +189,12 @@ const toggleAllCheckboxes = () => {
 };
 
 const defaultRow = {
+  language_name: '',
   language_test_name: '',
   qualification_number: '',
-  issuer: '',
   qualified_at: '',
+  issuer: '',
   grade_score: '',
-  language_name: '',
 };
 
 const addRow = () => {
@@ -216,11 +213,14 @@ const deleteSelectedRows = () => {
 
 const mapping = () => {
   return langTestList.value.map((row) => {
-    const { language_name, ...rest } = row;
     return {
-      ...rest,
+      language_test_name: row['language_test_name'],
+      qualification_number: row['qualification_number'],
+      issuer: row['issuer'],
+      qualified_at: row['qualified_at'],
+      grade_score: row['grade_score'],
       employee_id: empId.value,
-      language_code: langMap.value[language_name],
+      language_code: langMap.value[row['language_name']],
     };
   });
 };
@@ -237,14 +237,25 @@ const postData = async () => {
 
   const data = mapping();
   try {
-    await updateData(data, 'language-tests');
+    await updateData(origin.value.map(row => Number(row.language_test_id)), data, 'language-tests');
     window.alert("어학 시험 정보 수정 요청이 완료되었습니다.");
-    router.push('/hr-basic/my-info/languagetests');
+    router.push({
+      path: '/hr-basic/my-info/languagetests',
+      query: {
+        employee_id: empId.value,
+      },
+    });
     return;
   } catch (error) {
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
   }
 };
+
+onMounted(async() => {
+  empId.value = route.query.employee_id || localStorage.getItem('employeeId');
+  await fetchDate(empId.value);
+  modalTxt.value = setModalTxt();
+});
 
 </script>
 
@@ -315,7 +326,8 @@ button p {
 input {
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 1px;
   border: 0.586px solid #DBDBDB;
@@ -358,6 +370,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.mid {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 9999;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .invalid-row {
