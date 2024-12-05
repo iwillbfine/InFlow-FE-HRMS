@@ -38,7 +38,8 @@ const menuList = ref([
 const subMenuList = ref([
   { name: '급여 명세서', link: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}` },
   { name: '전체 급여 지급내역', link: `/hr-basic/salary/list/${localStorage.getItem('employeeId')}` },
-  { name: '예상 퇴직금 조회', link: `/hr-basic/salary/severance-pay/${localStorage.getItem('employeeId')}` }
+  { name: '예상 퇴직금 조회', link: `/hr-basic/salary/severance-pay/${localStorage.getItem('employeeId')}` },
+  { name: '기간별 급여내역', link: '/hr-basic/salary/period'}
 ]);
 
 const subIdx = ref(0);
