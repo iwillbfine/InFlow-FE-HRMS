@@ -79,11 +79,11 @@ const fetchAnswer = async (eid, sessionId, query) => {
   }
 
   try {
-    const response = '우리 회사의 급여 계산 방식은 다음과 같은 주요 단계를 포함합니다:\n\n1. **무급 휴가 차감 계산**: 무급 휴가 사용에 따른 급여 차감액을 계산합니다. 공식은 다음과 같습니다:\n   - 차감액 = (월급 ÷ 실제 근무일수) x 무급 휴가 일수\n\n2. **세금 및 4대 보험 공제**: 소득세, 지방소득세 및 4대 보험료를 공제합니다.\n   - 소득세는 간이세액표를 기반으로 하며, 지방소득세는 소득세의 10%입니다.\n   - 4대 보험료는 다음과 같이 계산됩니다:\n     - 국민연금: 월급 x 4.5%\n     - 건강보험: 월급 x 3.545%\n     - 장기요양보험: 건강보험료 x 12.81%\n     - 고용보험: 월급 x 0.9%\n\n3. **최종 실수령액 산정**: 차감된 월급에서 모든 공제 금액을 반영하여 최종 지급될 금액을 계산합니다.\n   - 공식: 최종 실수령액 = 차감된 월급 - (소득세 + 지방소득세 + 4대 보험료)\n\n4. **초과근무 수당 계산**: 초과근무 시간에 대한 추가 지급 금액을 계산합니다.\n   - 공식: 초과근무 수당 = 통상 시급 x 1.5 x 초과근무 시간\n   - 통상 시급은 계약 월급 ÷ 209시간으로 계산됩니다.\n\n5. **퇴직금 계산**: 평균임금 또는 통상임금을 기준으로 퇴직금을 산출합니다.\n   - 평균임금 = (3개월 간의 총 급여) ÷ (3개월 간의 총 근무일수)\n\n이러한 방식으로 급여가 계산되며, 각 단계에서 필요한 공식과 예시가 제공됩니다.';
+    const response = await chatbotQuery(formData);
 
     chatList.value.push({
       type: 'bot',
-      message: `${response}`,
+      message: `${response.answer}`,
     });
 
     // 응답 후 스크롤을 최하단으로 이동
@@ -201,7 +201,7 @@ onMounted(() => {
 }
 
 .chat-list {
-  gap: 2rem;
+  gap: 4rem;
   padding: 0rem 1rem;
   padding-bottom: 20rem;
 }
@@ -209,7 +209,7 @@ onMounted(() => {
 .chat-item {
   display: flex;
   flex-direction: column;
-  width: 38rem;
+  width: 80%;
   min-height: 5rem;
   border-radius: 2.5rem;
   padding: 2rem;
@@ -229,9 +229,9 @@ onMounted(() => {
 
 .chat-item span {
   display: block;
-  word-break: break-word; /* 긴 단어도 필요 시 줄바꿈 */
+  word-wrap: break-word; /* 구버전 호환 */
   overflow-wrap: break-word; /* 긴 단어도 줄바꿈 */
-  white-space: pre-wrap;  /* 공백 및 줄바꿈 처리 */
+  white-space: pre-wrap; /* 공백 및 줄바꿈 처리 */
 }
 
 .chat-bottom {
