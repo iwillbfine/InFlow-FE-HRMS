@@ -7,7 +7,7 @@
       </FlexItem>
     </div>
 
-    <TableItem gtc="0.5fr 2fr 2fr">
+    <TableItem gtc="0.6fr 2fr 2fr">
       <TableRow>
         <TableCell th fs="1.6rem">유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
