@@ -53,7 +53,7 @@
         <div
           v-for="employee in filteredMembers"
           :key="employee.employee_number"
-          @click="handleSelected"
+          @click="handleSelected(employee)"
           class="one-member-content"
         >
           <div class="detail">
@@ -225,6 +225,10 @@ watch(attendanceStats, (newStats) => {
   justify-content: space-between;
   margin-top: 5px;
   height: 100%;
+}
+
+.one-member-content:hover {
+  background-color: #f4f4f4;
 }
 
 .name {
