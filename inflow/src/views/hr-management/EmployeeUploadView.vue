@@ -5,9 +5,7 @@
     <CommonMenu :cur="1" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
-      <router-view v-slot="{ Component }">
-        <component :is="Component" :title="subMenuList[subIdx].name" />
-      </router-view>
+      <router-view />
     </SectionItem>
   </MainItem>
 </template>

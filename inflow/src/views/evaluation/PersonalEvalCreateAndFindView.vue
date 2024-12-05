@@ -7,7 +7,7 @@
       </FlexItem>
     </div>
 
-    <TableItem gtc="0.5fr 2fr 2fr">
+    <TableItem gtc="0.6fr 2fr 2fr">
       <TableRow>
         <TableCell th fs="1.6rem">유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
@@ -114,19 +114,30 @@ const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const selectedType = ref(null);
 const selectedTask = ref(null);
-
-// employeeId 가져오기
 const employeeId = ref(localStorage.getItem('employeeId'));
+
+const emit = defineEmits(['yearSelected', 'halfSelected']);
+const props = defineProps({
+  selectedYear: {
+    type: [Number, String],
+    required: true
+  },
+  selectedHalf: {
+    type: String,
+    required: true
+  }
+});
+
 
 // 핸들러 함수들
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  fetchTaskList();
+  emit('yearSelected', year);
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  fetchTaskList();
+  emit('halfSelected', half);
 };
 
 const handleTypeSelection = (typeId) => {
@@ -253,6 +264,19 @@ hr {
 }
 
 .task-input::placeholder {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #666;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.task-input:focus::placeholder {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.task-input::placeholder {
   font-size: 1.6rem;
   color: #666;
 }
@@ -265,7 +289,7 @@ hr {
 
 .year-half-section {
 position: absolute;
-top: 0;
+top: 1rem;
 right: 0;
 margin-top: -1rem;
 gap: 1rem;

@@ -58,40 +58,40 @@
         </TableRow>
 
         <TableRow 
-            v-for="(task, index) in taskList" 
-            :key="task.task_eval_id"
-            class="task-row"
-            @click="openTaskEvalModal(task)"
-          >
-            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
-          </TableRow>
+          v-for="(task, index) in taskList" 
+          :key="task.task_eval_id"
+          class="task-row"
+          @click="openTaskEvalModal(task)"
+        >
+          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
+        </TableRow>
       </TableItem>
 
       <TableItem gtc="7fr">
-  <TableRow>
-    <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
-  </TableRow>
-  <TableRow h="100%">
-    <TableCell 
-      class="h-12 pl-2" 
-      fs="1.6rem" 
-      botr 
-      :class="{ 'feedback-empty': !hasFeedback }"
-      @click="handleFeedbackClick"
-    >
-      <textarea
-        v-model="feedbackContent"
-        name="feedback-input"
-        class="feedback-input custom-scrollbar"
-        :class="{ 'hidden': !isEditing && !hasFeedback }"
-        placeholder="피드백 내용을 입력하세요"
-      ></textarea>
-    </TableCell>
-  </TableRow>
-</TableItem>
+        <TableRow>
+          <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
+        </TableRow>
+        <TableRow h="100%">
+          <TableCell 
+            class="h-12 pl-2" 
+            fs="1.6rem" 
+            botr 
+            :class="{ 'feedback-empty': !hasFeedback }"
+            @click="handleFeedbackClick"
+          >
+            <textarea
+              v-model="feedbackContent"
+              name="feedback-input"
+              class="feedback-input custom-scrollbar"
+              :class="{ 'hidden': !isEditing && !hasFeedback }"
+              placeholder="피드백 내용을 입력하세요"
+            ></textarea>
+          </TableCell>
+        </TableRow>
+      </TableItem>
 
       <ButtonItem
         class="submit-btn"
@@ -110,16 +110,15 @@
     <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
   </SectionItem>
 
-  <!-- 템플릿 최하단에 추가 -->
-<TaskEvalCreateAndUpdateModal
-  v-if="isTaskEvalModalOpen"
-  :taskData="selectedTask"
-  :year="selectedYear"
-  :half="selectedHalf"
-  :employeeId="selectedEmployee?.department_member_id"
-  @close="closeTaskEvalModal"
-  @submit="handleTaskEvalSubmit"
-/>
+  <TaskEvalCreateAndUpdateModal
+    v-if="isTaskEvalModalOpen"
+    :taskData="selectedTask"
+    :year="selectedYear"
+    :half="selectedHalf"
+    :employeeId="selectedEmployee?.department_member_id"
+    @close="closeTaskEvalModal"
+    @submit="handleTaskEvalSubmit"
+  />
 </template>
 
 <script setup>
@@ -137,6 +136,7 @@ import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalCreateAndUpdateModal from './TaskEvalCreateAndUpdateModal.vue';
 import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback, getIndividualTaskItems } from '@/api/evaluation';
+import { getCommutesByEmployeeId } from '@/api/attendance';
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -144,40 +144,53 @@ const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const feedbackContent = ref('');
 const isLoading = ref(false);
-const feedbackData = ref(null);
 const currentEvaluationId = ref(null);
 const taskList = ref([]);
 const isTaskEvalModalOpen = ref(false);
 const selectedTask = ref(null);
+const isEditing = ref(false);
 
+// 피드백 전역 상태 관리
+const feedbackState = ref({
+  feedbackId: null,
+  content: '',
+  evaluationId: null
+});
+
+// 피드백 데이터 초기화 함수
+const initializeFeedbackData = (response) => {
+  if (response?.content) {
+    feedbackState.value = {
+      feedbackId: response.content.feedback_id,    
+      content: response.content.content || '',
+      evaluationId: response.content.evaluation_id 
+    };
+  } else {
+    feedbackState.value = {
+      feedbackId: null,
+      content: '',
+      evaluationId: null
+    };
+  }
+};
+
+// Computed Properties
 const hasTaskData = computed(() => 
-taskList.value && taskList.value.length > 0);
+  taskList.value && taskList.value.length > 0
+);
 
 const hasFeedback = computed(() => {
-  return feedbackData.value?.content?.content != null;
+  return !!feedbackState.value.content;
 });
 
-
-// 모달 관련 함수 추가
-const openTaskEvalModal = (task) => {
- selectedTask.value = {
-   ...task,
-   evaluation_id: currentEvaluationId.value  
- };
- isTaskEvalModalOpen.value = true;
-};
-
-const closeTaskEvalModal = () => {
-  isTaskEvalModalOpen.value = false;
-  selectedTask.value = null;
-};
-
-
-
-// 버튼 텍스트 계산
 const buttonText = computed(() => {
-  return feedbackData.value?.content?.feedbackId ? '수정' : '등록';
+  return feedbackState.value.feedbackId ? '수정' : '등록';
 });
+
+// Event Handlers
+const handleFeedbackClick = () => {
+  isEditing.value = true;
+};
 
 const handleSelected = (employee) => {
   selectedEmployee.value = employee;
@@ -191,19 +204,27 @@ const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
 
-// 데이터 조회
-watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
+const openTaskEvalModal = (task) => {
+  selectedTask.value = {
+    ...task,
+    evaluation_id: currentEvaluationId.value  
+  };
+  isTaskEvalModalOpen.value = true;
+};
 
+const closeTaskEvalModal = () => {
+  isTaskEvalModalOpen.value = false;
+  selectedTask.value = null;
+};
+
+// 데이터 조회
+// watch 함수 내에서 피드백 조회 부분을 다음과 같이 수정해보세요
+watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
   const [employeeId, year, half] = newValues;
 
   if (employeeId && year && half) {
     try {
       isLoading.value = true;
-      console.log('조회 시작:', { 
-        employeeId: JSON.parse(JSON.stringify(employeeId)), 
-        year, 
-        half 
-      });
 
       // 평가 정보 조회
       const evaluationResponse = await findFinalGrade(employeeId.department_member_id, year, half);
@@ -211,19 +232,16 @@ watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
       
       // 과제 목록 조회
       const tasksResponse = await getIndividualTaskItems(employeeId.department_member_id, year, half);
-      console.log('과제 목록 응답:', tasksResponse);    // 데이터 넘어오는거 확인하기 위함
       taskList.value = tasksResponse.content || [];
 
-      // 피드백 조회
+      // 피드백 조회 및 디버깅 로그 추가
       const feedbackResponse = await findFeedbacks(employeeId.department_member_id, year, half);
-      feedbackData.value = feedbackResponse;
-
-      // 기존 피드백이 있으면 textarea에 표시
-      if (feedbackResponse.content?.content) {
-        feedbackContent.value = feedbackResponse.content.content;
-      } else {
-        feedbackContent.value = '';
-      }
+      console.log('서버 응답:', feedbackResponse); // 전체 응답 확인
+      
+      initializeFeedbackData(feedbackResponse);
+      console.log('초기화 후 feedbackState:', feedbackState.value); // 초기화 후 상태 확인
+      
+      feedbackContent.value = feedbackState.value.content;
 
     } catch (error) {
       console.error('데이터 조회 중 에러:', error);
@@ -233,8 +251,6 @@ watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
     }
   }
 });
-
-
 const fetchTaskList = async () => {
   if (!selectedEmployee.value?.department_member_id || !selectedYear.value || !selectedHalf.value) return;
   
@@ -260,51 +276,44 @@ const handleOnclick = async () => {
 
   try {
     isLoading.value = true;
-
-    // 피드백 처리
-    if (feedbackData.value?.content?.feedbackId) {
+      console.log(feedbackState.value.feedbackId);    // 디버깅용
+    if (feedbackState.value.feedbackId) {
+      // 피드백 수정 로직
       const updateDTO = {
-        feedback_id: parseInt(feedbackData.value.content.feedbackId),
-        evaluation_id: parseInt(currentEvaluationId.value),
+        feedback_id: feedbackState.value.feedbackId,
+        evaluation_id: currentEvaluationId.value,
         content: feedbackContent.value.trim()
       };
 
       const response = await updateFeedback(updateDTO.feedback_id, updateDTO);
       if (response.success) {
         alert('피드백이 성공적으로 수정되었습니다.');
-        feedbackData.value = response;
+        initializeFeedbackData(response);
       }
     } else {
+      // 피드백 생성 로직
       if (!currentEvaluationId.value) {
         throw new Error('evaluation_id가 존재하지 않습니다.');
       }
 
       const createDTO = {
-        evaluation_id: parseInt(currentEvaluationId.value),
+        evaluation_id: currentEvaluationId.value,
         content: feedbackContent.value.trim(),
       };
 
       const response = await createFeedback(createDTO);
       if (response.success) {
         alert('피드백이 성공적으로 등록되었습니다.');
-        feedbackData.value = response;
+        initializeFeedbackData(response);
       }
     }
-
   } catch (error) {
     console.error('처리 중 에러:', error);
-    if (error.response) {
-      alert(error.response.data.error || '서버에서 오류가 발생했습니다.');
-    } else if (error.request) {
-      alert('서버로부터 응답을 받지 못했습니다.');
-    } else {
-      alert('요청 처리 중 오류가 발생했습니다.');
-    }
+    alert('피드백 처리 중 오류가 발생했습니다.');
   } finally {
     isLoading.value = false;
   }
 };
-
 </script>
 
 <style scoped>

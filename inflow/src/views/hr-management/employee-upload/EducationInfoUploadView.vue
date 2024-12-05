@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="96%">
+    <CommonArticle label="학력" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -41,12 +41,17 @@
             <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
             <label :for="'check' + rowIndex"></label>
           </div>
-          <div v-for="(value, header) in row" :key="header">
-            <input
-              type="text"
-              v-model="rowsData[rowIndex][header]"
+          <div v-for="(value, header) in row" :key="header" class="cell-container">
+            <input 
+              type="text" 
+              v-model="rowsData[rowIndex][header]" 
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+              class="cell-input"
+              @focus="showModal(rowIndex, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -68,13 +73,6 @@ import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
 import { getDoc, saveData, getEmpId } from '@/api/emp_attach';
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
-
 const headerNames = ref(["사번", "학교명", "입학일", "졸업일", "학위", "전공"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
 
@@ -83,7 +81,6 @@ const selectedRows = ref([]);
 const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
-const validData = ref({});
 const ids = ref({})
 const loading = ref(true);
 
@@ -94,8 +91,8 @@ const validators = {
 };
 
 const isCellValid = (value, header) => {
-  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
   if (value === null || value === '') return false;
+  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
   return validators[header] ? validators[header](value) : true;
 };
 
@@ -105,13 +102,38 @@ const clickInput = () => {
 
 const getEmpIds = async() => {
   loading.value = true;
-  const tmp = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  const tmp = await getAllEmpId();
   tmp.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
     ids.value[row["employee_id"]] = row["employee_number"];
   });
   loading.value = false;
-}
+};
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const modalTxt = ref({
+  사번: '유효한 사번을 입력하세요.',
+  입학일: '입력 예:\n- YYYY-MM-DD',
+  졸업일: '입력 예:\n- YYYY-MM-DD',
+  학위: '입력 예:\n- 졸업\n- 중퇴\n- 편입\n- 학사\n- 석사\n- 박사',
+});
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
 
 const handleFileUpload = (event) => {
   const file = event.target.files?.[0];
@@ -343,7 +365,8 @@ button p {
 .rows > div > input{
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
   border: 0.586px solid #DBDBDB;
@@ -387,6 +410,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.cell-container {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 10;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .regist {

@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -87,7 +87,7 @@ import DropdownItem from '@/components/dropdowns/DropdownItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { getAllTaskTypes, createTaskItem } from '@/api/evaluation';
+import { getAllTaskTypes, createTaskItem, findDepartmentTaskItems  } from '@/api/evaluation';
 
 // 상태 관리
 const selectedYear = ref(null);
@@ -155,7 +155,7 @@ const validateInputs = () => {
   return true;
 };
 
-// 과제 등록 처리
+// 과제 등록 
 const handleSubmit = async () => {
   try {
     errorMessage.value = '';
@@ -165,14 +165,12 @@ const handleSubmit = async () => {
     
     const employeeId = getEmployeeId();
     
-    // RequestDTO 구성
     const createTaskItemRequestDTO = {
       taskName: taskName.value,
       taskContent: taskContent.value,
       employeeId: Number(employeeId)
     };
 
-    // API 호출
     const response = await createTaskItem(
       selectedYear.value,           
       selectedHalf.value,            
@@ -181,12 +179,8 @@ const handleSubmit = async () => {
     );
 
     if (response.success) {
-      // 등록 성공 시 로컬 목록에 추가
-      taskList.value.push({
-        type: selectedTaskType.value.name,
-        name: taskName.value,
-        content: taskContent.value
-      });
+      // 등록 성공 시 리스트 다시 조회
+      await fetchTaskList();
 
       // 입력 필드 초기화
       selectedTaskType.value = null;
@@ -205,6 +199,48 @@ const handleSubmit = async () => {
   }
 };
 
+
+// fetchTaskList 함수 추가
+const fetchTaskList = async () => {
+  try {
+    if (!selectedYear.value || !selectedHalf.value) return;
+    
+    isLoading.value = true;
+    const employeeId = getEmployeeId();
+    
+    const response = await findDepartmentTaskItems(
+      selectedYear.value,
+      selectedHalf.value,
+      employeeId
+    );
+
+    if (response.success) {
+      taskList.value = response.content.map(task => ({
+        type: taskTypes.value.find(t => t.id === task.task_type_id)?.name || '-',
+        name: task.task_name,
+        content: task.task_content
+      }));
+    } else {
+      taskList.value = [];
+      errorMessage.value = '과제 목록 조회에 실패했습니다.';
+    }
+  } catch (error) {
+    console.error('과제 목록 조회 중 오류 발생:', error);
+    errorMessage.value = '과제 목록 조회 중 오류가 발생했습니다.';
+    taskList.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// watch 추가
+watch([selectedYear, selectedHalf], async ([newYear, newHalf]) => {
+  if (newYear && newHalf) {
+    await fetchTaskList();
+  }
+});
+
+
 // 이벤트 핸들러
 const handleTaskTypeSelected = (id, index) => {
   selectedTaskType.value = taskTypes.value[index];
@@ -221,9 +257,12 @@ const handleHalfSelected = (half) => {
   errorMessage.value = '';
 };
 
-// 컴포넌트 마운트 시 과제 유형 조회
-onMounted(() => {
-  fetchTaskTypes();
+// 컴포넌트 마운트 시 과제 유형 조회 되도록 리펙토링 필요
+onMounted(async () => {
+  await fetchTaskTypes();
+  if (selectedYear.value && selectedHalf.value) {
+    await fetchTaskList();
+  }
 });
 </script>
 

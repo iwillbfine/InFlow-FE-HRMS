@@ -18,6 +18,19 @@ export const getTaskEvaluation = async (empId, year, half) => {
   }
 };
 
+
+// 평가ID로 과제별 평가 List 조회 ( 리더평가 조회에 사용 )
+export const findTaskEvalByEvaluationId = async (evaluationId) => {
+  try {
+    const response = await apiClient.get(`/evaluations/taskEval/byEvaluationId/${evaluationId}`);
+    return response.data;
+  } catch (error) {
+    console.error('평가ID로 과제별 평가 리스트 조회 중 에러 발생:', error);
+    throw error;
+  }
+};
+
+
 // 과제별 평가 수정
 export const updateTaskEval = async (taskEvalId, updateTaskEvalRequestDTO) => {
   try {
@@ -284,8 +297,6 @@ export const findEvaluationPolicyByYearAndHalf = async (year, half) => {
     throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
   }
 };
-
-// 12-03 이후 추가된 함수 ( 기범님이랑 공동 )
 
 // 평가 정책 단건 조회 함수
 export const findEvaluationPolicyById = async (evaluationPolicyId) => {
