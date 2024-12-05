@@ -1,6 +1,6 @@
 <template>
   <ButtonItem
-    class="caret-left-btn"
+    class="arrow-up-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"
@@ -8,12 +8,12 @@
     :fs="props.fs"
     :c="props.c"
   >
-    <CaretLeftIcon></CaretLeftIcon>
+    <ArrowUpIcon></ArrowUpIcon>
   </ButtonItem>
 </template>
 
 <script setup>
-import CaretLeftIcon from '../icons/CaretLeftIcon.vue';
+import ArrowUpIcon from '../icons/ArrowUpIcon.vue';
 import ButtonItem from '../semantic/ButtonItem.vue';
 
 const props = defineProps({
