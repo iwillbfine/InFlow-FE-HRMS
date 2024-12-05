@@ -1,42 +1,40 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'경력'" class="ca" w="90%"></CommonArticle>
-    <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">수정</ButtonItem>
-  </FlexItem>
+  <CommonArticle label="경력" class="ca" w="96%" fs="2rem">
+    <ButtonItem v-if="props.employee_id === undefined" class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
 
-
-  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
-    <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.3fr 1fr 1fr 1fr 1fr" br="0.5rem">
-        <TableRow>
-          <TableCell th fs="1.6rem">no</TableCell>
-          <TableCell th fs="1.6rem">회사명</TableCell>
-          <TableCell th fs="1.6rem">직책</TableCell>
-          <TableCell th fs="1.6rem">입사일</TableCell>
-          <TableCell th fs="1.6rem">퇴사일</TableCell>
-        </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in careerList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['company_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['join_date'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['resignation_date'] }}</TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-    <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      경력 정보가 존재하지 않습니다.
+    <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
+      <div class="table-wrapper">
+        <TableItem class="commute-table" gtc="0.3fr 1fr 1fr 1fr 1fr" br="0.5rem">
+          <TableRow>
+            <TableCell th fs="1.6rem">No</TableCell>
+            <TableCell th fs="1.6rem">회사명</TableCell>
+            <TableCell th fs="1.6rem">직책</TableCell>
+            <TableCell th fs="1.6rem">입사일</TableCell>
+            <TableCell th fs="1.6rem">퇴사일</TableCell>
+          </TableRow>
+          <TableRow v-if="!isEmpty" v-for="(item, index) in careerList" :key="index">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['company_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['join_date'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['resignation_date'] }}</TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+      <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        경력 정보가 존재하지 않습니다.
+      </FlexItem>
     </FlexItem>
-  </FlexItem>
+  </CommonArticle>
 </template>
-  
+
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
@@ -54,9 +52,19 @@ const isEmpty = ref(true);
 const router = useRouter();
 const route = useRoute();
 
+const employeeId = ref('');
+
+const props = defineProps({
+  employee_id: {
+    type: String,
+    required: false,
+  },
+});
+
 onMounted(() => {
-  const employeeId = localStorage.getItem('employeeId');
-  fetchDate(employeeId);
+  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  console.log(props.employee_id);
+  fetchDate(employeeId.value);
 });
 
 const sortByDate = (list) => {
@@ -81,25 +89,34 @@ const fetchDate = async (empId) => {
 };
 
 const handleOnclick = () => {
-  router.push('/hr-basic/my-info/careers/update');
+  router.push({
+    path: '/hr-basic/my-info/careers/update',
+    query: {
+      employee_id: employeeId.value,
+    },
+  });
 };
 
 </script>
-  
+
 <style scoped>
-.content-header {
-  width: 100%;
+.common-article {
   position: relative;
-  justify-content: space-between;
-  align-items: end;
+  margin-top: 2rem;
 }
 
-.content-header ::v-deep(article > div.article-label) {
+::v-deep(article > div.article-label) {
   font-size: 2rem !important;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.update-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .content-body {
@@ -117,4 +134,3 @@ const handleOnclick = () => {
   align-items: center;
 }
 </style>
-  

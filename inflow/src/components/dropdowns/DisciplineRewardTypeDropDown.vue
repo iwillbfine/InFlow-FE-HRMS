@@ -4,7 +4,7 @@
       v-model:selected-item="selectedType"
       :placeholder="'전체'"
       :list="typeList"
-      w="10rem"
+      w="8rem"
     ></DropdownItem>
     <span></span>
   </FlexItem>
@@ -27,7 +27,7 @@ const selectedType = ref(null);
 // 데이터 초기화 함수
 const setDatas = () => {
   typeList.value = types.value.map((row) => ({
-    id: row, 
+    id: row,
     name: row
   }));
 

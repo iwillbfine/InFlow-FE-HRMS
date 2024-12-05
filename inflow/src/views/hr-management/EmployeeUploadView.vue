@@ -5,9 +5,7 @@
     <CommonMenu :cur="1" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
-      <router-view v-slot="{ Component }">
-        <component :is="Component" :title="subMenuList[subIdx].name" />
-      </router-view>
+      <router-view />
     </SectionItem>
   </MainItem>
 </template>
@@ -30,7 +28,6 @@ const menuList = ref([
   { name: '사원 정보 등록', link: '/hr-management/employee/upload' },
   { name: '부서 관리', link: '/hr-management/department' },
   { name: '인사발령', link: '/hr-management/appointment' },
-  { name: '과제 및 평가', link: '/hr-management/evaluation' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
@@ -104,7 +101,7 @@ watch(
   padding-left: 2rem;
   padding-right: 2rem;
   padding-top: 2rem;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
   flex-grow: 1;
   align-items: center;
 }

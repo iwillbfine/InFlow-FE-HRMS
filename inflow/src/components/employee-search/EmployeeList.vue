@@ -1,13 +1,14 @@
 <template>
-    <div v-if="employees && employees.length > 0"class="container">
+    <div v-if="employees && employees.length > 0" class="container">
         <div class="one-content" 
                 v-for="employee in employees"
                 :key="employee.employee_number"
-                @click="selectEmployee(employee.employee_number)">  <!-- 사원코드 상위에 전달 -->
+                @click="selectEmployee(employee.employee_id)">  <!-- 사원코드 상위에 전달 -->
             <div class="profile-image">
                 <!-- <img :src="employee.profile_image_url || '@/assets/Inflow_profile_img.png'" alt=""> -->
                 <!-- "@/assets/Inflow_profile_img.png"  -->
-                <img src="@/assets/Inflow_profile_img.png" alt="">
+                <!-- <img src="@/assets/Inflow_profile_img.png" alt=""> -->
+                <img :src="employee.profile_image_url" alt="profile-image"> 
             </div>
             <div class="profile-detail">
                 <div class="name-and-position">
@@ -31,9 +32,11 @@
 </template>
 
 <script setup>
+
+import {defineProps} from 'vue';
 console.log("EmployeeList컴포넌트");
 
-defineProps({
+const props = defineProps({
     employees: {
         type: Array,
         // required: true,
@@ -49,7 +52,8 @@ const emit = defineEmits(['select'])
 const selectEmployee = (employeeCode) => {
     console.log("클릭됨");
     console.log("전달된 사원코드:", employeeCode);
-    emit('select', employeeCode)
+    emit('select', employeeCode);
+    console.log('select 이벤트 emit 됨');
 }
 
 </script>

@@ -1,7 +1,12 @@
 <template>
   <WidgetItem label="나의 부서 사원" h="42rem" w="100%">
-    <GridItem class="widget-content" h="calc(42rem - 4rem)" w="100%" gtc="repeat(2, 1fr)">
-      <div v-for="(item, index) in memberList" :key=index>
+    <GridItem
+      class="widget-content"
+      h="calc(42rem - 4rem)"
+      w="100%"
+      gtc="repeat(2, 1fr)"
+    >
+      <div v-for="(item, index) in memberList" :key="index">
         <FlexItem
           class="team-member-item"
           fld="row"
@@ -12,18 +17,10 @@
           bgc="#fff"
           br="0.6rem"
         >
-        <FigureItem
-          class="profile-img-wrapper"
-          h="12rem"
-          w="9rem"
-        >
-          <img :src="item.profile_image_url" alt="Profile Image" />
-        </FigureItem>
-          <FlexItem
-            class="team-member-info"
-            fld="column"
-            h="100%"
-          >
+          <FigureItem class="profile-img-wrapper" h="12rem" w="9rem">
+            <img :src="item.profile_image_url" alt="Profile Image" />
+          </FigureItem>
+          <FlexItem class="team-member-info" fld="column" h="100%">
             <span class="emphasize">{{ item.employee_name }}</span>
             <span class="normal">{{ item.role_name }}</span>
             <span class="sub">{{ item.email }}</span>
@@ -53,23 +50,21 @@ import FigureItem from '@/components/semantic/FigureItem.vue';
 import { ref, onMounted } from 'vue';
 import { getEmployeesByDepartmentCode } from '@/api/department';
 
-const eid = ref(null);
 const memberList = ref([]);
 const isEmpty = ref(false);
 
 const props = defineProps({
   dcode: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 const fetchMemberData = async (dcode) => {
   try {
     const response = await getEmployeesByDepartmentCode(dcode);
     if (response.success) {
       memberList.value = response.content;
-      console.log(memberList.value);
       isEmpty.value = memberList.value.length === 0;
     } else {
       memberList.value = [];
@@ -78,7 +73,7 @@ const fetchMemberData = async (dcode) => {
   } catch (error) {
     console.error('나의 부서 사원 데이터를 가져오는데 실패했습니다.', error);
   }
-}
+};
 
 onMounted(() => {
   if (props.dcode) {
@@ -101,7 +96,7 @@ onMounted(() => {
 }
 
 .sub {
-  color: #4E4E4E;
+  color: #4e4e4e;
   font-size: 1.2rem;
   font-weight: 400;
 }

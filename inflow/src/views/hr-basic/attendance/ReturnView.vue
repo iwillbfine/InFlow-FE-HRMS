@@ -65,10 +65,9 @@
   <hr />
   <CommonArticle class="pos-rel" label="복직 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
-    <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
+    <TableItem gtc="3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-        <TableCell th fs="1.6rem">복직 날짜</TableCell>
+        <TableCell th fs="1.6rem" topl>복직 날짜</TableCell>
         <TableCell th fs="1.6rem">복직 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
@@ -83,11 +82,8 @@
           class="mid"
           fs="1.6rem"
           :botl="index === returnRequestList.length - 1"
-          >{{ item.attendance_request_id }}</TableCell
+          >{{ parseDate(item.end_date) }}</TableCell
         >
-        <TableCell class="mid" fs="1.6rem">{{
-          parseDate(item.end_date)
-        }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.created_at)
@@ -265,22 +261,17 @@ const handleOnclick = async () => {
   const today = new Date().setHours(0, 0, 0, 0);
 
   if (leaveList.value.length == 0) {
-    alert('휴직중이 아닙니다.');
+    alert('휴직 중이 아닙니다.');
     return;
   }
 
   if (startDate > today) {
-    alert('휴직중이 아닙니다.');
+    alert('휴직 중이 아닙니다.');
     return;
   }
 
   if (endDate < today) {
-    alert('휴직중이 아닙니다.');
-    return;
-  }
-
-  if (endDate < today) {
-    alert('휴직중이 아닙니다.');
+    alert('휴직 중이 아닙니다.');
     return;
   }
 

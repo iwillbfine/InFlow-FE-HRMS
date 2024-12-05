@@ -41,6 +41,12 @@
           사원을 선택해주세요.
         </FlexItem>
       </FlexItem>
+      <ChangeYearComponent class="change-year"
+        :cur-year="curYear"
+        description="급여 내역"
+        @go-prev-year="goPrevYear"
+        @go-next-year="goNextYear"
+      ></ChangeYearComponent>
       <TableItem class="salary-list" gtc="repeat(6, 1fr)">
         <TableRow>
           <TableCell th fs="1.5rem">지급 연월</TableCell>
@@ -59,10 +65,6 @@
           <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.actual_salary) }}</TableCell>
         </TableRow>
       </TableItem>
-      <PaginationComponent class="pagination"
-        :data="pageInfo"
-        @changePage="handlePageChange"
-      ></PaginationComponent>
     </CommonArticle>
   </SectionItem>
 </template>
@@ -75,51 +77,71 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
-import {onMounted, ref} from "vue";
-import PaginationComponent from "@/components/common/PaginationComponent.vue";
-import {getAllPayments} from "@/api/payroll.js";
-import {useRouter} from "vue-router";
+import { ref, onMounted } from "vue";
+import { getPaymentsByYear } from "@/api/payroll.js";
+import { useRouter } from "vue-router";
+import ChangeYearComponent from "@/components/common/ChangeYearComponent.vue";
 
 const router = useRouter();
 
 const payments = ref([]);
-const pageInfo = ref({});
-
-const curPage = ref(1);
-
+const curYear = ref(''); // 초기 값은 빈 문자열
 const selectedEmployee = ref(null);
 
-const fetchData = async(employeeId, page) => {
-  employeeId = selectedEmployee.value.department_member_id;
-  const response = await getAllPayments(employeeId, page);
-  payments.value = response.content.elements || [];
-  pageInfo.value = response.content;
-}
+// 현재 연도 가져오기
+const getCurYear = () => new Date().getFullYear();
 
-const handlePageChange = (page) => {
-  curPage.value = page;
-  fetchData(selectedEmployee.value.department_member_id, curPage.value);
-  router.push({
-    name: "hr-management-salary-list",
-    params: {employeeId: selectedEmployee.value.department_member_id},
-    query: { page: curPage.value }
-  });
+// 데이터 페치 함수
+const fetchData = async (employeeId, year) => {
+  try {
+    const response = await getPaymentsByYear(employeeId, year);
+    payments.value = response.content || [];
+  } catch (error) {
+    console.error("급여 데이터를 가져오는 중 오류 발생:", error);
+    payments.value = [];
+  }
 };
 
+// 사원 선택 핸들러
 const handleSelected = (item) => {
   selectedEmployee.value = item;
-  console.log("selectedEmployee.value", selectedEmployee.value);
-  fetchData(selectedEmployee.value.department_menber_id, curPage.value);
+  console.log("selectedEmployee.value: ", selectedEmployee.value);
+  if (selectedEmployee.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
 };
 
+// 이전 연도 핸들러
+const goPrevYear = () => {
+  curYear.value -= 1;
+  if (selectedEmployee.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
+};
+
+// 다음 연도 핸들러
+const goNextYear = () => {
+  curYear.value += 1;
+  if (selectedEmployee.value) {
+    fetchData(selectedEmployee.value.department_member_id, curYear.value);
+  }
+};
+
+// 통화 형식 변환
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
+
+// 날짜 형식 변환
 const formatDate = (value) => {
-  if (!value) return '지급일: -';
-  const [date] = value.split('T');
-  const [year, month, day] = date.split('-');
+  if (!value) return "지급일: -";
+  const [date] = value.split("T");
+  const [year, month, day] = date.split("-");
   return `${year}년 ${month}월 ${day}일`;
 };
 
+// 컴포넌트 마운트 시 현재 연도 설정
+onMounted(() => {
+  curYear.value = getCurYear(); // 현재 연도 설정
+});
 </script>
 
 <style scoped>
@@ -151,8 +173,14 @@ const formatDate = (value) => {
   justify-content: center;
   align-items: center;
 }
+
+.change-year {
+  margin-top: 2rem;
+}
+
 .salary-list {
   margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .pagination {

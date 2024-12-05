@@ -53,7 +53,6 @@ const list = ref([
   { name: '인사 기본', icon: markRaw(UserIcon), link: '/hr-basic' },
   { name: '인사 관리', icon: markRaw(AddressBookIcon), link: '/hr-management' },
   { name: '평가', icon: markRaw(EvaluationIcon), link: '/evaluation' },
-  { name: '통계', icon: markRaw(ChartIcon), link: '/statistics' },
 ]);
 
 const router = useRouter();
@@ -66,6 +65,7 @@ const selectItem = (item) => {
 <style scoped>
 .common-nav {
   position: fixed;
+  z-index: 1000;
 }
 
 .nav-list {

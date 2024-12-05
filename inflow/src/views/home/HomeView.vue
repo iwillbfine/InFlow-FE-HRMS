@@ -8,10 +8,10 @@
         <MyAttendanceWidget v-if="employee" :employee="employee"></MyAttendanceWidget>
       </div>
       <div class="grid-item">
-        <ScheduleDdayWidget></ScheduleDdayWidget>
+        <ScheduleDdayWidget :closest-event="closestEvent"></ScheduleDdayWidget>
       </div>
       <div class="grid-item">
-        <MyScheduleWidget></MyScheduleWidget>
+        <MyScheduleWidget @closest-event="handleClosestEvent"></MyScheduleWidget>
       </div>
       <div class="grid-item">
         <MyTeamMemberWidget v-if="employee" :dcode="employee.department_code"></MyTeamMemberWidget>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'; // 상태 관리 및 생명주기 훅
+import { ref, onMounted } from 'vue'; // 상태 관리 및 생명주기 훅
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
@@ -37,6 +37,7 @@ import { getEmployeeById } from '@/api/emp_info';
 // 상태 변수
 const eid = ref(null);
 const employee = ref(null);
+const closestEvent = ref(null);
 const router = useRouter();
 
 const fetchEmployeeData = async (eid) => {
@@ -45,6 +46,10 @@ const fetchEmployeeData = async (eid) => {
   } catch (e) {
     console.error('사원 정보를 가져오는데 실패했습니다.', e);
   }
+};
+
+const handleClosestEvent = (event) => {
+  closestEvent.value = event;
 };
 
 // 컴포넌트가 마운트될 때 로컬 저장소에서 사원 정보를 가져옴

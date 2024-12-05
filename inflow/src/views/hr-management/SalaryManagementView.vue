@@ -2,7 +2,7 @@
   <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="6" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="5" :list="menuList"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
@@ -25,7 +25,6 @@ const menuList = ref([
   { name: '사원 정보 등록', link: '/hr-management/employee/upload' },
   { name: '부서 관리', link: '/hr-management/department' },
   { name: '인사발령', link: '/hr-management/appointment' },
-  { name: '과제 및 평가', link: '/hr-management/evaluation' },
   { name: '휴가 관리', link: '/hr-management/vacation' },
   { name: '급여 관리', link: '/hr-management/salary' },
 ]);
@@ -33,7 +32,7 @@ const menuList = ref([
 const subMenuList = ref([
   { name: '사원별 급여 조회', link: '/hr-management/salary' },
   { name: '비정기 수당 관리', link: '/hr-management/salary/irregular-allowance' },
-  { name: '비과세 급여 관리', link: '/hr-management/salary' }
+  { name: '비과세 급여 관리', link: '/hr-management/salary/non-taxable-payrolls' }
 ]);
 
 const router = useRouter();

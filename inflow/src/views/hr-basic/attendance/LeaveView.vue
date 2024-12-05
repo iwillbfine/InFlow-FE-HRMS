@@ -70,10 +70,9 @@
   <hr />
   <CommonArticle class="pos-rel" label="휴직 신청 내역" w="90%">
     <MoreListButton @click="goMoreList"></MoreListButton>
-    <TableItem gtc="1fr 3fr 3fr 1.5fr 1fr 1.25fr">
+    <TableItem gtc="3fr 3fr 1.5fr 1fr 1.25fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>신청 ID</TableCell>
-        <TableCell th fs="1.6rem">휴직 기간</TableCell>
+        <TableCell th fs="1.6rem" topl>휴직 기간</TableCell>
         <TableCell th fs="1.6rem">휴직 사유</TableCell>
         <TableCell th fs="1.6rem">신청일</TableCell>
         <TableCell th fs="1.6rem">상태</TableCell>
@@ -88,11 +87,10 @@
           class="mid"
           fs="1.6rem"
           :botl="index === leaveRequestList.length - 1"
-          >{{ item.attendance_request_id }}</TableCell
+          >{{
+            parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
+          }}</TableCell
         >
-        <TableCell class="mid" fs="1.6rem">{{
-          parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
-        }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{ item.request_reason }}</TableCell>
         <TableCell class="mid" fs="1.6rem">{{
           parseDate(item.created_at)

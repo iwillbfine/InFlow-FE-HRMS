@@ -25,3 +25,9 @@ const props = defineProps({
   c: { type: String, default: '#fff' },
 });
 </script>
+
+<style scoped>
+.setting-btn i {
+  margin-top: 0.1rem;
+}
+</style>

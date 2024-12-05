@@ -2,7 +2,7 @@
   <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="0" :list="menuList"></CommonMenu>
+    <CommonMenu :cur="0" :list="menuList" @menu-clicked="handleMenuClick"></CommonMenu>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
@@ -17,43 +17,49 @@ import CommonMenu from '@/components/common/CommonMenu.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const menuList = ref([
   { name: '자기 평가', link: '/evaluation/personal' },
   { name: '리더 평가', link: '/evaluation/leader' },
   { name: '과제 등록 및 조회', link: '/evaluation/task' },
+  { name: '평가 관리', link: '/evaluation/policy' },
 ]);
 
 const subMenuList = ref([
-  { name: '서브메뉴 1', link: '/evaluation/leader/1' },
-  { name: '서브메뉴 2', link: '/evaluation/leader/2'  },
+  { name: '자기평가 관리', link: '/evaluation/personal/1' },
 ]);
 
 const router = useRouter();
 const route = useRoute();
 
 const subIdx = ref(0);
+const eid = ref(null);
+const employeeName = ref('');
+
+// 메인 메뉴 클릭 핸들러
+const handleMenuClick = (link) => {
+  if (link === '/evaluation/personal') {
+    router.push(subMenuList.value[0].link);
+  }
+};
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
-
-const eid = ref(null);
-const employeeName = ref('');
+};
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/evaluation/personal';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }

@@ -13,7 +13,7 @@
       class="article-label"
       h="4rem"
       w="100%"
-      fs="1.7rem"
+      :fs="props.fs"
       fw="700"
       c="#003566"
     >
@@ -57,6 +57,10 @@ const props = defineProps({
   minw: {
     type: String,
     default: '',
+  },
+  fs: {
+    type: String,
+    default: '1.7rem',
   },
 });
 </script>

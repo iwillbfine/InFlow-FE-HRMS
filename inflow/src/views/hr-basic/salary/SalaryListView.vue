@@ -23,6 +23,7 @@
       </TableItem>
     </div>
     <PaginationComponent
+      class="pagination"
       :data="pageInfo"
       @changePage="handlePageChange"
     ></PaginationComponent>
@@ -125,6 +126,11 @@ onMounted(() => {
 .amount {
   justify-content: flex-end;
   align-items: center;
+}
+
+.pagination {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 </style>

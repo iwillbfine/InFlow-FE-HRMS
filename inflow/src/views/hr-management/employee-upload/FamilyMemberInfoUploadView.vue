@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+    <CommonArticle label="가구원" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -41,12 +41,17 @@
             <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
             <label :for="'check' + rowIndex"></label>
           </div>
-          <div v-for="(value, header) in row" :key="header">
+          <div v-for="(value, header) in row" :key="header" class="cell-container">
             <input 
               type="text" 
               v-model="rowsData[rowIndex][header]" 
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+              class="cell-input"
+              @focus="showModal(rowIndex, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -57,6 +62,7 @@
         <p>등록</p>
       </button>
     </div>
+  </CommonArticle>
   </div>
 </template>
 
@@ -65,14 +71,7 @@
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getEmpId, getRelationships } from '@/api/emp_attach';
-
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
+import { getDoc, saveData, getAllEmpId, getRelationships } from '@/api/emp_attach';
 
 const headerNames = ref(["사번", "가구원관계", "성명", "생년월일"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
@@ -82,11 +81,11 @@ const selectedRows = ref([]);
 const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
-const validData = ref({});
 const ids = ref({});
 const relationships = ref([]);
 const rChk = ref([]);
 const loading = ref(true);
+const modalTxt = ref({});
 
 const validators = {
   사번: (value) => ids.value[value] !== undefined,
@@ -107,7 +106,7 @@ const clickInput = () => {
 
 const getEmpIds = async() => {
   loading.value = true;
-  const tmp1 = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  const tmp1 = await getAllEmpId();
   const tmp2 = await getRelationships();
   tmp1.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
@@ -119,7 +118,25 @@ const getEmpIds = async() => {
   });
   rChk.value = tmp2.map(row => row["family_relationship_name"]);
   loading.value = false;
-}
+};
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
 
 const handleFileUpload = (event) => {
   const file = event.target.files?.[0];
@@ -190,7 +207,7 @@ const deleteSelectedRows = () => {
 const mapping = async () => {
   await getEmpIds();
   const result = ref([]);
-  rowsData.value.map((row) => { 
+  rowsData.value.map((row) => {
     result.value.push({
       name: row["성명"],
       birth_date: row["생년월일"],
@@ -231,20 +248,38 @@ const postData = async () => {
   window.alert("사원 가구원 정보 등록 완료");
   window.location.reload();
 };
-</script>
 
+onMounted(async() => {
+  await getEmpIds();
+
+  modalTxt.value = {
+    사번: '유효한 사번을 입력하세요.',
+    가구원관계: `선택:\n- ${(rChk.value || []).join('\n- ')}`,
+    생년월일: '입력 예:\n- YYYY-MM-DD',
+  };
+});
+</script>
 
 <style scoped>
 .emp-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100%;
   gap: 0.5rem;
 }
 
 .ca {
-  margin-left: 2rem;
+  align-self: center;
+}
+
+.common-article {
+  position: relative;
+}
+
+.exlbtns1 {
+  position: absolute;
+  top: -0.2rem;
+  right: 0;
 }
 
 .exlbtns1, .exlbtns2 {
@@ -252,48 +287,27 @@ const postData = async () => {
   flex-direction: row;
   justify-content: flex-end;
   gap: 2rem;
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
 }
 
 .exlbtns1 button, .exlbtns2 button {
-  display: flex;
-  flex-direction: row;
-  justify-content:space-around ;
-  width: 140px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  align-items: center;
-  justify-content: center;
+  width: 14.4rem;
+  height: 3.6rem;
   gap: 1rem;
-  cursor: pointer;
-  padding: 1px;
 }
 
 button {
-  width: 100px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  height: 3.6rem;
+  width: 7.2rem;
+  border-radius: 0.6rem;
+  background-color: #003566;
+  border: none;
+  color: #FFF;
+  font-size: 1.6rem;
   cursor: pointer;
-  padding: 1px;
 }
 
 button p {
@@ -311,41 +325,33 @@ button p {
   padding: 1px;
 }
 
-.colboard, .inboard{
+.colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
-  border-radius: 5px;
+  border-radius: 0.6rem;
   background: #FFF;
-  border: solid 2px #2e2f3015;
+  font-size: 1.4rem;
+  border: 2px solid #2e2f3015;
+  margin-top: 0.5rem;
 }
 
 .inboard {
   display: flex;
   flex-direction: column;
+  min-height: 27rem;
   width: 100%;
-  align-items: stretch;
-  padding: 0 0 2rem 0;
-}
-
-.inboard div {
-  height: 100%;
-}
-
-.inboard > :last-child {
-  border-radius: 5px;
-  border-bottom: solid 2px #2e2f3015;
+  overflow-x: auto;
 }
 
 .colname {
   display: grid;
   grid-template-columns: 50px 150px 2.5fr 2.5fr 2.5fr;
-  height: 50px;
+  height: 4.5rem;
   justify-content: stretch;
   justify-items: center;
   align-items: center;
-  border-collapse: collapse;
 }
 
 .colname > div {
@@ -353,33 +359,36 @@ button p {
   text-align: center;
   width: 100%;
   height: 100%;
-  border-right: 0.5px solid #dadada;
+  border: 0.5px solid #dadada;
 }
 
 .headers > div {
   font-weight: bold;
   width: 100%;
   align-content: center;
+  background-color: #f8f8f8;
 }
 
 .rows > div {
   width: 100%;
 }
+
 .rows > div > input{
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
   border: 0.586px solid #DBDBDB;
   background: #F8F8F8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
+
 .chbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .chbox > label {
@@ -399,6 +408,7 @@ input[type="checkbox"] + label {
   width: 20px;
   height: 20px;
   border: 1px solid #DBDBDB;
+  background-color: #fff;
   position: relative;
 }
 
@@ -413,10 +423,40 @@ input[type="checkbox"]:checked + label::after {
   color: #000;
 }
 
+.cell-container {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 10;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 2rem;
 }
 
 .invalid-row {

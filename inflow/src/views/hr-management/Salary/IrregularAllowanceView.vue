@@ -12,18 +12,18 @@
             maxlength="20"
           />
         </TableCell>
-        <TableRow>
-          <TableCell th fs="1.7rem">금액</TableCell>
-          <TableCell fs="1.7rem" topr>
-            <input
-              v-model="amount"
-              name="amount_input"
-              type="text"
-              placeholder="금액을 입력해주세요."
-              maxlength="9"
-            />
-          </TableCell>
-        </TableRow>
+      </TableRow>
+      <TableRow>
+        <TableCell th fs="1.7rem">금액</TableCell>
+        <TableCell fs="1.7rem" topr>
+          <input
+            v-model="amount"
+            name="amount_input"
+            type="text"
+            placeholder="금액을 입력해주세요."
+            maxlength="9"
+          />
+        </TableCell>
       </TableRow>
     </TableItem>
     <ButtonItem
@@ -54,7 +54,8 @@
         <TableCell class="amount" fs="1.7rem">{{ formatCurrency(allowance.amount) }}</TableCell>
       </TableRow>
     </TableItem>
-    <PaginationComponent class="pagination"
+    <PaginationComponent
+      class="pagination"
       :data="pageInfo"
       @changePage="handlePageChange"
     ></PaginationComponent>
@@ -117,7 +118,7 @@ const handleOnclick = async () => {
     amount: won
   };
 
-  irregularAllowanceName.value = ''
+  irregularAllowanceName.value = '';
   amount.value = null;
 
   const response = await createIrregularAllowance(formData);
@@ -125,7 +126,7 @@ const handleOnclick = async () => {
   if (response.success) {
     alert('비정기 수당 항목이 성공적으로 등록되었습니다.');
   } else {
-    alert('비정기 수당 항목 등록 실패! 다시 시도해주세요.')
+    alert('비정기 수당 항목 등록 실패! 다시 시도해주세요.');
   }
   window.location.reload();
 };

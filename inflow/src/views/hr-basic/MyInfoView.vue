@@ -22,7 +22,6 @@ import MainItem from '@/components/semantic/MainItem.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-import { defineCustomElement } from 'vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import SubMenuNav from '@/components/nav/SubMenuNav.vue';
 

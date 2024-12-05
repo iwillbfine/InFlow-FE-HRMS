@@ -18,6 +18,36 @@ export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => 
   }
 };
 
+export const getPeriodicPayments = async(employeeId, startDate, endDate) => {
+  if (!employeeId || !startDate || !endDate) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startDate}, endMonth=${endDate}`);
+  }
+  try {
+    const response = await apiClient.get('/payrolls/period', {
+      params: { employeeId, startDate, endDate },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('getPeriodicPayments 오류: ', error);
+    throw error;
+  }
+};
+
+export const getPaymentsByYear = async(employeeId, year) => {
+  if (!employeeId || !year) {
+    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, year=${year}`);
+  }
+  try {
+    const response = await apiClient.get('/payrolls/list', {
+      params: { employeeId, year },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('getPaymentsByYear 오류: ', error);
+    throw error;
+  }
+};
+
 export const getAllPayments = async(employeeId, page) => {
   if (!employeeId || !page) {
     throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, page=${page}`);
@@ -77,4 +107,24 @@ export const getIrregularAllowance = async(page) => {
   } catch (error) {
     console.error("getIrregularAllowance 오류: ", error)
   }
+};
+
+export const getNonTaxablePayrolls = async(page) => {
+  try {
+    const response = await apiClient.get('/non-taxable-payrolls', {
+      params: { page }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("getNonTaxablePayrolls 오류: ", error)
+  }
 }
+
+export const createNonTaxable = async(formData) => {
+  try {
+    const response = await apiClient.post('/non-taxable-payrolls', formData);
+    return response.data;
+  } catch (error) {
+    console.error("createNonTaxable 오류: ", error);
+  }
+};

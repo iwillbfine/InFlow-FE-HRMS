@@ -3,22 +3,9 @@ import apiClient from '@/api/axios';
 export const getDoc = async (fileType) => {
   try {
     const response = await apiClient.get(`/forms/download?file_type=${fileType}`);
-    return response.data.content;
+    return response.data;
   } catch (error) {
     console.error('양식 다운로드 에러:', error.response?.data || error.message);
-    throw error;
-  }
-};
-
-export const deleteData = async (data, name) => {
-  try {
-    let response;
-    await apiClient.delete(`/employees/${name}`, {
-      data: [...new Set(data.map(row => row.family_member_id))]
-    });
-    return;
-  } catch (error) {
-    console.error('수정 요청 에러:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -41,16 +28,13 @@ export const saveData = async (data, name) => {
   }
 };
 
-export const updateData = async (data, name) => {
+export const updateData = async (list, data, name) => {
   try {
     let response;
-    if (name !== 'family-members') {
-      await apiClient.delete(`/employees/${name}`, {
-        data: [...new Set(data.map(row => row['employee_id']))]
-      });
-    }
+    await apiClient.delete(`/employees/${name}`, {
+      data: list
+    });
     response = await apiClient.post(`/employees/${name}`, data);
-    console.log(response.data);
     return response.data.content;
   } catch (error) {
     console.error('수정 요청 에러:', error.response?.data || error.message);
@@ -61,6 +45,16 @@ export const updateData = async (data, name) => {
 export const getValidData = async () => {
   try {
     const response = await apiClient.get(`/validations/`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getAllEmpId = async () => {
+  try {
+    const response = await apiClient.get(`/employees/`);
     return response.data.content;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
@@ -161,6 +155,16 @@ export const getFamilyById = async (empId) => {
 export const getAppHistoryByMonth = async (year, month) => {
   try {
     const response = await apiClient.get(`/appointments/history?year=${year}&month=${month}&appointment_item_code=all`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getAppHistoryByPeriod = async (year, month, type) => {
+  try {
+    const response = await apiClient.get(`/appointments/history?year=${year}&month=${month}&appointment_item_code=${type}`);
     return response.data.content;
   } catch (error) {
     console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
