@@ -1,6 +1,6 @@
 <template>
   <CommonArticle label="경력" class="ca" w="96%" fs="2rem">
-    <ButtonItem v-if="props.employee_id === null" class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
+    <ButtonItem v-if="props.employee_id === undefined" class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
       <div class="table-wrapper">
         <TableItem class="commute-table" gtc="0.3fr 1fr 1fr 1fr 1fr" br="0.5rem">
@@ -62,6 +62,7 @@ const props = defineProps({
 
 onMounted(() => {
   employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  console.log(props.employee_id);
   fetchDate(employeeId.value);
 });
 
