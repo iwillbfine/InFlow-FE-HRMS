@@ -14,7 +14,7 @@
         <TableCell th fs="1.6rem">계획 목표</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell>
+        <TableCell class="mid">
           <TypeDropdown
             placeholder="선택"
             :list="taskTypes"
