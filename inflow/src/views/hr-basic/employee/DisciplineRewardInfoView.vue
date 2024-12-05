@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle :label="'포상 및 징계'" class="ca" w="96%" fs="2rem">
+  <CommonArticle label="포상 및 징계" class="ca" w="96%" fs="2rem">
     <DisciplineRewardTypeDropDown @selected="getType" class="select-data"></DisciplineRewardTypeDropDown>
     <ButtonItem class="read-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">조회</ButtonItem>
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
@@ -48,8 +48,15 @@ const drList = ref([]);
 const showList = ref([]);
 const isEmpty = ref(true);
 
+const props = defineProps({
+  employee_id: {
+    type: String,
+    required: false,
+  },
+});
+
 onMounted(() => {
-  const employeeId = localStorage.getItem('employeeId');
+  const employeeId = props.employee_id || localStorage.getItem('employeeId');
   fetchDate(employeeId);
 });
 

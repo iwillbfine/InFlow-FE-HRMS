@@ -1,6 +1,6 @@
 <template>
   <FlexItem class="content-header" fld="row" h="6rem" w="96%">
-    <CommonArticle :label="'학력'" class="ca" w="100%" fs="2rem"></CommonArticle>
+    <CommonArticle label="학력" class="ca" w="100%" fs="2rem"></CommonArticle>
     <div class="btns">
       <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
@@ -38,45 +38,17 @@
               <label :for="'check' + index"></label>
             </div>
           </TableCell>
-          <TableCell class="mid" fs="1.6rem">
+          <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
             <input
               type="text"
-              v-model="educationList[index]['school_name']"
-              :class="{ 'invalid-row': !isCellValid(educationList[index]['school_name'], 'school_name') }"
+              v-model="educationList[index][header]"
+              :class="{ 'invalid-row': !isCellValid(educationList[index][header], header) }"
               class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="educationList[index]['degree']"
-              :class="{ 'invalid-row': !isCellValid(educationList[index]['degree'], 'degree') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="educationList[index]['admission_date']"
-              :class="{ 'invalid-row': !isCellValid(educationList[index]['admission_date'], 'admission_date') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="educationList[index]['graduation_date']"
-              :class="{ 'invalid-row': !isCellValid(educationList[index]['graduation_date'], 'graduation_date') }"
-              class="cell-input"
-            />
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <input
-              type="text"
-              v-model="educationList[index]['major']"
-              :class="{ 'invalid-row': !isCellValid(educationList[index]['major'], 'major') }"
-              class="cell-input"
-            />
+              @focus="showModal(index, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === index && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </TableCell>
         </TableRow>
       </TableItem>
@@ -103,19 +75,20 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { updateData, getEducationsById } from '@/api/emp_attach';
 import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const educationList = ref([]);
 const isEmpty = ref(true);
 const headerCheckbox = ref(false);
 const selectedRows = ref([]);
 
+const route = useRoute();
 const router = useRouter();
 
 const empId = ref('');
 
 onMounted(() => {
-  empId.value = localStorage.getItem('employeeId');
+  empId.value = route.query.employee_id || localStorage.getItem('employeeId');
   fetchDate(empId.value);
 });
 
@@ -129,6 +102,30 @@ const isCellValid = (value, header) => {
   return String(value).length > 0;
 };
 
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const modalTxt = ref({
+  admission_date: '입력 예:\n- YYYY-MM-DD',
+  graduation_date: '입력 예:\n- YYYY-MM-DD',
+  degree: '입력 예:\n- 졸업\n- 중퇴\n- 편입\n- 학사\n- 석사\n- 박사',
+});
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
+
 const sortByDate = (list) => {
   return list.sort((a, b) => {
     const dateA = new Date(a['admission_date']);
@@ -137,12 +134,20 @@ const sortByDate = (list) => {
   });
 };
 
+const origin = ref([]);
+
 const fetchDate = async () => {
   const response = await getEducationsById(empId.value);
-
+  origin.value = response;
   if (response) {
     const sortedResponse = sortByDate(response);
-    educationList.value = sortedResponse;
+    educationList.value = sortedResponse.map(row => ({
+      school_name: row['school_name'],
+      degree: row['degree'],
+      admission_date: row['admission_date'],
+      graduation_date: row['graduation_date'],
+      major: row['major'],
+    }));
     isEmpty.value = educationList.value.length === 0;
   } else {
     educationList.value = [];
@@ -202,9 +207,14 @@ const postData = async () => {
 
   const data = mapping();
   try {
-    await updateData(data, 'educations');
+    await updateData(origin.value.map(row => Number(row.education_id)), data, 'educations');
     window.alert("학력 정보 수정 요청이 완료되었습니다.");
-    router.push('/hr-basic/my-info/educations');
+    router.push({
+      path: '/hr-basic/my-info/educations',
+      query: {
+        employee_id: empId.value,
+      },
+    });
     return;
   } catch (error) {
     window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
@@ -280,7 +290,8 @@ button p {
 input {
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 1px;
   border: 0.586px solid #DBDBDB;
@@ -323,6 +334,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.mid {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 9999;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .invalid-row {
