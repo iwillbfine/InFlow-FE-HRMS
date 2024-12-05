@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="96%">
+    <CommonArticle label="인사발령 등록" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -41,12 +41,17 @@
             <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
             <label :for="'check' + rowIndex"></label>
           </div>
-          <div v-for="(value, header) in row" :key="header">
-            <input
-              type="text"
-              v-model="rowsData[rowIndex][header]"
-              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+          <div v-for="(value, header) in row" :key="header" class="cell-container">
+            <input 
+              type="text" 
+              v-model="rowsData[rowIndex][header]" 
+              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header)}"
+              class="cell-input"
+              @focus="showModal(rowIndex, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -66,14 +71,7 @@
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getEmpId, getValidData } from '@/api/emp_attach';
-
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
+import { getDoc, saveData, getAllEmpId, getValidData } from '@/api/emp_attach';
 
 const headerNames = ref([
   "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)",
@@ -89,6 +87,16 @@ const workbook = ref(null);
 const validData = ref({});
 const ids = ref({});
 const loading = ref(true);
+const modalTxt = ref({});
+
+const validationKeys = {
+  "발령대상(사번)": "ids",
+  "인사발령 유형(CODE)": "appointment_items",
+  "발령 부서(CODE)": "departments",
+  "발령 직무(CODE)": "duties",
+  "발령 직책(CODE)": "roles",
+  "발령 직위(CODE)": "positions",
+};
 
 const validators = {
   "발령대상(사번)": (value) => ids.value[value] !== undefined,
@@ -100,26 +108,56 @@ const validators = {
 };
 
 const isCellValid = (value, header) => {
-  if (value === null || value === '') return false;
-  if (header === '발령대상(사번)' && (loading.value || Object.keys(ids.value).length === 0)) return true;
-  if (header === '인사발령 유형(CODE)' && (loading.value || Object.keys(validData.value.appointment_items).length === 0)) return true;
-  if (header === '발령 부서(CODE)' && (loading.value || Object.keys(validData.value.departments).length === 0)) return true;
-  if (header === '발령 직무(CODE)' && (loading.value || Object.keys(validData.value.duties).length === 0)) return true;
-  if (header === '발령 직책(CODE)' && (loading.value || Object.keys(validData.value.roles).length === 0)) return true;
-  if (header === '발령 직위(CODE)' && (loading.value || Object.keys(validData.value.positions).length === 0)) return true;
-  return validators[header] ? validators[header](value) : true;
+  if (!value) return false;
+
+  const key = validationKeys[header];
+  if (!key) return true;
+
+  const data = key === "ids" ? ids.value : validData.value[key];
+  if (loading.value || !data || Object.keys(data).length === 0) return true;
+
+  return key === "ids" ? data[value] !== undefined : data.includes(value);
 };
 
 const getEmpIds = async() => {
   loading.value = true;
   validData.value = await getValidData();
-  const tmp = await getEmpId({'employee_number':rowsData.value.map(row => `${row['발령대상(사번)']}`)})
+  const tmp = await getAllEmpId();
   tmp.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
     ids.value[row["employee_id"]] = row["employee_number"];
   });
   loading.value = false;
 }
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
+
+const setModalTxt = (data) => {
+  return {
+    "발령대상(사번)": '유효한 사번을 입력하세요.',
+    "인사발령 유형(CODE)": '선택:\n- '+(data.appointment_items || []).join('\n- '),
+    "발령 부서(CODE)": '선택:\n- '+(data.departments || []).join('\n- '),
+    "발령 직무(CODE)": '선택:\n- '+(data.duties || []).join('\n- '),
+    "발령 직책(CODE)": '선택:\n- '+(data.roles || []).join('\n- '),
+    "발령 직위(CODE)": '선택:\n- '+(data.positions || []).join('\n- '),
+  };
+};
 
 const clickInput = () => {
   fileInput.value.click();
@@ -240,6 +278,11 @@ const postData = async () => {
   window.alert("인사발령 정보 등록 완료");
   window.location.reload();
 };
+
+onMounted(async() => {
+  await getEmpIds();
+  modalTxt.value = setModalTxt(validData.value);
+});
 </script>
 
 <style scoped>
@@ -358,7 +401,8 @@ button p {
 .rows > div > input{
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
   border: 0.586px solid #DBDBDB;
@@ -402,6 +446,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.cell-container {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 9999;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .regist {

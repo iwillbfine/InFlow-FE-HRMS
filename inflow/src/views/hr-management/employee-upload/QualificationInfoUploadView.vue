@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="96%">
+    <CommonArticle label="자격증" class="ca" w="96%">
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -41,12 +41,17 @@
             <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
             <label :for="'check' + rowIndex"></label>
           </div>
-          <div v-for="(value, header) in row" :key="header">
-            <input
-              type="text"
-              v-model="rowsData[rowIndex][header]"
+          <div v-for="(value, header) in row" :key="header" class="cell-container">
+            <input 
+              type="text" 
+              v-model="rowsData[rowIndex][header]" 
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"/>
+              class="cell-input"
+              @focus="showModal(rowIndex, header)"
+              @blur="hideModal"/>
+            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+              <pre>{{ modalTxt[header] }}</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -66,16 +71,9 @@
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import * as xlsx from "xlsx";
 import { ref, onMounted } from "vue";
-import { getDoc, saveData, getEmpId, getQualifications } from '@/api/emp_attach';
+import { getDoc, saveData, getAllEmpId, getQualifications } from '@/api/emp_attach';
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-});
-
-const headerNames = ref(["사번", "자격증명", "자격번호", "취득일", "발급기관", "등급 및 점수"]);
+const headerNames = ref(["사번", "자격증", "자격번호", "취득일", "발급기관", "등급 및 점수"]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
 
 const chkHeader = ref(false);
@@ -83,7 +81,6 @@ const selectedRows = ref([]);
 const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
-const validData = ref({});
 const ids = ref({});
 const qns = ref([]);
 const loading = ref(true);
@@ -95,8 +92,8 @@ const validators = {
 };
 
 const isCellValid = (value, header) => {
-  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
   if (value === null || value === '') return false;
+  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
   return validators[header] ? validators[header](value) : true;
 };
 
@@ -106,7 +103,7 @@ const clickInput = () => {
 
 const getEmpIds = async() => {
   loading.value = true;
-  const tmp1 = await getEmpId({'employee_number':rowsData.value.map(row => `${row['사번']}`)})
+  const tmp1 = await getAllEmpId();
   const tmp2 = await getQualifications();
   tmp1.forEach((row) => {
     ids.value[row["employee_number"]] = row["employee_id"];
@@ -114,7 +111,31 @@ const getEmpIds = async() => {
   });
   qns.value = tmp2.map((row) => `${row["qualification_number"]}`);
   loading.value = false;
-}
+};
+
+const visible = ref(false);
+const activeRow = ref(null);
+const activeHeader = ref(null);
+
+const showModal = (rowIndex, header) => {
+  if (modalTxt.value[header]  !== undefined) {
+    visible.value = true;
+    activeRow.value = rowIndex;
+    activeHeader.value = header;
+  }
+};
+
+const hideModal = () => {
+  visible.value = false;
+  activeRow.value = null;
+  activeHeader.value = null;
+};
+
+const modalTxt = ref({
+  사번: '유효한 사번을 입력하세요.',
+  자격번호: '유효한 자격번호를 입력하세요.',
+  취득일: '입력 예:\n- YYYY-MM-DD',
+});
 
 const handleFileUpload = (event) => {
   const file = event.target.files?.[0];
@@ -187,7 +208,7 @@ const mapping = async () => {
   const result = ref([]);
   rowsData.value.map((row) => {
     result.value.push({
-      qualification_name: row["자격증명"],
+      qualification_name: row["자격증"],
       qualification_number: row["자격번호"],
       qualified_at: row["취득일"],
       issuer: row["발급기관"],
@@ -344,7 +365,8 @@ button p {
 .rows > div > input{
   width: 100%;
   height: 100%;
-  text-align: center;
+  padding-left: 0.5rem;
+  text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
   border: 0.586px solid #DBDBDB;
@@ -388,6 +410,36 @@ input[type="checkbox"]:checked + label::after {
   align-items: center;
   justify-content: center;
   color: #000;
+}
+
+.cell-container {
+  position: relative;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  min-width: max-content;
+  min-height: max-content;
+  padding: 1.5rem;
+  margin-top: 0.2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 9px;
+  z-index: 10;
+}
+
+.modal pre {
+  margin: 0;
+  color: #333;
+  font-size: 9px;
+  line-height: 1.5;
 }
 
 .regist {
