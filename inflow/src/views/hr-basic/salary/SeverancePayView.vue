@@ -18,10 +18,12 @@
         </TableRow>
       </TableItem>
     </div>
-<!--    <div class="button-wrapper">-->
-<!--      <ButtonItem class="button" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>-->
-<!--    </div>-->
-    <div class="severance-table-wrapper">
+    <div class="button-wrapper">
+      <ButtonItem class="button" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="toggleSeveranceTable">
+        조회
+      </ButtonItem>
+    </div>
+    <div class="severance-table-wrapper" v-if="showSeveranceTable">
       <TableItem class="severance-pay-table" gtc="repeat(6, 1fr)" br="0.5rem">
         <TableRow>
           <TableCell th fs="1.6rem" fw="bold">직전 3개월 기간</TableCell>
@@ -55,6 +57,7 @@ import FlexItem from "@/components/semantic/FlexItem.vue";
 import TableItem from "@/components/semantic/TableItem.vue";
 import TableRow from "@/components/semantic/TableRow.vue";
 import TableCell from "@/components/semantic/TableCell.vue";
+import ButtonItem from "@/components/semantic/ButtonItem.vue";
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import {getEstimateWorkingDays, calculateSeverancePay} from "@/api/payroll.js";
@@ -65,6 +68,7 @@ const router = useRouter();
 const employeeId = ref(null);
 const workingDay = ref({});
 const severancePay = ref({});
+const showSeveranceTable = ref(false);
 
 // api 호출
 const fetchData = async() => {
@@ -90,6 +94,10 @@ const fetchData = async() => {
   } catch (error) {
     console.log("데이터 호출 중 오류 발생", error);
   }
+};
+
+const toggleSeveranceTable = () => {
+  showSeveranceTable.value = true; // 조회 버튼 클릭 시 테이블 표시
 };
 
 // const fetchWorkingData = async(employeeId) => {
