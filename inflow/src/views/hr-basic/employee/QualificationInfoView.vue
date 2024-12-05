@@ -44,7 +44,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { getQualificationsById } from '@/api/emp_attach';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, defineProps } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const qualList = ref([]);
@@ -95,6 +95,15 @@ const handleOnclick = () => {
     },
   });
 };
+
+watch(
+  () => props.employee_id,
+  (newVal) => {
+    employeeId.value = newVal;
+    fetchDate(employeeId.value);
+  },
+  { immediate: true }
+);
 
 </script>
 

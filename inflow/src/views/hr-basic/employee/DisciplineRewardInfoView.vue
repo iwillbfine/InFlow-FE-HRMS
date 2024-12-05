@@ -42,7 +42,7 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import DisciplineRewardTypeDropDown from '@/components/dropdowns/DisciplineRewardTypeDropDown.vue';
 import { getDisciplineReward } from '@/api/emp_attach';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineProps } from 'vue';
 
 const drList = ref([]);
 const showList = ref([]);
@@ -98,6 +98,15 @@ const handleOnclick = () => {
     showList.value = drList.value.filter(row => row.discipline_reward_name === selectedType.value);
   }
 };
+
+watch(
+  () => props.employee_id,
+  (newVal) => {
+    employeeId.value = newVal;
+    fetchDate(employeeId.value);
+  },
+  { immediate: true }
+);
 
 watch(showList, (newValue) => {
   isEmpty.value = newValue.length === 0;
