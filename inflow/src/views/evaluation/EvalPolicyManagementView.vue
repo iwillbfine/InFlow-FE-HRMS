@@ -227,8 +227,12 @@ const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success) {
-      taskTypes.value = response.content;  // 직접 할당
-      console.log('과제 유형 목록:', taskTypes.value);
+      // 데이터 구조 변환
+      taskTypes.value = response.content.map(type => ({
+        id: type.task_type_id,
+        name: type.task_type_name
+      }));
+      console.log('변환된 과제 유형 목록:', taskTypes.value);
     } else {
       console.error('과제 유형 조회 실패:', response);
       taskTypes.value = [];
@@ -238,7 +242,6 @@ const fetchTaskTypes = async () => {
     taskTypes.value = [];
   }
 };
-
 const getTaskTypeName = (taskTypeId) => {
   const taskType = taskTypes.value.find(type => type.id === taskTypeId);
   return taskType ? taskType.name : '-';
