@@ -7,7 +7,7 @@
       </FlexItem>
     </div>
 
-    <TableItem gtc="0.6fr 2fr 2fr">
+    <TableItem gtc="0.8fr 2fr 2fr">
       <TableRow>
         <TableCell th fs="1.6rem">유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
@@ -18,7 +18,7 @@
           <TypeDropdown
             placeholder="선택"
             :list="taskTypes"
-            w="100%"
+            w="10rem"
             @update:selectedItem="handleTypeSelection"
           />
         </TableCell>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
@@ -101,7 +101,7 @@ import TypeDropdown from '@/components/dropdowns/DropdownItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalModal from '@/views/evaluation/TaskEvalModal.vue';
-import { createTaskItem, findAllTaskItemsByEmpId, getAllTaskTypes } from '@/api/evaluation';
+import { createTaskItem, findAllTaskItemsByEmpId } from '@/api/evaluation';
 
 // 상태 관리
 const taskList = ref([]);
@@ -117,10 +117,11 @@ const selectedTask = ref(null);
 const employeeId = ref(localStorage.getItem('employeeId'));
 
 const emit = defineEmits(['yearSelected', 'halfSelected']);
+
 const props = defineProps({
   selectedYear: {
-    type: [Number, String],
-    required: true
+    type: [Number, String], 
+    default: new Date().getFullYear()
   },
   selectedHalf: {
     type: String,
@@ -131,10 +132,9 @@ const props = defineProps({
 
 // 핸들러 함수들
 const handleYearSelected = (year) => {
-  selectedYear.value = year;
-  emit('yearSelected', year);
+  selectedYear.value = Number(year); // String을 Number로 변환
+  emit('yearSelected', Number(year));
 };
-
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
   emit('halfSelected', half);
@@ -155,6 +155,17 @@ const handleModalClose = () => {
 const handleEvalSubmit = () => {
   fetchTaskList(); // 평가 제출 후 목록 새로고침
 };
+
+// watch로 year와 half 변경 감지하여 해당 년도 및 반기에 해당하는 과제항목 리스트 조회
+watch(
+  [selectedYear, selectedHalf],
+  ([newYear, newHalf], [oldYear, oldHalf]) => {
+    if (newYear && newHalf && (newYear !== oldYear || newHalf !== oldHalf)) {
+      fetchTaskList();
+    }
+  },
+  { immediate: true } // 컴포넌트 마운트 시 즉시 실행
+);
 
 // 과제 유형 이름 가져오기
 const getTaskTypeName = (typeId) => {

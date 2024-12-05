@@ -19,7 +19,7 @@ export const getTaskEvaluation = async (empId, year, half) => {
 };
 
 // 평가ID로 과제별 평가 List 조회 ( 개인평가 조회에 사용 )
-export const findIndividualTaskListByEvaluationId = async (year, half, empId) => {
+export const findIndividualTaskListByEvaluationId = async (empId, year, half) => {
   try {
     const response = await apiClient.get('/evaluations/taskEval/individualTaskList', {
       params: {
@@ -183,6 +183,24 @@ export const findFinalGrade = async (empId, year, half) => {
     throw error;
   }
 };
+
+// 자기 평가 조회
+export const findEvaluationByEmpIdAndYearAndHalf = async (year, half,empId ) => {
+  try {
+    const response = await apiClient.get('/evaluations/evaluation/mine', {
+      params: {
+        year: year,
+        half: half,
+        empId: empId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('자기 평가 조회 중 에러 발생:', error);
+    throw error;
+  }
+};
+
 
 // 피드백 생성
 export const createFeedback = async (createFeedbackRequestDTO) => {
