@@ -148,7 +148,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, defineProps, watch } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
 import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
 
@@ -193,7 +193,6 @@ const props = defineProps({
     required: false,
   },
 });
-
 // API에서 데이터 가져오는 함수
 const fetchEmployeeData = async () => {
   try {
@@ -410,6 +409,14 @@ onMounted(() => {
   console.log('photoInput 초기화 상태:', photoInput.value);
   fetchEmployeeData();
 });
+
+watch(
+  () => props.employee_id,
+  (newVal) => {
+    fetchEmployeeData();
+  },
+  { immediate: true }
+);
 
 </script>
 

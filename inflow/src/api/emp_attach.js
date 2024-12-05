@@ -62,6 +62,16 @@ export const getAllEmpId = async () => {
   }
 };
 
+export const getEmpByNum = async (empNum) => {
+  try {
+    const response = await apiClient.get(`/employees/number/${empNum}`);
+    return response.data.content;
+  } catch (error) {
+    console.error('유효성 검사 데이터 조회 에러:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getEmpId = async (empCodes) => {
   try {
     const response = await apiClient.post(`/employees/numbers`, empCodes);
