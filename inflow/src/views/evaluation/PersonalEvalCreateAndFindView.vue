@@ -114,19 +114,30 @@ const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const selectedType = ref(null);
 const selectedTask = ref(null);
-
-// employeeId 가져오기
 const employeeId = ref(localStorage.getItem('employeeId'));
+
+const emit = defineEmits(['yearSelected', 'halfSelected']);
+const props = defineProps({
+  selectedYear: {
+    type: [Number, String],
+    required: true
+  },
+  selectedHalf: {
+    type: String,
+    required: true
+  }
+});
+
 
 // 핸들러 함수들
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  fetchTaskList();
+  emit('yearSelected', year);
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  fetchTaskList();
+  emit('halfSelected', half);
 };
 
 const handleTypeSelection = (typeId) => {
