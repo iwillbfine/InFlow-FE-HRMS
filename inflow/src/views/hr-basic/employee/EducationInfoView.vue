@@ -45,7 +45,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { getEducationsById } from '@/api/emp_attach';
-import { ref, onMounted, watch, defineProps } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const educationList = ref([]);
@@ -61,11 +61,6 @@ const props = defineProps({
     type: String,
     required: false,
   },
-});
-
-onMounted(() => {
-  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
 });
 
 const sortByDate = (list) => {
@@ -98,15 +93,19 @@ const handleOnclick = () => {
   });
 };
 
+onMounted(() => {
+  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
+});
+
 watch(
   () => props.employee_id,
   (newVal) => {
-    employeeId.value = newVal;
+    employeeId.value = route.query.employee_id || newVal || localStorage.getItem('employeeId');
     fetchDate(employeeId.value);
   },
   { immediate: true }
 );
-
 </script>
 
 <style scoped>
