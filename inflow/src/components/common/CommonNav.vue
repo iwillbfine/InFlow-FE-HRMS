@@ -65,6 +65,7 @@ const selectItem = (item) => {
 <style scoped>
 .common-nav {
   position: fixed;
+  z-index: 1000;
 }
 
 .nav-list {

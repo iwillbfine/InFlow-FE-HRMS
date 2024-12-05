@@ -16,7 +16,7 @@
             <CheckButton v-if="isCopied" h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem"></CheckButton>
             <CopyButton v-else h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem" @click="handleCopy(item.message)"></CopyButton>
           </FlexItem>
-          <span v-html="parseBoldText(item.message)"></span>
+          <span v-html="parseMarkdown(item.message)"></span>
         </li>
       </UlItem>
       <div class="chat-container" :class="{ 'chat-bottom': !isInit }">
@@ -49,6 +49,14 @@ import CheckButton from '@/components/buttons/CheckButton.vue';
 import RobotIcon from '@/components/icons/RobotIcon.vue';
 import { ref, onMounted, nextTick } from 'vue';
 import { chatbotQuery } from '@/api/chatbot';
+import { marked } from 'marked';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
 
 const eid = ref(null);
 const sessionId = ref('');
@@ -145,6 +153,9 @@ const handleSubmit = () => {
 
   nextTick(() => {
     adjustHeight();  // 메시지 제출 후 textarea 크기 조정
+    setTimeout(() => {
+      scrollToBottom(); // 페이지 스크롤 최하단 이동
+    }, 50); // 50ms 지연 후 스크롤 이동
   });
 }
 
@@ -155,9 +166,38 @@ const scrollToBottom = () => {
   });
 };
 
-// **로 감싸진 부분을 <strong> 태그로 변환하는 함수
-const parseBoldText = (text) => {
-  return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');  // **...**을 <strong>...</strong>로 변환
+const decodeHtmlEntities = (text) => {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = text;
+  return textarea.value;
+};
+
+// 마크다운 파싱 함수
+const parseMarkdown = (text) => {
+  const html = marked(text); // 마크다운을 HTML로 변환
+
+  // 하이라이팅 처리
+  const highlightedHtml = html.replace(
+    /<pre><code class="language-(\w+)">([\s\S]*?)<\/code><\/pre>/g,
+    (match, language, code) => {
+      // HTML 엔티티를 디코딩
+      const decodedCode = decodeHtmlEntities(code);
+
+      // 디코딩된 코드에 하이라이팅 적용
+      const highlightedCode = Prism.highlight(decodedCode, Prism.languages[language], language);
+      return `<pre><code class="language-${language}">${highlightedCode}</code></pre>`;
+    }
+  );
+
+  // 렌더링된 HTML을 삽입 후 하이라이팅
+  nextTick(() => {
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach((block) => {
+      Prism.highlightElement(block); // 각 코드 블록에 하이라이팅 적용
+    });
+  });
+
+  return highlightedHtml;
 };
 
 onMounted(() => {
@@ -193,9 +233,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   background-color: #fff;
-  width: 70rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  width: 100%;
   padding-bottom: 4rem;
   z-index: 2;
 }
@@ -209,21 +247,22 @@ onMounted(() => {
 .chat-item {
   display: flex;
   flex-direction: column;
-  width: 80%;
   min-height: 5rem;
   border-radius: 2.5rem;
   padding: 2rem;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 500;
 }
 
 .bot-chat {
   align-self: flex-start;
-  background-color: #f4f4f4;
+  width: 100%;
+  background-color: #fff;
 }
 
 .user-chat {
   align-self: flex-end;
+  width: 70%;
   background-color: #d9ecfb;
 }
 
