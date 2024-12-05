@@ -16,7 +16,7 @@
             <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ item['company_name'] }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['join_date'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['join_date'] }}</TableCell> 
             <TableCell class="mid" fs="1.6rem">{{ item['resignation_date'] }}</TableCell>
           </TableRow>
         </TableItem>
@@ -43,7 +43,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { getCareersById } from '@/api/emp_attach';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const careerList = ref([]);
@@ -61,12 +61,6 @@ const props = defineProps({
   },
 });
 
-onMounted(() => {
-  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
-  console.log(props.employee_id);
-  fetchDate(employeeId.value);
-});
-
 const sortByDate = (list) => {
   return list.sort((a, b) => {
     const dateA = new Date(a['join_date']);
@@ -76,16 +70,18 @@ const sortByDate = (list) => {
 };
 
 const fetchDate = async (empId) => {
-  const response = await getCareersById(empId);
-
-  if (response) {
-    const sortedResponse = sortByDate(response);
-    careerList.value = sortedResponse;
-    isEmpty.value = careerList.value.length === 0;
-  } else {
-    careerList.value = [];
-    isEmpty.value = true;
-  }
+  if (empId !== undefined && empId !== null){
+    const response = await getCareersById(empId);
+    
+    if (response) {
+      const sortedResponse = sortByDate(response);
+      careerList.value = sortedResponse;
+      isEmpty.value = careerList.value.length === 0;
+    } else {
+      careerList.value = [];
+      isEmpty.value = true;
+    };
+  };
 };
 
 const handleOnclick = () => {
@@ -96,6 +92,20 @@ const handleOnclick = () => {
     },
   });
 };
+
+watch(
+  () => props.employee_id,
+  (newVal) => {
+    employeeId.value = newVal || route.query.employee_id || localStorage.getItem('employeeId');
+    fetchDate(employeeId.value);
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  employeeId.value = props.employee_id || route.query.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
+});
 
 </script>
 

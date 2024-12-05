@@ -1,13 +1,13 @@
 <template>
   <SectionItem class="content-section" w="100%">
-    <ProfileView :employee_id="props.employee_id"></ProfileView>
+    <ProfileView :employee_id="eid"></ProfileView>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
-    <router-view :employee_id="props.employee_id"></router-view>
+    <router-view :employee_id="eid"></router-view>
   </SectionItem>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineProps } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -29,14 +29,20 @@ const subMenuList = ref([
 ]);
 
 const props = defineProps({
-  employee_id: {
+  empId: {
     type: String,
-    required: false,
+    required: true,
+    default: localStorage.getItem('employeeId'),
   },
 });
 
-const eid = ref(null);
-const employeeName = ref('');
+const eid = ref('');
+
+const setEid = () => {
+  eid.value = props.empId;
+}
+
+setEid();
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
@@ -44,8 +50,7 @@ const handleClicked = (idx) => {
 }
 
 onMounted(() => {
-  eid.value = props.employee_id;
-
+  setEid();
   if (subIdx.value === null) {
     const matchedIndex = subMenuList.value.findIndex(
       (item) => item.link === route.path
@@ -57,6 +62,14 @@ onMounted(() => {
     }
   }
 });
+
+watch(
+  () => props.empId,
+  (newVal) => {
+    eid.value = newVal;
+  },
+  { immediate: true }
+);
 
 watch(
   () => route.path,
