@@ -117,6 +117,10 @@ const handleSubmit = () => {
   });
   fetchAnswer(eid.value, sessionId.value, message.value);
   message.value = '';
+
+  nextTick(() => {
+    adjustHeight();  // 메시지 제출 후 textarea 크기 조정
+  });
 }
 
 const scrollToBottom = () => {
