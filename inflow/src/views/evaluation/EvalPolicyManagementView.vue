@@ -12,7 +12,7 @@
                  @update:selectedItem="handleTypeSelection"
                  class="typeDropdown task-input"
                 />  
-          <TableCell th fs="1.6rem">상대평가기준 사원 수</TableCell>
+          <TableCell th fs="1.6rem">기준 사원 수</TableCell>
           <TableCell fs="1.6rem">
             <input 
               type="number"
@@ -48,7 +48,7 @@
         </TableRow>
 
         <TableRow>
-          <TableCell th fs="1.6rem">정책 수정 가능 시기</TableCell>
+          <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
           <TableCell fs="1.6rem">
             <YearMonthDropDown 
                 @valid-date-selected="handlePolicyEditDateSelected"  
