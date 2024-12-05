@@ -1,5 +1,5 @@
 <template>
-    <CrudModal :h="'80rem'" :w="'90rem'" @close="handleClose">
+    <CrudModal :h="'70rem'" :w="'92rem'" @close="handleClose">
       <h2 class="modal-title">평가 정책 {{ isEditing ? '수정' : '상세 정보' }}</h2>
       
       <div class="modal-content">
@@ -322,7 +322,8 @@
   
   .modal-content {
     padding: 2rem;
-    overflow-y: auto;
+    height: 55rem; 
+    width: 90rem;
   }
   
   .policy-description {
@@ -365,3 +366,4 @@
     gap: 1rem;
   }
   </style>
+  <!-- 테이블 크기 및 너비 height: 48rem; width: 100rem;  / 모달 전체 크기 height: 74rem; -->

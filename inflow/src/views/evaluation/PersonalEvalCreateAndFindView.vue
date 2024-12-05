@@ -16,7 +16,7 @@
       <TableRow>
         <TableCell class="mid">
           <TypeDropdown
-            placeholder="선택"
+            placeholder="과제 유형"
             :list="taskTypes"
             w="10rem"
             @update:selectedItem="handleTypeSelection"
