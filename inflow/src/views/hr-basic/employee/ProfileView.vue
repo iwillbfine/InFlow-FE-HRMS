@@ -7,7 +7,7 @@
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-    <button @click="toggleEditMode" class="btn">{{ editMode ? '수정 요청' : '수정' }}</button>
+    <button v-if="props.employee_id!==null" @click="toggleEditMode" class="btn">{{ editMode ? '수정 요청' : '수정' }}</button>
       </div>
     </div>
     <div class="profile-container">
@@ -186,11 +186,18 @@ const form = ref({
   photoFile: null,
 });
 
+const props = defineProps({
+  employee_id: {
+    type: String,
+    required: false,
+  },
+});
+
 // API에서 데이터 가져오는 함수
 const fetchEmployeeData = async () => {
   try {
     // 로컬 스토리지에서 employeeId와 accessToken 가져오기
-    const employeeId = localStorage.getItem('employeeId');
+    const employeeId = props.employee_id || localStorage.getItem('employeeId');
     const token = localStorage.getItem('accessToken');
 
     if (!employeeId || !token) {
