@@ -64,6 +64,10 @@ button {
   background: transparent; /* 기본 배경 제거 */
 }
 
+pre[class*="language-"] {
+  border-radius: 0.6rem;
+}
+
 @media screen and (max-width: 1600px) {
   :root {
     font-size: 9.5px;

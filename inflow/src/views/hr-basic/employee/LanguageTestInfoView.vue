@@ -1,6 +1,7 @@
 <template>
   <CommonArticle label="어학" class="ca" w="96%" fs="2rem">
     <ButtonItem v-if="props.employee_id === undefined" class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
+
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
       <div class="table-wrapper">
         <TableItem class="commute-table" gtc="0.5fr 1fr 1.5fr 1fr 1fr 1.5fr 1.5fr" br="0.5rem">

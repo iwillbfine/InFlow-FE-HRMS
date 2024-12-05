@@ -1,7 +1,7 @@
 // evaluation.js
 import apiClient from '@/api/axios';
 
-// 과제별 평가 조회 - ( 개인평가 내역 조회에 사용 )
+// 과제별 평가 조회 - ( 자기평가&리더평가에 해당하는 과제별 평가 리스트 모두 조회 )
 export const getTaskEvaluation = async (empId, year, half) => {
   try {
     const response = await apiClient.get(`/evaluations/taskEval/find`, {
@@ -14,6 +14,23 @@ export const getTaskEvaluation = async (empId, year, half) => {
     return response.data;
   } catch (error) {
     console.error('getTaskEvaluation 에러:', error);
+    throw error;
+  }
+};
+
+// 평가ID로 과제별 평가 List 조회 ( 개인평가 조회에 사용 )
+export const findIndividualTaskListByEvaluationId = async (year, half, empId) => {
+  try {
+    const response = await apiClient.get('/evaluations/taskEval/individualTaskList', {
+      params: {
+        year: year,
+        half: half,
+        empId: empId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('자기평가 과제 리스트 조회 중 에러 발생:', error);
     throw error;
   }
 };

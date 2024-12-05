@@ -8,6 +8,7 @@
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
     <button v-if="props.employee_id === undefined" @click="toggleEditMode" class="btn">{{ editMode ? '수정 요청' : '수정' }}</button>
+
       </div>
     </div>
     <div class="profile-container">
