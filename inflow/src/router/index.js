@@ -121,12 +121,14 @@ const routes = [
   {
     path: '/hr-basic/my-info',
     name: 'hr-basic-my-info',
+    props: true,
     redirect: '/hr-basic/my-info/careers',
     component: MyInfoView,
     children: [
       {
         path: 'careers',
         name: 'career',
+        props: true,
         component: CareerInfoView,
       },
       {
@@ -137,11 +139,13 @@ const routes = [
       {
         path: 'disciplinerewards',
         name: 'discipline-reward',
+        props: true,
         component: DisciplineRewardInfoView,
       },
       {
         path: 'educations',
         name: 'education',
+        props: true,
         component: EducationInfoView,
       },
       {
@@ -152,6 +156,7 @@ const routes = [
       {
         path: 'familymembers',
         name: 'family-member',
+        props: true,
         component: FamilyMemberInfoView,
       },
       {
@@ -162,6 +167,7 @@ const routes = [
       {
         path: 'languagetests',
         name: 'language-test',
+        props: true,
         component: LanguageTestInfoView,
       },
       {
@@ -172,6 +178,7 @@ const routes = [
       {
         path: 'qualifications',
         name: 'qualification',
+        props: true,
         component: QualificationInfoView,
       },
       {
