@@ -322,12 +322,52 @@ const routes = [
         name: 'hr-basic-document-certificate',
         component: CertificateView,
       },
-      ]
+    ],
   },
   {
     path: '/hr-basic/my-department',
     name: 'hr-basic-my-department',
+    props: true,
+    redirect: '/hr-basic/my-department/info/careers',
     component: MyDepartmentView,
+    children: [
+      {
+        path: 'info/careers',
+        name: 'dept-mem-career',
+        props: true,
+        component: CareerInfoView,
+      },
+      {
+        path: 'info/disciplinerewards',
+        name: 'dept-mem-discipline-reward',
+        props: true,
+        component: DisciplineRewardInfoView,
+      },
+      {
+        path: 'info/educations',
+        name: 'dept-mem-education',
+        props: true,
+        component: EducationInfoView,
+      },
+      {
+        path: 'info/familymembers',
+        name: 'dept-mem-family-member',
+        props: true,
+        component: FamilyMemberInfoView,
+      },
+      {
+        path: 'info/languagetests',
+        name: 'dept-mem-language-test',
+        props: true,
+        component: LanguageTestInfoView,
+      },
+      {
+        path: 'info/qualifications',
+        name: 'dept-mem-qualification',
+        props: true,
+        component: QualificationInfoView,
+      },
+    ],
   },
   {
     path: '/hr-management',

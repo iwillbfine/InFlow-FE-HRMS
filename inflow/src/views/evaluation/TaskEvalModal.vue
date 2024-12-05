@@ -92,8 +92,11 @@
   import TableCell from '@/components/semantic/TableCell.vue';
   import ButtonItem from '@/components/semantic/ButtonItem.vue';
   import CommonArticle from '@/components/common/CommonArticle.vue';
-  import { createTaskEval, findFinalGrade } from '@/api/evaluation';
+  import { createTaskEval, findEvaluationByEmpIdAndYearAndHalf } from '@/api/evaluation';
   
+  // 여기에서 사용중인 findIndividualTaskListByEvaluationId는 평가 테이블에서 자기평가에 해당하는 평가ID를 추출하기 위함입니다.
+  // 해당 모달은 자기평가를 위한 기능을 하므로 리더평가는 고려하지 않습니다.
+
   const props = defineProps({
     task: {
       type: Object,
@@ -146,7 +149,14 @@
     const employeeId = localStorage.getItem('employeeId');
   
     try {
-      const evaluationResponse = await findFinalGrade(employeeId, props.selectedYear, props.selectedHalf);
+
+      
+      const evaluationResponse = await findEvaluationByEmpIdAndYearAndHalf(
+        props.selectedYear,   
+      props.selectedHalf,    
+      Number(employeeId)    
+      );
+
       const evaluationId = evaluationResponse.content.evaluation_id;
   
       const createTaskEvalRequestDTO = {

@@ -63,7 +63,7 @@ import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
-import { getTaskEvaluation, getAllTaskTypes, findIndividualTaskListByEvaluationId } from '@/api/evaluation';
+import { getAllTaskTypes, findIndividualTaskListByEvaluationId } from '@/api/evaluation';
 
 // 상태 관리 변수
 const taskList = ref([]);
@@ -101,9 +101,9 @@ const handleSearch = async () => {
 const loadTaskEvaluation = async () => {
   try {
     const response = await findIndividualTaskListByEvaluationId(
-    selectedYear.value, 
+    eid.value,
+    Number(selectedYear.value), 
     selectedHalf.value,
-    eid.value, // 백엔드 컨트롤러의 Param 순서와 다르면 조회가 되지 않는다. 주의할 것 !
   );
     if (response.success) {
       taskList.value = response.content;

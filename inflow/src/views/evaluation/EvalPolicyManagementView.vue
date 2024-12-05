@@ -3,15 +3,16 @@
     <CommonArticle label="평가 정책 등록" w="90%">
       <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
         <TableRow>
-            <TableCell th fs="1.6rem">과제유형</TableCell>
-            
+          <TableCell th fs="1.6rem">과제유형</TableCell>
+            <TableCell > 
                 <TypeDropdown
-                 placeholder="선택"
-                 :list="taskTypes"
-                 w="34%"
-                 @update:selectedItem="handleTypeSelection"
-                 class="typeDropdown task-input"
+                placeholder="선택"
+                :list="taskTypes"
+                w="40%"
+                @update:selectedItem="handleTypeSelection"
+                class="typeDropdown task-input"
                 />  
+            </TableCell>
           <TableCell th fs="1.6rem">기준 사원 수</TableCell>
           <TableCell fs="1.6rem">
             <input 
@@ -341,8 +342,10 @@ const isFormValid = computed(() => {
     policyEditDate.value &&
     policyDescription.value.trim() !== '' &&
     registrationYear.value &&
-    registrationHalf.value;
+    registrationHalf.value&&
     taskRatio.value > 0 && taskRatio.value <= 1;
+
+
     policyRegisterId.value = Number(localStorage.getItem('employeeId')); 
 
   console.log('폼 유효성 검사:', {
