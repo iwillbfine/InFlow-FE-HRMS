@@ -207,7 +207,7 @@ const mapping = async () => {
   });
   return result.value;
 };
-
+  
 // Appointment Form 다운로드
 const fileDownload = async () => {
   try {
