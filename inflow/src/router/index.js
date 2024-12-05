@@ -277,7 +277,7 @@ const routes = [
       {
         path: '',
         name: 'hr-basic-salary-default',
-        redirect: `/hr-basic/salary/detail/${localStorage.getItem('employeeId')}`,
+        component: SalaryDetailView,
       },
       {
         path: 'detail/:employeeId',
