@@ -60,6 +60,7 @@
                 </template>
                 <template v-else>{{ employee.phone }}</template>
               </td>
+              <td></td>
             </tr>
           <tr>
             <th>사원명</th>
@@ -90,6 +91,7 @@
               </template>
               <template v-else>{{ employee.email }}</template>
             </td>
+            <td></td>
           </tr>
           <tr>
             <th>입사일</th>
@@ -113,6 +115,7 @@
                 </template>
                 <template v-else>{{ employee.address }} </template>
               </td>
+              <td></td>
           </tr>
           <tr>
             <th>입사유형</th>
@@ -126,6 +129,7 @@
               </template>
               <template v-else>{{ employee.detailAddress }}</template>
             </td>
+            <td></td>
           </tr>
           <tr>
             <th>생년월일</th>
