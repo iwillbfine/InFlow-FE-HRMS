@@ -1,6 +1,6 @@
 <template>
   <div class="emp-container">
-    <CommonArticle :label="title" class="ca" w="90%"></CommonArticle>
+    <CommonArticle label="인사발령 등록" class="ca" w="96%"></CommonArticle>
 
     <div class="tmp">
       <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
@@ -80,7 +80,7 @@ const props = defineProps({
 });
 
 const headerNames = ref([
-  "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)", 
+  "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)",
   "발령 직무(CODE)", "발령 직책(CODE)", "발령 직위(CODE)"
 ]);
 const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
@@ -239,7 +239,7 @@ const deleteSelectedRows = () => {
 const mapping = async () => {
   await getEmpIds();
   const result = ref([]);
-  rowsData.value.map((row) => { 
+  rowsData.value.map((row) => {
     result.value.push({
       employee_number: row["발령대상(사번)"],
       authorizer_id: '1',
@@ -291,7 +291,6 @@ onMounted(async() => {
 });
 </script>
 
-
 <style scoped>
 .emp-container {
   display: flex;
@@ -336,22 +335,17 @@ onMounted(async() => {
 }
 
 button {
-  width: 100px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: 5px;
-  background: #003566;
-  border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  height: 3.6rem;
+  width: 7.2rem;
+  border-radius: 0.6rem;
+  background-color: #003566;
+  border: none;
+  color: #FFF;
+  font-size: 1.6rem;
   cursor: pointer;
-  padding: 1px;
 }
 
 button p {
@@ -369,19 +363,22 @@ button p {
   padding: 1px;
 }
 
-.colboard, .inboard{
+.colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
-  border-radius: 5px;
+  border-radius: 0.6rem;
   background: #FFF;
-  border: solid 2px #2e2f3015;
+  font-size: 1.4rem;
+  border: 2px solid #2e2f3015;
+  margin-top: 0.5rem;
 }
 
 .inboard {
   display: flex;
   flex-direction: column;
+  min-height: 27rem;
   width: 100%;
   align-items: stretch;
   padding: 0 0 10px 0;
@@ -400,11 +397,10 @@ button p {
 .colname {
   display: grid;
   grid-template-columns: 50px 150px 1fr 1fr 1fr 1fr 1fr;
-  height: 50px;
+  height: 4.5rem;
   justify-content: stretch;
   justify-items: center;
   align-items: center;
-  border-collapse: collapse;
 }
 
 .colname > div {
@@ -412,18 +408,20 @@ button p {
   text-align: center;
   width: 100%;
   height: 100%;
-  border-right: 0.5px solid #dadada;
+  border: 0.5px solid #dadada;
 }
 
 .headers > div {
   font-weight: bold;
   width: 100%;
   align-content: center;
+  background-color: #f8f8f8;
 }
 
 .rows > div {
   width: 100%;
 }
+
 .rows > div > input{
   width: 100%;
   height: 100%;
@@ -435,11 +433,11 @@ button p {
   background: #F8F8F8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
+
 .chbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
 .chbox > label {
@@ -459,6 +457,7 @@ input[type="checkbox"] + label {
   width: 20px;
   height: 20px;
   border: 1px solid #DBDBDB;
+  background-color: #fff;
   position: relative;
 }
 
@@ -506,7 +505,7 @@ input[type="checkbox"]:checked + label::after {
 .regist {
   display: flex;
   justify-content: center;
-  margin-top: 10rem;
+  margin-top: 2rem;
 }
 
 .invalid-row {

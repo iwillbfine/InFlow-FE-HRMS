@@ -18,6 +18,18 @@ export const getTaskEvaluation = async (empId, year, half) => {
   }
 };
 
+// 과제별 평가 수정
+export const updateTaskEval = async (taskEvalId, updateTaskEvalRequestDTO) => {
+  try {
+    const response = await apiClient.patch(`/evaluations/taskEval/${taskEvalId}`, updateTaskEvalRequestDTO);
+    return response.data;
+  } catch (error) {
+    console.error('과제별 평가 수정 중 에러 발생:', error);
+    throw error;
+  }
+};
+
+
 // 모든 과제 유형 조회 
 export const getAllTaskTypes = async () => {
   try {
@@ -57,6 +69,23 @@ export const getIndividualTaskItems = async (empId, year, half) => {
   }
 };
 
+// 부서 과제 항목 리스트 조회
+export const findDepartmentTaskItems = async (year, half, empId) => {
+  try {
+    const response = await apiClient.get('/evaluations/taskItem/departmentTasks', {
+      params: {
+        year,
+        half,
+        empId,
+      },
+    });
+    return response.data; // API 응답 데이터 반환
+  } catch (error) {
+    console.error('findDepartmentTaskItems 에러:', error);
+    throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
+  }
+};
+
 // 과제 생성
 export const createTaskItem = async (year, half, taskTypeId, createTaskItemRequestDTO) => {
   try {
@@ -91,8 +120,7 @@ export const findAllTaskItemsByEmpId = async (empId, year, half) => {
   }
 };
 
-// 평가 항목별 평가 생성
-
+// 과제 항목별 평가 생성
 export const createTaskEval = async (createTaskEvalRequestDTO, year, half, employeeId) => {
   try {
     const response = await apiClient.post('/evaluations/taskEval/taskEvalCreation', createTaskEvalRequestDTO, {

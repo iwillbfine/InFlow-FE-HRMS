@@ -1,6 +1,6 @@
 <template>
   <ButtonItem
-    class="setting-btn"
+    class="arrow-left-btn"
     :h="props.h"
     :w="props.w"
     :br="props.br"
@@ -8,12 +8,12 @@
     :fs="props.fs"
     :c="props.c"
   >
-    <GearIcon></GearIcon>
+    <CaretRightIcon></CaretRightIcon>
   </ButtonItem>
 </template>
 
 <script setup>
-import GearIcon from '../icons/GearIcon.vue';
+import CaretRightIcon from '../icons/CaretRightIcon.vue';
 import ButtonItem from '../semantic/ButtonItem.vue';
 
 const props = defineProps({
@@ -25,9 +25,3 @@ const props = defineProps({
   c: { type: String, default: '#fff' },
 });
 </script>
-
-<style scoped>
-.setting-btn i {
-  margin-top: 0.1rem;
-}
-</style>

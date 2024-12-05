@@ -1,44 +1,41 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'자격증'" class="ca" w="90%"></CommonArticle>
-    <ButtonItem h="3rem" w="7rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="handleOnclick">수정</ButtonItem>
-  </FlexItem>
-
-
-  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
-    <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.5fr 2fr 1fr 1fr 2fr 1fr" br="0.5rem">
-        <TableRow>
-          <TableCell th fs="1.6rem">no</TableCell>
-          <TableCell th fs="1.6rem">자격증</TableCell>
-          <TableCell th fs="1.6rem">자격번호</TableCell>
-          <TableCell th fs="1.6rem">취득일</TableCell>
-          <TableCell th fs="1.6rem">발급기관</TableCell>
-          <TableCell th fs="1.6rem">등급 및 점수</TableCell>
-        </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in qualList" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['qualification_name'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['qualification_number'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['qualified_at'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['issuer'] }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ item['grade_score'] }}</TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-    <FlexItem
-      v-if="isEmpty"
-      class="empty-message"
-      fld="row"
-      h="6rem"
-      w="100%"
-      fs="1.6rem"
-    >
-      자격증 정보가 존재하지 않습니다.
+  <CommonArticle :label="'자격증'" class="ca" w="96%" fs="2rem">
+    <ButtonItem class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
+    <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
+      <div class="table-wrapper">
+        <TableItem class="commute-table" gtc="0.5fr 2fr 1fr 1fr 2fr 1fr" br="0.5rem">
+          <TableRow>
+            <TableCell th fs="1.6rem">No</TableCell>
+            <TableCell th fs="1.6rem">자격증</TableCell>
+            <TableCell th fs="1.6rem">자격번호</TableCell>
+            <TableCell th fs="1.6rem">취득일</TableCell>
+            <TableCell th fs="1.6rem">발급기관</TableCell>
+            <TableCell th fs="1.6rem">등급 및 점수</TableCell>
+          </TableRow>
+          <TableRow v-if="!isEmpty" v-for="(item, index) in qualList" :key="index">
+            <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['qualification_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['qualification_number'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['qualified_at'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['issuer'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{ item['grade_score'] }}</TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+      <FlexItem
+        v-if="isEmpty"
+        class="empty-message"
+        fld="row"
+        h="6rem"
+        w="100%"
+        fs="1.6rem"
+      >
+        자격증 정보가 존재하지 않습니다.
+      </FlexItem>
     </FlexItem>
-  </FlexItem>
+  </CommonArticle>
 </template>
-  
+
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
@@ -87,20 +84,21 @@ const handleOnclick = () => {
 };
 
 </script>
-  
+
 <style scoped>
-.ca {
-  margin-left: 2rem;
-}
-.content-header {
-  width: 100%;
+.common-article {
   position: relative;
-  justify-content: space-between;
-  align-items: end;
+  margin-top: 2rem;
 }
 
-.content-header ::v-deep(article > div.article-label) {
-  font-size: 2rem !important;
+.ca {
+  align-self: center;
+}
+
+.update-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .content-body {
@@ -118,4 +116,3 @@ const handleOnclick = () => {
   align-items: center;
 }
 </style>
-  

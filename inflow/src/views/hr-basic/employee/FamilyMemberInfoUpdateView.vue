@@ -1,17 +1,17 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="6rem" w="100%">
-    <CommonArticle :label="'가족'" class="ca" w="90%"></CommonArticle>
+  <FlexItem class="content-header" fld="row" h="6rem" w="96%">
+    <CommonArticle :label="'가족'" class="ca" w="100%" fs="2rem"></CommonArticle>
     <div class="btns">
-      <ButtonItem h="3rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="deleteSelectedRows">
+      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="deleteSelectedRows">
         <img src="../../../assets/icons/minus_icon.png" />
         <p>선택 삭제</p></ButtonItem>
-      <ButtonItem h="3rem" w="10rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="addRow">
+      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="addRow">
         <img src="../../../assets/icons/plus_icon.png" />
         <p>행 추가</p></ButtonItem>
-      <ButtonItem h="3rem" w="10rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1rem'" @click="postData">수정 요청</ButtonItem>
+      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="postData">수정 요청</ButtonItem>
     </div>
   </FlexItem>
-  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
+  <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="96%">
     <div class="table-wrapper">
       <TableItem class="commute-table" gtc="0.3fr 2fr 1fr 1fr" br="0.5rem">
         <TableRow>
@@ -75,7 +75,7 @@
     </FlexItem>
   </FlexItem>
 </template>
-  
+
 <script setup>
 import CommonArticle from '@/components/common/CommonArticle.vue'
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
@@ -137,7 +137,7 @@ const fetchDate = async () => {
   memList.value = tmp.map(row => row.family_relationship_name);
   if (response) {
     const sortedResponse = sortByDate(response.map(row => ({
-        ...row, 
+        ...row,
         birth_date: row['birth_date'].split('T')[0],
       })));
     familyList.value = sortedResponse;
@@ -217,21 +217,13 @@ const postData = async () => {
 };
 
 </script>
-  
+
 <style scoped>
 .content-header {
   width: 100%;
   position: relative;
   justify-content: space-between;
   align-items: end;
-}
-
-.content-header ::v-deep(article > div.article-label) {
-  font-size: 2rem !important;
-}
-
-.ca {
-  margin-left: 2rem;
 }
 
 .content-body {
@@ -344,4 +336,3 @@ input[type="checkbox"]:checked + label::after {
   border: 2px solid red !important;
 }
 </style>
-  

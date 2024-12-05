@@ -264,9 +264,11 @@ hr {
 }
 
 .year-half-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+position: absolute;
+top: 0;
+right: 0;
+margin-top: -1rem;
+gap: 1rem;
 }
 
 .mid {
@@ -287,4 +289,9 @@ hr {
 .clickable:hover {
   background-color: rgba(0, 53, 102, 0.05);
 }
+
+.common-article {
+  position: relative;
+}
+
 </style>

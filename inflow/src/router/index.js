@@ -64,9 +64,9 @@ import QualificationInfoView from '@/views/hr-basic/employee/QualificationInfoVi
 import QualificationInfoUpdateView from '@/views/hr-basic/employee/QualificationInfoUpdateView.vue';
 import LanguageTestInfoUpdateView from '@/views/hr-basic/employee/LanguageTestInfoUpdateView.vue';
 import FamilyMemberInfoUpdateView from '@/views/hr-basic/employee/FamilyMemberInfoUpdateView.vue';
-import CareerInfoView from '@/views/hr-basic/employee/CareerInfoView.vue';
-import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateView.vue';
-import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateView.vue';
+import CareerInfoView from '@/views/hr-basic/employee/CareerInfoVIew.vue';
+import CareerInfoUpdateView from '@/views/hr-basic/employee/CareerInfoUpdateVIew.vue';
+import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpdateVIew.vue';
 
 // 인사기본- 계약서
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
@@ -77,6 +77,12 @@ import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowa
 import DeptTaskUploadView from '@/views/evaluation/leader/DeptTaskUploadView.vue';
 import DeptTaskAssignView from '@/views/evaluation/leader/DeptTaskAssignView.vue';
 import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
+
+
+// 인사관리 - 부서
+import DepartmentManagementInformationView from '@/views/hr-management/department/DepartmentManagementInformationView.vue';
+import DepartmentManagementAddView from '@/views/hr-management/department/DepartmentManagementAddView.vue';
+
 
 const routes = [
   {
@@ -373,7 +379,30 @@ const routes = [
   {
     path: '/hr-management/department',
     name: 'hr-management-department',
+    redirect: '/hr-management/department/info',
     component: DepartmentManagementView,
+    children: [
+      {
+        path: '',
+        name: 'hr-management-department-default',
+        component: DepartmentManagementInformationView,
+        redirect: '/hr-management/department/info',
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+
+      },
+      {
+        path: 'info',
+        name: 'hr-management-department-info',
+        component: DepartmentManagementInformationView,
+        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode }) 
+        // 이 라우터에만 부서코드 정보 전달
+      },
+      {
+        path: 'add',
+        name: 'hr-management-department-add',
+        component: DepartmentManagementAddView,
+      },
+    ],
   },
   {
     path: '/hr-management/appointment',

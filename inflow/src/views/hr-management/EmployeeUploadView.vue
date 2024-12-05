@@ -101,7 +101,7 @@ watch(
   padding-left: 2rem;
   padding-right: 2rem;
   padding-top: 2rem;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
   flex-grow: 1;
   align-items: center;
 }

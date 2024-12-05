@@ -6,11 +6,11 @@
     </FlexItem>
     <FlexItem class="article-content-container" fld="row" h="20rem">
       <FlexItem class="feedback-wrapper" w="70%" br="0.6rem" bgc="#EEF4FA" c="#0D0D0D" fs="1.5rem" fw="400">
-        <span>dfasdfasdasdfsadffffffffffffffffffffffffffffffffasdfadsfsadfsadfsadfasdfasdfasdfdasf</span>
+        <span>{{ feedbackContent }}</span>
       </FlexItem>
       <FlexItem class="grade-wrapper" fld="column" w="30%" br="0.6rem" b="1px solid #003566" bgc="#fff" c="#003566">
         <span class="grade-label">최종 등급</span>
-        <span class="grade">A</span>
+        <span class="grade">{{ finalGrade }}</span>
       </FlexItem>
     </FlexItem>
   </CommonArticle>
@@ -38,52 +38,64 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { findFeedbacks, findFinalGrade, getAllTaskTypes } from '@/api/evaluation';
 
 const selectedYear = ref(null);
 const selectedHalf = ref(null);
+const feedbackContent = ref(null);
+const finalGrade = ref('-');
+const taskList = ref([]);
+const taskTypes = ref([]);
 
-const taskTypes = ref([
-  { task_type_id: 1, task_type_name: '개인 과제' }
-]);
+// 리더평가용 과제 함수 
 
-const taskList = ref([
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트',
-    task_grade: 'A',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트2',
-    task_grade: 'B',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트3',
-    task_grade: 'C',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트4',
-    task_grade: 'A',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트5',
-    task_grade: 'B',
-  },
-  {
-    task_type_id: 1,
-    task_name: '과제 테스트6',
-    task_grade: 'C',
-  },
-])
+// 피드백 조회 함수
+const fetchFeedback = async () => {
+  try {
+    if (selectedYear.value && selectedHalf.value) {
+      const empId = localStorage.getItem('employeeId');
+      const response = await findFeedbacks(empId, selectedYear.value, selectedHalf.value);
+      if (response.success && response.content) {
+        feedbackContent.value = response.content.content;
+      }
+    }
+  } catch (error) {
+    console.error('피드백 조회 중 오류 발생:', error);
+    feedbackContent.value = '피드백을 불러오는 중 오류가 발생했습니다.';
+  }
+};
 
-// 과제 유형 이름 가져오기
-const getTaskTypeName = (typeId) => {
-  const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
-  return foundType ? foundType.task_type_name : '-';
+// 평가 반기별 최종 평가 등급 조회 함수
+const fetchFinalGrade = async () => {
+  try {
+    if (selectedYear.value && selectedHalf.value) {
+      const empId = localStorage.getItem('employeeId');
+      const response = await findFinalGrade(empId, selectedYear.value, selectedHalf.value);
+      
+      if (response.success && response.content) {
+        finalGrade.value = response.content.fin_grade;
+      } else {
+        finalGrade.value = 'N/A';
+      }
+    }
+  } catch (error) {
+    console.error('최종 등급 조회 중 오류 발생:', error);
+    finalGrade.value = 'N/A';
+  }
+};
+
+// 과제 유형 조회 함수
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if (response.success && response.content) {
+      taskTypes.value = response.content;
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 중 오류 발생:', error);
+    taskTypes.value = [];
+  }
 };
 
 const handleYearSelected = (year) => {
@@ -93,6 +105,23 @@ const handleYearSelected = (year) => {
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
+
+// 과제 유형 이름 가져오기
+const getTaskTypeName = (typeId) => {
+  const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
+  return foundType ? foundType.task_type_name : '-';
+};
+
+watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
+  if (newYear && newHalf) {
+    fetchFeedback();
+    fetchFinalGrade();
+  }
+});
+
+onMounted(() => {
+  fetchTaskTypes();
+});
 </script>
 
 <style scoped>
@@ -128,7 +157,7 @@ const handleHalfSelected = (half) => {
 
 .grade {
   line-height: 9rem;
-  font-size: 9rem;
+  font-size: 4.5rem;
   font-weight: 700;
 }
 
