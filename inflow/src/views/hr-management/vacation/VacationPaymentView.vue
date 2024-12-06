@@ -173,8 +173,6 @@ const handleOnclick = async () => {
     vacation_policy_id: Number(selectedVacationPolicy.value.vacation_policy_id),
   };
 
-  console.log(formData);
-
   const response = await createVacation(formData);
 
   selectedEmployee.value = null; // 무한 요청 방지

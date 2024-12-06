@@ -1,7 +1,7 @@
 <template>
- <SearchEmployeeComponent
-   @employee-selected="handleSelected"
-   ></SearchEmployeeComponent>
+  <SearchEmployeeComponent
+    @employee-selected="handleSelected"
+  ></SearchEmployeeComponent>
   <SectionItem class="salary-section" h="100%" w="calc(100% - 45rem)">
     <CommonArticle label="급여 내역">
       <FlexItem
@@ -41,7 +41,8 @@
           사원을 선택해주세요.
         </FlexItem>
       </FlexItem>
-      <ChangeYearComponent class="change-year"
+      <ChangeYearComponent
+        class="change-year"
         :cur-year="curYear"
         description="급여 내역"
         @go-prev-year="goPrevYear"
@@ -57,39 +58,45 @@
           <TableCell th fs="1.5rem">급여 총액</TableCell>
         </TableRow>
         <TableRow v-for="(payment, index) in payments" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ formatDate(payment.paid_at) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.monthly_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.non_taxable_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.bonus_and_allowance) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.total_deductible) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.actual_salary) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            formatDate(payment.paid_at)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.monthly_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.non_taxable_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.bonus_and_allowance)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.total_deductible)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.actual_salary)
+          }}</TableCell>
         </TableRow>
       </TableItem>
     </CommonArticle>
   </SectionItem>
 </template>
 <script setup>
-import SearchEmployeeComponent from "@/components/common/SearchEmployeeComponent.vue";
-import SectionItem from "@/components/semantic/SectionItem.vue";
-import CommonArticle from "@/components/common/CommonArticle.vue";
-import FigureItem from "@/components/semantic/FigureItem.vue";
-import FlexItem from "@/components/semantic/FlexItem.vue";
-import TableItem from "@/components/semantic/TableItem.vue";
-import TableRow from "@/components/semantic/TableRow.vue";
-import TableCell from "@/components/semantic/TableCell.vue";
-import { ref, onMounted } from "vue";
-import { getPaymentsByYear } from "@/api/payroll.js";
-import { useRouter } from "vue-router";
-import ChangeYearComponent from "@/components/common/ChangeYearComponent.vue";
-
-const router = useRouter();
+import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import SectionItem from '@/components/semantic/SectionItem.vue';
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import FigureItem from '@/components/semantic/FigureItem.vue';
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import { ref, onMounted } from 'vue';
+import { getPaymentsByYear } from '@/api/payroll.js';
+import ChangeYearComponent from '@/components/common/ChangeYearComponent.vue';
 
 const payments = ref([]);
-const curYear = ref(''); // 초기 값은 빈 문자열
+const curYear = ref(0); // 초기 값은 빈 문자열
 const selectedEmployee = ref(null);
-
-// 현재 연도 가져오기
-const getCurYear = () => new Date().getFullYear();
 
 // 데이터 페치 함수
 const fetchData = async (employeeId, year) => {
@@ -97,7 +104,7 @@ const fetchData = async (employeeId, year) => {
     const response = await getPaymentsByYear(employeeId, year);
     payments.value = response.content || [];
   } catch (error) {
-    console.error("급여 데이터를 가져오는 중 오류 발생:", error);
+    console.error('급여 데이터를 가져오는 중 오류 발생:', error);
     payments.value = [];
   }
 };
@@ -105,7 +112,6 @@ const fetchData = async (employeeId, year) => {
 // 사원 선택 핸들러
 const handleSelected = (item) => {
   selectedEmployee.value = item;
-  console.log("selectedEmployee.value: ", selectedEmployee.value);
   if (selectedEmployee.value) {
     fetchData(selectedEmployee.value.department_member_id, curYear.value);
   }
@@ -132,15 +138,15 @@ const formatCurrency = (value) => `${value.toLocaleString()} 원`;
 
 // 날짜 형식 변환
 const formatDate = (value) => {
-  if (!value) return "지급일: -";
-  const [date] = value.split("T");
-  const [year, month, day] = date.split("-");
+  if (!value) return '지급일: -';
+  const [date] = value.split('T');
+  const [year, month, day] = date.split('-');
   return `${year}년 ${month}월 ${day}일`;
 };
 
 // 컴포넌트 마운트 시 현재 연도 설정
 onMounted(() => {
-  curYear.value = getCurYear(); // 현재 연도 설정
+  curYear.value = new Date().getFullYear(); // 현재 연도 설정
 });
 </script>
 
@@ -197,5 +203,4 @@ onMounted(() => {
   justify-content: flex-end;
   align-items: center;
 }
-
 </style>

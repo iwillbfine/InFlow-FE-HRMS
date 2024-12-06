@@ -1,10 +1,25 @@
 <template>
   <CommonArticle label="경력" class="ca" w="96%" fs="2rem">
-    <ButtonItem v-if="props.employee_id === undefined" class="update-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">수정</ButtonItem>
+    <ButtonItem
+      v-if="props.employee_id === undefined"
+      class="update-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      :fs="'1.6rem'"
+      @click="handleOnclick"
+      >수정</ButtonItem
+    >
 
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
       <div class="table-wrapper">
-        <TableItem class="commute-table" gtc="0.3fr 1fr 1fr 1fr 1fr" br="0.5rem">
+        <TableItem
+          class="commute-table"
+          gtc="0.3fr 1fr 1fr 1fr 1fr"
+          br="0.5rem"
+        >
           <TableRow>
             <TableCell th fs="1.6rem">No</TableCell>
             <TableCell th fs="1.6rem">회사명</TableCell>
@@ -12,12 +27,24 @@
             <TableCell th fs="1.6rem">입사일</TableCell>
             <TableCell th fs="1.6rem">퇴사일</TableCell>
           </TableRow>
-          <TableRow v-if="!isEmpty" v-for="(item, index) in careerList" :key="index">
+          <TableRow
+            v-if="!isEmpty"
+            v-for="(item, index) in careerList"
+            :key="index"
+          >
             <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['company_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['join_date'] }}</TableCell> 
-            <TableCell class="mid" fs="1.6rem">{{ item['resignation_date'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['company_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['role_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['join_date']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['resignation_date']
+            }}</TableCell>
           </TableRow>
         </TableItem>
       </div>
@@ -36,7 +63,7 @@
 </template>
 
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
+import CommonArticle from '@/components/common/CommonArticle.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -70,9 +97,9 @@ const sortByDate = (list) => {
 };
 
 const fetchDate = async (empId) => {
-  if (empId !== undefined && empId !== null){
+  if (empId !== undefined && empId !== null) {
     const response = await getCareersById(empId);
-    
+
     if (response) {
       const sortedResponse = sortByDate(response);
       careerList.value = sortedResponse;
@@ -80,8 +107,8 @@ const fetchDate = async (empId) => {
     } else {
       careerList.value = [];
       isEmpty.value = true;
-    };
-  };
+    }
+  }
 };
 
 const handleOnclick = () => {
@@ -94,14 +121,18 @@ const handleOnclick = () => {
 };
 
 onMounted(() => {
-  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  employeeId.value =
+    route.query.employee_id ||
+    props.employee_id ||
+    localStorage.getItem('employeeId');
   fetchDate(employeeId.value);
 });
 
 watch(
   () => props.employee_id,
   (newVal) => {
-    employeeId.value = route.query.employee_id || newVal || localStorage.getItem('employeeId');
+    employeeId.value =
+      route.query.employee_id || newVal || localStorage.getItem('employeeId');
     fetchDate(employeeId.value);
   },
   { immediate: true }
@@ -143,7 +174,8 @@ watch(
   align-items: center;
 }
 
-.emp-item, .emp-item * {
+.emp-item,
+.emp-item * {
   cursor: pointer !important;
 }
 </style>

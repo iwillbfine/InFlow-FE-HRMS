@@ -1,35 +1,48 @@
 <template>
   <div class="profile-wrapper">
-     <!-- 로딩 중일 때 표시 -->
-    <LoadingOverlay :isVisible="loading" message="수정 중입니다. 잠시만 기다려 주세요..." />
-
+    <!-- 로딩 중일 때 표시 -->
+    <LoadingOverlay
+      :isVisible="loading"
+      message="수정 중입니다. 잠시만 기다려 주세요..."
+    />
 
     <div class="profile-buttons-container">
       <span class="profile-label">인적사항</span>
       <div class="profile-buttons">
-    <button v-if="props.employee_id === undefined" @click="toggleEditMode" class="btn">{{ editMode ? '수정 요청' : '수정' }}</button>
-
+        <button
+          v-if="props.employee_id === undefined"
+          @click="toggleEditMode"
+          class="btn"
+        >
+          {{ editMode ? '수정 요청' : '수정' }}
+        </button>
       </div>
     </div>
     <div class="profile-container">
       <div class="profile-header">
-          <!-- 프로필 사진 -->
-          <div class="profile-photo-container" @mouseover="hoverPhoto = true" @mouseleave="hoverPhoto = false">
-            <img
+        <!-- 프로필 사진 -->
+        <div
+          class="profile-photo-container"
+          @mouseover="hoverPhoto = true"
+          @mouseleave="hoverPhoto = false"
+        >
+          <img
             :src="previewPhoto || employee.photoUrl"
             alt="Profile Photo"
             class="profile-photo"
             @click="handlePhotoUpload"
-            />
-            <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">사진 수정</div>
-            <input
-              ref="photoInput"
-              type="file"
-              accept="image/*"
-              style="display: none"
-              @change="onPhotoChange"
-            />
+          />
+          <div v-if="hoverPhoto && editMode" class="photo-edit-overlay">
+            사진 수정
           </div>
+          <input
+            ref="photoInput"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            @change="onPhotoChange"
+          />
+        </div>
         <table class="employee-info-table">
           <tbody>
             <tr>
@@ -38,7 +51,7 @@
               <th>성별</th>
               <td>{{ employee.gender }}</td>
               <th>휴대폰번호</th>
-              <td style="position: relative;">
+              <td style="position: relative">
                 <template v-if="editMode">
                   <input
                     type="text"
@@ -53,8 +66,22 @@
                     <div class="phone-modal-content">
                       <h3>휴대폰 번호 입력 형식</h3>
                       <ul>
-                        <li>숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!</li>
-                        <li><span style="color: #00509e; font-weight: bold;">예시:</span> <span style="text-decoration: line-through; color: #999;">01012345678</span> → <span style="color: #333; font-weight: bold;">010-1234-5678</span></li>
+                        <li>
+                          숫자를 입력하면 <b>자동으로 포맷</b>이 변경됩니다!
+                        </li>
+                        <li>
+                          <span style="color: #00509e; font-weight: bold"
+                            >예시:</span
+                          >
+                          <span
+                            style="text-decoration: line-through; color: #999"
+                            >01012345678</span
+                          >
+                          →
+                          <span style="color: #333; font-weight: bold"
+                            >010-1234-5678</span
+                          >
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -63,43 +90,55 @@
               </td>
               <td></td>
             </tr>
-          <tr>
-            <th>사원명</th>
-            <td>{{ employee.employeeName }}</td>
-            <th>직무</th>
-            <td>{{ employee.jobRole }}</td>
-            <th>이메일</th>
-            <td style="position: relative;">
-              <template v-if="editMode">
-                <input
-                  type="email"
-                  v-model="form.email"
-                  class="editable-input"
-                  :class="{ 'invalid-row': !isValidEmail }"
-                  @input="validateEmail"
-                  @focus="showEmailModal"
-                  @blur="hideEmailModal"
-                />
-                <div v-if="isEmailModalVisible" class="email-modal">
-                  <div class="email-modal-content">
-                    <h3>이메일 입력 형식</h3>
-                    <ul>
-                      <li>유효한 이메일 주소를 <b style="color: #00509e;">정확히</b> 입력해주세요.</li>
-                      <li><span style="color: #999; text-decoration: line-through;">example@domain</span> → <span style="color: #333; font-weight: bold;">example@domain.com</span></li>
-                    </ul>
+            <tr>
+              <th>사원명</th>
+              <td>{{ employee.employeeName }}</td>
+              <th>직무</th>
+              <td>{{ employee.jobRole }}</td>
+              <th>이메일</th>
+              <td style="position: relative">
+                <template v-if="editMode">
+                  <input
+                    type="email"
+                    v-model="form.email"
+                    class="editable-input"
+                    :class="{ 'invalid-row': !isValidEmail }"
+                    @input="validateEmail"
+                    @focus="showEmailModal"
+                    @blur="hideEmailModal"
+                  />
+                  <div v-if="isEmailModalVisible" class="email-modal">
+                    <div class="email-modal-content">
+                      <h3>이메일 입력 형식</h3>
+                      <ul>
+                        <li>
+                          유효한 이메일 주소를
+                          <b style="color: #00509e">정확히</b> 입력해주세요.
+                        </li>
+                        <li>
+                          <span
+                            style="color: #999; text-decoration: line-through"
+                            >example@domain</span
+                          >
+                          →
+                          <span style="color: #333; font-weight: bold"
+                            >example@domain.com</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              </template>
-              <template v-else>{{ employee.email }}</template>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>입사일</th>
-            <td>{{ employee.hireDate }}</td>
-            <th>직위</th>
-            <td>{{ employee.position }}</td>
-            <th>주소</th>
+                </template>
+                <template v-else>{{ employee.email }}</template>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>입사일</th>
+              <td>{{ employee.hireDate }}</td>
+              <th>직위</th>
+              <td>{{ employee.position }}</td>
+              <th>주소</th>
               <td>
                 <template v-if="editMode">
                   <div class="address-input-group">
@@ -111,36 +150,42 @@
                       readonly
                       placeholder="주소를 검색하세요"
                     />
-                    <button class="btn-address" @click="openAddressSearch">주소 검색</button>
+                    <button class="btn-address" @click="openAddressSearch">
+                      주소 검색
+                    </button>
                   </div>
                 </template>
                 <template v-else>{{ employee.address }} </template>
               </td>
               <td></td>
-          </tr>
-          <tr>
-            <th>입사유형</th>
-            <td>{{ employee.hireType }}</td>
-            <th>직책</th>
-            <td>{{ employee.jobTitle }}</td>
-            <th>상세주소</th>
-            <td>
-              <template v-if="editMode">
-                <input type="text" v-model="form.detailAddress" class="editable-input" />
-              </template>
-              <template v-else>{{ employee.detailAddress }}</template>
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>생년월일</th>
-            <td>{{ employee.birthDate }}</td>
-            <th>퇴사일</th>
-            <td>{{ employee.retirementDate || 'N/A' }}</td>
-            <th></th>
-            <td></td>
-          </tr>
-        </tbody>
+            </tr>
+            <tr>
+              <th>입사유형</th>
+              <td>{{ employee.hireType }}</td>
+              <th>직책</th>
+              <td>{{ employee.jobTitle }}</td>
+              <th>상세주소</th>
+              <td>
+                <template v-if="editMode">
+                  <input
+                    type="text"
+                    v-model="form.detailAddress"
+                    class="editable-input"
+                  />
+                </template>
+                <template v-else>{{ employee.detailAddress }}</template>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>생년월일</th>
+              <td>{{ employee.birthDate }}</td>
+              <th>퇴사일</th>
+              <td>{{ employee.retirementDate || 'N/A' }}</td>
+              <th></th>
+              <td></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -150,7 +195,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { getEmployeeDetailById, updateEmployeeInfo } from '@/api/emp_info'; // API 함수 가져오기
-import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
+import LoadingOverlay from '@/components/common/LoadingOverlay.vue';
 
 const loading = ref(false); // 로딩 상태
 const editMode = ref(false); // 편집 가능 모드
@@ -207,7 +252,6 @@ const fetchEmployeeData = async () => {
 
     // API 호출
     const data = await getEmployeeDetailById(employeeId, token);
-    console.log("API에서 가져온 데이터:", data);
 
     // API 응답 데이터를 employee 객체에 반영
     employee.value = {
@@ -244,15 +288,20 @@ const updateEmployeeAndRefresh = async () => {
     const formData = new FormData();
     formData.append('phone_number', form.value.phone || employee.value.phone);
     formData.append('email', form.value.email || employee.value.email);
-    formData.append('street_address', form.value.address || employee.value.address);
-    formData.append('detailed_address', form.value.detailAddress || employee.value.detailAddress);
+    formData.append(
+      'street_address',
+      form.value.address || employee.value.address
+    );
+    formData.append(
+      'detailed_address',
+      form.value.detailAddress || employee.value.detailAddress
+    );
     if (form.value.photoFile) {
       formData.append('profile_img', form.value.photoFile);
     }
 
     // 수정 요청
     await updateEmployeeInfo(employeeId, formData, token);
-    console.log("수정 요청 완료. 데이터 다시 조회 중...");
 
     // 수정 후 데이터 다시 조회
     await fetchEmployeeData();
@@ -285,29 +334,30 @@ const formatPhone = (event) => {
   form.value.phone = input; // 업데이트된 포맷 저장
 };
 
-  // 이메일 유효성 검사
-  const isValidEmail = computed(() => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 간단한 이메일 형식
-    return emailPattern.test(form.value.email);
-  });
+// 이메일 유효성 검사
+const isValidEmail = computed(() => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 간단한 이메일 형식
+  return emailPattern.test(form.value.email);
+});
 
-  // 이메일 유효성 확인
-  const validateEmail = (event) => {
-    const input = event.target.value.trim(); // 양쪽 공백 제거
-    form.value.email = input;
-  };
+// 이메일 유효성 확인
+const validateEmail = (event) => {
+  const input = event.target.value.trim(); // 양쪽 공백 제거
+  form.value.email = input;
+};
 
-  const loadDaumPostcode = () => {
+const loadDaumPostcode = () => {
   return new Promise((resolve, reject) => {
     if (window.daum && window.daum.Postcode) {
       resolve(); // 이미 로드된 경우
       return;
     }
 
-    const script = document.createElement("script");
-    script.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    const script = document.createElement('script');
+    script.src =
+      'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
     script.onload = () => resolve();
-    script.onerror = () => reject("카카오 주소 검색 API 로드 실패");
+    script.onerror = () => reject('카카오 주소 검색 API 로드 실패');
     document.body.appendChild(script);
   });
 };
@@ -319,12 +369,11 @@ const openAddressSearch = async () => {
     new daum.Postcode({
       oncomplete: (data) => {
         form.value.address = data.address;
-        console.log("선택된 주소:", data);
       },
     }).open();
   } catch (error) {
     console.error(error);
-    alert("주소 검색 기능을 사용할 수 없습니다.");
+    alert('주소 검색 기능을 사용할 수 없습니다.');
   }
 };
 
@@ -360,7 +409,6 @@ const toggleEditMode = () => {
   editMode.value = !editMode.value; // 수정 모드 상태 변경
 };
 
-
 // 파일 선택 핸들링
 const handlePhotoUpload = () => {
   if (!editMode.value) {
@@ -373,7 +421,6 @@ const handlePhotoUpload = () => {
 };
 
 const onPhotoChange = (event) => {
-  console.log('파일 탐색기 열림');
   const file = event.target.files[0];
   if (file) {
     form.value.photoFile = file;
@@ -407,24 +454,19 @@ const hideEmailModal = () => {
 
 // 컴포넌트가 마운트될 때 데이터 조회
 onMounted(() => {
-  console.log('photoInput 초기화 상태:', photoInput.value);
   fetchEmployeeData();
 });
 
 watch(
   () => props.employee_id,
   (newVal) => {
-    console.log('Updated employee_id:', newVal);
     if (newVal) {
       fetchEmployeeData();
     }
   },
   { immediate: true }
 );
-
-
 </script>
-
 
 <style scoped>
 /* 로딩 오버레이 스타일 */
@@ -557,8 +599,7 @@ watch(
   width: 100%;
 }
 
-.btn-address{
-
+.btn-address {
   padding: 0.2rem 1.2rem;
   background-color: #003566;
   color: #fff;
@@ -589,7 +630,8 @@ watch(
   width: 100%;
 }
 
-/* 테이블 스타일링 */.employee-info-table {
+/* 테이블 스타일링 */
+.employee-info-table {
   border-collapse: collapse; /* 셀 간격을 제거하고 경계선을 하나로 합침 */
   width: 100%;
 }
@@ -623,7 +665,7 @@ watch(
 
 /* 유효하지않은경우의 css */
 .invalid-row {
-  background: #FFD8D8 !important;
+  background: #ffd8d8 !important;
   border: 2px solid red !important;
 }
 
@@ -695,7 +737,7 @@ watch(
   font-size: 0.9rem;
 }
 .invalid-row {
-  background: #FFD8D8 !important;
+  background: #ffd8d8 !important;
   border: 2px solid red !important;
 }
 
@@ -706,6 +748,4 @@ watch(
 .btn-close:hover {
   background: #00509e;
 }
-
 </style>
-

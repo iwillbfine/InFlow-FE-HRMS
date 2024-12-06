@@ -9,7 +9,7 @@
     br="0.6rem"
     c="#003566"
   >
-    <span class="title">{{ props. closestEvent.event_name }}</span>
+    <span class="title">{{ props.closestEvent.event_name }}</span>
     <span class="d-day">{{ parseDday(props.closestEvent.event_date) }}</span>
   </FlexItem>
   <FlexItem
@@ -60,7 +60,7 @@ const parseDday = (date) => {
 </script>
 
 <style scoped>
-.d-day-container{
+.d-day-container {
   justify-content: center;
   align-items: center;
   padding: 1rem;

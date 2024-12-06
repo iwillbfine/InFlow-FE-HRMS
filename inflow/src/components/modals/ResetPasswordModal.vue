@@ -1,5 +1,5 @@
 <template>
-  <CrudModal h="50rem" w="50rem" @close="closeModal" >
+  <CrudModal h="50rem" w="50rem" @close="closeModal">
     <!-- 로고 및 타이틀 -->
     <div class="logo-container">
       <img :src="companyLogo" alt="Company Logo" class="company-logo" />
@@ -20,7 +20,10 @@
           @input="validatePassword"
         />
         <i class="eye-icon" @click="toggleNewPasswordVisibility">
-          <img :src="newPasswordVisible ? eyeOpenIcon : eyeClosedIcon" alt="toggle visibility" />
+          <img
+            :src="newPasswordVisible ? eyeOpenIcon : eyeClosedIcon"
+            alt="toggle visibility"
+          />
         </i>
       </div>
       <span v-if="isNotValid" class="error-message">
@@ -42,7 +45,10 @@
           @input="checkPasswordsMatch"
         />
         <i class="eye-icon" @click="toggleConfirmPasswordVisibility">
-          <img :src="confirmPasswordVisible ? eyeOpenIcon : eyeClosedIcon" alt="toggle visibility" />
+          <img
+            :src="confirmPasswordVisible ? eyeOpenIcon : eyeClosedIcon"
+            alt="toggle visibility"
+          />
         </i>
       </div>
       <span v-if="isNotSame" class="error-message">
@@ -51,7 +57,9 @@
     </FlexItem>
 
     <!-- 비밀번호 변경 버튼 -->
-    <ButtonItem class="reset-pwd-btn" fs="1.6rem" @click="resetPassword">비밀번호 변경</ButtonItem>
+    <ButtonItem class="reset-pwd-btn" fs="1.6rem" @click="resetPassword"
+      >비밀번호 변경</ButtonItem
+    >
   </CrudModal>
 </template>
 
@@ -82,7 +90,8 @@ const emit = defineEmits(['close']);
 
 // 비밀번호 유효성 검사 함수
 const validatePassword = () => {
-  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%])[a-zA-Z\d!@#$%]{8,16}$/;
+  const passwordPattern =
+    /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%])[a-zA-Z\d!@#$%]{8,16}$/;
   isNotValid.value = !passwordPattern.test(newPassword.value);
 
   // 입력이 끝났을 때 에러 메시지를 자동으로 제거
@@ -92,7 +101,6 @@ const validatePassword = () => {
     }, 2000); // 2초 후 에러 메시지 제거
   }
 };
-
 
 // 비밀번호 확인 검사
 const checkPasswordsMatch = () => {
@@ -121,7 +129,11 @@ const resetPassword = async () => {
     }
 
     // API 호출 - 사번(employeeId)와 새 비밀번호(newPassword) 전달
-    const response = await resetEmployeePassword(employeeId, newPassword.value, token);
+    const response = await resetEmployeePassword(
+      employeeId,
+      newPassword.value,
+      token
+    );
 
     if (response.success) {
       alert(response.content); // 성공 메시지 출력
@@ -134,8 +146,6 @@ const resetPassword = async () => {
     alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
   }
 };
-
-
 
 // 새 비밀번호 토글
 const toggleNewPasswordVisibility = () => {
@@ -151,11 +161,9 @@ const toggleConfirmPasswordVisibility = () => {
 const closeModal = () => {
   emit('close'); // 부모 컴포넌트에서 'close' 이벤트를 처리
 };
-
 </script>
 
 <style scoped>
-
 .logo-container {
   display: flex;
   flex-direction: column;
@@ -226,7 +234,7 @@ const closeModal = () => {
 .error-message {
   margin-top: 0.5rem;
   font-size: 1.1rem;
-  color: #FF6060;
+  color: #ff6060;
 }
 
 .reset-pwd-btn {

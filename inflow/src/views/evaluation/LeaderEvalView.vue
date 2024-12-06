@@ -3,7 +3,11 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="1" :list="menuList"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
     </SectionItem>
@@ -29,9 +33,9 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '평가 내역', link: '/evaluation/leader/eval-list' },
-  { name: '과제 등록', link: '/evaluation/leader/dept-task/upload'  },
-  { name: '부서원 과제 할당', link: '/evaluation/leader/dept-task/assign'  },
-  { name: '부서원 평가', link: '/evaluation/leader/feedback'  },
+  { name: '과제 등록', link: '/evaluation/leader/dept-task/upload' },
+  { name: '부서원 과제 할당', link: '/evaluation/leader/dept-task/assign' },
+  { name: '부서원 평가', link: '/evaluation/leader/feedback' },
 ]);
 
 const router = useRouter();
@@ -42,7 +46,7 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 const eid = ref(null);
 const employeeName = ref('');
@@ -51,12 +55,12 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/evaluation/leader';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }
