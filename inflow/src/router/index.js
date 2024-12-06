@@ -277,7 +277,7 @@ const routes = [
       {
         path: '',
         name: 'hr-basic-salary-default',
-        component: SalaryDetailView,
+        component: SalaryListView,
       },
       {
         path: 'detail/:employeeId',
@@ -378,7 +378,6 @@ const routes = [
   {
     path: '/hr-management/employee/info',
     name: 'hr-management-employee-info',
-    props: true,
     redirect: '/hr-management/employee/info/careers',
     component: EmployeeInfoView,
     children: [
