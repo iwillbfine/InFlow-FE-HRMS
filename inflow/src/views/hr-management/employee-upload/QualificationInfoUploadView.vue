@@ -222,7 +222,8 @@ const mapping = async () => {
 // Qualification Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("qualification");
+    const response = await getDoc("qualification");
+    const fileUrl = response.content;
     const link = document.createElement("a");
     link.href = fileUrl;
     link.setAttribute("download", "qualification_form.xlsx");

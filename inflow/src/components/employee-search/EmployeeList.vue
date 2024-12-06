@@ -3,7 +3,7 @@
         <div class="one-content" 
                 v-for="employee in employees"
                 :key="employee.employee_number"
-                @click="selectEmployee(employee.employee_id)">  <!-- 사원코드 상위에 전달 -->
+                @click="selectEmployee(employee.employee_number)">  사원코드 상위에 전달
             <div class="profile-image">
                 <!-- <img :src="employee.profile_image_url || '@/assets/Inflow_profile_img.png'" alt=""> -->
                 <!-- "@/assets/Inflow_profile_img.png"  -->

@@ -250,7 +250,8 @@ const mapping = async () => {
 // Appointment Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("appointment"); // Pre-signed URL 가져오기
+    const response = await getDoc("appointment");
+    const fileUrl = response.content;
     const link = document.createElement("a"); // 링크 생성
     link.href = fileUrl; // URL 연결
     link.setAttribute("download", "appointment_form.xlsx"); // 다운로드 파일 이름 설정

@@ -106,7 +106,7 @@ import { createTaskItem, findAllTaskItemsByEmpId } from '@/api/evaluation';
 // 상태 관리
 const taskList = ref([]);
 const taskTypes = ref([
-  { id: 1, name: '개인 과제' }
+  { id: 2, name: '개인 과제' }
 ]);
 const taskName = ref('');
 const taskContent = ref('');
@@ -142,6 +142,8 @@ const handleHalfSelected = (half) => {
 
 const handleTypeSelection = (typeId) => {
   selectedType.value = typeId;
+  console.log('handleTypeSelection에서 선택된 타입:', typeId);
+  console.log('handleTypeSelection 후 selectedType 값:', selectedType.value);
 };
 
 const handleTaskClick = (task) => {
