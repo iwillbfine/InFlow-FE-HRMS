@@ -243,7 +243,6 @@ const fetchTaskTypes = async () => {
     taskTypes.value = [];
   }
 };
-
 const getTaskTypeName = (taskTypeId) => {
   const taskType = taskTypes.value.find(type => type.id === taskTypeId);
   return taskType ? taskType.name : '-';

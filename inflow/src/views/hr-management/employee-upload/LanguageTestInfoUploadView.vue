@@ -237,7 +237,8 @@ const mapping = async () => {
 // Language Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("language");
+    const response = await getDoc("language");
+    const fileUrl = response.content;
     const link = document.createElement("a");
     link.href = fileUrl;
     link.setAttribute("download", "language_form.xlsx");

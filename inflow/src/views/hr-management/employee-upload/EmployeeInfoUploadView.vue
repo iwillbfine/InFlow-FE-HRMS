@@ -236,7 +236,8 @@ const mapping = () => {
 // 파일 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("new_employee"); // Pre-signed URL 가져오기
+    const response = await getDoc("new_employee");
+    const fileUrl = response.content; // content에서 URL 추출s
     const link = document.createElement("a"); // 링크 생성
     link.href = fileUrl; // URL 연결
     link.setAttribute("download", "new_employee_form.xlsx"); // 다운로드 파일 이름 설정

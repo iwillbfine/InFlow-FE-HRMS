@@ -221,7 +221,8 @@ const mapping = async () => {
 // Academic Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("academic");
+    const response = await getDoc("academic");
+    const fileUrl = response.content;
     const link = document.createElement("a");
     link.href = fileUrl;
     link.setAttribute("download", "academic_form.xlsx");

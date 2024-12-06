@@ -219,8 +219,8 @@ const mapping = async () => {
 // Rewards Penalties Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("rewards_penalties");
-    const link = document.createElement("a");
+    const response = await getDoc("rewards_penalties");
+    const fileUrl = response.content;
     link.href = fileUrl;
     link.setAttribute("download", "rewards_penalties_form.xlsx");
     link.click();

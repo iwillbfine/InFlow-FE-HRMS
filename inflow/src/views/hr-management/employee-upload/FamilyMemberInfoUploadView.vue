@@ -222,7 +222,8 @@ const mapping = async () => {
 // Family Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("family");
+    const response = await getDoc("family"); 
+    const fileUrl = response.content;
     const link = document.createElement("a");
     link.href = fileUrl;
     link.setAttribute("download", "family_form.xlsx");
