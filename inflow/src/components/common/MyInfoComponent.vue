@@ -1,13 +1,13 @@
 <template>
   <SectionItem class="content-section" w="100%">
-    <ProfileView :employee_id="eid"></ProfileView>
+    <ProfileView></ProfileView>
     <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
-    <router-view :employee_id="eid"></router-view>
+    <router-view></router-view>
   </SectionItem>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineProps } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -28,29 +28,12 @@ const subMenuList = ref([
   { name: '포상 및 징계', link: '/hr-management/employee/info/disciplinerewards' },
 ]);
 
-const props = defineProps({
-  empId: {
-    type: String,
-    required: true,
-    default: localStorage.getItem('employeeId'),
-  },
-});
-
-const eid = ref('');
-
-const setEid = () => {
-  eid.value = props.empId;
-}
-
-setEid();
-
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
 }
 
 onMounted(() => {
-  setEid();
   if (subIdx.value === null) {
     const matchedIndex = subMenuList.value.findIndex(
       (item) => item.link === route.path
@@ -62,14 +45,6 @@ onMounted(() => {
     }
   }
 });
-
-watch(
-  () => props.empId,
-  (newVal) => {
-    eid.value = newVal;
-  },
-  { immediate: true }
-);
 
 watch(
   () => route.path,

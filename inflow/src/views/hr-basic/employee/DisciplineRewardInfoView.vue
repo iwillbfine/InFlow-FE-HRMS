@@ -42,22 +42,20 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import DisciplineRewardTypeDropDown from '@/components/dropdowns/DisciplineRewardTypeDropDown.vue';
 import { getDisciplineReward } from '@/api/emp_attach';
-import { ref, onMounted, watch, defineProps } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const drList = ref([]);
 const showList = ref([]);
 const isEmpty = ref(true);
+
+const route = useRoute();
 
 const props = defineProps({
   employee_id: {
     type: String,
     required: false,
   },
-});
-
-onMounted(() => {
-  const employeeId = props.employee_id || localStorage.getItem('employeeId');
-  fetchDate(employeeId);
 });
 
 const sortByDate = (list) => {
@@ -99,10 +97,17 @@ const handleOnclick = () => {
   }
 };
 
+const employeeId = ref('');
+
+onMounted(() => {
+  employeeId.value = props.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
+});
+
 watch(
   () => props.employee_id,
   (newVal) => {
-    employeeId.value = newVal;
+    employeeId.value = newVal || localStorage.getItem('employeeId');
     fetchDate(employeeId.value);
   },
   { immediate: true }

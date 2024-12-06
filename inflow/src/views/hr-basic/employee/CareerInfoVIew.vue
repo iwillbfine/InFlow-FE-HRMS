@@ -43,7 +43,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { getCareersById } from '@/api/emp_attach';
-import { ref, onMounted, defineProps, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const careerList = ref([]);
@@ -93,20 +93,19 @@ const handleOnclick = () => {
   });
 };
 
+onMounted(() => {
+  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
+});
+
 watch(
   () => props.employee_id,
   (newVal) => {
-    employeeId.value = newVal || route.query.employee_id || localStorage.getItem('employeeId');
+    employeeId.value = route.query.employee_id || newVal || localStorage.getItem('employeeId');
     fetchDate(employeeId.value);
   },
   { immediate: true }
 );
-
-onMounted(() => {
-  employeeId.value = props.employee_id || route.query.employee_id || localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
-});
-
 </script>
 
 <style scoped>
@@ -142,5 +141,9 @@ onMounted(() => {
 .empty-message {
   justify-content: center;
   align-items: center;
+}
+
+.emp-item, .emp-item * {
+  cursor: pointer !important;
 }
 </style>

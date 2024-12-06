@@ -205,7 +205,16 @@ const formatDate = (value) => {
 }
 
 onMounted(() => {
-  employeeId.value = route.params.employeeId;
+  const storedEmployeeId = localStorage.getItem("employeeId");
+
+  if (!storedEmployeeId) {
+    console.error("로컬스토리지에 employeeId가 없습니다.");
+    alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
+    router.push("/login"); // 로그인 페이지로 리다이렉트
+    return;
+  }
+
+  employeeId.value = storedEmployeeId;
 
   // 현재 연도와 월로 기본값 설정
   const today = new Date();

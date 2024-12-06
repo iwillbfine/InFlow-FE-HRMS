@@ -47,7 +47,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import { getLanguageTestsById } from '@/api/emp_attach';
-import { ref, onMounted, watch, defineProps } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const langTestList = ref([]);
@@ -64,11 +64,6 @@ const props = defineProps({
     type: String,
     required: false,
   },
-});
-
-onMounted(async() => {
-  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
 });
 
 const sortByDate = (list) => {
@@ -101,15 +96,19 @@ const handleOnclick = () => {
     });
 };
 
+onMounted(() => {
+  employeeId.value = route.query.employee_id || props.employee_id || localStorage.getItem('employeeId');
+  fetchDate(employeeId.value);
+});
+
 watch(
   () => props.employee_id,
   (newVal) => {
-    employeeId.value = newVal;
+    employeeId.value = route.query.employee_id || newVal || localStorage.getItem('employeeId');
     fetchDate(employeeId.value);
   },
   { immediate: true }
 );
-
 </script>
 
 <style scoped>
