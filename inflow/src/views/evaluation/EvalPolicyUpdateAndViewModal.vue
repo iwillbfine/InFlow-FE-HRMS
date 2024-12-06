@@ -83,7 +83,7 @@
                 <FlexItem class="year-half-section" fld="row">
                   <YearDropDown 
                     :initialYear="policyDetails.year"
-                    @valid-date-selected="handleYearUpdate" 
+                    @valid-date="handleYearUpdate" 
                   />
                   <HalfDropdown 
                     :initialHalf="policyDetails.half"
