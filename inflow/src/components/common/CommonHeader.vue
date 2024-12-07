@@ -88,7 +88,7 @@ const updateTimer = () => {
 
 // 세션 연장
 const extendSession = () => {
-  const newExpireTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+  const newExpireTime = new Date().getTime() + 1 * 60 * 60 * 1000;
 
   localStorage.setItem('expireTime', newExpireTime.toString());
   updateTimer(); // 즉시 타이머 업데이트
@@ -164,7 +164,7 @@ onUnmounted(() => {
 }
 
 .extend-btn:hover {
-  background-color: #888 !important;
+  background-color: #003566 !important;
   transition: 0.2s ease-out;
 }
 
@@ -173,9 +173,4 @@ onUnmounted(() => {
   gap: 2rem;
 }
 
-.reset-pwd-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 </style>
