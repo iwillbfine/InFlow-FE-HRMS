@@ -9,8 +9,18 @@
         @go-next-month="goNextMonth"
       />
     </FlexItem>
-  
-    <ButtonItem h="3.6rem" w="9rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" class="dBtn" @click="showDownload">다운로드</ButtonItem> 
+
+    <ButtonItem
+      h="3.6rem"
+      w="9rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      class="dBtn"
+      @click="showDownload"
+      >다운로드</ButtonItem
+    >
     <FlexItem class="content-header-btns" fld="row" h="6rem" w="96%">
       <SelectAppTypeComponent
         :y="curMonth.split('-')[0]"
@@ -19,13 +29,13 @@
         @selected="goSelectedPoint"
       />
     </FlexItem>
-  
+
     <div v-if="downloadModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content">
         <SelectPeriodComponent @selected="hideDownload"></SelectPeriodComponent>
       </div>
     </div>
-  
+
     <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
       <div class="table-wrapper">
         <TableItem class="commute-table" gtc="repeat(9, 1fr)" br="0.5rem">
@@ -40,16 +50,36 @@
             <TableCell th fs="1.6rem">직책</TableCell>
             <TableCell th fs="1.6rem">담당자</TableCell>
           </TableRow>
-          <TableRow v-if="!isEmpty" v-for="(item, index) in appointmentHistory" :key="index">
+          <TableRow
+            v-if="!isEmpty"
+            v-for="(item, index) in appointmentHistory"
+            :key="index"
+          >
             <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['appointed_at'].split(' ')[0] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['appointment_item_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['employee_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['department_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['duty_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['position_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['role_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['authorizer_name'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['appointed_at'].split(' ')[0]
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['appointment_item_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['employee_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['department_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['duty_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['position_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['role_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['authorizer_name']
+            }}</TableCell>
           </TableRow>
         </TableItem>
       </div>
@@ -79,7 +109,7 @@ import ChangeMonthComponent from '@/components/common/ChangeMonthComponent.vue';
 import * as XLSX from 'xlsx';
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getAppHistoryByMonth, getAppHistoryByPeriod} from '@/api/emp_attach';
+import { getAppHistoryByMonth, getAppHistoryByPeriod } from '@/api/emp_attach';
 
 const curMonth = ref('');
 const appointmentHistory = ref([]);
@@ -139,13 +169,12 @@ const goPrevMonth = (prevMonth) => {
 };
 
 const goNextMonth = (nextMonth) => {
-  const [endYear, endMonth] = getCurMonth().split('-').slice(0,2);
+  const [endYear, endMonth] = getCurMonth().split('-').slice(0, 2);
   const [moveYear, moveMonth] = nextMonth.split('-');
-  if(endYear>moveYear || endYear===moveYear && endMonth>=moveMonth){
+  if (endYear > moveYear || (endYear === moveYear && endMonth >= moveMonth)) {
     navigateTo('/hr-management/appointment/history', `${nextMonth}-전체`);
     return;
-  }
-  else return;
+  } else return;
 };
 
 const goSelectedPoint = (selectedData) => {
@@ -175,9 +204,11 @@ const periodData = ref([]);
 
 const downloadExcel = (date) => {
   const titleRow = [[`발령(${date.type}) 이력 (${date.start} ~ ${date.end})`]];
-  const columnHeaders = [["no", "일자", "유형", "사원", "부서", "직무", "직위", "직책", "담당자"]];
+  const columnHeaders = [
+    ['no', '일자', '유형', '사원', '부서', '직무', '직위', '직책', '담당자'],
+  ];
   const data = periodData.value.map((row, index) => [
-    index+1,
+    index + 1,
     row.appointed_at.split(' ')[0],
     row.appointment_item_name,
     row.employee_name,
@@ -192,11 +223,13 @@ const downloadExcel = (date) => {
   const worksheet = XLSX.utils.aoa_to_sheet(combinedData);
 
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "발령 이력");
+  XLSX.utils.book_append_sheet(workbook, worksheet, '발령 이력');
 
-  XLSX.writeFile(workbook, `${date.start}_${date.end}_발령(${date.type})_이력.xlsx`);
+  XLSX.writeFile(
+    workbook,
+    `${date.start}_${date.end}_발령(${date.type})_이력.xlsx`
+  );
 };
-
 
 const hideDownload = async (data) => {
   const daylist = generateDateRange(data.start, data.end);
@@ -221,10 +254,10 @@ watch(
   () => route.query,
   (newData) => {
     curMonth.value = newData.data || getCurMonth();
-    fetchDate(curMonth.value)
+    fetchDate(curMonth.value);
   },
   { immediate: true }
-)
+);
 
 onMounted(() => {
   curMonth.value = getCurMonth();
@@ -252,7 +285,7 @@ onMounted(() => {
   flex-direction: column !important;
   align-items: flex-end;
   justify-content: center;
-  gap: 1rem; 
+  gap: 1rem;
 }
 
 /* 모달 오버레이 */
@@ -284,7 +317,7 @@ onMounted(() => {
   position: absolute;
   padding: 0.3rem !important;
   right: 5rem;
-  top: 5.5rem;;
+  top: 5.5rem;
 }
 
 .select-data {

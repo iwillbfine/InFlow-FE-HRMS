@@ -1,63 +1,79 @@
 <template>
-    <CommonArticle label="계약서 목록" minh="29rem" w="90%">
-      <TableItem gtc="repeat(5, 1fr)" br="1rem">
-        <TableRow bgc="#aaa">
-          <TableCell th fs="1.6rem">계약서 종류</TableCell>
-          <TableCell th fs="1.6rem">등록 시각</TableCell>
-          <TableCell th fs="1.6rem">동의 여부</TableCell>
-          <TableCell th fs="1.6rem">계약서 상태</TableCell>
-          <TableCell th fs="1.6rem">등록 및 조회</TableCell>
-        </TableRow>
+  <CommonArticle label="계약서 목록" minh="29rem" w="90%">
+    <TableItem gtc="repeat(5, 1fr)" br="1rem">
+      <TableRow bgc="#aaa">
+        <TableCell th fs="1.6rem">계약서 종류</TableCell>
+        <TableCell th fs="1.6rem">등록 시각</TableCell>
+        <TableCell th fs="1.6rem">동의 여부</TableCell>
+        <TableCell th fs="1.6rem">계약서 상태</TableCell>
+        <TableCell th fs="1.6rem">등록 및 조회</TableCell>
+      </TableRow>
 
-        <!-- 계약서 데이터 반복 렌더링 -->
-        <TableRow v-for="contract in contracts" :key="contract.contract_id">
-          <TableCell class="mid" fs="1.6rem">{{ contract.contract_type === 'EMPLOYMENT' ? '근로계약서' : '비밀유지서약서' }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ formatDateTime(contract.created_at) }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ contract.consent_status === 'Y' ? '동의함' : '비동의' }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ contract.contract_status === 'REGISTERED' ? '등록됨' : '서명전' }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            <template v-if="contract.file_url">
-              <button @click="selectContract(contract.contract_id)" class="btn">조회</button>
-            </template>
-            <template v-else>
-              <button
-                v-if="contract.contract_type === 'EMPLOYMENT'"
-                @click="openEmployeeContractModal(contract)"
-                class="btn"
-              >
-                등록
-              </button>
-              <button
-                v-else
-                @click="openSecurityContractModal(contract)"
-                class="btn"
-              >
-                등록
-              </button>
-            </template>
-          </TableCell>
-        </TableRow>
-      </TableItem>
-    </CommonArticle>
+      <!-- 계약서 데이터 반복 렌더링 -->
+      <TableRow v-for="contract in contracts" :key="contract.contract_id">
+        <TableCell class="mid" fs="1.6rem">{{
+          contract.contract_type === 'EMPLOYMENT'
+            ? '근로계약서'
+            : '비밀유지서약서'
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{
+          formatDateTime(contract.created_at)
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{
+          contract.consent_status === 'Y' ? '동의함' : '비동의'
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">{{
+          contract.contract_status === 'REGISTERED' ? '등록됨' : '서명전'
+        }}</TableCell>
+        <TableCell class="mid" fs="1.6rem">
+          <template v-if="contract.file_url">
+            <button @click="selectContract(contract.contract_id)" class="btn">
+              조회
+            </button>
+          </template>
+          <template v-else>
+            <button
+              v-if="contract.contract_type === 'EMPLOYMENT'"
+              @click="openEmployeeContractModal(contract)"
+              class="btn"
+            >
+              등록
+            </button>
+            <button
+              v-else
+              @click="openSecurityContractModal(contract)"
+              class="btn"
+            >
+              등록
+            </button>
+          </template>
+        </TableCell>
+      </TableRow>
+    </TableItem>
+  </CommonArticle>
 
-    <!-- EmployeeContractModal -->
-    <EmployeeContractModal
-      v-if="showEmployeeModal"
-      :contract-data="selectedContract"
-      @close="handleEmployeeModalClose"
-    />
+  <!-- EmployeeContractModal -->
+  <EmployeeContractModal
+    v-if="showEmployeeModal"
+    :contract-data="selectedContract"
+    @close="handleEmployeeModalClose"
+  />
 
-    <!-- SecurityContractModal -->
-    <SecurityContractModal
-      v-if="showSecurityModal"
-      :contract-data="selectedContract"
-      @close="handleSecurityModalClose"
-    />
+  <!-- SecurityContractModal -->
+  <SecurityContractModal
+    v-if="showSecurityModal"
+    :contract-data="selectedContract"
+    @close="handleSecurityModalClose"
+  />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getEmploymentContract, getContractList, getContract } from '@/api/emp_info'; // API 호출 메서드 임포트
+import {
+  getEmploymentContract,
+  getContractList,
+  getContract,
+} from '@/api/emp_info'; // API 호출 메서드 임포트
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -80,7 +96,6 @@ const token = localStorage.getItem('authToken');
 const fetchContractList = async () => {
   try {
     const data = await getContractList(employeeId, token);
-    console.log("계약서 불러옴: ",data);
     contracts.value = data;
   } catch (error) {
     console.error('계약서 목록을 가져오는 데 실패했습니다:', error);
@@ -108,20 +123,20 @@ const selectContract = async (contractId) => {
   }
 };
 
-
-
 // 날짜 포맷 함수
 const formatDateTime = (datetime) => {
   if (!datetime) return '미등록';
   const date = new Date(datetime);
-  return date.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  }).replace(/년|월|일/g, match => match.trim() + ' ');
+  return date
+    .toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    })
+    .replace(/년|월|일/g, (match) => match.trim() + ' ');
 };
 
 // "등록" 버튼 클릭 시 호출되는 함수
@@ -132,7 +147,7 @@ const openEmployeeContractModal = async (contract) => {
     selectedContract.value = { ...data, ...contract };
     showEmployeeModal.value = true;
   } catch (error) {
-    console.error("근로계약서를 조회하는 데 실패했습니다:", error);
+    console.error('근로계약서를 조회하는 데 실패했습니다:', error);
   }
 };
 
@@ -143,7 +158,7 @@ const openSecurityContractModal = async (contract) => {
     selectedContract.value = { ...data, ...contract };
     showSecurityModal.value = true;
   } catch (error) {
-    console.error("비밀유지서약서를 조회하는 데 실패했습니다:", error);
+    console.error('비밀유지서약서를 조회하는 데 실패했습니다:', error);
   }
 };
 

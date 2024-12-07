@@ -37,7 +37,9 @@
             class="mid"
             fs="1.6rem"
             :botl="index === vacationRequestList.length - 1"
-            >{{ parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)}}</TableCell
+            >{{
+              parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
+            }}</TableCell
           >
           <TableCell class="mid" fs="1.6rem">{{
             item.request_reason

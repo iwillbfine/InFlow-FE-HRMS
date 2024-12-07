@@ -187,7 +187,7 @@ const attendanceStats = computed(() => {
 
 const handleSelected = (employee) => {
   emit('employeeSelected', employee);
-}
+};
 
 // attendanceStats 변경 시 부모에게 알림
 watch(attendanceStats, (newStats) => {

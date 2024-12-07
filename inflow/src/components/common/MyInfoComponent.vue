@@ -1,7 +1,11 @@
 <template>
   <SectionItem class="content-section" w="100%">
     <ProfileView></ProfileView>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <router-view></router-view>
   </SectionItem>
 </template>
@@ -25,13 +29,16 @@ const subMenuList = ref([
   { name: '자격증', link: '/hr-management/employee/info/qualifications' },
   { name: '어학', link: '/hr-management/employee/info/languagetests' },
   { name: '가족', link: '/hr-management/employee/info/familymembers' },
-  { name: '포상 및 징계', link: '/hr-management/employee/info/disciplinerewards' },
+  {
+    name: '포상 및 징계',
+    link: '/hr-management/employee/info/disciplinerewards',
+  },
 ]);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 onMounted(() => {
   if (subIdx.value === null) {
@@ -50,7 +57,7 @@ watch(
   () => route.path,
   (newPath) => {
     const matchedIndex = subMenuList.value.findIndex(
-        (item) => item.link === newPath
+      (item) => item.link === newPath
     );
     if (matchedIndex !== -1) {
       subIdx.value = matchedIndex;
@@ -61,7 +68,6 @@ watch(
 </script>
 
 <style scoped>
-
 .content-section {
   position: absolute;
   top: 5.4rem;
@@ -73,6 +79,4 @@ watch(
   flex-grow: 1;
   align-items: center;
 }
-
-
 </style>

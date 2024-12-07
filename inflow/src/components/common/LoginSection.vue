@@ -4,9 +4,22 @@
       <CompanyLogo></CompanyLogo>
       <CompanyName></CompanyName>
     </FlexItem>
-    <ArticleItem class="login-article" fld="column" h="28rem" w="44rem" bgc="rgba(0, 34, 65, 0.74)" br="1.5rem">
+    <ArticleItem
+      class="login-article"
+      fld="column"
+      h="28rem"
+      w="44rem"
+      bgc="rgba(0, 34, 65, 0.74)"
+      br="1.5rem"
+    >
       <!-- ID 입력 -->
-      <FlexItem class="id-input-wrapper" h="5.6rem" w="35rem" bgc="rgba(170, 167, 184, 0.25)" br="1rem">
+      <FlexItem
+        class="id-input-wrapper"
+        h="5.6rem"
+        w="35rem"
+        bgc="rgba(170, 167, 184, 0.25)"
+        br="1rem"
+      >
         <input
           type="text"
           class="input-text"
@@ -18,10 +31,16 @@
         />
       </FlexItem>
       <!-- 비밀번호 입력 -->
-      <FlexItem class="pwd-input-wrapper" h="5.6rem" w="35rem" bgc="rgba(170, 167, 184, 0.25)" br="1rem">
+      <FlexItem
+        class="pwd-input-wrapper"
+        h="5.6rem"
+        w="35rem"
+        bgc="rgba(170, 167, 184, 0.25)"
+        br="1rem"
+      >
         <input
           ref="passwordInput"
-          :type="passwordVisible ? 'text' : 'password'" 
+          :type="passwordVisible ? 'text' : 'password'"
           class="input-text"
           name="pwd-input"
           placeholder="PASSWORD"
@@ -31,15 +50,26 @@
         />
         <!-- 눈 아이콘 -->
         <i class="eye-icon" @click="togglePasswordVisibility">
-          <img :src="passwordVisible ? eyeOpenIcon : eyeClosedIcon" alt="eye icon" />
+          <img
+            :src="passwordVisible ? eyeOpenIcon : eyeClosedIcon"
+            alt="eye icon"
+          />
         </i>
       </FlexItem>
       <!-- 에러 메시지 -->
-      <FlexItem class="invalid-message-wrapper" h="1.1rem" w="35rem" fs="1.1rem" c="#FF6060">
+      <FlexItem
+        class="invalid-message-wrapper"
+        h="1.1rem"
+        w="35rem"
+        fs="1.1rem"
+        c="#FF6060"
+      >
         <span v-if="props.invalid">{{ props.message }}</span>
       </FlexItem>
       <!-- 로그인 버튼 -->
-      <ButtonItem class="login-btn" fs="1.8rem" @click="login">로그인</ButtonItem>
+      <ButtonItem class="login-btn" fs="1.8rem" @click="login"
+        >로그인</ButtonItem
+      >
     </ArticleItem>
   </SectionItem>
 </template>
@@ -95,7 +125,6 @@ const togglePasswordVisibility = () => {
 const focusPassword = () => {
   passwordInput.value?.focus();
 };
-
 </script>
 
 <style scoped>
@@ -141,11 +170,16 @@ const focusPassword = () => {
 }
 
 .input-text::placeholder {
-  color: #BFCEDD;
+  color: #bfcedd;
 }
 
 .input-text:-webkit-autofill {
-  background-color: rgba(170, 167, 184, 0.25) !important; /* 자동 완성 시 배경 색상 */
+  background-color: rgba(
+    170,
+    167,
+    184,
+    0.25
+  ) !important; /* 자동 완성 시 배경 색상 */
   color: #fff !important; /* 자동 완성 시 글자 색상 */
   -webkit-box-shadow: 0 0 0px 1000px rgba(170, 167, 184, 0.25) inset !important; /* 배경 덮어쓰기 */
   transition: background-color 9999s ease-in-out 0s;

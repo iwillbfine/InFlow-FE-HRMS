@@ -1,7 +1,13 @@
 <template>
   <SectionItem class="assign-section" w="calc(100% - 36rem)">
     <CommonArticle label="부서원 과제 할당">
-      <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+      <FlexItem
+        class="year-half-section"
+        fld="row"
+        fs="1.6rem"
+        fw="500"
+        c="#003566"
+      >
         <YearDropDown @valid-date-selected="handleYearSelected" />
         <HalfDropdown @half-selected="handleHalfSelected" />
       </FlexItem>
@@ -53,23 +59,31 @@
         <template v-if="!isLoading && taskItems.length > 0">
           <TableRow v-for="(task, index) in taskItems" :key="task.task_item_id">
             <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              getTaskTypeName(task.task_type_id)
+            }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              task.task_content
+            }}</TableCell>
             <TableCell class="mid checkbox-cell" fs="1.6rem">
-              <div 
+              <div
                 class="checkbox"
-                :class="{ 'checked': selectedTasks.includes(task.task_item_id) }"
+                :class="{ checked: selectedTasks.includes(task.task_item_id) }"
                 @click="toggleTaskSelection(task)"
               ></div>
             </TableCell>
           </TableRow>
         </template>
         <TableRow v-else-if="isLoading">
-          <TableCell gc="span 5" class="mid" fs="1.6rem">데이터를 불러오는 중입니다...</TableCell>
+          <TableCell gc="span 5" class="mid" fs="1.6rem"
+            >데이터를 불러오는 중입니다...</TableCell
+          >
         </TableRow>
         <TableRow v-else>
-          <TableCell gc="span 5" class="mid" fs="1.6rem">과제 데이터가 없습니다.</TableCell>
+          <TableCell gc="span 5" class="mid" fs="1.6rem"
+            >과제 데이터가 없습니다.</TableCell
+          >
         </TableRow>
       </TableItem>
     </CommonArticle>
@@ -118,7 +132,7 @@ const selectedTasks = ref([]);
 const taskTypes = {
   1: '개인 과제',
   2: '팀 과제',
-  3: '부서 과제'
+  3: '부서 과제',
 };
 
 const getTaskTypeName = (typeId) => {
@@ -141,17 +155,15 @@ const handleAssignTasks = async () => {
 
   try {
     isLoading.value = true;
-    
+
     for (const taskId of selectedTasks.value) {
-      const task = taskItems.value.find(t => t.task_item_id === taskId);
+      const task = taskItems.value.find((t) => t.task_item_id === taskId);
       if (task) {
         const createTaskItemRequestDTO = {
           taskName: task.task_name,
           taskContent: task.task_content,
-          employeeId: Number(selectedEmployee.value.department_member_id) // department_member_id를 사용
+          employeeId: Number(selectedEmployee.value.department_member_id), // department_member_id를 사용
         };
-
-        console.log('Task Request DTO:', createTaskItemRequestDTO); 
 
         await createTaskItem(
           selectedYear.value,
@@ -161,7 +173,7 @@ const handleAssignTasks = async () => {
         );
       }
     }
-    
+
     selectedTasks.value = [];
     await fetchTaskItems();
   } catch (error) {
@@ -174,7 +186,7 @@ const handleAssignTasks = async () => {
 // 과제 목록 조회
 const fetchTaskItems = async () => {
   if (!selectedYear.value || !selectedHalf.value) return;
-  
+
   const employeeId = localStorage.getItem('employeeId');
   if (!employeeId) {
     console.error('employeeId가 없습니다.');
@@ -188,7 +200,7 @@ const fetchTaskItems = async () => {
       selectedHalf.value,
       Number(employeeId)
     );
-    
+
     if (response.success) {
       taskItems.value = Array.isArray(response.content) ? response.content : [];
     } else {
@@ -237,7 +249,7 @@ watch([selectedYear, selectedHalf], () => {
 .checkbox {
   width: 20px;
   height: 20px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
   cursor: pointer;
