@@ -1,7 +1,18 @@
 <template>
   <SectionItem fld="row">
-    <YearMonthDropDown @valid-date-selected="updateSelectedMonth"></YearMonthDropDown>
-    <ButtonItem h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="handleOnclick">조회</ButtonItem>
+    <YearMonthDropDown
+      @valid-date-selected="updateSelectedMonth"
+    ></YearMonthDropDown>
+    <ButtonItem
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      fs="1.6rem"
+      @click="handleOnclick"
+      >조회</ButtonItem
+    >
   </SectionItem>
 </template>
 
@@ -18,13 +29,11 @@ const emit = defineEmits(['monthSelected']);
 // 연월 선택될 때 호출
 const updateSelectedMonth = (date) => {
   selectedMonth.value = date;
-}
+};
 
 const handleOnclick = () => {
   emit('monthSelected', selectedMonth.value);
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

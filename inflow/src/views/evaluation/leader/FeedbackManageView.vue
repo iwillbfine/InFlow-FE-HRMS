@@ -1,7 +1,13 @@
 <template>
   <SectionItem class="feedback-section" w="calc(100% - 36rem)">
     <CommonArticle label="부서원 평가">
-      <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+      <FlexItem
+        class="year-half-section"
+        fld="row"
+        fs="1.6rem"
+        fw="500"
+        c="#003566"
+      >
         <YearDropDown @valid-date-selected="handleYearSelected" />
         <HalfDropdown @half-selected="handleHalfSelected" />
       </FlexItem>
@@ -57,8 +63,8 @@
           </TableCell>
         </TableRow>
 
-        <TableRow 
-          v-for="(task, index) in taskList" 
+        <TableRow
+          v-for="(task, index) in taskList"
           :key="task.task_eval_id"
           class="task-row"
           @click="openTaskEvalModal(task)"
@@ -75,10 +81,10 @@
           <TableCell class="h-5" th fs="1.6rem" topl>피드백 내용</TableCell>
         </TableRow>
         <TableRow h="100%">
-          <TableCell 
-            class="h-12 pl-2" 
-            fs="1.6rem" 
-            botr 
+          <TableCell
+            class="h-12 pl-2"
+            fs="1.6rem"
+            botr
             :class="{ 'feedback-empty': !hasFeedback }"
             @click="handleFeedbackClick"
           >
@@ -86,7 +92,7 @@
               v-model="feedbackContent"
               name="feedback-input"
               class="feedback-input custom-scrollbar"
-              :class="{ 'hidden': !isEditing && !hasFeedback }"
+              :class="{ hidden: !isEditing && !hasFeedback }"
               placeholder="피드백 내용을 입력하세요"
             ></textarea>
           </TableCell>
@@ -107,7 +113,9 @@
         {{ isLoading ? '처리중...' : buttonText }}
       </ButtonItem>
     </CommonArticle>
-    <SearchEmployeeComponent @employee-selected="handleSelected"></SearchEmployeeComponent>
+    <SearchEmployeeComponent
+      @employee-selected="handleSelected"
+    ></SearchEmployeeComponent>
   </SectionItem>
 
   <TaskEvalCreateAndUpdateModal
@@ -135,7 +143,13 @@ import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalCreateAndUpdateModal from './TaskEvalCreateAndUpdateModal.vue';
-import { createFeedback, findFinalGrade, findFeedbacks, updateFeedback, getIndividualTaskItems } from '@/api/evaluation';
+import {
+  createFeedback,
+  findFinalGrade,
+  findFeedbacks,
+  updateFeedback,
+  getIndividualTaskItems,
+} from '@/api/evaluation';
 import { getCommutesByEmployeeId } from '@/api/attendance';
 
 // 상태 관리
@@ -154,30 +168,28 @@ const isEditing = ref(false);
 const feedbackState = ref({
   feedbackId: null,
   content: '',
-  evaluationId: null
+  evaluationId: null,
 });
 
 // 피드백 데이터 초기화 함수
 const initializeFeedbackData = (response) => {
   if (response?.content) {
     feedbackState.value = {
-      feedbackId: response.content.feedback_id,    
+      feedbackId: response.content.feedback_id,
       content: response.content.content || '',
-      evaluationId: response.content.evaluation_id 
+      evaluationId: response.content.evaluation_id,
     };
   } else {
     feedbackState.value = {
       feedbackId: null,
       content: '',
-      evaluationId: null
+      evaluationId: null,
     };
   }
 };
 
 // Computed Properties
-const hasTaskData = computed(() => 
-  taskList.value && taskList.value.length > 0
-);
+const hasTaskData = computed(() => taskList.value && taskList.value.length > 0);
 
 const hasFeedback = computed(() => {
   return !!feedbackState.value.content;
@@ -207,7 +219,7 @@ const handleHalfSelected = (half) => {
 const openTaskEvalModal = (task) => {
   selectedTask.value = {
     ...task,
-    evaluation_id: currentEvaluationId.value  
+    evaluation_id: currentEvaluationId.value,
   };
   isTaskEvalModalOpen.value = true;
 };
@@ -227,22 +239,31 @@ watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
       isLoading.value = true;
 
       // 평가 정보 조회
-      const evaluationResponse = await findFinalGrade(employeeId.department_member_id, year, half);
+      const evaluationResponse = await findFinalGrade(
+        employeeId.department_member_id,
+        year,
+        half
+      );
       currentEvaluationId.value = evaluationResponse?.content?.evaluation_id;
-      
+
       // 과제 목록 조회
-      const tasksResponse = await getIndividualTaskItems(employeeId.department_member_id, year, half);
+      const tasksResponse = await getIndividualTaskItems(
+        employeeId.department_member_id,
+        year,
+        half
+      );
       taskList.value = tasksResponse.content || [];
 
       // 피드백 조회 및 디버깅 로그 추가
-      const feedbackResponse = await findFeedbacks(employeeId.department_member_id, year, half);
-      console.log('서버 응답:', feedbackResponse); // 전체 응답 확인
-      
-      initializeFeedbackData(feedbackResponse);
-      console.log('초기화 후 feedbackState:', feedbackState.value); // 초기화 후 상태 확인
-      
-      feedbackContent.value = feedbackState.value.content;
+      const feedbackResponse = await findFeedbacks(
+        employeeId.department_member_id,
+        year,
+        half
+      );
 
+      initializeFeedbackData(feedbackResponse);
+
+      feedbackContent.value = feedbackState.value.content;
     } catch (error) {
       console.error('데이터 조회 중 에러:', error);
       alert('데이터 조회 중 오류가 발생했습니다.');
@@ -252,8 +273,13 @@ watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
   }
 });
 const fetchTaskList = async () => {
-  if (!selectedEmployee.value?.department_member_id || !selectedYear.value || !selectedHalf.value) return;
-  
+  if (
+    !selectedEmployee.value?.department_member_id ||
+    !selectedYear.value ||
+    !selectedHalf.value
+  )
+    return;
+
   try {
     const tasksResponse = await getIndividualTaskItems(
       selectedEmployee.value.department_member_id,
@@ -269,20 +295,24 @@ const fetchTaskList = async () => {
 
 // 피드백 등록/수정 처리
 const handleOnclick = async () => {
-  if (!selectedEmployee.value || !selectedYear.value || !selectedHalf.value || !feedbackContent.value.trim()) {
+  if (
+    !selectedEmployee.value ||
+    !selectedYear.value ||
+    !selectedHalf.value ||
+    !feedbackContent.value.trim()
+  ) {
     alert('피드백을 입력해주세요.');
     return;
   }
 
   try {
     isLoading.value = true;
-      console.log(feedbackState.value.feedbackId);    // 디버깅용
     if (feedbackState.value.feedbackId) {
       // 피드백 수정 로직
       const updateDTO = {
         feedback_id: feedbackState.value.feedbackId,
         evaluation_id: currentEvaluationId.value,
-        content: feedbackContent.value.trim()
+        content: feedbackContent.value.trim(),
       };
 
       const response = await updateFeedback(updateDTO.feedback_id, updateDTO);
@@ -344,7 +374,6 @@ const handleOnclick = async () => {
   align-items: center;
 }
 
-
 .empty-message {
   justify-content: center;
   align-items: center;
@@ -398,11 +427,11 @@ const handleOnclick = async () => {
 }
 
 .year-half-section {
-position: absolute;
-top: 0;
-right: 0;
-margin-top: -1rem;
-gap: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: -1rem;
+  gap: 1rem;
 }
 
 .created-feedback {
@@ -415,13 +444,13 @@ gap: 1rem;
   font-size: 1.4rem;
   line-height: 1.6;
   margin-bottom: 1rem;
-  word-wrap: break-word;  /* 긴 단어가 넘어갈 때 줄바꿈 */
-  word-break: break-word;  /* 긴 단어가 컨테이너를 넘지 않도록 강제로 줄바꿈 */
-  overflow-wrap: break-word;  /* 텍스트가 컨테이너를 넘지 않도록 줄바꿈 */
-  white-space: pre-wrap;  /* 줄바꿈을 유지하면서 긴 텍스트가 자동으로 넘어가도록 함 */
-  max-height: 100%;  /* 최대 높이를 부모 요소에 맞춤 */
+  word-wrap: break-word; /* 긴 단어가 넘어갈 때 줄바꿈 */
+  word-break: break-word; /* 긴 단어가 컨테이너를 넘지 않도록 강제로 줄바꿈 */
+  overflow-wrap: break-word; /* 텍스트가 컨테이너를 넘지 않도록 줄바꿈 */
+  white-space: pre-wrap; /* 줄바꿈을 유지하면서 긴 텍스트가 자동으로 넘어가도록 함 */
+  max-height: 100%; /* 최대 높이를 부모 요소에 맞춤 */
   overflow-y: auto;
-  padding: 1.5rem;  /* 내부 여백 추가*/
+  padding: 1.5rem; /* 내부 여백 추가*/
 }
 .center-message {
   text-align: center;
@@ -433,10 +462,10 @@ gap: 1rem;
   margin-top: 2rem;
   box-shadow: 0rem 0rem 0.6rem 0rem rgba(0, 0, 0, 0.1);
   height: 15rem;
-  display: flex;  /* Flexbox 사용 */
+  display: flex; /* Flexbox 사용 */
   flex-direction: column;
-  justify-content: center;  /* 세로 가운데 정렬 */
-  align-items: center;  /* 가로 가운데 정렬 */
+  justify-content: center; /* 세로 가운데 정렬 */
+  align-items: center; /* 가로 가운데 정렬 */
 }
 
 .feedback-input::placeholder {

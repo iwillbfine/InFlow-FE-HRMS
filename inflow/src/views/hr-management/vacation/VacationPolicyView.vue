@@ -197,21 +197,29 @@ const vacationPolicyStatusList = [
 
 const parseVacationPolicyStatus = (status) => {
   switch (status) {
-    case 'NORMAL': return '모든 사원';
-    case 'WOMAN_ONLY': return '여성 사원';
-    case 'LONG_TERM': return '장기 근속 사원';
-    case 'ROOKIE': return '신입 사원';
-    default: return '모든사원';
+    case 'NORMAL':
+      return '모든 사원';
+    case 'WOMAN_ONLY':
+      return '여성 사원';
+    case 'LONG_TERM':
+      return '장기 근속 사원';
+    case 'ROOKIE':
+      return '신입 사원';
+    default:
+      return '모든사원';
   }
-}
+};
 
 const parseAutoAllocationCycle = (cycle) => {
   switch (cycle) {
-    case '0 0 0 1 1 *': return '1년마다';
-    case '0 0 0 1 * *': return '1달마다';
-    default: return '-';
+    case '0 0 0 1 1 *':
+      return '1년마다';
+    case '0 0 0 1 * *':
+      return '1달마다';
+    default:
+      return '-';
   }
-}
+};
 
 const paidStatusList = [
   { id: 'Y', name: '유급' },

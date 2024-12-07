@@ -34,12 +34,24 @@
           <TableCell th fs="1.7rem">급여 총액</TableCell>
         </TableRow>
         <TableRow v-for="(payment, index) in payments" :key="index">
-          <TableCell class="mid" fs="1.6rem">{{ formatDate(payment.paid_at) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.monthly_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.non_taxable_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.bonus_and_allowance) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.total_deductible) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(payment.actual_salary) }}</TableCell>
+          <TableCell class="mid" fs="1.6rem">{{
+            formatDate(payment.paid_at)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.monthly_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.non_taxable_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.bonus_and_allowance)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.total_deductible)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(payment.actual_salary)
+          }}</TableCell>
         </TableRow>
       </TableItem>
     </div>
@@ -47,14 +59,14 @@
 </template>
 
 <script setup>
-import FlexItem from "@/components/semantic/FlexItem.vue";
-import TableItem from "@/components/semantic/TableItem.vue";
-import TableRow from "@/components/semantic/TableRow.vue";
-import TableCell from "@/components/semantic/TableCell.vue";
-import YearMonthDropDown from "@/components/dropdowns/YearMonthDropDown.vue";
-import ButtonItem from "@/components/semantic/ButtonItem.vue";
-import {ref} from "vue";
-import {getPeriodicPayments} from "@/api/payroll.js";
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import YearMonthDropDown from '@/components/dropdowns/YearMonthDropDown.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import { ref } from 'vue';
+import { getPeriodicPayments } from '@/api/payroll.js';
 
 const payments = ref([]);
 const startDate = ref('');
@@ -73,21 +85,25 @@ const updateEndMonth = (date) => {
 // 조회 버튼 클릭
 const handleOnclick = async () => {
   if (!startDate.value || !endDate.value) {
-    alert("시작 월과 종료 월을 모두 선택해주세요.");
+    alert('시작 월과 종료 월을 모두 선택해주세요.');
     return;
   }
 
   try {
-    const employeeId = localStorage.getItem("employeeId");
+    const employeeId = localStorage.getItem('employeeId');
     if (!employeeId) {
-      alert("로그인이 필요합니다.");
+      alert('로그인이 필요합니다.');
       return;
     }
 
-    const response = await getPeriodicPayments(employeeId, startDate.value, endDate.value);
+    const response = await getPeriodicPayments(
+      employeeId,
+      startDate.value,
+      endDate.value
+    );
     payments.value = response.content || [];
   } catch (error) {
-    console.error("급여 데이터를 가져오는 중 오류 발생:", error);
+    console.error('급여 데이터를 가져오는 중 오류 발생:', error);
     payments.value = [];
   }
 };
@@ -100,7 +116,6 @@ const formatDate = (value) => {
 };
 
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
-
 </script>
 
 <style scoped>
@@ -134,5 +149,4 @@ const formatCurrency = (value) => `${value.toLocaleString()} 원`;
   justify-content: flex-end;
   align-items: center;
 }
-
 </style>

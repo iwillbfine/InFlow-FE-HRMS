@@ -1,5 +1,12 @@
 <template>
-  <HeaderItem class="common-header" fld="row" h="10rem" w="calc(100% - 12rem)" fw="700" bgc="#fff">
+  <HeaderItem
+    class="common-header"
+    fld="row"
+    h="10rem"
+    w="calc(100% - 12rem)"
+    fw="700"
+    bgc="#fff"
+  >
     <SectionItem class="welcome-section" h="6rem" fs="2.8rem">
       <span>{{ props.userName }} 님, 안녕하세요!</span>
     </SectionItem>
@@ -15,7 +22,10 @@
           :class="{ 'low-time': remainingTime <= 300 }"
         >
           <ClockIcon></ClockIcon>
-          <span>{{ Math.floor(remainingTime / 60) }}분 {{ remainingTime % 60 }}초</span>
+          <span
+            >{{ Math.floor(remainingTime / 60) }}분
+            {{ remainingTime % 60 }}초</span
+          >
         </FlexItem>
         <ButtonItem
           class="extend-btn"
@@ -26,16 +36,31 @@
           fs="1.2rem"
           c="#fff"
           @click="extendSession"
-        >연장
+          >연장
         </ButtonItem>
       </FlexItem>
-      <SettingButton h="4rem" w="4rem" br="50%" @click="toggleSettingModalStatus"></SettingButton>
+      <SettingButton
+        h="4rem"
+        w="4rem"
+        br="50%"
+        @click="toggleSettingModalStatus"
+      ></SettingButton>
       <HomeButton h="4rem" w="4rem" br="50%"></HomeButton>
-      <AccountDropdown :user-name="userName" @reset-password="changeModalStatus" />
+      <AccountDropdown
+        :user-name="userName"
+        @reset-password="changeModalStatus"
+      />
     </NavItem>
   </HeaderItem>
-  <ResetPasswordModal v-if="isResetPwdModalOpen" class="reset-pwd-modal" @close="changeModalStatus"></ResetPasswordModal>
-  <SettingModal v-if="isSettingModalOpen" @close="toggleSettingModalStatus"></SettingModal>
+  <ResetPasswordModal
+    v-if="isResetPwdModalOpen"
+    class="reset-pwd-modal"
+    @close="changeModalStatus"
+  ></ResetPasswordModal>
+  <SettingModal
+    v-if="isSettingModalOpen"
+    @close="toggleSettingModalStatus"
+  ></SettingModal>
 </template>
 
 <script setup>
@@ -105,13 +130,12 @@ const clearSession = () => {
 
 // 모달 상태 변경
 const changeModalStatus = () => {
-  console.log('Modal status changed'); // 디버깅용
   isResetPwdModalOpen.value = !isResetPwdModalOpen.value;
 };
 
 const toggleSettingModalStatus = () => {
   isSettingModalOpen.value = !isSettingModalOpen.value;
-}
+};
 
 // 컴포넌트 마운트/언마운트 시 타이머 관리
 onMounted(() => {

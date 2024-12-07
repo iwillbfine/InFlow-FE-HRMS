@@ -29,7 +29,6 @@ const router = useRouter(); // 라우터 객체 생성
 
 // 로그인 처리 함수
 const handleLogin = async () => {
-
   // 입력값 검사
   if (!employeeNumber.value.trim()) {
     invalid.value = true;
@@ -44,10 +43,12 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = (await axios.post('http://localhost:5000/api/login', {
-      employee_number: employeeNumber.value,
-      password: password.value,
-    })).data;
+    const response = (
+      await axios.post('http://localhost:5000/api/login', {
+        employee_number: employeeNumber.value,
+        password: password.value,
+      })
+    ).data;
 
     if (response.success) {
       // 로그인 성공 시 API 응답에서 데이터 추출
@@ -55,7 +56,7 @@ const handleLogin = async () => {
         access_token: accessToken,
         refresh_token: refreshToken,
         employee_id: employeeId,
-        employee_number: empNumber
+        employee_number: empNumber,
       } = response.content;
 
       // 사원 이름 가져오기
@@ -94,11 +95,11 @@ const handleLogin = async () => {
     }
   } catch (error) {
     invalid.value = true;
-    errorMessage.value = error.response?.data?.error?.message || '로그인 실패. 다시 시도해주세요.';
+    errorMessage.value =
+      error.response?.data?.error?.message || '로그인 실패. 다시 시도해주세요.';
     console.error(error.response?.data || error);
   }
 };
-
 </script>
 
 <style scoped>

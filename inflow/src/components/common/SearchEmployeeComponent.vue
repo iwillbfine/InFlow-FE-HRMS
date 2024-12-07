@@ -79,7 +79,7 @@ import {
 } from '@/api/department';
 import { ref, onMounted } from 'vue';
 
-const emit = defineEmits(['employee-selected'])
+const emit = defineEmits(['employee-selected']);
 
 const employeeList = ref([]);
 const isEmpty = ref(true);

@@ -1,25 +1,60 @@
 <template>
-  <FlexItem class="content-header" fld="row" h="1rem" w="90%">
-  </FlexItem>
+  <FlexItem class="content-header" fld="row" h="1rem" w="90%"> </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 6rem)" w="90%">
     <div class="table-wrapper">
       <TableItem class="work-day-table" gtc="repeat(6, 1fr)" br="0.5rem">
         <TableRow>
-          <TableCell class="date" fs="1.7rem" gc="span 2" fw="bold" bgc="#f8f8f8">입사일</TableCell>
-          <TableCell class="mid" fs="1.7rem" gc="span 4">{{ formatDate(workingDay.join_date) }}</TableCell>
+          <TableCell
+            class="date"
+            fs="1.7rem"
+            gc="span 2"
+            fw="bold"
+            bgc="#f8f8f8"
+            >입사일</TableCell
+          >
+          <TableCell class="mid" fs="1.7rem" gc="span 4">{{
+            formatDate(workingDay.join_date)
+          }}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell class="date" fs="1.7rem" gc="span 2" fw="bold" bgc="#f8f8f8">퇴직일</TableCell>
-          <TableCell class="mid" fs="1.7rem" gc="span 4">{{ formatDate(workingDay.severance_date) }}</TableCell>
+          <TableCell
+            class="date"
+            fs="1.7rem"
+            gc="span 2"
+            fw="bold"
+            bgc="#f8f8f8"
+            >퇴직일</TableCell
+          >
+          <TableCell class="mid" fs="1.7rem" gc="span 4">{{
+            formatDate(workingDay.severance_date)
+          }}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell class="date" fs="1.7rem" gc="span 2" fw="bold" bgc="#f8f8f8">총 재직일</TableCell>
-          <TableCell class="mid" fs="1.7rem" gc="span 4">{{ workingDay.total_working_days }}일</TableCell>
+          <TableCell
+            class="date"
+            fs="1.7rem"
+            gc="span 2"
+            fw="bold"
+            bgc="#f8f8f8"
+            >총 재직일</TableCell
+          >
+          <TableCell class="mid" fs="1.7rem" gc="span 4"
+            >{{ workingDay.total_working_days }}일</TableCell
+          >
         </TableRow>
       </TableItem>
     </div>
     <div class="button-wrapper">
-      <ButtonItem class="button" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" fs="1.6rem" @click="toggleSeveranceTable">
+      <ButtonItem
+        class="button"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        @click="toggleSeveranceTable"
+      >
         조회
       </ButtonItem>
     </div>
@@ -35,17 +70,38 @@
         </TableRow>
         <TableRow>
           <TableCell class="period" fs="1.5rem">
-            {{ formatPeriod(severancePay.three_months_ago, severancePay.severance_date) }}
+            {{
+              formatPeriod(
+                severancePay.three_months_ago,
+                severancePay.severance_date
+              )
+            }}
           </TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.total_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.total_non_taxable_salary) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.bonus_addition) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.leave_allowance_addition) }}</TableCell>
-          <TableCell class="amount" fs="1.6rem">{{ formatCurrency(severancePay.severance_pay) }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(severancePay.total_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(severancePay.total_non_taxable_salary)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(severancePay.bonus_addition)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(severancePay.leave_allowance_addition)
+          }}</TableCell>
+          <TableCell class="amount" fs="1.6rem">{{
+            formatCurrency(severancePay.severance_pay)
+          }}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell th fs="1.8rem" fw="bold" gc="span 6">귀하의 퇴직금 예상치는 {{ formatCurrency(severancePay.severance_pay) }}입니다.</TableCell>
-          <TableCell th fs="1.6rem" gc="span 6">* 본 계산은 예상치로 실제 세금 납부액 및 각종 공제 내역에 따라 달라질 수 있습니다.</TableCell>
+          <TableCell th fs="1.8rem" fw="bold" gc="span 6"
+            >귀하의 퇴직금 예상치는
+            {{ formatCurrency(severancePay.severance_pay) }}입니다.</TableCell
+          >
+          <TableCell th fs="1.6rem" gc="span 6"
+            >* 본 계산은 예상치로 실제 세금 납부액 및 각종 공제 내역에 따라
+            달라질 수 있습니다.</TableCell
+          >
         </TableRow>
       </TableItem>
     </div>
@@ -53,14 +109,17 @@
 </template>
 
 <script setup>
-import FlexItem from "@/components/semantic/FlexItem.vue";
-import TableItem from "@/components/semantic/TableItem.vue";
-import TableRow from "@/components/semantic/TableRow.vue";
-import TableCell from "@/components/semantic/TableCell.vue";
-import ButtonItem from "@/components/semantic/ButtonItem.vue";
-import {useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
-import {getEstimateWorkingDays, calculateSeverancePay} from "@/api/payroll.js";
+import FlexItem from '@/components/semantic/FlexItem.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import {
+  getEstimateWorkingDays,
+  calculateSeverancePay,
+} from '@/api/payroll.js';
 
 const router = useRouter();
 
@@ -71,13 +130,12 @@ const severancePay = ref({});
 const showSeveranceTable = ref(false);
 
 // api 호출
-const fetchData = async() => {
-  const id = localStorage.getItem("employeeId");
-  console.log("localStorage에서 가져온 id",id);
+const fetchData = async () => {
+  const id = localStorage.getItem('employeeId');
 
   if (!id) {
-    alert("로그인이 필요합니다.")
-    router.push("/login")
+    alert('로그인이 필요합니다.');
+    router.push('/login');
     return;
   }
 
@@ -92,7 +150,7 @@ const fetchData = async() => {
     const severanceData = await calculateSeverancePay(employeeId.value);
     severancePay.value = severanceData.content || {};
   } catch (error) {
-    console.log("데이터 호출 중 오류 발생", error);
+    console.error('데이터 호출 중 오류 발생', error);
   }
 };
 
@@ -114,14 +172,12 @@ const toggleSeveranceTable = () => {
 // };
 //
 // const fetchSeverancePay = async(id) => {
-//   console.log("fetchSeverancePay 호출, 전달된 employeeId: ", id);
 //   if (!id) {
 //     console.error("유효하지 않은 파라미터", id);
 //     return;
 //   }
 //   try {
 //     const response = await calculateSeverancePay(id);
-//     console.log("fetchSeveracePay 결과: ", response);
 //
 //     const content = response.content || {};
 //     severancePay.value = {
@@ -139,7 +195,6 @@ const toggleSeveranceTable = () => {
 // };
 
 // const handleOnclick = () => {
-//   console.log("handleOnclick 호출, employeeId: ", employeeId.value);
 //   if (!employeeId.value) {
 //     console.error('employeeId가 유효하지 않음!!');
 //     return;
@@ -152,7 +207,7 @@ const formatDate = (value) => {
   const [date] = value.split('T');
   const [year, month, day] = date.split('-');
   return `${year}년 ${month}월 ${day}일`;
-}
+};
 
 const formatPeriod = (startDate, endDate) => {
   if (!startDate || !endDate) return '-년 -월 -일 ~ -년 -월 -일';
@@ -170,19 +225,16 @@ const formatCurrency = (value) => {
   return `${value.toLocaleString()} 원`;
 };
 
-
 onMounted(() => {
-  const id = localStorage.getItem("employeeId");
-  console.log("localStorage에서 가져온 employeeId: ", id);
+  const id = localStorage.getItem('employeeId');
   if (!id) {
-    alert("로그인이 필요합니다.");
-    router.push("/login");
+    alert('로그인이 필요합니다.');
+    router.push('/login');
     return;
   }
   employeeId.value = id;
   fetchData(employeeId.value);
 });
-
 </script>
 
 <style scoped>
@@ -227,5 +279,4 @@ onMounted(() => {
   justify-content: flex-end;
   align-items: center;
 }
-
 </style>

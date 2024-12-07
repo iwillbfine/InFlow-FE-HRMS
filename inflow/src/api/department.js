@@ -38,7 +38,9 @@ export const getEmployeesByDepartmentCode = async (dcode) => {
 };
 
 // 4. 부서 구성원 조회(팀장)
-export const getMyDepartmentMemberListByDepartmentCode = async (departmentCode) => {
+export const getMyDepartmentMemberListByDepartmentCode = async (
+  departmentCode
+) => {
   try {
     const response = await apiClient.get(
       `/departments/my-department/${departmentCode}/members`
@@ -48,4 +50,4 @@ export const getMyDepartmentMemberListByDepartmentCode = async (departmentCode) 
     console.error('getMyDepartmentMemberListByDepartmentCode 에러:', error);
     throw error;
   }
-}
+};

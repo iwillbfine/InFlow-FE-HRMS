@@ -1,40 +1,44 @@
 <template>
-    <CommonArticle label="재직증명서 발급" minh="29rem" w="90%">
-      <TableItem gtc="auto 150px" br="1rem">
-        <TableRow bgc="#aaa">
-          <TableCell th fs="1.6rem">재직 증명서 요청</TableCell>
-          <TableCell th fs="1.6rem">발급하기</TableCell>
-        </TableRow>
-        <TableRow>
-          <!-- 텍스트 입력 필드 -->
-          <TableCell class="mid" fs="1.6rem">
-            <input 
-              type="text" 
-              class="input-field" 
-              placeholder="재직증명서 요청 사유를 입력하세요. (최대 20자)" 
-              v-model="requestReason"
-              @input="checkLength"
-            />
-            <div class="char-counter">{{ requestReason.length }} / 20</div>
-          </TableCell>
-          <!-- 발급하기 버튼 -->
-          <TableCell class="mid issue-cell" fs="1.6rem">
-            <button class="btn" @click="handleIssueCertificate" :disabled="isSubmitting">
-              <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
-              <i v-else class="fas fa-file"></i>
-              발급하기
-            </button>
-          </TableCell>
-        </TableRow>
-      </TableItem>
-    </CommonArticle>
+  <CommonArticle label="재직증명서 발급" minh="29rem" w="90%">
+    <TableItem gtc="auto 150px" br="1rem">
+      <TableRow bgc="#aaa">
+        <TableCell th fs="1.6rem">재직 증명서 요청</TableCell>
+        <TableCell th fs="1.6rem">발급하기</TableCell>
+      </TableRow>
+      <TableRow>
+        <!-- 텍스트 입력 필드 -->
+        <TableCell class="mid" fs="1.6rem">
+          <input
+            type="text"
+            class="input-field"
+            placeholder="재직증명서 요청 사유를 입력하세요. (최대 20자)"
+            v-model="requestReason"
+            @input="checkLength"
+          />
+          <div class="char-counter">{{ requestReason.length }} / 20</div>
+        </TableCell>
+        <!-- 발급하기 버튼 -->
+        <TableCell class="mid issue-cell" fs="1.6rem">
+          <button
+            class="btn"
+            @click="handleIssueCertificate"
+            :disabled="isSubmitting"
+          >
+            <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
+            <i v-else class="fas fa-file"></i>
+            발급하기
+          </button>
+        </TableCell>
+      </TableRow>
+    </TableItem>
+  </CommonArticle>
 
-    <!-- 모달 -->
-    <CertificateModal
-      v-if="showModal"
-      :certificate-data="certificateData"
-      @close="closeModal"
-    />
+  <!-- 모달 -->
+  <CertificateModal
+    v-if="showModal"
+    :certificate-data="certificateData"
+    @close="closeModal"
+  />
 </template>
 
 <script setup>
@@ -74,7 +78,11 @@ const handleIssueCertificate = async () => {
   isSubmitting.value = true;
 
   try {
-    const response = await getEmploymentCertificate(employeeId, requestReason.value, token);
+    const response = await getEmploymentCertificate(
+      employeeId,
+      requestReason.value,
+      token
+    );
     certificateData.value = response; // API 응답 저장
     showModal.value = true; // 모달 표시
   } catch (error) {

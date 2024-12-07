@@ -1,83 +1,121 @@
 <template>
   <div class="emp-container">
     <CommonArticle label="인사발령 등록" class="ca" w="96%">
-
-    <div class="tmp">
-      <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
-    </div>
-    <div class="exlbtns1">
-      <button type="button" @click="fileDownload">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 다운로드</p>
-      </button>
-      <button type="button" @click="clickInput">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 업로드</p>
-      </button>
-    </div>
-
-    <div class="colboard">
-      <div class="exlbtns2">
-        <button type="button" @click="deleteSelectedRows">
-          <img src="../../../assets/icons/minus_icon.png" />
-          <p>선택 삭제</p>
+      <div class="tmp">
+        <input
+          type="file"
+          ref="fileInput"
+          @change="handleFileUpload"
+          accept=".xlsx, .xls"
+          style="display: none"
+        />
+      </div>
+      <div class="exlbtns1">
+        <button type="button" @click="fileDownload">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 다운로드</p>
         </button>
-        <button type="button" @click="addRow">
-          <img src="../../../assets/icons/plus_icon.png" />
-          <p>행 추가</p>
+        <button type="button" @click="clickInput">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 업로드</p>
         </button>
       </div>
 
-      <div class="inboard">
-        <div class="colname headers">
-          <div class="chbox">
-            <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
-            <label :for="chkHeader"></label>
-          </div>
-          <div v-for="header in headerNames" :key="header">{{ header }}</div>
+      <div class="colboard">
+        <div class="exlbtns2">
+          <button type="button" @click="deleteSelectedRows">
+            <img src="../../../assets/icons/minus_icon.png" />
+            <p>선택 삭제</p>
+          </button>
+          <button type="button" @click="addRow">
+            <img src="../../../assets/icons/plus_icon.png" />
+            <p>행 추가</p>
+          </button>
         </div>
-        <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
-          <div class="chbox">
-            <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
-            <label :for="'check' + rowIndex"></label>
+
+        <div class="inboard">
+          <div class="colname headers">
+            <div class="chbox">
+              <input
+                type="checkbox"
+                :id="chkHeader"
+                v-model="chkHeader"
+                @change="toggleAllCheckboxes"
+              />
+              <label :for="chkHeader"></label>
+            </div>
+            <div v-for="header in headerNames" :key="header">{{ header }}</div>
           </div>
-          <div v-for="(value, header) in row" :key="header" class="cell-container">
-            <input 
-              type="text" 
-              v-model="rowsData[rowIndex][header]" 
-              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header)}"
-              class="cell-input"
-              @focus="showModal(rowIndex, header)"
-              @blur="hideModal"/>
-            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
-              <pre>{{ modalTxt[header] }}</pre>
+          <div
+            class="colname rows"
+            v-for="(row, rowIndex) in rowsData"
+            :key="rowIndex"
+          >
+            <div class="chbox">
+              <input
+                type="checkbox"
+                :id="'check' + rowIndex"
+                v-model="selectedRows[rowIndex]"
+              />
+              <label :for="'check' + rowIndex"></label>
+            </div>
+            <div
+              v-for="(value, header) in row"
+              :key="header"
+              class="cell-container"
+            >
+              <input
+                type="text"
+                v-model="rowsData[rowIndex][header]"
+                :class="{
+                  'invalid-row': !isCellValid(
+                    rowsData[rowIndex][header],
+                    header
+                  ),
+                }"
+                class="cell-input"
+                @focus="showModal(rowIndex, header)"
+                @blur="hideModal"
+              />
+              <div
+                v-if="
+                  visible && activeRow === rowIndex && activeHeader === header
+                "
+                class="modal"
+              >
+                <pre>{{ modalTxt[header] }}</pre>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="regist">
-      <button type="button" class="rBtn" @click="postData">
-        <p>등록</p>
-      </button>
-    </div>
-  </CommonArticle>
+      <div class="regist">
+        <button type="button" class="rBtn" @click="postData">
+          <p>등록</p>
+        </button>
+      </div>
+    </CommonArticle>
   </div>
 </template>
 
-
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
-import * as xlsx from "xlsx";
-import { ref, onMounted } from "vue";
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import * as xlsx from 'xlsx';
+import { ref, onMounted } from 'vue';
 import { getDoc, saveData, getAllEmpId, getValidData } from '@/api/emp_attach';
 
 const headerNames = ref([
-  "발령대상(사번)", "인사발령 유형(CODE)", "발령 부서(CODE)",
-  "발령 직무(CODE)", "발령 직책(CODE)", "발령 직위(CODE)"
+  '발령대상(사번)',
+  '인사발령 유형(CODE)',
+  '발령 부서(CODE)',
+  '발령 직무(CODE)',
+  '발령 직책(CODE)',
+  '발령 직위(CODE)',
 ]);
-const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
+const defaultRow = Object.fromEntries(
+  headerNames.value.map((key) => [key, null])
+);
 
 const chkHeader = ref(false);
 const selectedRows = ref([]);
@@ -90,21 +128,22 @@ const loading = ref(true);
 const modalTxt = ref({});
 
 const validationKeys = {
-  "발령대상(사번)": "ids",
-  "인사발령 유형(CODE)": "appointment_items",
-  "발령 부서(CODE)": "departments",
-  "발령 직무(CODE)": "duties",
-  "발령 직책(CODE)": "roles",
-  "발령 직위(CODE)": "positions",
+  '발령대상(사번)': 'ids',
+  '인사발령 유형(CODE)': 'appointment_items',
+  '발령 부서(CODE)': 'departments',
+  '발령 직무(CODE)': 'duties',
+  '발령 직책(CODE)': 'roles',
+  '발령 직위(CODE)': 'positions',
 };
 
 const validators = {
-  "발령대상(사번)": (value) => ids.value[value] !== undefined,
-  "인사발령 유형(CODE)": (value) => validData.value.appointment_items?.includes(value),
-  "발령 부서(CODE)": (value) => validData.value.departments?.includes(value),
-  "발령 직무(CODE)": (value) => validData.value.duties?.includes(value),
-  "발령 직책(CODE)": (value) => validData.value.roles?.includes(value),
-  "발령 직위(CODE)": (value) => validData.value.positions?.includes(value),
+  '발령대상(사번)': (value) => ids.value[value] !== undefined,
+  '인사발령 유형(CODE)': (value) =>
+    validData.value.appointment_items?.includes(value),
+  '발령 부서(CODE)': (value) => validData.value.departments?.includes(value),
+  '발령 직무(CODE)': (value) => validData.value.duties?.includes(value),
+  '발령 직책(CODE)': (value) => validData.value.roles?.includes(value),
+  '발령 직위(CODE)': (value) => validData.value.positions?.includes(value),
 };
 
 const isCellValid = (value, header) => {
@@ -113,29 +152,29 @@ const isCellValid = (value, header) => {
   const key = validationKeys[header];
   if (!key) return true;
 
-  const data = key === "ids" ? ids.value : validData.value[key];
+  const data = key === 'ids' ? ids.value : validData.value[key];
   if (loading.value || !data || Object.keys(data).length === 0) return true;
 
-  return key === "ids" ? data[value] !== undefined : data.includes(value);
+  return key === 'ids' ? data[value] !== undefined : data.includes(value);
 };
 
-const getEmpIds = async() => {
+const getEmpIds = async () => {
   loading.value = true;
   validData.value = await getValidData();
   const tmp = await getAllEmpId();
   tmp.forEach((row) => {
-    ids.value[row["employee_number"]] = row["employee_id"];
-    ids.value[row["employee_id"]] = row["employee_number"];
+    ids.value[row['employee_number']] = row['employee_id'];
+    ids.value[row['employee_id']] = row['employee_number'];
   });
   loading.value = false;
-}
+};
 
 const visible = ref(false);
 const activeRow = ref(null);
 const activeHeader = ref(null);
 
 const showModal = (rowIndex, header) => {
-  if (modalTxt.value[header]  !== undefined) {
+  if (modalTxt.value[header] !== undefined) {
     visible.value = true;
     activeRow.value = rowIndex;
     activeHeader.value = header;
@@ -150,18 +189,19 @@ const hideModal = () => {
 
 const setModalTxt = (data) => {
   return {
-    "발령대상(사번)": '유효한 사번을 입력하세요.',
-    "인사발령 유형(CODE)": '선택:\n- '+(data.appointment_items || []).join('\n- '),
-    "발령 부서(CODE)": '선택:\n- '+(data.departments || []).join('\n- '),
-    "발령 직무(CODE)": '선택:\n- '+(data.duties || []).join('\n- '),
-    "발령 직책(CODE)": '선택:\n- '+(data.roles || []).join('\n- '),
-    "발령 직위(CODE)": '선택:\n- '+(data.positions || []).join('\n- '),
+    '발령대상(사번)': '유효한 사번을 입력하세요.',
+    '인사발령 유형(CODE)':
+      '선택:\n- ' + (data.appointment_items || []).join('\n- '),
+    '발령 부서(CODE)': '선택:\n- ' + (data.departments || []).join('\n- '),
+    '발령 직무(CODE)': '선택:\n- ' + (data.duties || []).join('\n- '),
+    '발령 직책(CODE)': '선택:\n- ' + (data.roles || []).join('\n- '),
+    '발령 직위(CODE)': '선택:\n- ' + (data.positions || []).join('\n- '),
   };
 };
 
 const clickInput = () => {
   fileInput.value.click();
-}
+};
 
 const handleFileUpload = (event) => {
   const file = event.target.files?.[0];
@@ -170,11 +210,11 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const binaryStr = e.target.result;
-    workbook.value = xlsx.read(binaryStr, { type: "binary" });
+    workbook.value = xlsx.read(binaryStr, { type: 'binary' });
     addToRowsData();
   };
   reader.readAsBinaryString(file);
-  event.target.value = "";
+  event.target.value = '';
 };
 
 const addToRowsData = () => {
@@ -225,62 +265,60 @@ const addRow = () => {
 };
 
 const deleteSelectedRows = () => {
-  rowsData.value = rowsData.value.filter((_, index) => !selectedRows.value[index]);
+  rowsData.value = rowsData.value.filter(
+    (_, index) => !selectedRows.value[index]
+  );
   initializeSelectedRows();
 };
-
 
 const mapping = async () => {
   await getEmpIds();
   const result = ref([]);
   rowsData.value.map((row) => {
     result.value.push({
-      employee_number: row["발령대상(사번)"],
+      employee_number: row['발령대상(사번)'],
       authorizer_id: '1',
-      department_code: row["발령 부서(CODE)"],
-      position_code: row["발령 직위(CODE)"],
-      role_code: row["발령 직책(CODE)"],
-      duty_code: row["발령 직무(CODE)"],
-      appointment_item_code: row["인사발령 유형(CODE)"],
+      department_code: row['발령 부서(CODE)'],
+      position_code: row['발령 직위(CODE)'],
+      role_code: row['발령 직책(CODE)'],
+      duty_code: row['발령 직무(CODE)'],
+      appointment_item_code: row['인사발령 유형(CODE)'],
     });
   });
   return result.value;
 };
-  
+
 // Appointment Form 다운로드
 const fileDownload = async () => {
   try {
-    const response = await getDoc("appointment");
+    const response = await getDoc('appointment');
     const fileUrl = response.content;
-    const link = document.createElement("a"); // 링크 생성
+    const link = document.createElement('a'); // 링크 생성
     link.href = fileUrl; // URL 연결
-    link.setAttribute("download", "appointment_form.xlsx"); // 다운로드 파일 이름 설정
+    link.setAttribute('download', 'appointment_form.xlsx'); // 다운로드 파일 이름 설정
     link.click(); // 클릭 이벤트 발생
   } catch (error) {
-    console.error("Appointment Form 다운로드 에러:", error.message);
+    console.error('Appointment Form 다운로드 에러:', error.message);
   }
 };
 
-
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
-    Object.entries(row).some(
-      ([header, value]) => !isCellValid(value, header)
-    )
+    Object.entries(row).some(([header, value]) => !isCellValid(value, header))
   );
 
   if (invalidRows) {
-    window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
+    window.alert('유효하지 않은 데이터 존재!! 등록 불가!!');
     return;
   }
 
   const data = await mapping();
   await saveData(data, 'appointments');
-  window.alert("인사발령 정보 등록 완료");
+  window.alert('인사발령 정보 등록 완료');
   window.location.reload();
 };
 
-onMounted(async() => {
+onMounted(async () => {
   await getEmpIds();
   modalTxt.value = setModalTxt(validData.value);
 });
@@ -308,7 +346,8 @@ onMounted(async() => {
   right: 0;
 }
 
-.exlbtns1, .exlbtns2 {
+.exlbtns1,
+.exlbtns2 {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -316,7 +355,8 @@ onMounted(async() => {
   margin-right: 0.8rem;
 }
 
-.exlbtns1 button, .exlbtns2 button {
+.exlbtns1 button,
+.exlbtns2 button {
   width: 14.4rem;
   height: 3.6rem;
   gap: 1rem;
@@ -331,7 +371,7 @@ button {
   border-radius: 0.6rem;
   background-color: #003566;
   border: none;
-  color: #FFF;
+  color: #fff;
   font-size: 1.6rem;
   cursor: pointer;
 }
@@ -357,7 +397,7 @@ button p {
   width: 100%;
   flex-shrink: 0;
   border-radius: 0.6rem;
-  background: #FFF;
+  background: #fff;
   font-size: 1.4rem;
   border: 2px solid #2e2f3015;
   margin-top: 0.5rem;
@@ -399,15 +439,15 @@ button p {
   width: 100%;
 }
 
-.rows > div > input{
+.rows > div > input {
   width: 100%;
   height: 100%;
   padding-left: 0.5rem;
   text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
-  border: 0.586px solid #DBDBDB;
-  background: #F8F8F8;
+  border: 0.586px solid #dbdbdb;
+  background: #f8f8f8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
@@ -423,22 +463,22 @@ button p {
   justify-content: center;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid #DBDBDB;
+  border: 1px solid #dbdbdb;
   background-color: #fff;
   position: relative;
 }
 
-input[type="checkbox"]:checked + label::after {
+input[type='checkbox']:checked + label::after {
   content: '✔';
   font-size: 20px;
   width: 100%;
@@ -486,8 +526,8 @@ input[type="checkbox"]:checked + label::after {
 }
 
 .invalid-row {
-  background: #FFD8D8 !important;
-  stroke: #F00 !important;
+  background: #ffd8d8 !important;
+  stroke: #f00 !important;
   border: 2px solid red !important;
 }
 </style>

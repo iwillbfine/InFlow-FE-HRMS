@@ -1,19 +1,22 @@
 <template>
   <div class="container">
-    <SectionItem fld="row" style="gap: 3rem; justify-content: space-evenly;">
+    <SectionItem fld="row" style="gap: 3rem; justify-content: space-evenly">
       <PeriodDropDown
         :y="period.start.split('-')[0]"
         :m="period.start.split('-')[1]"
         @selected="startDate"
       ></PeriodDropDown>
-      <span style="font-weight: bold;">~</span>
+      <span style="font-weight: bold">~</span>
       <PeriodDropDown
         :y="period.end.split('-')[0]"
         :m="period.end.split('-')[1]"
         @selected="endDate"
       ></PeriodDropDown>
     </SectionItem>
-    <SectionItem fld="row" style="gap: 3rem; justify-content: center; align-items: center;">
+    <SectionItem
+      fld="row"
+      style="gap: 3rem; justify-content: center; align-items: center"
+    >
       <DropdownItem
         v-model:selected-item="selectedType"
         :placeholder="'전체'"
@@ -45,7 +48,7 @@ import DropdownItem from '../dropdowns/DropdownItem.vue';
 // 초기 기간 설정
 const period = ref({
   start: '2024-01', // 안전한 초기값 설정
-  end: '2024-01',   // 안전한 초기값 설정
+  end: '2024-01', // 안전한 초기값 설정
 });
 
 // Props 정의
@@ -79,7 +82,6 @@ const setDatas = () => {
 
 // 선택된 시작 날짜 저장
 const startDate = (date1) => {
-  console.log(date1);
   period.value.start = date1 || period.value.start; // 안전하게 기본값 유지
 };
 

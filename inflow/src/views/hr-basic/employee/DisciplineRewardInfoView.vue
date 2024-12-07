@@ -1,7 +1,20 @@
 <template>
   <CommonArticle label="포상 및 징계" class="ca" w="96%" fs="2rem">
-    <DisciplineRewardTypeDropDown @selected="getType" class="select-data"></DisciplineRewardTypeDropDown>
-    <ButtonItem class="read-btn" h="3.6rem" w="7.2rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="handleOnclick">조회</ButtonItem>
+    <DisciplineRewardTypeDropDown
+      @selected="getType"
+      class="select-data"
+    ></DisciplineRewardTypeDropDown>
+    <ButtonItem
+      class="read-btn"
+      h="3.6rem"
+      w="7.2rem"
+      bgc="#003566"
+      br="0.6rem"
+      c="#fff"
+      :fs="'1.6rem'"
+      @click="handleOnclick"
+      >조회</ButtonItem
+    >
     <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="100%">
       <div class="table-wrapper">
         <TableItem class="commute-table" gtc="0.5fr 1fr 1fr 4fr" br="0.5rem">
@@ -11,10 +24,18 @@
             <TableCell th fs="1.6rem">등록일</TableCell>
             <TableCell th fs="1.6rem">내용</TableCell>
           </TableRow>
-          <TableRow v-if="!isEmpty" v-for="(item, index) in showList" :key="index">
+          <TableRow
+            v-if="!isEmpty"
+            v-for="(item, index) in showList"
+            :key="index"
+          >
             <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['discipline_reward_name'] }}</TableCell>
-            <TableCell class="mid" fs="1.6rem">{{ item['created_at'] }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['discipline_reward_name']
+            }}</TableCell>
+            <TableCell class="mid" fs="1.6rem">{{
+              item['created_at']
+            }}</TableCell>
             <TableCell class="mid" fs="1.6rem">{{ item['content'] }}</TableCell>
           </TableRow>
         </TableItem>
@@ -34,7 +55,7 @@
 </template>
 
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
+import CommonArticle from '@/components/common/CommonArticle.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -70,12 +91,14 @@ const fetchDate = async (empId) => {
   const response = await getDisciplineReward(empId);
 
   if (response) {
-    const sortedResponse = sortByDate(response[0].discipline_rewards.map(row => ({
+    const sortedResponse = sortByDate(
+      response[0].discipline_rewards.map((row) => ({
         ...row,
         created_at: row['created_at'].split('T')[0],
-      })));
-      drList.value = sortedResponse;
-      showList.value = drList.value;
+      }))
+    );
+    drList.value = sortedResponse;
+    showList.value = drList.value;
     isEmpty.value = drList.value.length === 0;
   } else {
     drList.value = [];
@@ -93,7 +116,9 @@ const handleOnclick = () => {
   if (selectedType.value === '전체') {
     showList.value = drList.value;
   } else {
-    showList.value = drList.value.filter(row => row.discipline_reward_name === selectedType.value);
+    showList.value = drList.value.filter(
+      (row) => row.discipline_reward_name === selectedType.value
+    );
   }
 };
 
@@ -116,7 +141,6 @@ watch(
 watch(showList, (newValue) => {
   isEmpty.value = newValue.length === 0;
 });
-
 </script>
 
 <style scoped>
