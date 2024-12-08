@@ -40,6 +40,7 @@
           </TableCell>
           <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
             <input
+              id="cell-input"
               type="text"
               v-model="educationList[index][header]"
               :class="{ 'invalid-row': !isCellValid(educationList[index][header], header) }"

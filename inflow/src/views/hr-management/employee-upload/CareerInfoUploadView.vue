@@ -43,6 +43,7 @@
           </div>
           <div v-for="(value, header) in row" :key="header" class="cell-container">
             <input 
+              id="cell-input"
               type="text" 
               v-model="rowsData[rowIndex][header]" 
               :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"

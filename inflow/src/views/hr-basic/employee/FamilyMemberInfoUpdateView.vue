@@ -38,6 +38,7 @@
           </TableCell>
           <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
             <input
+              id="cell-input"
               type="text"
               v-model="familyList[index][header]"
               :class="{ 'invalid-row': !isCellValid(familyList[index][header], header) }"
