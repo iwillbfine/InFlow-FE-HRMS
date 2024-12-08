@@ -1,178 +1,199 @@
 <!-- EvalPolicyManagementView.vue -->
 <template>
-    <CommonArticle label="평가 정책 등록" w="90%">
-      <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
-        <TableRow>
-          <TableCell th fs="1.6rem">과제유형</TableCell>
-            <TableCell > 
-                <TypeDropdown
-                placeholder="선택"
-                :list="taskTypes"
-                w="40%"
-                @update:selectedItem="handleTypeSelection"
-                class="typeDropdown task-input"
-                />  
-            </TableCell>
-          <TableCell th fs="1.6rem">기준 사원 수</TableCell>
-          <TableCell fs="1.6rem">
-            <input 
-              type="number"
-              class="task-input"
-              min="0"
-              max="999999"
-              step="1"
-              pattern="\d*"
-              inputmode="numeric"
-              placeholder="상대평가 기준 최소 사원 수를 입력해주세요"
-              v-model="minimumEmployeeCount"
-            />
-          </TableCell>
-        </TableRow>
-  
-        <TableRow>
-          <TableCell th fs="1.6rem">평가 시작일</TableCell>
-          <TableCell fs="1.6rem">
-            <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
-                <DateDropDown 
-                    @valid-date-selected="handleStartDateSelected" 
-                />
-            </FlexItem>
-          </TableCell>
-          <TableCell th fs="1.6rem">평가 종료일</TableCell>
-          <TableCell fs="1.6rem">
-            <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
-              <DateDropDown 
-                 @valid-date-selected="handleEndDateSelected"
-              />
-            </FlexItem>
-          </TableCell>
-        </TableRow>
+  <CommonArticle label="평가 정책 등록" w="90%">
+    <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
+      <TableRow>
+        <TableCell th fs="1.6rem">과제유형</TableCell>
+        <TableCell>
+          <TypeDropdown
+            placeholder="선택"
+            :list="taskTypes"
+            w="40%"
+            @update:selectedItem="handleTypeSelection"
+            class="typeDropdown task-input"
+          />
+        </TableCell>
+        <TableCell th fs="1.6rem">기준 사원 수</TableCell>
+        <TableCell fs="1.6rem">
+          <input
+            type="number"
+            class="task-input"
+            min="0"
+            max="999999"
+            step="1"
+            pattern="\d*"
+            inputmode="numeric"
+            placeholder="상대평가 기준 최소 사원 수를 입력해주세요"
+            v-model="minimumEmployeeCount"
+          />
+        </TableCell>
+      </TableRow>
 
-        <TableRow>
-          <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
-          <TableCell fs="1.6rem">
-            <YearMonthDropDown 
-                @valid-date-selected="handlePolicyEditDateSelected"  
-            />
-          </TableCell>
-          <TableCell th fs="1.6rem">적용 시기</TableCell>
-          <TableCell fs="1.6rem">
-            <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
-              <YearDropDown @valid-date-selected="handleRegistrationYearSelected" />
-              <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
-            </FlexItem>
-          </TableCell>
-        </TableRow>
-  
-        <TableRow>
-            <TableCell th fs="1.6rem">유형별 적용 비율</TableCell>
-            <TableCell  gc="span 3">
-                <input 
-              type="number"
-              class="task-input"
-              min="0"
-              max="1"
-              step="0.1"
-              placeholder="0과 1사이의 과제 유형별 적용 비율을 입력해주세요"
-              v-model="taskRatio" 
-            />
-            </TableCell>
-        </TableRow>
+      <TableRow>
+        <TableCell th fs="1.6rem">평가 시작일</TableCell>
+        <TableCell fs="1.6rem">
+          <FlexItem
+            class="year-half-section"
+            fld="row"
+            fs="1.6rem"
+            fw="500"
+            c="#003566"
+          >
+            <DateDropDown @valid-date-selected="handleStartDateSelected" />
+          </FlexItem>
+        </TableCell>
+        <TableCell th fs="1.6rem">평가 종료일</TableCell>
+        <TableCell fs="1.6rem">
+          <FlexItem
+            class="year-half-section"
+            fld="row"
+            fs="1.6rem"
+            fw="500"
+            c="#003566"
+          >
+            <DateDropDown @valid-date-selected="handleEndDateSelected" />
+          </FlexItem>
+        </TableCell>
+      </TableRow>
 
-        <TableRow>
-          <TableCell th fs="1.6rem">정책설명란</TableCell>
-          <TableCell gc="span 3">
-            <textarea 
-              class="policy-textarea" 
-              placeholder="정책 설명을 입력하세요"
-              v-model="policyDescription"
-            ></textarea>
-          </TableCell>
+      <TableRow>
+        <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
+        <TableCell fs="1.6rem">
+          <YearMonthDropDown
+            @valid-date-selected="handlePolicyEditDateSelected"
+          />
+        </TableCell>
+        <TableCell th fs="1.6rem">적용 시기</TableCell>
+        <TableCell fs="1.6rem">
+          <FlexItem
+            class="year-half-section"
+            fld="row"
+            fs="1.6rem"
+            fw="500"
+            c="#003566"
+          >
+            <YearDropDown
+              @valid-date-selected="handleRegistrationYearSelected"
+            />
+            <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
+          </FlexItem>
+        </TableCell>
+      </TableRow>
 
-        </TableRow>
-      </TableItem>
-    </CommonArticle>
-  
-    <ButtonItem
-      class="submit-btn"
-      h="3.6rem"
-      w="7.2rem"
-      bgc="#003566"
-      br="0.6rem"
-      c="#fff"
+      <TableRow>
+        <TableCell th fs="1.6rem">유형별 적용 비율</TableCell>
+        <TableCell gc="span 3">
+          <input
+            type="number"
+            class="task-input"
+            min="0"
+            max="1"
+            step="0.1"
+            placeholder="0과 1사이의 과제 유형별 적용 비율을 입력해주세요"
+            v-model="taskRatio"
+          />
+        </TableCell>
+      </TableRow>
+
+      <TableRow>
+        <TableCell th fs="1.6rem">정책설명란</TableCell>
+        <TableCell gc="span 3">
+          <textarea
+            class="policy-textarea"
+            placeholder="정책 설명을 입력하세요"
+            v-model="policyDescription"
+          ></textarea>
+        </TableCell>
+      </TableRow>
+    </TableItem>
+  </CommonArticle>
+
+  <ButtonItem
+    class="submit-btn"
+    h="3.6rem"
+    w="7.2rem"
+    bgc="#003566"
+    br="0.6rem"
+    c="#fff"
+    fs="1.6rem"
+    @click="handleSubmit"
+    :disabled="!isFormValid"
+  >
+    등록
+  </ButtonItem>
+
+  <hr />
+
+  <CommonArticle label="평가 정책 목록" w="90%">
+    <FlexItem
+      class="year-half-section"
+      fld="row"
       fs="1.6rem"
-      @click="handleSubmit"
-      :disabled="!isFormValid"
+      fw="500"
+      c="#003566"
     >
-      등록
-    </ButtonItem>
-  
-    <hr />
-  
-    <CommonArticle label="평가 정책 목록" w="90%">
-      <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
-        <YearDropDown @valid-date-selected="handleYearSelected" />
-        <HalfDropdown @half-selected="handleHalfSelected" />
-      </FlexItem>
-  
-      <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.2fr">
-        <TableRow>
-          <TableCell th fs="1.6rem">유형</TableCell>
-          <TableCell th fs="1.6rem">평가 시작일</TableCell>
-          <TableCell th fs="1.6rem">평가 종료일</TableCell>
-          <TableCell th fs="1.6rem">수정 가능 시기</TableCell>
-          <TableCell th fs="1.6rem">관리</TableCell>
-        </TableRow>
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+    </FlexItem>
 
-        <TableRow v-for="policy in policyList" :key="policy.evaluation_policy_id">
-          <TableCell class="mid" fs="1.6rem">
-            {{ getTaskTypeName(policy.task_type_id) }}
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            {{ formatDate(policy.start_date) }}
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            {{ formatDate(policy.end_date) }}
-          </TableCell>
-          <TableCell class="mid" fs="1.6rem">
-            {{ formatDate(policy.modifiable_date) }}
-          </TableCell>
+    <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.2fr">
+      <TableRow>
+        <TableCell th fs="1.6rem">유형</TableCell>
+        <TableCell th fs="1.6rem">평가 시작일</TableCell>
+        <TableCell th fs="1.6rem">평가 종료일</TableCell>
+        <TableCell th fs="1.6rem">수정 가능 시기</TableCell>
+        <TableCell th fs="1.6rem">관리</TableCell>
+      </TableRow>
 
-          <TableCell class="button-cell">
-            <ButtonItem
-              class="submit-btn"
-              h="3.6rem"
-              w="7.2rem"
-              bgc="#003566"
-              br="0.6rem"
-              c="#fff"
-              fs="1.6rem"
-              @click="handleViewPolicy(policy)"
-            >
-              상세보기
-            </ButtonItem>
-          </TableCell>
-        </TableRow>
-      </TableItem>
-  
-      <FlexItem
-        v-if="policyList.length === 0"
-        class="empty-message"
-        fld="row"
-        h="6rem"
-        w="100%"
-        fs="1.6rem"
-      >
-        등록된 평가 정책이 없습니다.
-      </FlexItem>
-    </CommonArticle>
+      <TableRow v-for="policy in policyList" :key="policy.evaluation_policy_id">
+        <TableCell class="mid" fs="1.6rem">
+          {{ getTaskTypeName(policy.task_type_id) }}
+        </TableCell>
+        <TableCell class="mid" fs="1.6rem">
+          {{ formatDate(policy.start_date) }}
+        </TableCell>
+        <TableCell class="mid" fs="1.6rem">
+          {{ formatDate(policy.end_date) }}
+        </TableCell>
+        <TableCell class="mid" fs="1.6rem">
+          {{ formatDate(policy.modifiable_date) }}
+        </TableCell>
 
-    <EvalPolicyUpdateAndViewModal
-  v-if="showPolicyModal"
-  :policy-id="selectedPolicyId"
-  :task-types="taskTypes"
-  @close="closePolicyModal"
-/>
+        <TableCell class="button-cell">
+          <ButtonItem
+            class="submit-btn"
+            h="3.6rem"
+            w="7.2rem"
+            bgc="#003566"
+            br="0.6rem"
+            c="#fff"
+            fs="1.6rem"
+            @click="handleViewPolicy(policy)"
+          >
+            상세보기
+          </ButtonItem>
+        </TableCell>
+      </TableRow>
+    </TableItem>
+
+    <FlexItem
+      v-if="policyList.length === 0"
+      class="empty-message"
+      fld="row"
+      h="6rem"
+      w="100%"
+      fs="1.6rem"
+    >
+      등록된 평가 정책이 없습니다.
+    </FlexItem>
+  </CommonArticle>
+
+  <EvalPolicyUpdateAndViewModal
+    v-if="showPolicyModal"
+    :policy-id="selectedPolicyId"
+    :task-types="taskTypes"
+    @close="closePolicyModal"
+  />
 </template>
 
 <script setup>
@@ -188,7 +209,11 @@ import YearMonthDropDown from '@/components/dropdowns/YearMonthDropDown.vue';
 import DateDropDown from '@/components/dropdowns/DateDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TypeDropdown from '@/components/dropdowns/DropdownItem.vue';
-import {getAllTaskTypes, createEvaluationPolicy, findEvaluationPolicyByYearAndHalf } from '@/api/evaluation';
+import {
+  getAllTaskTypes,
+  createEvaluationPolicy,
+  findEvaluationPolicyByYearAndHalf,
+} from '@/api/evaluation';
 import EvalPolicyUpdateAndViewModal from './EvalPolicyUpdateAndViewModal.vue';
 
 // 과제 유형 관련 상태
@@ -201,7 +226,7 @@ const startDate = ref(null);
 const endDate = ref(null);
 const policyEditDate = ref(null);
 const policyDescription = ref('');
-const taskRatio = ref(null);  
+const taskRatio = ref(null);
 const policyRegisterId = ref(null);
 
 // 목록 조회를 위한 상태
@@ -229,11 +254,10 @@ const fetchTaskTypes = async () => {
     const response = await getAllTaskTypes();
     if (response.success) {
       // 데이터 구조 변환
-      taskTypes.value = response.content.map(type => ({
+      taskTypes.value = response.content.map((type) => ({
         id: type.task_type_id,
-        name: type.task_type_name
+        name: type.task_type_name,
       }));
-      console.log('변환된 과제 유형 목록:', taskTypes.value);
     } else {
       console.error('과제 유형 조회 실패:', response);
       taskTypes.value = [];
@@ -243,18 +267,19 @@ const fetchTaskTypes = async () => {
     taskTypes.value = [];
   }
 };
-
 const getTaskTypeName = (taskTypeId) => {
-  const taskType = taskTypes.value.find(type => type.id === taskTypeId);
+  const taskType = taskTypes.value.find((type) => type.id === taskTypeId);
   return taskType ? taskType.name : '-';
 };
 
 const fetchPolicies = async () => {
   if (!selectedYear.value || !selectedHalf.value) return;
-  
+
   try {
-    const response = await findEvaluationPolicyByYearAndHalf(selectedYear.value, selectedHalf.value);
-    console.log('정책 조회 응답:', response);
+    const response = await findEvaluationPolicyByYearAndHalf(
+      selectedYear.value,
+      selectedHalf.value
+    );
     if (response.success) {
       policyList.value = response.content || [];
     } else {
@@ -277,47 +302,39 @@ const formatDate = (dateString) => {
 // 핸들러 함수들
 const handleTypeSelection = (typeId) => {
   selectedTaskType.value = typeId;
-  console.log('선택된 과제 유형:', typeId);
 };
 
 // 날짜 핸들러들 수정
 const handleStartDateSelected = (date) => {
   startDate.value = `${date}T00:00:00`; // date는 'YYYY-MM-DD' 형식으로 옴
-  console.log('설정된 시작일:', startDate.value);
 };
 
 const handleEndDateSelected = (date) => {
   endDate.value = `${date}T23:59:59`; // date는 'YYYY-MM-DD' 형식으로 옴
-  console.log('설정된 종료일:', endDate.value);
 };
 
 const handlePolicyEditDateSelected = (date) => {
   policyEditDate.value = `${date}-01T00:00:00`; // date는 'YYYY-MM' 형식으로 옴
-  console.log('설정된 수정가능일:', policyEditDate.value);
 };
 
 // 목록 조회용 Year/Half 핸들러
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  console.log('목록 조회 연도 선택:', year);
   fetchPolicies();
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  console.log('목록 조회 반기 선택:', half);
   fetchPolicies();
 };
 
 // 등록용 Year/Half 핸들러
 const handleRegistrationYearSelected = (year) => {
   registrationYear.value = year;
-  console.log('등록용 연도 선택:', year);
 };
 
 const handleRegistrationHalfSelected = (half) => {
   registrationHalf.value = half;
-  console.log('등록용 반기 선택:', half);
 };
 
 // 메서드 추가
@@ -331,56 +348,25 @@ const closePolicyModal = () => {
   selectedPolicyId.value = null;
 };
 
-
-
 // 폼 유효성 검증
 const isFormValid = computed(() => {
-  const valid = 
-    selectedTaskType.value && 
+  const valid =
+    selectedTaskType.value &&
     minimumEmployeeCount.value > 0 &&
     startDate.value &&
     endDate.value &&
     policyEditDate.value &&
     policyDescription.value.trim() !== '' &&
     registrationYear.value &&
-    registrationHalf.value&&
-    taskRatio.value > 0 && taskRatio.value <= 1;
+    registrationHalf.value &&
+    taskRatio.value > 0 &&
+    taskRatio.value <= 1;
 
-
-    policyRegisterId.value = Number(localStorage.getItem('employeeId')); 
-
-  console.log('폼 유효성 검사:', {
-    taskType: !!selectedTaskType.value,
-    minCount: minimumEmployeeCount.value > 0,
-    startDate: !!startDate.value,
-    endDate: !!endDate.value,
-    editDate: !!policyEditDate.value,
-    description: policyDescription.value.trim() !== '',
-    regYear: !!registrationYear.value,
-    regHalf: !!registrationHalf.value,
-    taskRatio: taskRatio.value > 0 && taskRatio.value <= 1,
-    isValid: valid
-  });
-  
   return valid;
 });
 
 // 등록 제출 핸들러
 const handleSubmit = async () => {
-  console.log('폼 제출 시도');
-  console.log('폼 데이터:', {
-    taskType: selectedTaskType.value,
-    minCount: minimumEmployeeCount.value,
-    startDate: startDate.value,
-    endDate: endDate.value,
-    editDate: policyEditDate.value,
-    description: policyDescription.value,
-    year: registrationYear.value,
-    half: registrationHalf.value,
-    policyRegisterId: policyRegisterId.value
-    
-  });
-
   if (!isFormValid.value) {
     alert('모든 필드를 올바르게 입력해주세요.');
     return;
@@ -389,25 +375,26 @@ const handleSubmit = async () => {
   const policyData = {
     task_type_id: selectedTaskType.value,
     min_rel_eval_count: Number(minimumEmployeeCount.value),
-    start_date: startDate.value,  
-    end_date: endDate.value,      
+    start_date: startDate.value,
+    end_date: endDate.value,
     modifiable_date: policyEditDate.value,
     policy_description: policyDescription.value,
     year: registrationYear.value,
     half: registrationHalf.value,
     task_ratio: Number(taskRatio.value),
-    policy_register_id: policyRegisterId.value
+    policy_register_id: policyRegisterId.value,
   };
 
   try {
     const response = await createEvaluationPolicy(policyData);
-    console.log('정책 등록 응답:', response);
     if (response.success) {
       alert('평가 정책이 성공적으로 등록되었습니다.');
       resetForm();
       fetchPolicies();
     } else {
-      alert(`정책 등록 실패: ${response.message || '알 수 없는 오류가 발생했습니다.'}`);
+      alert(
+        `정책 등록 실패: ${response.message || '알 수 없는 오류가 발생했습니다.'}`
+      );
     }
   } catch (error) {
     console.error('정책 등록 실패:', error);
@@ -429,12 +416,11 @@ const resetForm = () => {
 };
 
 onMounted(() => {
+  policyRegisterId.value = Number(localStorage.getItem('employeeId'));
   fetchTaskTypes();
   fetchPolicies();
 });
-
 </script>
-
 
 <style scoped>
 .dropdown-container {
@@ -495,7 +481,7 @@ onMounted(() => {
   word-break: keep-all;
 }
 
-.task-input {   
+.task-input {
   width: 100%;
   height: 3rem;
   border: 1px solid #ccc;
@@ -522,12 +508,12 @@ select.task-input {
   border-color: red;
 }
 
-.task-input[type="number"] {
+.task-input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.task-input[type="number"]::-webkit-outer-spin-button,
-.task-input[type="number"]::-webkit-inner-spin-button {
+.task-input[type='number']::-webkit-outer-spin-button,
+.task-input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

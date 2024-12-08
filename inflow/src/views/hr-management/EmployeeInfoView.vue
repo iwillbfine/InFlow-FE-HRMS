@@ -3,10 +3,14 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="0" :list="menuList"></CommonMenu>
-    <SearchEmployeeComponent @employee-selected="getEmployeeId"/>
+    <SearchEmployeeComponent @employee-selected="getEmployeeId" />
     <SectionItem class="content-section" w="100%">
       <ProfileView :employee_id="employeeId"></ProfileView>
-      <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+      <SubMenuNav
+        :cur="subIdx"
+        :list="subMenuList"
+        @clicked="handleClicked"
+      ></SubMenuNav>
       <router-view :employee_id="employeeId"></router-view>
     </SectionItem>
   </MainItem>
@@ -44,30 +48,33 @@ const subMenuList = ref([
   { name: '자격증', link: '/hr-management/employee/info/qualifications' },
   { name: '어학', link: '/hr-management/employee/info/languagetests' },
   { name: '가족', link: '/hr-management/employee/info/familymembers' },
-  { name: '포상 및 징계', link: '/hr-management/employee/info/disciplinerewards' },
+  {
+    name: '포상 및 징계',
+    link: '/hr-management/employee/info/disciplinerewards',
+  },
 ]);
 
 const eid = ref(null);
 const employeeName = ref('');
 const employeeId = ref('');
 
-const getEmployeeId = async(data) => {
+const getEmployeeId = async (data) => {
   const tmp = await getEmpByNum(data.employee_number);
   employeeId.value = String(tmp.employee_id);
   router.push('/hr-management/employee/info/careers');
-}
+};
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
-}
+};
 
-onMounted(async() => {
+onMounted(async () => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
-  };
+  }
 
   if (subIdx.value === null) {
     const matchedIndex = subMenuList.value.findIndex(
@@ -85,7 +92,7 @@ watch(
   () => route.path,
   (newPath) => {
     const matchedIndex = subMenuList.value.findIndex(
-        (item) => item.link === newPath
+      (item) => item.link === newPath
     );
     if (matchedIndex !== -1) {
       subIdx.value = matchedIndex;

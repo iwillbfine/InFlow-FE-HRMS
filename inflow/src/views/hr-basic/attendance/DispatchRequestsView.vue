@@ -34,7 +34,12 @@
           v-if="!isEmpty"
           :key="index"
         >
-          <TableCell class="mid" fs="1.6rem" :botl="index === dispatchRequestList.length - 1">{{ item.destination }}</TableCell>
+          <TableCell
+            class="mid"
+            fs="1.6rem"
+            :botl="index === dispatchRequestList.length - 1"
+            >{{ item.destination }}</TableCell
+          >
           <TableCell class="mid" fs="1.6rem">{{
             parseDate(item.start_date) + ' ~ ' + parseDate(item.end_date)
           }}</TableCell>

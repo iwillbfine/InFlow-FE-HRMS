@@ -1,18 +1,26 @@
 <template>
   <div v-if="certificateData" class="modal-overlay">
     <div class="modal-content">
-  
       <!-- 증명서 다운 로딩 오버레이 -->
-      <LoadingOverlay :isVisible="isSubmitting" message="증명서를 발급 중입니다. 잠시만 기다려 주세요..." />
+      <LoadingOverlay
+        :isVisible="isSubmitting"
+        message="증명서를 발급 중입니다. 잠시만 기다려 주세요..."
+      />
 
       <!-- 증명서 인쇄 로딩 오버레이 -->
-      <LoadingOverlay :isVisible="isPrinting" message="인쇄 중 입니다. 잠시만 기다려 주세요..." />
+      <LoadingOverlay
+        :isVisible="isPrinting"
+        message="인쇄 중 입니다. 잠시만 기다려 주세요..."
+      />
 
       <!-- 상단 버튼 컨트롤 -->
       <div class="viewer-controls">
         <div class="left-controls">
-
-          <button class="btn download-btn" @click="downloadCertificate" :disabled="isSubmitting">
+          <button
+            class="btn download-btn"
+            @click="downloadCertificate"
+            :disabled="isSubmitting"
+          >
             <template v-if="isSubmitting">
               <i class="fas fa-spinner fa-spin"></i> 다운로드 중...
             </template>
@@ -21,15 +29,16 @@
             </template>
           </button>
 
-          <button class="btn print-btn" @click="printCertificate" :disabled="isPrinting">
+          <button
+            class="btn print-btn"
+            @click="printCertificate"
+            :disabled="isPrinting"
+          >
             <template v-if="isPrinting">
               <i class="fas fa-spinner fa-spin"></i> 인쇄 중...
             </template>
-            <template v-else>
-              <i class="fas fa-print"></i> 인쇄
-            </template>
+            <template v-else> <i class="fas fa-print"></i> 인쇄 </template>
           </button>
-
         </div>
         <div class="center-controls">
           <button class="btn zoom-in-btn" @click="zoomIn">
@@ -77,14 +86,18 @@
                 <tr>
                   <td class="label">재직기간</td>
                   <td class="value" colspan="3">
-                    {{ certificateData.join_date }} ~ {{ new Date().toLocaleDateString('ko-KR') }} 
-                    ({{ Math.floor((new Date() - new Date(certificateData.join_date)) / (1000 * 60 * 60 * 24)) }}일)
+                    {{ certificateData.join_date }} ~
+                    {{ new Date().toLocaleDateString('ko-KR') }} ({{
+                      Math.floor(
+                        (new Date() - new Date(certificateData.join_date)) /
+                          (1000 * 60 * 60 * 24)
+                      )
+                    }}일)
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-
 
           <div class="certificate-content">
             <p>{{ certificateData.content }}</p>
@@ -107,7 +120,9 @@
                 </tr>
                 <tr>
                   <td class="label">사업자등록번호</td>
-                  <td class="value">{{ certificateData.business_registration_number }}</td>
+                  <td class="value">
+                    {{ certificateData.business_registration_number }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="label">대표자</td>
@@ -118,20 +133,24 @@
             <!-- 직인 -->
             <div class="stamp-wrapper">
               <div class="stamp-row">
-                          <span>주식회사:</span>
-                          <span class="highlight">{{ certificateData.company_name }}</span>
-                          <div class="stamp-container">
-                            <img :src="certificateData.company_stamp_url" alt="서명" class="stamp-image" crossOrigin="true" />
-                            <span class="stamp-text">(직인)</span>
-                          </div>
+                <span>주식회사:</span>
+                <span class="highlight">{{
+                  certificateData.company_name
+                }}</span>
+                <div class="stamp-container">
+                  <img
+                    :src="certificateData.company_stamp_url"
+                    alt="서명"
+                    class="stamp-image"
+                    crossOrigin="true"
+                  />
+                  <span class="stamp-text">(직인)</span>
+                </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -140,8 +159,7 @@
 import { ref, nextTick } from 'vue';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import LoadingOverlay from "@/components/common/LoadingOverlay.vue";
-
+import LoadingOverlay from '@/components/common/LoadingOverlay.vue';
 
 const isSubmitting = ref(false); // 로딩 상태를 관리하는 변수
 const isPrinting = ref(false); // 로딩 상태를 관리하는 변수
@@ -154,16 +172,17 @@ const props = defineProps({
   },
 });
 
-
 // 날짜 포맷 함수
 const formatDateTime = (datetime) => {
   if (!datetime) return '미등록';
   const date = new Date(datetime);
-  return date.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).replace(/년|월|일/g, match => match.trim() + ' ');
+  return date
+    .toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    .replace(/년|월|일/g, (match) => match.trim() + ' ');
 };
 
 // 확대/축소 상태
@@ -253,14 +272,12 @@ const downloadCertificate = async () => {
   }
 };
 
-
-
 // 증명서 인쇄
 const printCertificate = async () => {
   try {
     const certificateElement = certificateViewer.value; // 증명서 HTML 요소 가져오기
     if (!certificateElement) {
-      alert("증명서를 찾을 수 없습니다.");
+      alert('증명서를 찾을 수 없습니다.');
       return;
     }
 
@@ -273,27 +290,33 @@ const printCertificate = async () => {
       useCORS: true, // 크로스 도메인 이미지 해결
     });
 
-    const imgData = canvas.toDataURL("image/png"); // Canvas 데이터를 이미지로 변환
-    const pdf = new jsPDF("p", "mm", "a4"); // A4 용지 PDF 생성
+    const imgData = canvas.toDataURL('image/png'); // Canvas 데이터를 이미지로 변환
+    const pdf = new jsPDF('p', 'mm', 'a4'); // A4 용지 PDF 생성
     const pdfWidth = 210; // A4 너비 (단위: mm)
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // 비율 유지
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight); // PDF에 이미지 추가
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight); // PDF에 이미지 추가
 
     // PDF 파일 이름 설정
-    const companyName = props.certificateData.company_name.replace(/[\s]/g, "_");
-    const employeeName = props.certificateData.employee_name.replace(/[\s]/g, "_");
-    const issueDate = props.certificateData.issue_date.replace(/-/g, "");
+    const companyName = props.certificateData.company_name.replace(
+      /[\s]/g,
+      '_'
+    );
+    const employeeName = props.certificateData.employee_name.replace(
+      /[\s]/g,
+      '_'
+    );
+    const issueDate = props.certificateData.issue_date.replace(/-/g, '');
     const pdfFileName = `${companyName}_${employeeName}_재직증명서_${issueDate}.pdf`;
 
     // PDF Blob 생성 및 URL 변환
-    const pdfBlob = pdf.output("blob");
+    const pdfBlob = pdf.output('blob');
     const pdfURL = URL.createObjectURL(pdfBlob);
 
     // 새 창에서 PDF 미리보기 열기
-    const printWindow = window.open(pdfURL, "_blank");
+    const printWindow = window.open(pdfURL, '_blank');
     if (!printWindow) {
-      alert("팝업이 차단되었습니다. 팝업 차단을 해제해주세요.");
+      alert('팝업이 차단되었습니다. 팝업 차단을 해제해주세요.');
       isPrinting.value = false;
       return;
     }
@@ -308,17 +331,14 @@ const printCertificate = async () => {
       isPrinting.value = false;
     }, 5000);
   } catch (error) {
-    console.error("PDF 생성 실패:", error);
-    alert("PDF 생성 중 문제가 발생했습니다.");
+    console.error('PDF 생성 실패:', error);
+    alert('PDF 생성 중 문제가 발생했습니다.');
     isPrinting.value = false;
   }
 };
-
-
 </script>
 
 <style scoped>
-
 /* 로딩 오버레이 스타일 */
 .loading-overlay {
   position: fixed;
@@ -372,7 +392,6 @@ const printCertificate = async () => {
 
 /* 로딩 오버레이 스타일 끝*/
 
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -412,12 +431,10 @@ const printCertificate = async () => {
   margin-bottom: 1rem;
 }
 
-
-
 /* 재직 증명서 CSS */
 .certificate-wrapper {
   padding: 1rem;
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
   background: #f9f9f9;
 }
 
@@ -431,7 +448,7 @@ const printCertificate = async () => {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.certificate-title { 
+.certificate-title {
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -522,7 +539,6 @@ const printCertificate = async () => {
   white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
-
 .stamp-row {
   display: flex;
   align-items: center;
@@ -568,7 +584,7 @@ const printCertificate = async () => {
 
 /* 전문적인 테두리 */
 .certificate-wrapper::after {
-  content: "";
+  content: '';
   display: block;
   border: 1px dashed #aaa;
   margin-top: 20px;

@@ -1,7 +1,11 @@
 <template>
   <SectionItem class="content-section" w="100%">
     <ProfileView :employee_id="eid"></ProfileView>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <router-view :employee_id="eid"></router-view>
   </SectionItem>
 </template>
@@ -24,7 +28,10 @@ const subMenuList = ref([
   { name: '자격증', link: '/hr-basic/my-department/info/qualifications' },
   { name: '어학', link: '/hr-basic/my-department/info/languagetests' },
   { name: '가족', link: '/hr-basic/my-department/info/familymembers' },
-  { name: '포상 및 징계', link: '/hr-basic/my-department/info/disciplinerewards' },
+  {
+    name: '포상 및 징계',
+    link: '/hr-basic/my-department/info/disciplinerewards',
+  },
 ]);
 
 const props = defineProps({
@@ -39,12 +46,12 @@ const eid = ref('');
 
 const setEid = () => {
   eid.value = props.empId;
-}
+};
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 onMounted(() => {
   setEid();
@@ -72,7 +79,7 @@ watch(
   () => route.path,
   (newPath) => {
     const matchedIndex = subMenuList.value.findIndex(
-        (item) => item.link === newPath
+      (item) => item.link === newPath
     );
     if (matchedIndex !== -1) {
       subIdx.value = matchedIndex;
@@ -83,7 +90,6 @@ watch(
 </script>
 
 <style scoped>
-
 .content-section {
   position: absolute;
   top: 5.4rem;
@@ -95,6 +101,4 @@ watch(
   flex-grow: 1;
   align-items: center;
 }
-
-
 </style>

@@ -16,6 +16,6 @@ const props = defineProps({
   w: {
     type: String,
     default: '12rem',
-  }
-})
+  },
+});
 </script>

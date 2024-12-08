@@ -1,9 +1,16 @@
 <template>
   <CommonArticle class="task-upload-article" label="부서 과제 등록" w="90%">
-    <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+    <FlexItem
+      class="year-half-section"
+      fld="row"
+      fs="1.6rem"
+      fw="500"
+      c="#003566"
+    >
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
     </FlexItem>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <TableItem gtc="3fr 6fr 8fr">
       <TableRow>
         <TableCell th fs="1.6rem" topl>유형</TableCell>
@@ -12,34 +19,48 @@
       </TableRow>
       <TableRow>
         <TableCell class="mid h-7" fs="1.6rem" botl>
-          <DropdownItem 
-            :list="taskTypes" 
-            w="12rem" 
+          <DropdownItem
+            :list="taskTypes"
+            w="12rem"
             placeholder="과제 유형"
             @update:selectedItem="handleTaskTypeSelected"
             :disabled="isLoading"
           ></DropdownItem>
         </TableCell>
         <TableCell class="mid h-7" fs="1.6rem">
-          <FlexItem class="input-wrapper" h="100%" w="100%" bgc="#F8F8F8" b="1px solid #DBDBDB" br="0.1rem">
-            <input 
-              name="task-name-input" 
-              type="text" 
+          <FlexItem
+            class="input-wrapper"
+            h="100%"
+            w="100%"
+            bgc="#F8F8F8"
+            b="1px solid #DBDBDB"
+            br="0.1rem"
+          >
+            <input
+              name="task-name-input"
+              type="text"
               v-model="taskName"
               :disabled="isLoading"
               placeholder="과제명을 입력하세요"
-            >
+            />
           </FlexItem>
         </TableCell>
         <TableCell class="mid h-7" fs="1.6rem">
-          <FlexItem class="input-wrapper" h="100%" w="100%" bgc="#F8F8F8" b="1px solid #DBDBDB" br="0.1rem">
-            <input 
-              name="task-content-input" 
-              type="text" 
+          <FlexItem
+            class="input-wrapper"
+            h="100%"
+            w="100%"
+            bgc="#F8F8F8"
+            b="1px solid #DBDBDB"
+            br="0.1rem"
+          >
+            <input
+              name="task-content-input"
+              type="text"
               v-model="taskContent"
               :disabled="isLoading"
               placeholder="과제 내용을 입력하세요"
-            >
+            />
           </FlexItem>
         </TableCell>
       </TableRow>
@@ -54,9 +75,10 @@
       fs="1.6rem"
       @click="handleSubmit"
       :disabled="isLoading"
-    >{{ isLoading ? '등록 중...' : '등록' }}</ButtonItem>
+      >{{ isLoading ? '등록 중...' : '등록' }}</ButtonItem
+    >
   </CommonArticle>
-  
+
   <CommonArticle label="등록된 과제 목록" w="90%">
     <TableItem gtc="2fr 3fr 6fr 8fr">
       <TableRow>
@@ -86,7 +108,11 @@ import DropdownItem from '@/components/dropdowns/DropdownItem.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { getAllTaskTypes, createTaskItem, findDepartmentTaskItems  } from '@/api/evaluation';
+import {
+  getAllTaskTypes,
+  createTaskItem,
+  findDepartmentTaskItems,
+} from '@/api/evaluation';
 
 // 상태 관리
 const selectedYear = ref(null);
@@ -104,11 +130,10 @@ const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success) {
-      taskTypes.value = response.content.map(item => ({
+      taskTypes.value = response.content.map((item) => ({
         id: item.task_type_id,
-        name: item.task_type_name
+        name: item.task_type_name,
       }));
-      console.log('과제 유형 목록:', taskTypes.value);
     } else {
       console.error('과제 유형 조회 실패:', response);
       taskTypes.value = [];
@@ -154,27 +179,27 @@ const validateInputs = () => {
   return true;
 };
 
-// 과제 등록 
+// 과제 등록
 const handleSubmit = async () => {
   try {
     errorMessage.value = '';
     if (!validateInputs()) return;
-    
+
     isLoading.value = true;
-    
+
     const employeeId = getEmployeeId();
-    
+
     const createTaskItemRequestDTO = {
       taskName: taskName.value,
       taskContent: taskContent.value,
-      employeeId: Number(employeeId)
+      employeeId: Number(employeeId),
     };
 
     const response = await createTaskItem(
-      selectedYear.value,           
-      selectedHalf.value,            
+      selectedYear.value,
+      selectedHalf.value,
       selectedTaskType.value.id,
-      createTaskItemRequestDTO      
+      createTaskItemRequestDTO
     );
 
     if (response.success) {
@@ -198,15 +223,14 @@ const handleSubmit = async () => {
   }
 };
 
-
 // fetchTaskList 함수 추가
 const fetchTaskList = async () => {
   try {
     if (!selectedYear.value || !selectedHalf.value) return;
-    
+
     isLoading.value = true;
     const employeeId = getEmployeeId();
-    
+
     const response = await findDepartmentTaskItems(
       selectedYear.value,
       selectedHalf.value,
@@ -214,10 +238,11 @@ const fetchTaskList = async () => {
     );
 
     if (response.success) {
-      taskList.value = response.content.map(task => ({
-        type: taskTypes.value.find(t => t.id === task.task_type_id)?.name || '-',
+      taskList.value = response.content.map((task) => ({
+        type:
+          taskTypes.value.find((t) => t.id === task.task_type_id)?.name || '-',
         name: task.task_name,
-        content: task.task_content
+        content: task.task_content,
       }));
     } else {
       taskList.value = [];
@@ -238,7 +263,6 @@ watch([selectedYear, selectedHalf], async ([newYear, newHalf]) => {
     await fetchTaskList();
   }
 });
-
 
 // 이벤트 핸들러
 const handleTaskTypeSelected = (id, index) => {

@@ -3,7 +3,11 @@
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="5" :list="menuList"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
     </SectionItem>
@@ -31,8 +35,14 @@ const menuList = ref([
 
 const subMenuList = ref([
   { name: '사원별 급여 조회', link: '/hr-management/salary' },
-  { name: '비정기 수당 관리', link: '/hr-management/salary/irregular-allowance' },
-  { name: '비과세 급여 관리', link: '/hr-management/salary/non-taxable-payrolls' }
+  {
+    name: '비정기 수당 관리',
+    link: '/hr-management/salary/irregular-allowance',
+  },
+  {
+    name: '비과세 급여 관리',
+    link: '/hr-management/salary/non-taxable-payrolls',
+  },
 ]);
 
 const router = useRouter();
@@ -43,7 +53,7 @@ const subIdx = ref(0);
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 const eid = ref(null);
 const employeeName = ref('');
@@ -52,12 +62,12 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 
   const defaultUrl = '/hr-management/salary';
-  if(route.fullPath == defaultUrl) {
+  if (route.fullPath == defaultUrl) {
     localStorage.removeItem('subIdx');
     return;
   }

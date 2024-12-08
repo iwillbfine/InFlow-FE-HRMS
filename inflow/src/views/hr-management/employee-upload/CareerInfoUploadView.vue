@@ -1,87 +1,121 @@
 <template>
   <div class="emp-container">
     <CommonArticle label="경력" class="ca" w="96%">
-
-    <div class="tmp">
-      <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
-    </div>
-    <div class="exlbtns1">
-      <button type="button" @click="fileDownload">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 다운로드</p>
-      </button>
-      <button type="button" @click="clickInput">
-        <img src="../../../assets/icons/excel_icon.png" />
-        <p>양식 업로드</p>
-      </button>
-    </div>
-
-    <div class="colboard">
-      <div class="exlbtns2">
-        <button type="button" @click="deleteSelectedRows">
-          <img src="../../../assets/icons/minus_icon.png" />
-          <p>선택 삭제</p>
+      <div class="tmp">
+        <input
+          type="file"
+          ref="fileInput"
+          @change="handleFileUpload"
+          accept=".xlsx, .xls"
+          style="display: none"
+        />
+      </div>
+      <div class="exlbtns1">
+        <button type="button" @click="fileDownload">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 다운로드</p>
         </button>
-        <button type="button" @click="addRow">
-          <img src="../../../assets/icons/plus_icon.png" />
-          <p>행 추가</p>
+        <button type="button" @click="clickInput">
+          <img src="../../../assets/icons/excel_icon.png" />
+          <p>양식 업로드</p>
         </button>
       </div>
 
-      <div class="inboard">
-        <div class="colname headers">
-          <div class="chbox">
-            <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
-            <label :for="chkHeader"></label>
-          </div>
-          <div v-for="header in headerNames" :key="header">{{ header }}</div>
+      <div class="colboard">
+        <div class="exlbtns2">
+          <button type="button" @click="deleteSelectedRows">
+            <img src="../../../assets/icons/minus_icon.png" />
+            <p>선택 삭제</p>
+          </button>
+          <button type="button" @click="addRow">
+            <img src="../../../assets/icons/plus_icon.png" />
+            <p>행 추가</p>
+          </button>
         </div>
-        <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
-          <div class="chbox">
-            <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
-            <label :for="'check' + rowIndex"></label>
+
+        <div class="inboard">
+          <div class="colname headers">
+            <div class="chbox">
+              <input
+                type="checkbox"
+                :id="chkHeader"
+                v-model="chkHeader"
+                @change="toggleAllCheckboxes"
+              />
+              <label :for="chkHeader"></label>
+            </div>
+            <div v-for="header in headerNames" :key="header">{{ header }}</div>
           </div>
-          <div v-for="(value, header) in row" :key="header" class="cell-container">
-            <input 
-              type="text" 
-              v-model="rowsData[rowIndex][header]" 
-              :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
-              class="cell-input"
-              @focus="showModal(rowIndex, header)"
-              @blur="hideModal"/>
-            <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
-              <pre>{{ modalTxt[header] }}</pre>
+          <div
+            class="colname rows"
+            v-for="(row, rowIndex) in rowsData"
+            :key="rowIndex"
+          >
+            <div class="chbox">
+              <input
+                type="checkbox"
+                :id="'check' + rowIndex"
+                v-model="selectedRows[rowIndex]"
+              />
+              <label :for="'check' + rowIndex"></label>
+            </div>
+            <div
+              v-for="(value, header) in row"
+              :key="header"
+              class="cell-container"
+            >
+              <input
+                type="text"
+                v-model="rowsData[rowIndex][header]"
+                :class="{
+                  'invalid-row': !isCellValid(
+                    rowsData[rowIndex][header],
+                    header
+                  ),
+                }"
+                class="cell-input"
+                @focus="showModal(rowIndex, header)"
+                @blur="hideModal"
+              />
+              <div
+                v-if="
+                  visible && activeRow === rowIndex && activeHeader === header
+                "
+                class="modal"
+              >
+                <pre>{{ modalTxt[header] }}</pre>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="regist">
-      <button type="button" class="rBtn" @click="postData">
-        <p>등록</p>
-      </button>
-    </div>
-  </CommonArticle>
+      <div class="regist">
+        <button type="button" class="rBtn" @click="postData">
+          <p>등록</p>
+        </button>
+      </div>
+    </CommonArticle>
   </div>
 </template>
 
-
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
-import * as xlsx from "xlsx";
-import { ref, onMounted } from "vue";
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import * as xlsx from 'xlsx';
+import { ref, onMounted } from 'vue';
 import { getDoc, saveData, getAllEmpId } from '@/api/emp_attach';
 
-const headerNames = ref(["사번", "회사명", "직책명", "입사일", "퇴사일"]);
-const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
+const headerNames = ref(['사번', '회사명', '직책명', '입사일', '퇴사일']);
+const defaultRow = Object.fromEntries(
+  headerNames.value.map((key) => [key, null])
+);
 
 const chkHeader = ref(false);
 const selectedRows = ref([]);
 const rowsData = ref([]);
 const fileInput = ref(null);
 const workbook = ref(null);
-const ids = ref({})
+const ids = ref({});
 const loading = ref(true);
 
 const validators = {
@@ -92,7 +126,11 @@ const validators = {
 
 const isCellValid = (value, header) => {
   if (value === null || value === '') return false;
-  if (header === '사번' && (loading.value || Object.keys(ids.value).length === 0)) return true;
+  if (
+    header === '사번' &&
+    (loading.value || Object.keys(ids.value).length === 0)
+  )
+    return true;
   return validators[header] ? validators[header](value) : true;
 };
 
@@ -100,12 +138,12 @@ const clickInput = () => {
   fileInput.value.click();
 };
 
-const getEmpIds = async() => {
+const getEmpIds = async () => {
   loading.value = true;
   const tmp = await getAllEmpId();
   tmp.forEach((row) => {
-    ids.value[row["employee_number"]] = row["employee_id"];
-    ids.value[row["employee_id"]] = row["employee_number"];
+    ids.value[row['employee_number']] = row['employee_id'];
+    ids.value[row['employee_id']] = row['employee_number'];
   });
   loading.value = false;
 };
@@ -121,7 +159,7 @@ const modalTxt = ref({
 });
 
 const showModal = (rowIndex, header) => {
-  if (modalTxt.value[header]  !== undefined) {
+  if (modalTxt.value[header] !== undefined) {
     visible.value = true;
     activeRow.value = rowIndex;
     activeHeader.value = header;
@@ -141,11 +179,11 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const binaryStr = e.target.result;
-    workbook.value = xlsx.read(binaryStr, { type: "binary" });
+    workbook.value = xlsx.read(binaryStr, { type: 'binary' });
     addToRowsData();
   };
   reader.readAsBinaryString(file);
-  event.target.value = "";
+  event.target.value = '';
 };
 
 const addToRowsData = () => {
@@ -196,7 +234,9 @@ const addRow = () => {
 };
 
 const deleteSelectedRows = () => {
-  rowsData.value = rowsData.value.filter((_, index) => !selectedRows.value[index]);
+  rowsData.value = rowsData.value.filter(
+    (_, index) => !selectedRows.value[index]
+  );
   initializeSelectedRows();
 };
 
@@ -205,48 +245,45 @@ const mapping = async () => {
   const result = ref([]);
   rowsData.value.map((row) => {
     result.value.push({
-      company_name: row["회사명"],
-      role_name: row["직책명"],
-      join_date: row["입사일"],
-      resignation_date: row["퇴사일"],
+      company_name: row['회사명'],
+      role_name: row['직책명'],
+      join_date: row['입사일'],
+      resignation_date: row['퇴사일'],
       employee_id: `${ids.value[row['사번']]}`,
     });
   });
   return result.value;
 };
 
-
 // Career Form 다운로드
 const fileDownload = async () => {
   try {
-    const fileUrl = await getDoc("career");
-    const link = document.createElement("a");
+    const response = await getDoc('career');
+    const fileUrl = response.content;
+    const link = document.createElement('a');
     link.href = fileUrl;
-    link.setAttribute("download", "career_form.xlsx");
+    link.setAttribute('download', 'career_form.xlsx');
     link.click();
   } catch (error) {
-    console.error("Career Form 다운로드 에러:", error.message);
+    console.error('Career Form 다운로드 에러:', error.message);
   }
 };
 
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
-    Object.entries(row).some(
-      ([header, value]) => !isCellValid(value, header)
-    )
+    Object.entries(row).some(([header, value]) => !isCellValid(value, header))
   );
 
   if (invalidRows) {
-    window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
+    window.alert('유효하지 않은 데이터 존재!! 등록 불가!!');
     return;
   }
   const data = await mapping();
   await saveData(data, 'careers');
-  window.alert("사원 경력 정보 등록 완료");
+  window.alert('사원 경력 정보 등록 완료');
   window.location.reload();
 };
 </script>
-
 
 <style scoped>
 .emp-container {
@@ -270,7 +307,8 @@ const postData = async () => {
   right: 0;
 }
 
-.exlbtns1, .exlbtns2 {
+.exlbtns1,
+.exlbtns2 {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -278,7 +316,8 @@ const postData = async () => {
   margin-right: 0.8rem;
 }
 
-.exlbtns1 button, .exlbtns2 button {
+.exlbtns1 button,
+.exlbtns2 button {
   width: 14.4rem;
   height: 3.6rem;
   gap: 1rem;
@@ -293,7 +332,7 @@ button {
   border-radius: 0.6rem;
   background-color: #003566;
   border: none;
-  color: #FFF;
+  color: #fff;
   font-size: 1.6rem;
   cursor: pointer;
 }
@@ -313,14 +352,13 @@ button p {
   padding: 1px;
 }
 
-
 .colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
   border-radius: 0.6rem;
-  background: #FFF;
+  background: #fff;
   font-size: 1.4rem;
   border: 2px solid #2e2f3015;
   margin-top: 0.5rem;
@@ -362,15 +400,15 @@ button p {
   width: 100%;
 }
 
-.rows > div > input{
+.rows > div > input {
   width: 100%;
   height: 100%;
   padding-left: 0.5rem;
   text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
-  border: 0.586px solid #DBDBDB;
-  background: #F8F8F8;
+  border: 0.586px solid #dbdbdb;
+  background: #f8f8f8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
@@ -386,22 +424,22 @@ button p {
   justify-content: center;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid #DBDBDB;
+  border: 1px solid #dbdbdb;
   background-color: #fff;
   position: relative;
 }
 
-input[type="checkbox"]:checked + label::after {
+input[type='checkbox']:checked + label::after {
   content: '✔';
   font-size: 20px;
   width: 100%;
@@ -449,8 +487,8 @@ input[type="checkbox"]:checked + label::after {
 }
 
 .invalid-row {
-  background: #FFD8D8 !important;
-  stroke: #F00 !important;
+  background: #ffd8d8 !important;
+  stroke: #f00 !important;
   border: 2px solid red !important;
 }
 </style>

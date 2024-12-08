@@ -1,20 +1,31 @@
 <template>
   <CommonNav></CommonNav>
-  <LoadingOverlay :is-visible="employee === null" message="로딩 중입니다..."></LoadingOverlay>
+  <LoadingOverlay
+    :is-visible="employee === null"
+    message="로딩 중입니다..."
+  ></LoadingOverlay>
   <CommonHeader v-if="employee" :user-name="employee.name"></CommonHeader>
   <MainItem v-if="employee" w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <GridItem class="grid-container" w="85%" gtc="repeat(20, 1fr)">
       <div class="grid-item">
-        <MyAttendanceWidget v-if="employee" :employee="employee"></MyAttendanceWidget>
+        <MyAttendanceWidget
+          v-if="employee"
+          :employee="employee"
+        ></MyAttendanceWidget>
       </div>
       <div class="grid-item">
         <ScheduleDdayWidget :closest-event="closestEvent"></ScheduleDdayWidget>
       </div>
       <div class="grid-item">
-        <MyScheduleWidget @closest-event="handleClosestEvent"></MyScheduleWidget>
+        <MyScheduleWidget
+          @closest-event="handleClosestEvent"
+        ></MyScheduleWidget>
       </div>
       <div class="grid-item">
-        <MyTeamMemberWidget v-if="employee" :dcode="employee.department_code"></MyTeamMemberWidget>
+        <MyTeamMemberWidget
+          v-if="employee"
+          :dcode="employee.department_code"
+        ></MyTeamMemberWidget>
       </div>
     </GridItem>
   </MainItem>

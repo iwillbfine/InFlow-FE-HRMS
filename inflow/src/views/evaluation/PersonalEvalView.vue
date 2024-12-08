@@ -2,8 +2,16 @@
   <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="0" :list="menuList" @menu-clicked="handleMenuClick"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <CommonMenu
+      :cur="0"
+      :list="menuList"
+      @menu-clicked="handleMenuClick"
+    ></CommonMenu>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view></router-view>
     </SectionItem>

@@ -3,8 +3,16 @@
   <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
-    <CommonMenu :cur="2" :list="menuList" @menu-clicked="handleMenuClick"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <CommonMenu
+      :cur="2"
+      :list="menuList"
+      @menu-clicked="handleMenuClick"
+    ></CommonMenu>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view
         :selectedYear="selectedYear"
@@ -34,7 +42,7 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '과제 관리', link: '/evaluation/task/register' }
+  { name: '과제 관리', link: '/evaluation/task/register' },
 ]);
 
 const router = useRouter();

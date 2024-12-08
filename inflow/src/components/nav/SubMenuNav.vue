@@ -44,7 +44,7 @@ const props = defineProps({
 
 const router = useRouter();
 
-const emit = defineEmits(['clicked'])
+const emit = defineEmits(['clicked']);
 
 const selectItem = (item, index) => {
   emit('clicked', index);

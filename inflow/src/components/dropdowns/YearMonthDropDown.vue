@@ -1,5 +1,11 @@
 <template>
-  <FlexItem class="year-month-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
+  <FlexItem
+    class="year-month-dropdown"
+    fld="row"
+    fs="1.6rem"
+    fw="500"
+    c="#003566"
+  >
     <DropdownItem
       v-model:selected-item="selectedYear"
       placeholder="----"
@@ -26,8 +32,8 @@ const props = defineProps({
   short: {
     type: Boolean,
     default: false,
-  }
-})
+  },
+});
 
 const emit = defineEmits(['valid-date-selected']);
 
@@ -43,7 +49,8 @@ const validateDate = () => {
 
     // 유효한 날짜인지 검증
     const date = new Date(year, parseInt(month) - 1, 1); // month는 0부터 시작하므로 -1 필요
-    isValidDate.value = date.getFullYear() === year && date.getMonth() === parseInt(month) - 1;
+    isValidDate.value =
+      date.getFullYear() === year && date.getMonth() === parseInt(month) - 1;
 
     if (isValidDate.value) {
       emit('valid-date-selected', `${year}-${month}`); // 유효한 날짜만 emit

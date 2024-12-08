@@ -11,74 +11,174 @@
     b="1px solid #ddd"
   >
     <!-- 테이블 헤더 -->
-    <FlexItem class="header" fs="1.8rem" th bgc="#f8f8f8" fw="700" b="1px solid #dadada">
+    <FlexItem
+      class="header"
+      fs="1.8rem"
+      th
+      bgc="#f8f8f8"
+      fw="700"
+      b="1px solid #dadada"
+    >
       항목
     </FlexItem>
-    <FlexItem class="header" fs="1.8rem" th bgc="#f8f8f8" fw="700" b="1px solid #dadada">
+    <FlexItem
+      class="header"
+      fs="1.8rem"
+      th
+      bgc="#f8f8f8"
+      fw="700"
+      b="1px solid #dadada"
+    >
       금액
     </FlexItem>
-    <FlexItem class="header" fs="1.8rem" th bgc="#f8f8f8" fw="700" b="1px solid #dadada">
+    <FlexItem
+      class="header"
+      fs="1.8rem"
+      th
+      bgc="#f8f8f8"
+      fw="700"
+      b="1px solid #dadada"
+    >
       항목
     </FlexItem>
-    <FlexItem class="header" fs="1.8rem" th bgc="#f8f8f8" fw="700" b="1px solid #dadada">
+    <FlexItem
+      class="header"
+      fs="1.8rem"
+      th
+      bgc="#f8f8f8"
+      fw="700"
+      b="1px solid #dadada"
+    >
       금액
     </FlexItem>
 
     <!-- 지급내역 -->
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">계약월급</FlexItem>
-    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{ formatCurrency(salaryData.monthlySalary) }}</FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">국민연금</FlexItem>
-    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{ formatCurrency(salaryData.nationalPensionDeductible) }}</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >계약월급</FlexItem
+    >
+    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{
+      formatCurrency(salaryData.monthlySalary)
+    }}</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >국민연금</FlexItem
+    >
+    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{
+      formatCurrency(salaryData.nationalPensionDeductible)
+    }}</FlexItem>
 
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">식대</FlexItem>
-    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{ formatCurrency(salaryData.nonTaxableAmount) }}</FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">건강보험</FlexItem>
-    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{ formatCurrency(salaryData.healthInsuranceDeductible) }}</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >식대</FlexItem
+    >
+    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{
+      formatCurrency(salaryData.nonTaxableAmount)
+    }}</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >건강보험</FlexItem
+    >
+    <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada">{{
+      formatCurrency(salaryData.healthInsuranceDeductible)
+    }}</FlexItem>
 
     <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"></FlexItem>
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">장기요양</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >장기요양</FlexItem
+    >
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
 
     <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"></FlexItem>
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">고용보험</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >고용보험</FlexItem
+    >
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
 
     <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"></FlexItem>
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">소득세</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >소득세</FlexItem
+    >
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
 
     <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"></FlexItem>
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada">지방소득세</FlexItem>
+    <FlexItem class="body title" fs="1.7rem" b="1px solid #dadada"
+      >지방소득세</FlexItem
+    >
     <FlexItem class="body amount" fs="1.7rem" b="1px solid #dadada"></FlexItem>
-
 
     <!-- ... 다른 항목 추가 -->
 
     <!-- 지급/공제 총계 -->
-    <FlexItem class="footer highlight" fs="2rem" fw="700" bgc="#f4f4f4" b="1px solid #dadada">
+    <FlexItem
+      class="footer highlight"
+      fs="2rem"
+      fw="700"
+      bgc="#f4f4f4"
+      b="1px solid #dadada"
+    >
       지급총액
     </FlexItem>
-    <FlexItem class="footer highlight" fs="2rem" fw="700" bgc="white" b="1px solid #dadada">
+    <FlexItem
+      class="footer highlight"
+      fs="2rem"
+      fw="700"
+      bgc="white"
+      b="1px solid #dadada"
+    >
       {{ formatCurrency(totalPayment) }}
     </FlexItem>
-    <FlexItem class="footer highlight" fs="2rem" fw="700" bgc="#f4f4f4" b="1px solid #dadada">
+    <FlexItem
+      class="footer highlight"
+      fs="2rem"
+      fw="700"
+      bgc="#f4f4f4"
+      b="1px solid #dadada"
+    >
       공제총액
     </FlexItem>
-    <FlexItem class="footer highlight" fs="2rem" fw="700" bgc="white" b="1px solid #dadada">
+    <FlexItem
+      class="footer highlight"
+      fs="2rem"
+      fw="700"
+      bgc="white"
+      b="1px solid #dadada"
+    >
       {{ formatCurrency(salaryData.totalDeductible) }}
     </FlexItem>
 
     <!-- 차인 지급액 -->
-    <FlexItem class="footer total highlight" fs="2rem" fw="700" gc="span 3" bgc="#f4f4f4" b="1px solid #dadada">
+    <FlexItem
+      class="footer total highlight"
+      fs="2rem"
+      fw="700"
+      gc="span 3"
+      bgc="#f4f4f4"
+      b="1px solid #dadada"
+    >
       차인지급액
     </FlexItem>
-    <FlexItem class="footer blank" fs="1.2rem" fw="700" bgc="white" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="footer blank center" fs="1.2rem" fw="700" bgc="white" b="1px solid #dadada"></FlexItem>
-    <FlexItem class="total-pay" fs="2rem" fw="700" bgc="white" b="1px solid #dadada">
+    <FlexItem
+      class="footer blank"
+      fs="1.2rem"
+      fw="700"
+      bgc="white"
+      b="1px solid #dadada"
+    ></FlexItem>
+    <FlexItem
+      class="footer blank center"
+      fs="1.2rem"
+      fw="700"
+      bgc="white"
+      b="1px solid #dadada"
+    ></FlexItem>
+    <FlexItem
+      class="total-pay"
+      fs="2rem"
+      fw="700"
+      bgc="white"
+      b="1px solid #dadada"
+    >
       {{ formatCurrency(salaryData.actualSalary) }}
     </FlexItem>
   </GridItem>
@@ -158,4 +258,3 @@ const formatCurrency = (value) => `${value.toLocaleString()} 원`;
   border-left: none;
 }
 </style>
-

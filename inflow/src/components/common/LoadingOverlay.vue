@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: "LoadingOverlay",
+  name: 'LoadingOverlay',
   props: {
     isVisible: {
       type: Boolean,
@@ -17,7 +17,7 @@ export default defineComponent({
     },
     message: {
       type: String,
-      default: "처리 중입니다. 잠시만 기다려 주세요...",
+      default: '처리 중입니다. 잠시만 기다려 주세요...',
     },
   },
 });

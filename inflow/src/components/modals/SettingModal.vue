@@ -1,7 +1,13 @@
 <template>
   <CrudModal class="setting-modal" h="54rem" w="60rem">
-    <FlexItem class="modal-content-wrapper" fld="column" h="100%" w="100%" fs="3rem">
-      <img src="/src/assets/admin_default_profile.png" alt="Admin Image">
+    <FlexItem
+      class="modal-content-wrapper"
+      fld="column"
+      h="100%"
+      w="100%"
+      fs="3rem"
+    >
+      <img src="/src/assets/admin_default_profile.png" alt="Admin Image" />
       <span>열심히 개발중{{ typingText }}</span>
     </FlexItem>
   </CrudModal>

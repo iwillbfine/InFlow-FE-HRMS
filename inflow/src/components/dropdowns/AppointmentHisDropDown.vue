@@ -7,7 +7,7 @@
       w="8rem"
     ></DropdownItem>
     <span>년</span>
-    
+
     <DropdownItem
       v-model:selected-item="selectedMonth"
       :placeholder="props.m || curMonth || '--'"
@@ -34,14 +34,14 @@ import { onMounted, ref, watch } from 'vue';
 const emit = defineEmits(['selected']);
 
 const props = defineProps({
-  y:{
+  y: {
     type: String,
-    default : "----"
+    default: '----',
   },
-  m:{
+  m: {
     type: String,
-    default : "--"
-  }
+    default: '--',
+  },
 });
 
 // 현재 연도와 월
@@ -49,7 +49,15 @@ const curYear = ref(new Date().getFullYear());
 const curMonth = ref(String(new Date().getMonth() + 1).padStart(2, '0'));
 
 // 초기 데이터
-const types = ref(['전체', '승진', '강등', '보직변경', '퇴직', '특진', '부서이동']);
+const types = ref([
+  '전체',
+  '승진',
+  '강등',
+  '보직변경',
+  '퇴직',
+  '특진',
+  '부서이동',
+]);
 const typeList = ref([]);
 const yearList = ref([]);
 const monthList = ref([]);
@@ -64,10 +72,9 @@ const isValidDate = ref(true);
 
 // 데이터 초기화 함수
 const setDatas = () => {
-
   typeList.value = types.value.map((row) => ({
-    id: row, 
-    name: row
+    id: row,
+    name: row,
   }));
 
   yearList.value = Array.from({ length: 30 }, (_, i) => ({
@@ -94,7 +101,8 @@ const validateDate = () => {
     const type = selectedType.value;
 
     const date = new Date(year, parseInt(month) - 1, 1);
-    isValidDate.value = date.getFullYear() === year && date.getMonth() === parseInt(month) - 1;
+    isValidDate.value =
+      date.getFullYear() === year && date.getMonth() === parseInt(month) - 1;
 
     if (isValidDate.value) {
       emit('selected', `${year}-${month}-${type}`);

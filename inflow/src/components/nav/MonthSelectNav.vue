@@ -1,6 +1,18 @@
 <template>
-  <FlexItem class="month-navigator" fld="row" w="100%" h="5rem" bgc="#002D57" fs="1.5rem">
-    <CaretLeftButton h="3rem" w="3rem" bgc="transparent" @click="prevMonth"></CaretLeftButton>
+  <FlexItem
+    class="month-navigator"
+    fld="row"
+    w="100%"
+    h="5rem"
+    bgc="#002D57"
+    fs="1.5rem"
+  >
+    <CaretLeftButton
+      h="3rem"
+      w="3rem"
+      bgc="transparent"
+      @click="prevMonth"
+    ></CaretLeftButton>
     <FlexItem
       v-for="(month, index) in visibleMonths"
       :key="index"
@@ -16,7 +28,12 @@
     >
       <span>{{ month }}</span>
     </FlexItem>
-    <CaretRightButton h="3rem" w="3rem" bgc="transparent" @click="nextMonth"></CaretRightButton>
+    <CaretRightButton
+      h="3rem"
+      w="3rem"
+      bgc="transparent"
+      @click="nextMonth"
+    ></CaretRightButton>
   </FlexItem>
 </template>
 
@@ -72,7 +89,9 @@ watch(currentMonth, (newMonth) => {
   align-items: center;
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .month-display:hover {
