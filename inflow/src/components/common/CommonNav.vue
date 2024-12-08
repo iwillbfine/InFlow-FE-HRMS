@@ -70,7 +70,7 @@ const selectItem = (item) => {
 }
 
 .nav-list {
-  padding-top: 6rem;
+  padding-top: 10rem;
 }
 
 .nav-item {
