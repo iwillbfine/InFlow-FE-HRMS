@@ -109,6 +109,20 @@ const checkPasswordsMatch = () => {
 
 // 비밀번호 변경 로직
 const resetPassword = async () => {
+ // 입력 값 검증
+ if (!newPassword.value ) {
+    alert('비밀번호를 입력해주세요.');
+    return;
+  }
+
+  if ( !confirmPassword.value) {
+    alert('확인비밀번호를 입력해주세요.');
+    return;
+  }
+
+
+
+
   if (isNotValid.value) {
     alert('유효하지 않은 비밀번호입니다.');
     return;
@@ -169,6 +183,7 @@ const closeModal = () => {
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
+  background-color: #fff; /* 배경색을 흰색으로 명시 */
 }
 
 .company-logo {
@@ -207,7 +222,7 @@ const closeModal = () => {
   font-size: 1.6rem;
   font-weight: 300;
   border: 1px solid #1f1f1f;
-  border-radius: 1rem;
+  border-radius: 4px;
   color: #003566;
   padding-right: 2.5rem; /* 아이콘 영역 확보 */
 }
@@ -218,7 +233,7 @@ const closeModal = () => {
 
 .input-text:focus {
   border: 2px solid #0062be;
-  border-radius: 1rem;
+  border-radius: 4px;
 }
 
 .eye-icon {
@@ -238,6 +253,16 @@ const closeModal = () => {
 }
 
 .reset-pwd-btn {
-  margin-top: 2.4rem;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #003566;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 </style>
+

@@ -188,7 +188,7 @@ onUnmounted(() => {
 }
 
 .extend-btn:hover {
-  background-color: #888 !important;
+  background-color: #003566 !important;
   transition: 0.2s ease-out;
 }
 
@@ -197,9 +197,4 @@ onUnmounted(() => {
   gap: 2rem;
 }
 
-.reset-pwd-modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 </style>

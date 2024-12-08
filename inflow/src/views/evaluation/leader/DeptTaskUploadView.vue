@@ -10,7 +10,7 @@
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
     </FlexItem>
-    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <!-- <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div> -->
     <TableItem gtc="3fr 6fr 8fr">
       <TableRow>
         <TableCell th fs="1.6rem" topl>유형</TableCell>

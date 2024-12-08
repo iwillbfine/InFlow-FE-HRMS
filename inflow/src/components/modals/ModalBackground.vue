@@ -15,6 +15,7 @@ import FlexItem from '../semantic/FlexItem.vue';
   left: 0;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
   z-index: 9999;
 }
 </style>

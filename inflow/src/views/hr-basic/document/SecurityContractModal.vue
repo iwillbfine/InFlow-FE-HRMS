@@ -652,7 +652,7 @@ const saveContract = async () => {
   left: 50%; /* 컨테이너의 가로 가운데 */
   transform: translate(-50%, -50%); /* 완전한 중앙 정렬 */
   font-size: 1.4rem;
-  color: #333;
+  color: #aaa;
   z-index: 0; /* 이미지 뒤에 표시 */
   pointer-events: none; /* 클릭 불가능 */
   pointer-events: none; /* 클릭 불가능 */

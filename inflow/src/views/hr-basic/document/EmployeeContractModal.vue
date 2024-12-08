@@ -742,7 +742,7 @@ const saveContract = async () => {
   position: relative; /* 텍스트와 이미지를 겹치도록 설정 */
   display: inline-block;
   width: 70px; /* 서명 이미지 컨테이너 크기 */
-  height: 30px; /* 서명 이미지 컨테이너 높이 */
+  height: 60px; /* 서명 이미지 컨테이너 높이 */
 }
 
 .signature-image {
@@ -761,7 +761,7 @@ const saveContract = async () => {
   left: 50%; /* 컨테이너의 가로 가운데 */
   transform: translate(-50%, -50%); /* 완전한 중앙 정렬 */
   font-size: 1.4rem;
-  color: #333;
+  color: #aaa;
   z-index: 0; /* 이미지 뒤에 표시 */
   pointer-events: none; /* 클릭 불가능 */
   pointer-events: none; /* 클릭 불가능 */
