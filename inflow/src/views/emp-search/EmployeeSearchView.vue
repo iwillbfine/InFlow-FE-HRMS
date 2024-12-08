@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <CommonNav :cur="0"></CommonNav>
+    <CommonNav :cur="1"></CommonNav>
     <FlexItem
       class="main-container"
       fld="column"

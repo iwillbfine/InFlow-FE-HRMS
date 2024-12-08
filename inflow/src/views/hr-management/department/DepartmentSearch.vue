@@ -8,6 +8,7 @@
             type="text"
             placeholder="부서명, 부서 코드 또는 부서장으로 검색"
             class="input-css"
+            id="search-bar-department"
           />
         </div>
         <div class="button">

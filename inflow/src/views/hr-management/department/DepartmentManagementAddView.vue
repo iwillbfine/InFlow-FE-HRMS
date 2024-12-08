@@ -23,6 +23,7 @@
               type="text"
               class="editable-input"
               placeholder="부서명을 입력하세요"
+              id="search-department-name"
             />
           </div>
         </TableCell>
@@ -36,6 +37,7 @@
               type="text"
               class="editable-input"
               placeholder="부서 코드를 입력하세요"
+              id="search-department-code"
             />
           </div>
         </TableCell>
@@ -71,6 +73,7 @@
               type="number"
               class="editable-input"
               placeholder="최소 인원수를 입력하세요"
+              id="input-min-num"
             />
           </div>
         </TableCell>
@@ -84,6 +87,7 @@
               type="text"
               class="editable-input"
               placeholder="부서장명을 입력하세요"
+              id="input-department-head-name"
             />
           </div>
         </TableCell>
