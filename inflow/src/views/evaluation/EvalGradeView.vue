@@ -157,7 +157,7 @@ import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import {
   findGradeByYearAndHalf,
   createGrade,
-  deleteGrade,
+  deleteGrade
 } from '@/api/evaluation';
 import EvalGradeUpdateModalView from '@/views/evaluation/EvalGradeUpdateModalView.vue';
 

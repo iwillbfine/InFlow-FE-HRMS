@@ -436,7 +436,7 @@ export const findGradeByGradeId = async (gradeId) => {
 // 평가 등급 삭제
 export const deleteGrade = async (gradeId, year, half) => {
   try {
-    const response = await apiClient.delete(`/evaluations/grade/delete/${gradeId}`, {
+    const response = await apiClient.delete(`/evaluations/delete/${gradeId}`, {
       params: {
         year: year,
         half: half,

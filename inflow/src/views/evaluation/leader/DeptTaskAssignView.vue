@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted  } from 'vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
@@ -118,7 +118,7 @@ import FigureItem from '@/components/semantic/FigureItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { findDepartmentTaskItems, createTaskItem } from '@/api/evaluation';
+import { findDepartmentTaskItems, createTaskItem, getAllTaskTypes } from '@/api/evaluation';
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -129,14 +129,11 @@ const taskItems = ref([]);
 const selectedTasks = ref([]);
 
 // 과제 유형 매핑
-const taskTypes = {
-  1: '개인 과제',
-  2: '팀 과제',
-  3: '부서 과제',
-};
+const taskTypes = ref([]);
 
 const getTaskTypeName = (typeId) => {
-  return taskTypes[typeId] || '기타';
+  const taskType = taskTypes.value.find(type => type.task_type_id === typeId);
+  return taskType ? taskType.task_type_name : '기타';
 };
 
 // 과제 선택 토글
@@ -180,6 +177,18 @@ const handleAssignTasks = async () => {
     console.error('과제 할당 실패:', error);
   } finally {
     isLoading.value = false;
+  }
+};
+
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if (response.success) {
+      taskTypes.value = response.content;
+      console.log('과제 유형 데이터:', taskTypes.value); // 데이터 확인용
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 중 에러:', error);
   }
 };
 
@@ -234,6 +243,10 @@ watch([selectedYear, selectedHalf], () => {
   if (selectedYear.value && selectedHalf.value) {
     fetchTaskItems();
   }
+});
+
+onMounted(async () => {
+  await fetchTaskTypes();
 });
 </script>
 
