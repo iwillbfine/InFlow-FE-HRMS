@@ -116,18 +116,6 @@
             br="0.6rem"
             c="#fff"
             fs="1.6rem"
-            @click="handleModify(grade)"
-          >
-            수정
-          </ButtonItem>
-          <ButtonItem
-            class="submit-btn"
-            h="3.6rem"
-            w="7.2rem"
-            bgc="#003566"
-            br="0.6rem"
-            c="#fff"
-            fs="1.6rem"
             @click="handleDelete(grade.grade_id)"
           >
             삭제
@@ -169,7 +157,7 @@ import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import {
   findGradeByYearAndHalf,
   createGrade,
-  updateGrade,
+  deleteGrade,
 } from '@/api/evaluation';
 import EvalGradeUpdateModalView from '@/views/evaluation/EvalGradeUpdateModalView.vue';
 
@@ -304,18 +292,18 @@ const handleSubmit = async () => {
   }
 };
 
-// handleModify 함수 수정
-const handleModify = (grade) => {
-  selectedGrade.value = grade;
-  isUpdateModalOpen.value = true;
-};
-
 // 삭제 핸들러
 const handleDelete = async (gradeId) => {
   if (!confirm('정말 삭제하시겠습니까?')) return;
 
+  // year나 half가 선택되지 않은 경우 처리
+  if (!selectedYear.value || !selectedHalf.value) {
+    alert('년도와 반기를 선택해주세요.');
+    return;
+  }
+
   try {
-    const response = await deleteGrade(gradeId);
+    const response = await deleteGrade(gradeId, selectedYear.value, selectedHalf.value);
     if (response.success) {
       alert('등급이 삭제되었습니다.');
       fetchGrades();
