@@ -1,6 +1,7 @@
 // 사원 기본 관련 api 모음
 
 import apiClient from '@/api/axios'; // Axios 설정이 적용된 apiClient 사용
+import router from '@/router';
 
 // 설명. 홈 화면 일정 조회
 export const getHomeInfo = async (employeeId, month) => {
@@ -18,14 +19,17 @@ export const getHomeInfo = async (employeeId, month) => {
 // 설명. 1. 사원 ID로 사원 정보 조회하기
 export const getEmployeeById = async (employeeId, token) => {
   try {
+    console.log('사원 ID로 조회 시작, 전달된 토큰:', token);
     const response = await apiClient.get(`/employees/id/${employeeId}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Bearer 토큰 헤더 추가
       },
     });
+    console.log('사원 조회 응답 데이터:', response.data);
     return response.data.content; // 사원 정보를 반환
   } catch (error) {
-    console.error('getEmployeeById 에러:', error);
+    console.error('getEmployeeById 에러:', error.response?.data || error);
+    router.push("/login");
     throw error; // 에러를 호출한 쪽으로 전달
   }
 };

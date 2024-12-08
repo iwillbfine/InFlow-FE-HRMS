@@ -9,6 +9,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+    console.log('인터셉터에서 읽어온 토큰:', token);
 
     // 액세스 토큰이 있는 경우 Authorization 헤더에 추가
     if (token) {

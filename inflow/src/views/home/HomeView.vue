@@ -56,6 +56,15 @@ const fetchEmployeeData = async (eid) => {
     employee.value = await getEmployeeById(eid);
   } catch (e) {
     console.error('사원 정보를 가져오는데 실패했습니다.', e);
+
+     // 토큰 만료 또는 인증 오류 처리
+     if (e.response && e.response.status === 401) {
+      alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+      localStorage.clear(); // 로컬 저장소 비우기
+      router.push('/login'); // 로그인 페이지로 이동
+    } else {
+      alert('사원 정보를 가져오는 중 오류가 발생했습니다.');
+    }
   }
 };
 
