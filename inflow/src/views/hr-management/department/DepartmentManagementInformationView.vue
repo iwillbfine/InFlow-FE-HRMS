@@ -32,6 +32,7 @@
               v-model="editableData.department_name"
               type="text"
               class="editable-input"
+              id="ediatble-department-name-input"
             />
           </div>
           <div v-else>
@@ -49,6 +50,7 @@
               v-model="editableData.department_code"
               type="text"
               class="editable-input"
+              id="editable-department-code-input"
             />
           </div>
           <div v-else>
@@ -93,6 +95,7 @@
               v-model="editableData.min_employee_num"
               type="number"
               class="editable-input"
+              id="editable-min-number-input"
             />
           </div>
           <div v-else>
@@ -110,6 +113,7 @@
               v-model="editableData.department_head_name"
               type="text"
               class="editable-input"
+              id="editable-department-head-input"
             />
           </div>
           <div v-else>
