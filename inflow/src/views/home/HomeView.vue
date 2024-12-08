@@ -1,5 +1,5 @@
 <template>
-  <CommonNav></CommonNav>
+  <CommonNav :cur="0"></CommonNav>
   <LoadingOverlay
     :is-visible="employee === null"
     message="로딩 중입니다..."

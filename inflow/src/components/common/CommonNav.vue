@@ -36,7 +36,7 @@ import RobotIcon from '../icons/RobotIcon.vue';
 import SearchIcon from '../icons/SearchIcon.vue';
 import UserIcon from '../icons/UserIcon.vue';
 import AddressBookIcon from '../icons/AddressBookIcon.vue';
-import ChartIcon from '../icons/ChartIcon.vue';
+import HomeIcon from '../icons/HomeIcon.vue';
 import { ref, markRaw } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -48,6 +48,7 @@ const props = defineProps({
 });
 
 const list = ref([
+  { name: '홈', icon: markRaw(HomeIcon), link: '/' },
   { name: '사원 찾기', icon: markRaw(SearchIcon), link: '/emp-search' },
   { name: '챗봇', icon: markRaw(RobotIcon), link: '/chatbot' },
   { name: '인사 기본', icon: markRaw(UserIcon), link: '/hr-basic' },
