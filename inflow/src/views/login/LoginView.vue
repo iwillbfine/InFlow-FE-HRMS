@@ -29,6 +29,10 @@ const router = useRouter(); // 라우터 객체 생성
 
 // 로그인 처리 함수
 const handleLogin = async () => {
+
+  // 로그인 처리 시작 시 로컬 저장소 비우기
+  localStorage.clear();
+  
   // 입력값 검사
   if (!employeeNumber.value.trim()) {
     invalid.value = true;

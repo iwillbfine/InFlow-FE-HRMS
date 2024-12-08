@@ -1,6 +1,6 @@
 <!-- EvalTaskView.vue -->
 <template>
-  <CommonNav :cur="4"></CommonNav>
+  <CommonNav :cur="5"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu

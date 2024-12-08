@@ -85,12 +85,6 @@ import PeriodicSalaryView from '@/views/hr-basic/salary/PeriodicSalaryView.vue';
 
 const routes = [
   {
-    path: '/changuk/profile',
-    name: '인적사항',
-    component: ProfileView,
-  },
-
-  {
     path: '/',
     name: 'home',
     component: HomeView,

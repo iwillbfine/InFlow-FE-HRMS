@@ -1,5 +1,5 @@
 <template>
-  <CommonNav :cur="1"></CommonNav>
+  <CommonNav :cur="2"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" h="calc(100vh - 10rem)">
     <SectionItem
