@@ -9,7 +9,7 @@ on:
     types: [opened, reopened, synchronize]
   push:
     branches:
-      - "main"
+      - 'main'
 
 jobs:
   deploy:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
 
       - name: Install dependencies
         run: |
@@ -59,8 +59,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: inflow-front
-          environment_name: Inflow-front-env
+          application_name: inflow-vue
+          environment_name: Inflow-vue-env
           version_label: github-action-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
