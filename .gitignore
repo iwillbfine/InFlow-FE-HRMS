@@ -32,3 +32,4 @@ coverage
 
 # 앱키
 .env.local
+node_modules
