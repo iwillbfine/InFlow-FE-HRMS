@@ -4,7 +4,7 @@
       <span v-if="node.sub_departments.length > 0" @click="toggleExpand">
         {{ isExpanded ? '&#8250;' : '⌵' }}
       </span>
-      <span>&nbsp;</span>
+      <img :src="isExpanded ? require('../../assets/icons/file_open.png') : require('../../assets/icons/file_close.png')" alt="Icon" />
       <span
         class="department-name"
         @click="selectDepartment(node.department_code)"
@@ -106,6 +106,7 @@ const leave = (el, done) => {
   display: flex;
   align-items: center;
   transition: 0.2s ease-in-out;
+  gap: 0.5rem;
 }
 
 .node:hover {
