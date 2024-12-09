@@ -1,6 +1,9 @@
 <template>
   <div class="department-heirarchy">
-    <span>INFLOW</span>
+    <div class="root">
+      <img src="../../assets/icons/company_icon.png"/>
+      <span>INFLOW</span>
+    </div>
     <!-- 최상위 부서 목록 -->
     <!-- 재귀적으로 부서 조회 -->
     <ul>
@@ -39,11 +42,17 @@ const selectDepartment = (department) => {
 </script>
 
 <style scoped>
-.department-heirarchy > span {
+.root {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.root > span {
   font-size: 2rem;
   color: #003566;
   font-weight: 500;
 }
+
 .department-heirarchy > ul {
   margin-left: 20px;
   margin-top: 10px;
