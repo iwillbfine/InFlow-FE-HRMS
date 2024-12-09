@@ -3,6 +3,17 @@
 import apiClient from '@/api/axios'; // Axios 설정이 적용된 apiClient 사용
 import router from '@/router';
 
+// 설명. 로그인
+export const login = async (formData) => {
+  try {
+    const response = await apiClient.get(`/login`, formData);
+    return response.data;
+  } catch (error) {
+    console.error('login 에러:', error);
+    throw error; // 에러를 호출한 쪽으로 전달
+  }
+};
+
 // 설명. 홈 화면 일정 조회
 export const getHomeInfo = async (employeeId, month) => {
   try {
@@ -29,7 +40,7 @@ export const getEmployeeById = async (employeeId, token) => {
     return response.data.content; // 사원 정보를 반환
   } catch (error) {
     console.error('getEmployeeById 에러:', error.response?.data || error);
-    router.push("/login");
+    router.push('/login');
     throw error; // 에러를 호출한 쪽으로 전달
   }
 };

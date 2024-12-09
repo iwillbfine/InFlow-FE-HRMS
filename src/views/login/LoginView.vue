@@ -17,7 +17,7 @@ import LoginSection from '../../components/common/LoginSection.vue';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router'; // Vue Router 사용
-import { getEmployeeById } from '@/api/emp_info'; // 사원 정보 조회 API
+import { getEmployeeById, login } from '@/api/emp_info'; // 사원 정보 조회 API
 import { checkAndUpdateCommute } from '@/api/attendance';
 
 // 상태 변수
@@ -29,10 +29,9 @@ const router = useRouter(); // 라우터 객체 생성
 
 // 로그인 처리 함수
 const handleLogin = async () => {
-
   // 로그인 처리 시작 시 로컬 저장소 비우기
   localStorage.clear();
-  
+
   // 입력값 검사
   if (!employeeNumber.value.trim()) {
     invalid.value = true;
@@ -47,12 +46,10 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = (
-      await axios.post('http://localhost:5000/api/login', {
-        employee_number: employeeNumber.value,
-        password: password.value,
-      })
-    ).data;
+    const response = await login({
+      employee_number: employeeNumber.value,
+      password: password.value,
+    });
 
     if (response.success) {
       // 로그인 성공 시 API 응답에서 데이터 추출

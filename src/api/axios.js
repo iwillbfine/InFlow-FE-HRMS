@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // API 기본 경로
+  baseURL: 'http:inflow-alb-1510076972.ap-northeast-2.elb.amazonaws.com/api', // API 기본 경로
 });
 
 // 요청 인터셉터: 모든 요청에 Authorization 헤더 추가
