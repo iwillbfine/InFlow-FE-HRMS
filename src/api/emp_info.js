@@ -9,7 +9,12 @@ export const login = async (formData) => {
   try {
     const response = await axios.post(
       `https://inflow-alb-1510076972.ap-northeast-2.elb.amazonaws.com/api/login`,
-      formData
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json', // 요청이 JSON 형식일 경우
+        },
+      }
     );
     return response.data;
   } catch (error) {
