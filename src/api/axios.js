@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // API 기본 경로
+  baseURL: 'http://inflow-alb-1510076972.ap-northeast-2.elb.amazonaws.com/api', // API 기본 경로
 });
 
 // 요청 인터셉터: 모든 요청에 Authorization 헤더 추가
@@ -44,7 +44,7 @@ apiClient.interceptors.response.use(
 
         // 리프레시 토큰으로 새로운 액세스 토큰 요청
         const { data } = await axios.post(
-          'http://localhost:5000/api/auth/refresh-token',
+          'http://inflow-alb-1510076972.ap-northeast-2.elb.amazonaws.com/api/auth/refresh-token',
           { refresh_token: refreshToken }, // JSON 형식으로 데이터 전달
           {
             headers: {
