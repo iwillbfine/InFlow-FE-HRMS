@@ -432,3 +432,20 @@ export const findGradeByGradeId = async (gradeId) => {
     throw error; // 에러를 다시 throw해서 호출한 쪽에서 처리할 수 있도록 함
   }
 };
+
+// 평가 등급 삭제
+export const deleteGrade = async (gradeId, year, half) => {
+  try {
+    const response = await apiClient.delete(`/evaluations/delete/${gradeId}`, {
+      params: {
+        year: year,
+        half: half,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('평가 등급 삭제 중 에러 발생:', error);
+    throw error;
+  }
+};
+

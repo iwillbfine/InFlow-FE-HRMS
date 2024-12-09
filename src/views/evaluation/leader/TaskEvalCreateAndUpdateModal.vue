@@ -163,6 +163,23 @@ const handleClose = () => {
   border-radius: 0.4rem;
   padding: 0 1rem;
   font-size: 1.6rem;
+  background-color: #F8F8F8;
+  transition: background-color 0.2s ease;
+
+   /* 화살표 버튼 제거를 위한 스타일 */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+ /* 화살표 버튼 제거를 위한 스타일 추가 */
+.score-input::-webkit-outer-spin-button,
+.score-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.score-input:focus {
+  background-color: #FFF;
 }
 
 .button-group {
