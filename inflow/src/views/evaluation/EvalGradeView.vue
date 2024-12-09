@@ -89,9 +89,21 @@
     >
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        @click="handleSearch"
+      >
+        조회
+      </ButtonItem>
     </FlexItem>
 
-    <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.25fr">
+    <TableItem gtc="0.125fr 0.25fr 0.25fr 0.25fr 0.125fr">
       <TableRow>
         <TableCell th fs="1.6rem">등급</TableCell>
         <TableCell th fs="1.6rem">시작비율</TableCell>
@@ -109,7 +121,7 @@
         >
         <TableCell class="button-cell">
           <ButtonItem
-            class="submit-btn"
+
             h="3.6rem"
             w="7.2rem"
             bgc="#003566"
@@ -145,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
@@ -231,12 +243,19 @@ const fetchGrades = async () => {
 // 목록 조회 Year/Half 핸들러
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  fetchGrades();
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  fetchGrades();
+};
+
+// 조회 버튼 핸들러
+const handleSearch = async () => {
+  if (!selectedYear.value || !selectedHalf.value) {
+    alert('연도와 반기를 모두 선택해주세요.');
+    return;
+  }
+  await fetchGrades();
 };
 
 // 등록 폼 Year/Half 핸들러
@@ -272,12 +291,13 @@ const handleSubmit = async () => {
 
     if (response.success) {
       alert('평가 등급이 성공적으로 등록되었습니다.');
-      // 폼 초기화
+
+      // 폼 초기화 ( 년도와 반기는 연속 등록을 고려하여 초기화 시키지 않음 )
       gradeForm.value = {
-        grade_name: '',
+        // grade_name: '',
         start_ratio: null,
         end_ratio: null,
-        absolute_grade_ratio: null,
+        // absolute_grade_ratio: null,
       };
       // 조회 영역의 년도/반기를 등록한 년도/반기로 변경
       selectedYear.value = registrationYear.value;
@@ -316,9 +336,6 @@ const handleDelete = async (gradeId) => {
   }
 };
 
-onMounted(() => {
-  fetchGrades();
-});
 </script>
 
 <style scoped>

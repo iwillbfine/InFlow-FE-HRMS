@@ -1,16 +1,29 @@
+<!-- PersonalEvalCreateAndFindView.vue -->
 <template>
   <CommonArticle label="개인과제 등록" w="90%">
     <div class="date-selector mb-8">
       <FlexItem
-        class="year-half-section"
-        fld="row"
+      class="year-half-section"
+      fld="row"
+      fs="1.6rem"
+      fw="500"
+      c="#003566"
+    >
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
         fs="1.6rem"
-        fw="500"
-        c="#003566"
+        @click="handleSearch"
       >
-        <YearDropDown @valid-date-selected="handleYearSelected" />
-        <HalfDropdown @half-selected="handleHalfSelected" />
-      </FlexItem>
+        조회
+      </ButtonItem>
+    </FlexItem>
     </div>
 
     <TableItem gtc="0.8fr 2fr 2fr">
@@ -120,7 +133,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
@@ -131,13 +144,11 @@ import TypeDropdown from '@/components/dropdowns/DropdownItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalModal from '@/views/evaluation/TaskEvalModal.vue';
-import { createTaskItem, findAllTaskItemsByEmpId } from '@/api/evaluation';
+import { createTaskItem, findAllTaskItemsByEmpId, getAllTaskTypes  } from '@/api/evaluation';
 
 // 상태 관리
 const taskList = ref([]);
-const taskTypes = ref([
-  { id: 1, name: '개인 과제' }
-]);
+const taskTypes = ref([]);
 const taskName = ref('');
 const taskContent = ref('');
 const selectedYear = ref(null);
@@ -159,9 +170,30 @@ const props = defineProps({
   },
 });
 
+// 유효성 검증
+const validateSearch = () => {
+  if (!selectedYear.value) {
+    alert('연도를 선택해주세요.');
+    return false;
+  }
+  if (!selectedHalf.value) {
+    alert('반기를 선택해주세요.');
+    return false;
+  }
+  return true;
+};
+
+
 // 핸들러 함수들
+
+// 조회 버튼
+const handleSearch = async () => {
+  if (!validateSearch()) return;
+  await fetchTaskList();
+};
+
 const handleYearSelected = (year) => {
-  selectedYear.value = Number(year); // String을 Number로 변환
+  selectedYear.value = Number(year); // String -> Number로 변환
   emit('yearSelected', Number(year));
 };
 const handleHalfSelected = (half) => {
@@ -187,24 +219,28 @@ const handleEvalSubmit = () => {
   fetchTaskList(); // 평가 제출 후 목록 새로고침
 };
 
-// watch로 year와 half 변경 감지하여 해당 년도 및 반기에 해당하는 과제항목 리스트 조회
-watch(
-  [selectedYear, selectedHalf],
-  ([newYear, newHalf], [oldYear, oldHalf]) => {
-    if (newYear && newHalf && (newYear !== oldYear || newHalf !== oldHalf)) {
-      fetchTaskList();
-    }
-  },
-  { immediate: true } // 컴포넌트 마운트 시 즉시 실행
-);
-
-// 과제 유형 이름 가져오기
+// 과제 유형 이름 가져오기 함수 수정
 const getTaskTypeName = (typeId) => {
-  const foundType = taskTypes.value.find(
-    (type) => type.task_type_id === typeId
-  );
-  return foundType ? foundType.task_type_name : '-';
+  const foundType = taskTypes.value.find(type => type.id === typeId);
+  return foundType ? foundType.name : '-';
 };
+
+// 과제 유형 로드
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if (response.success && response.content) {
+      taskTypes.value = response.content.map(type => ({
+        id: type.task_type_id,
+        name: type.task_type_name
+      }));
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 실패:', error);
+    taskTypes.value = [];
+  }
+};
+
 
 // 과제 목록 조회
 const fetchTaskList = async () => {
@@ -237,7 +273,7 @@ const handleSubmit = async () => {
     !selectedYear.value ||
     !selectedHalf.value
   ) {
-    alert('모든 항목을 입력해주세요.');
+    alert('모든 항목을 입력 및 선택해주세요.');
     return;
   }
 
@@ -271,17 +307,16 @@ const handleSubmit = async () => {
 };
 
 // 초기화
-onMounted(() => {
+onMounted(async () => {
   if (!employeeId.value) {
     alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
     return;
   }
-
-  // 현재 년도와 상반기를 기본값으로 설정
-
-  // 초기 과제 목록 로드
-  fetchTaskList();
+  
+  // 과제 유형 데이터 조회
+  await fetchTaskTypes();
 });
+
 </script>
 
 <style scoped>
