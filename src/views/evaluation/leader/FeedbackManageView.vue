@@ -125,9 +125,9 @@
         {{ isLoading ? '처리중...' : buttonText }}
       </ButtonItem>
     </CommonArticle>
-    <SearchEmployeeComponent
+    <SearchDepartmentMembersByDepartmentCodeComponent
       @employee-selected="handleSelected"
-    ></SearchEmployeeComponent>
+    ></SearchDepartmentMembersByDepartmentCodeComponent>
   </SectionItem>
 
   <TaskEvalCreateAndUpdateModal
@@ -151,7 +151,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import SearchDepartmentMembersByDepartmentCodeComponent from '@/components/common/SearchDepartmentMembersByDepartmentCodeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalCreateAndUpdateModal from './TaskEvalCreateAndUpdateModal.vue';

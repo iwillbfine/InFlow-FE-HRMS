@@ -99,7 +99,7 @@
         </TableRow>
       </TableItem>
     </CommonArticle>
-    <SearchEmployeeComponent @employee-selected="handleSelected" />
+    <SearchDepartmentMembersByDepartmentCodeComponent @employee-selected="handleSelected" />
 
     <ButtonItem
       class="submit-btn"
@@ -128,6 +128,7 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import FigureItem from '@/components/semantic/FigureItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import SearchDepartmentMembersByDepartmentCodeComponent from '@/components/common/SearchDepartmentMembersByDepartmentCodeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import { findDepartmentTaskItems, createTaskItem, getAllTaskTypes } from '@/api/evaluation';
