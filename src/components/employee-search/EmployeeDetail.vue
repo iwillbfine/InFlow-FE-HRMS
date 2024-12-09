@@ -81,11 +81,17 @@ const props = defineProps({
 }
 
 .profile-image {
-  width: 50%;
-  height: auto;
+  width: 12rem;
+  height: 16rem;
   margin-top: 50px;
   display: flex;
   justify-content: center;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .name-and-position {

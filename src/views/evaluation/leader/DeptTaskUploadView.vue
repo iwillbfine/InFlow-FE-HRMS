@@ -9,8 +9,20 @@
     >
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        @click="handleSearch"
+      >
+        조회
+      </ButtonItem>
     </FlexItem>
-    <!-- <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div> -->
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <TableItem gtc="3fr 6fr 8fr">
       <TableRow>
         <TableCell th fs="1.6rem" topl>유형</TableCell>
@@ -98,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
@@ -179,6 +191,19 @@ const validateInputs = () => {
   return true;
 };
 
+// 검색 조건 검증
+const validateSearch = () => {
+  if (!selectedYear.value) {
+    errorMessage.value = '연도를 선택해주세요.';
+    return false;
+  }
+  if (!selectedHalf.value) {
+    errorMessage.value = '반기를 선택해주세요.';
+    return false;
+  }
+  return true;
+};
+
 // 과제 등록
 const handleSubmit = async () => {
   try {
@@ -223,7 +248,7 @@ const handleSubmit = async () => {
   }
 };
 
-// fetchTaskList 함수 추가
+// fetchTaskList 함수
 const fetchTaskList = async () => {
   try {
     if (!selectedYear.value || !selectedHalf.value) return;
@@ -257,12 +282,12 @@ const fetchTaskList = async () => {
   }
 };
 
-// watch 추가
-watch([selectedYear, selectedHalf], async ([newYear, newHalf]) => {
-  if (newYear && newHalf) {
-    await fetchTaskList();
-  }
-});
+// 조회 버튼 핸들러 추가
+const handleSearch = async () => {
+  errorMessage.value = '';
+  if (!validateSearch()) return;
+  await fetchTaskList();
+};
 
 // 이벤트 핸들러
 const handleTaskTypeSelected = (id, index) => {
@@ -280,12 +305,9 @@ const handleHalfSelected = (half) => {
   errorMessage.value = '';
 };
 
-// 컴포넌트 마운트 시 과제 유형 조회 되도록 리펙토링 필요
+// 컴포넌트 마운트 시 과제 유형만 조회
 onMounted(async () => {
   await fetchTaskTypes();
-  if (selectedYear.value && selectedHalf.value) {
-    await fetchTaskList();
-  }
 });
 </script>
 

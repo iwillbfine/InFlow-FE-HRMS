@@ -80,7 +80,6 @@ const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
-  localStorage.setItem('subIdx', subIdx.value);
 };
 
 const eid = ref(null);
@@ -124,6 +123,7 @@ const selectedDepartmentCode = ref(null);
 // 부서 선택 이벤트 처리
 const handleDepartmentSelect = (departmentCode) => {
   selectedDepartmentCode.value = departmentCode;
+  subIdx.value = 0;
   router.push({
     name: 'hr-management-department-info',
     query: { departmentCode },

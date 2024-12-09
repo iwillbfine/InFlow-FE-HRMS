@@ -9,6 +9,18 @@
     >
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        @click="handleSearch"
+      >
+        조회
+      </ButtonItem>
     </FlexItem>
     <FlexItem class="article-content-container" fld="row" h="20rem">
       <FlexItem
@@ -70,7 +82,8 @@ import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { ref, watch, onMounted } from 'vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import { ref, onMounted } from 'vue';
 import {
   findFeedbacks,
   findFinalGrade,
@@ -85,8 +98,6 @@ const finalGrade = ref('-');
 const taskList = ref([]);
 const taskTypes = ref([]);
 const evaluationId = ref(null);
-
-// 리더평가용 과제 함수
 
 // 피드백 조회 함수
 const fetchFeedback = async () => {
@@ -108,7 +119,7 @@ const fetchFeedback = async () => {
   }
 };
 
-// 평가 반기별 최종 평가 등급 조회 함수 수정
+// 평가 반기별 최종 평가 등급 조회 함수
 const fetchFinalGrade = async () => {
   try {
     if (selectedYear.value && selectedHalf.value) {
@@ -121,8 +132,8 @@ const fetchFinalGrade = async () => {
 
       if (response.success && response.content) {
         finalGrade.value = response.content.fin_grade;
-        evaluationId.value = response.content.evaluation_id; // 평가 ID 저장
-        await fetchTaskList(); // 평가 ID를 받아온 후 과제 리스트 조회
+        evaluationId.value = response.content.evaluation_id;
+        await fetchTaskList();
       } else {
         finalGrade.value = 'N/A';
         taskList.value = [];
@@ -148,7 +159,7 @@ const fetchTaskTypes = async () => {
   }
 };
 
-// 과제 리스트 조회 함수 추가
+// 과제 리스트 조회 함수
 const fetchTaskList = async () => {
   try {
     if (!evaluationId.value) return;
@@ -173,12 +184,15 @@ const getTaskTypeName = (typeId) => {
   return foundType ? foundType.task_type_name : '-';
 };
 
-watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
-  if (newYear && newHalf) {
-    fetchFeedback();
-    fetchFinalGrade();
+// 조회 버튼 클릭 핸들러 추가
+const handleSearch = async () => {
+  if (!selectedYear.value || !selectedHalf.value) {
+    alert('연도와 반기를 모두 선택해주세요.');
+    return;
   }
-});
+  await fetchFeedback();
+  await fetchFinalGrade();
+};
 
 const handleYearSelected = (year) => {
   selectedYear.value = year;

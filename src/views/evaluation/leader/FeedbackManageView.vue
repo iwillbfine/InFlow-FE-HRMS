@@ -2,15 +2,27 @@
   <SectionItem class="feedback-section" w="calc(100% - 36rem)">
     <CommonArticle label="부서원 평가">
       <FlexItem
-        class="year-half-section"
-        fld="row"
+      class="year-half-section"
+      fld="row"
+      fs="1.6rem"
+      fw="500"
+      c="#003566"
+    >
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
         fs="1.6rem"
-        fw="500"
-        c="#003566"
+        @click="handleSearch"
       >
-        <YearDropDown @valid-date-selected="handleYearSelected" />
-        <HalfDropdown @half-selected="handleHalfSelected" />
-      </FlexItem>
+        조회
+      </ButtonItem>
+    </FlexItem>
       <FlexItem
         class="profile"
         fld="row"
@@ -70,7 +82,7 @@
           @click="openTaskEvalModal(task)"
         >
           <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-          <TableCell class="mid" fs="1.6rem">{{ task.task_type_id }}</TableCell>
+          <TableCell class="mid" fs="1.6rem"> {{ getTaskTypeName(task.task_type_id) }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ task.task_name }}</TableCell>
           <TableCell class="mid" fs="1.6rem">{{ task.task_content }}</TableCell>
         </TableRow>
@@ -113,9 +125,9 @@
         {{ isLoading ? '처리중...' : buttonText }}
       </ButtonItem>
     </CommonArticle>
-    <SearchEmployeeComponent
+    <SearchDepartmentMembersByDepartmentCodeComponent
       @employee-selected="handleSelected"
-    ></SearchEmployeeComponent>
+    ></SearchDepartmentMembersByDepartmentCodeComponent>
   </SectionItem>
 
   <TaskEvalCreateAndUpdateModal
@@ -130,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed, onMounted  } from 'vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import FigureItem from '@/components/semantic/FigureItem.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
@@ -139,7 +151,7 @@ import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
-import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import SearchDepartmentMembersByDepartmentCodeComponent from '@/components/common/SearchDepartmentMembersByDepartmentCodeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalCreateAndUpdateModal from './TaskEvalCreateAndUpdateModal.vue';
@@ -149,8 +161,9 @@ import {
   findFeedbacks,
   updateFeedback,
   getIndividualTaskItems,
+  getAllTaskTypes
 } from '@/api/evaluation';
-import { getCommutesByEmployeeId } from '@/api/attendance';
+
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -163,6 +176,7 @@ const taskList = ref([]);
 const isTaskEvalModalOpen = ref(false);
 const selectedTask = ref(null);
 const isEditing = ref(false);
+const taskTypes = ref([]);
 
 // 피드백 전역 상태 관리
 const feedbackState = ref({
@@ -170,6 +184,23 @@ const feedbackState = ref({
   content: '',
   evaluationId: null,
 });
+
+// 유효성 검증
+const validateSearch = () => {
+  if (!selectedYear.value) {
+    alert('연도를 선택해주세요.');
+    return false;
+  }
+  if (!selectedHalf.value) {
+    alert('반기를 선택해주세요.');
+    return false;
+  }
+  if (!selectedEmployee.value) {
+    alert('사원을 선택해주세요.');
+    return false;
+  }
+  return true;
+};
 
 // 피드백 데이터 초기화 함수
 const initializeFeedbackData = (response) => {
@@ -199,13 +230,9 @@ const buttonText = computed(() => {
   return feedbackState.value.feedbackId ? '수정' : '등록';
 });
 
-// Event Handlers
+// 이벤트 핸들러
 const handleFeedbackClick = () => {
   isEditing.value = true;
-};
-
-const handleSelected = (employee) => {
-  selectedEmployee.value = employee;
 };
 
 const handleYearSelected = (year) => {
@@ -215,6 +242,11 @@ const handleYearSelected = (year) => {
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
+
+const handleSelected = (employee) => {
+  selectedEmployee.value = employee;
+};
+
 
 const openTaskEvalModal = (task) => {
   selectedTask.value = {
@@ -230,48 +262,47 @@ const closeTaskEvalModal = () => {
 };
 
 // 데이터 조회
-// watch 함수 내에서 피드백 조회 부분을 다음과 같이 수정해보세요
-watch([selectedEmployee, selectedYear, selectedHalf], async (newValues) => {
-  const [employeeId, year, half] = newValues;
+const handleSearch = async () => {
+  if (!validateSearch()) return;
 
-  if (employeeId && year && half) {
-    try {
-      isLoading.value = true;
+  try {
+    isLoading.value = true;
 
-      // 평가 정보 조회
-      const evaluationResponse = await findFinalGrade(
-        employeeId.department_member_id,
-        year,
-        half
-      );
-      currentEvaluationId.value = evaluationResponse?.content?.evaluation_id;
+    // 평가 정보 조회
+    const evaluationResponse = await findFinalGrade(
+      selectedEmployee.value.department_member_id,
+      selectedYear.value,
+      selectedHalf.value
+    );
+    currentEvaluationId.value = evaluationResponse?.content?.evaluation_id;
 
-      // 과제 목록 조회
-      const tasksResponse = await getIndividualTaskItems(
-        employeeId.department_member_id,
-        year,
-        half
-      );
-      taskList.value = tasksResponse.content || [];
+    // 과제 목록 조회
+    const tasksResponse = await getIndividualTaskItems(
+      selectedEmployee.value.department_member_id,
+      selectedYear.value,
+      selectedHalf.value
+    );
+    taskList.value = tasksResponse.content || [];
 
-      // 피드백 조회 및 디버깅 로그 추가
-      const feedbackResponse = await findFeedbacks(
-        employeeId.department_member_id,
-        year,
-        half
-      );
+    // 피드백 조회
+    const feedbackResponse = await findFeedbacks(
+      selectedEmployee.value.department_member_id,
+      selectedYear.value,
+      selectedHalf.value
+    );
 
-      initializeFeedbackData(feedbackResponse);
+    initializeFeedbackData(feedbackResponse);
+    feedbackContent.value = feedbackState.value.content;
 
-      feedbackContent.value = feedbackState.value.content;
-    } catch (error) {
-      console.error('데이터 조회 중 에러:', error);
-      alert('데이터 조회 중 오류가 발생했습니다.');
-    } finally {
-      isLoading.value = false;
-    }
+  } catch (error) {
+    console.error('데이터 조회 중 에러:', error);
+    alert('데이터 조회 중 오류가 발생했습니다.');
+  } finally {
+    isLoading.value = false;
   }
-});
+};
+
+
 const fetchTaskList = async () => {
   if (
     !selectedEmployee.value?.department_member_id ||
@@ -291,6 +322,22 @@ const fetchTaskList = async () => {
     console.error('과제 목록 조회 중 에러:', error);
     alert('과제 목록 조회 중 오류가 발생했습니다.');
   }
+};
+
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if(response.success) {
+      taskTypes.value = response.content;
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 중 에러:', error);
+  }
+};
+
+const getTaskTypeName = (typeId) => {
+  const taskType = taskTypes.value.find(type => type.task_type_id === typeId);
+  return taskType ? taskType.task_type_name : typeId; 
 };
 
 // 피드백 등록/수정 처리
@@ -344,6 +391,10 @@ const handleOnclick = async () => {
     isLoading.value = false;
   }
 };
+
+onMounted(async () => {
+  await fetchTaskTypes();
+});
 </script>
 
 <style scoped>
@@ -409,9 +460,14 @@ const handleOnclick = async () => {
   border-radius: 0.4rem;
   resize: none;
   font-size: 1.4rem;
-  text-align: left; /* 실제 입력 텍스트는 왼쪽 정렬 유지 */
+  text-align: left;
+  background-color: #F8F8F8;
+  transition: background-color 0.2s ease;
 }
 
+.feedback-input:focus {
+  background-color: #FFF;
+}
 .submit-btn {
   margin-top: 3.2rem;
   align-self: center;

@@ -2,15 +2,27 @@
   <SectionItem class="assign-section" w="calc(100% - 36rem)">
     <CommonArticle label="부서원 과제 할당">
       <FlexItem
-        class="year-half-section"
-        fld="row"
+      class="year-half-section"
+      fld="row"
+      fs="1.6rem"
+      fw="500"
+      c="#003566"
+    >
+      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
         fs="1.6rem"
-        fw="500"
-        c="#003566"
+        @click="handleSearch"
       >
-        <YearDropDown @valid-date-selected="handleYearSelected" />
-        <HalfDropdown @half-selected="handleHalfSelected" />
-      </FlexItem>
+        조회
+      </ButtonItem>
+    </FlexItem>
       <FlexItem
         class="profile"
         fld="row"
@@ -87,7 +99,7 @@
         </TableRow>
       </TableItem>
     </CommonArticle>
-    <SearchEmployeeComponent @employee-selected="handleSelected" />
+    <SearchDepartmentMembersByDepartmentCodeComponent @employee-selected="handleSelected" />
 
     <ButtonItem
       class="submit-btn"
@@ -106,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
@@ -116,9 +128,10 @@ import TableCell from '@/components/semantic/TableCell.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import FigureItem from '@/components/semantic/FigureItem.vue';
 import SearchEmployeeComponent from '@/components/common/SearchEmployeeComponent.vue';
+import SearchDepartmentMembersByDepartmentCodeComponent from '@/components/common/SearchDepartmentMembersByDepartmentCodeComponent.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
-import { findDepartmentTaskItems, createTaskItem } from '@/api/evaluation';
+import { findDepartmentTaskItems, createTaskItem, getAllTaskTypes } from '@/api/evaluation';
 
 // 상태 관리
 const selectedEmployee = ref(null);
@@ -127,16 +140,27 @@ const selectedHalf = ref(null);
 const isLoading = ref(false);
 const taskItems = ref([]);
 const selectedTasks = ref([]);
+const errorMessage = ref('');
 
 // 과제 유형 매핑
-const taskTypes = {
-  1: '개인 과제',
-  2: '팀 과제',
-  3: '부서 과제',
-};
+const taskTypes = ref([]);
 
 const getTaskTypeName = (typeId) => {
-  return taskTypes[typeId] || '기타';
+  const taskType = taskTypes.value.find(type => type.task_type_id === typeId);
+  return taskType ? taskType.task_type_name : '기타';
+};
+
+// 검색 조건 검증
+const validateSearch = () => {
+  if (!selectedYear.value) {
+    alert('연도를 선택해주세요.');
+    return false;
+  }
+  if (!selectedHalf.value) {
+    alert('반기를 선택해주세요.');
+    return false;
+  }
+  return true;
 };
 
 // 과제 선택 토글
@@ -162,7 +186,7 @@ const handleAssignTasks = async () => {
         const createTaskItemRequestDTO = {
           taskName: task.task_name,
           taskContent: task.task_content,
-          employeeId: Number(selectedEmployee.value.department_member_id), // department_member_id를 사용
+          employeeId: Number(selectedEmployee.value.department_member_id),
         };
 
         await createTaskItem(
@@ -174,12 +198,23 @@ const handleAssignTasks = async () => {
       }
     }
 
-    selectedTasks.value = [];
+    alert(`${selectedEmployee.value.employee_name} 사원에게 해당 과제를 할당하였습니다.`); 
     await fetchTaskItems();
   } catch (error) {
     console.error('과제 할당 실패:', error);
   } finally {
     isLoading.value = false;
+  }
+};
+
+const fetchTaskTypes = async () => {
+  try {
+    const response = await getAllTaskTypes();
+    if (response.success) {
+      taskTypes.value = response.content;
+    }
+  } catch (error) {
+    console.error('과제 유형 조회 중 에러:', error);
   }
 };
 
@@ -215,31 +250,31 @@ const fetchTaskItems = async () => {
   }
 };
 
+// 조회 버튼 핸들러 추가
+const handleSearch = async () => {
+  if (!validateSearch()) return;
+  await fetchTaskItems();
+};
+
 const handleSelected = (employee) => {
   selectedEmployee.value = employee;
 };
 
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  if (selectedHalf.value) fetchTaskItems();
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  if (selectedYear.value) fetchTaskItems();
 };
 
-// 년도나 반기가 변경될 때 과제 목록 조회
-watch([selectedYear, selectedHalf], () => {
-  if (selectedYear.value && selectedHalf.value) {
-    fetchTaskItems();
-  }
+onMounted(async () => {
+  await fetchTaskTypes();
 });
 </script>
 
 <style scoped>
 /* 기존 스타일 유지 */
-
 .checkbox-cell {
   display: flex;
   justify-content: center;
@@ -270,7 +305,6 @@ watch([selectedYear, selectedHalf], () => {
   font-size: 14px;
 }
 
-/* 나머지 기존 스타일 유지 */
 .emphasize {
   font-size: 2.2rem;
   font-weight: 500;

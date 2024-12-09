@@ -1,177 +1,167 @@
 <template>
-  <CrudModal :h="'70rem'" :w="'92rem'" @close="handleClose">
-    <h2 class="modal-title">
-      평가 정책 {{ isEditing ? '수정' : '상세 정보' }}
-    </h2>
-
-    <div class="modal-content">
-      <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
-        <TableRow>
-          <TableCell th fs="1.6rem">과제유형</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <DropdownItem
-                placeholder="선택"
-                :list="taskTypes"
-                :initialSelected="policyDetails.task_type_id"
-                w="34%"
-                @update:selectedItem="handleTypeSelection"
-                class="typeDropdown task-input"
-              />
-            </template>
-            <template v-else>
-              {{ getTaskTypeName(policyDetails.task_type_id) }}
-            </template>
-          </TableCell>
-          <TableCell th fs="1.6rem">상대평가기준 사원 수</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <input
-                type="number"
-                class="edit-input"
-                v-model="editForm.min_rel_eval_count"
-                min="0"
-              />
-            </template>
-            <template v-else>
-              {{ policyDetails.min_rel_eval_count }}명
-            </template>
-          </TableCell>
-        </TableRow>
-
-        <TableRow>
-          <TableCell th fs="1.6rem">평가 시작일</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <DateDropDown
-                :initialDate="formatDate(policyDetails.start_date)"
-                @valid-date-selected="
-                  (date) => handleDateUpdate('start_date', date)
-                "
-              />
-            </template>
-            <template v-else>
-              {{ formatDate(policyDetails.start_date) }}
-            </template>
-          </TableCell>
-          <TableCell th fs="1.6rem">평가 종료일</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <DateDropDown
-                :initialDate="formatDate(policyDetails.end_date)"
-                @valid-date-selected="
-                  (date) => handleDateUpdate('end_date', date)
-                "
-              />
-            </template>
-            <template v-else>
-              {{ formatDate(policyDetails.end_date) }}
-            </template>
-          </TableCell>
-        </TableRow>
-
-        <TableRow>
-          <TableCell th fs="1.6rem">정책 수정 가능 시기</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <YearMonthDropDown
-                :initialDate="formatDate(policyDetails.modifiable_date)"
-                @valid-date-selected="
-                  (date) => handleDateUpdate('modifiable_date', date)
-                "
-              />
-            </template>
-            <template v-else>
-              {{ formatDate(policyDetails.modifiable_date) }}
-            </template>
-          </TableCell>
-          <TableCell th fs="1.6rem">적용 시기</TableCell>
-          <TableCell fs="1.6rem">
-            <template v-if="isEditing">
-              <FlexItem class="year-half-section" fld="row">
-                <YearDropDown
-                  :initialYear="policyDetails.year"
-                  @valid-date-selected="handleYearUpdate"
+    <CrudModal :h="'70rem'" :w="'92rem'" @close="handleClose">
+      <h2 class="modal-title">평가 정책 {{ isEditing ? '수정' : '상세 정보' }}</h2>
+      
+      <div class="modal-content">
+        <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
+          <TableRow>
+            <TableCell th fs="1.6rem">과제유형</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <DropdownItem
+                  placeholder="선택"
+                  :list="taskTypes"
+                  :initialSelected="policyDetails.task_type_id"
+                  w="34%"
+                  @update:selectedItem="handleTypeSelection"
+                  class="typeDropdown task-input"
                 />
-                <HalfDropdown
-                  :initialHalf="policyDetails.half"
-                  @half-selected="handleHalfUpdate"
+              </template>
+              <template v-else>
+                {{ getTaskTypeName(policyDetails.task_type_id) }}
+              </template>
+            </TableCell>
+            <TableCell th fs="1.6rem">상대평가기준 사원 수</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <input 
+                  type="number"
+                  class="edit-input"
+                  v-model="editForm.min_rel_eval_count"
+                  min="0"
                 />
-              </FlexItem>
-            </template>
-            <template v-else>
-              {{ policyDetails.year }}년 {{ policyDetails.half }}반기
-            </template>
-          </TableCell>
-        </TableRow>
-
-        <TableRow>
-          <TableCell th fs="1.6rem">유형별 적용 비율</TableCell>
-          <TableCell fs="1.6rem" gc="span 3">
-            <template v-if="isEditing">
-              <input
-                type="number"
-                class="edit-input"
-                v-model="editForm.task_ratio"
-                min="0"
-                max="1"
-                step="0.1"
-              />
-            </template>
-            <template v-else>
-              {{ (policyDetails.task_ratio * 100).toFixed(1) }}%
-            </template>
-          </TableCell>
-        </TableRow>
-
-        <TableRow>
-          <TableCell th fs="1.6rem">정책설명</TableCell>
-          <TableCell gc="span 3">
-            <template v-if="isEditing">
-              <textarea
-                class="policy-description edit-textarea"
-                v-model="editForm.policy_description"
-              ></textarea>
-            </template>
-            <template v-else>
-              <div class="policy-description">
-                {{ policyDetails.policy_description }}
-              </div>
-            </template>
-          </TableCell>
-        </TableRow>
-      </TableItem>
-    </div>
-
-    <div class="button-container">
-      <ButtonItem
-        h="3.6rem"
-        w="7.2rem"
-        bgc="#003566"
-        br="0.6rem"
-        c="#fff"
-        fs="1.6rem"
-        @click="handleEditToggle"
-      >
-        {{ isEditing ? '취소' : '수정하기' }}
-      </ButtonItem>
-
-      <ButtonItem
-        v-if="isEditing"
-        h="3.6rem"
-        w="7.2rem"
-        bgc="#003566"
-        br="0.6rem"
-        c="#fff"
-        fs="1.6rem"
-        @click="handleUpdate"
-        :disabled="!isFormValid"
-      >
-        저장
-      </ButtonItem>
-    </div>
-  </CrudModal>
-</template>
+              </template>
+              <template v-else>
+                {{ policyDetails.min_rel_eval_count }}명
+              </template>
+            </TableCell>
+          </TableRow>
+  
+          <TableRow>
+            <TableCell th fs="1.6rem">평가 시작일</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <DateDropDown 
+                  :initialDate="formatDate(policyDetails.start_date)"
+                  @valid-date-selected="date => handleDateUpdate('start_date', date)"
+                />
+              </template>
+              <template v-else>
+                {{ formatDate(policyDetails.start_date) }}
+              </template>
+            </TableCell>
+            <TableCell th fs="1.6rem">평가 종료일</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <DateDropDown 
+                  :initialDate="formatDate(policyDetails.end_date)"
+                  @valid-date-selected="date => handleDateUpdate('end_date', date)"
+                />
+              </template>
+              <template v-else>
+                {{ formatDate(policyDetails.end_date) }}
+              </template>
+            </TableCell>
+          </TableRow>
+  
+          <TableRow>
+            <TableCell th fs="1.6rem">정책 수정 가능 시기</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <YearMonthDropDown 
+                  :initialDate="formatDate(policyDetails.modifiable_date)"
+                  @valid-date-selected="date => handleDateUpdate('modifiable_date', date)"
+                />
+              </template>
+              <template v-else>
+                {{ formatDate(policyDetails.modifiable_date) }}
+              </template>
+            </TableCell>
+            <TableCell th fs="1.6rem">적용 시기</TableCell>
+            <TableCell fs="1.6rem">
+              <template v-if="isEditing">
+                <FlexItem class="year-half-section" fld="row">
+                  <YearDropDown 
+                    :initialYear="policyDetails.year"
+                    @valid-date-selected="handleYearUpdate" 
+                  />
+                  <HalfDropdown 
+                    :initialHalf="policyDetails.half"
+                    @half-selected="handleHalfUpdate" 
+                  />
+                </FlexItem>
+              </template>
+              <template v-else>
+                {{ policyDetails.year }}년 {{ policyDetails.half }}반기
+              </template>
+            </TableCell>
+          </TableRow>
+  
+          <TableRow>
+            <TableCell th fs="1.6rem">유형별 적용 비율</TableCell>
+            <TableCell fs="1.6rem" gc="span 3">
+              <template v-if="isEditing">
+                <input 
+                  type="number"
+                  class="edit-input"
+                  v-model="editForm.task_ratio"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                />
+              </template>
+              <template v-else>
+                {{ (policyDetails.task_ratio * 100).toFixed(1) }}%
+              </template>
+            </TableCell>
+          </TableRow>
+  
+          <TableRow>
+            <TableCell th fs="1.6rem">정책설명</TableCell>
+            <TableCell gc="span 3">
+              <template v-if="isEditing">
+                <textarea 
+                  class="policy-description edit-textarea"
+                  v-model="editForm.policy_description"
+                ></textarea>
+              </template>
+              <template v-else>
+                <div class="policy-description">{{ policyDetails.policy_description }}</div>
+              </template>
+            </TableCell>
+          </TableRow>
+        </TableItem>
+      </div>
+  
+      <div class="button-container">
+        <ButtonItem
+          h="3.6rem"
+          w="7.2rem"
+          bgc="#003566"
+          br="0.6rem"
+          c="#fff"
+          fs="1.6rem"
+          @click="handleEditToggle"
+        >
+          {{ isEditing ? '취소' : '수정하기' }}
+        </ButtonItem>
+  
+        <ButtonItem
+          v-if="isEditing"
+          h="3.6rem"
+          w="7.2rem"
+          bgc="#003566"
+          br="0.6rem"
+          c="#fff"
+          fs="1.6rem"
+          @click="handleUpdate"
+          :disabled="!isFormValid"
+        >
+          저장
+        </ButtonItem>
+      </div>
+    </CrudModal>
+  </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';

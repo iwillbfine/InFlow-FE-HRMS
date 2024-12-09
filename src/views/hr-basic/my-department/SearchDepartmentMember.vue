@@ -42,7 +42,9 @@
         placeholder="사원명으로 검색"
         id="search-employee-name"
       />
-      <button @click="filterMembers">검색</button>
+      <button @click="filterMembers">
+        <img style="height: 90%;" src="@/assets/icons/search_icon.svg"/>
+      </button>
     </div>
     <div style="width: 100%">
       <div
@@ -236,7 +238,7 @@ watch(attendanceStats, (newStats) => {
 }
 
 .name {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 500;
 }
 .employee-number {
@@ -248,7 +250,7 @@ watch(attendanceStats, (newStats) => {
 }
 
 .attendance-status {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 

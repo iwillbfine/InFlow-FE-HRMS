@@ -134,6 +134,18 @@
     >
       <YearDropDown @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
+      <ButtonItem
+        class="search-btn"
+        h="3.6rem"
+        w="7.2rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        fs="1.6rem"
+        @click="handleSearch"
+      >
+        조회
+      </ButtonItem>
     </FlexItem>
 
     <TableItem gtc="0.125fr 0.25fr 0.25fr 0.2fr 0.2fr">
@@ -197,7 +209,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
@@ -241,12 +253,6 @@ const registrationHalf = ref(null);
 // 모달 조회를 위한 상태
 const showPolicyModal = ref(false);
 const selectedPolicyId = ref(null);
-
-watch([selectedYear, selectedHalf], ([newYear, newHalf]) => {
-  if (newYear && newHalf) {
-    fetchPolicies();
-  }
-});
 
 // 과제 유형 목록 조회
 const fetchTaskTypes = async () => {
@@ -320,12 +326,19 @@ const handlePolicyEditDateSelected = (date) => {
 // 목록 조회용 Year/Half 핸들러
 const handleYearSelected = (year) => {
   selectedYear.value = year;
-  fetchPolicies();
 };
 
 const handleHalfSelected = (half) => {
   selectedHalf.value = half;
-  fetchPolicies();
+};
+
+// 조회 버튼 핸들러
+const handleSearch = async () => {
+  if (!selectedYear.value || !selectedHalf.value) {
+    alert('연도와 반기를 모두 선택해주세요.');
+    return;
+  }
+  await fetchPolicies();
 };
 
 // 등록용 Year/Half 핸들러
@@ -418,7 +431,6 @@ const resetForm = () => {
 onMounted(() => {
   policyRegisterId.value = Number(localStorage.getItem('employeeId'));
   fetchTaskTypes();
-  fetchPolicies();
 });
 </script>
 
@@ -542,4 +554,6 @@ hr {
   margin-top: 3.2rem;
   padding: 1rem 0;
 }
+
+
 </style>
