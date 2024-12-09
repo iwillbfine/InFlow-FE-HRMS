@@ -61,7 +61,7 @@
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell class="h-7" th fs="1.6rem" botl>상워 부서명</TableCell>
+        <TableCell class="h-7" th fs="1.6rem" botl>상위 부서명</TableCell>
         <TableCell class="h-7 pl-2" fs="1.6rem" botr>
           <div v-if="isEditMode">
             <select
