@@ -49,6 +49,15 @@
             ></CopyButton>
           </FlexItem>
           <span v-html="parseMarkdown(item.message)"></span>
+          <!-- 키워드에 따른 라우팅 버튼 -->
+          <div v-if="item.type === 'bot' && keywordLabel" class="keyword-navigation">
+            <button
+              @click="navigateToKeyword"
+              class="keyword-button"
+            >
+              {{ keywordLabel }}
+            </button>
+          </div>
         </li>
       </UlItem>
       <div class="chat-container" :class="{ 'chat-bottom': !isInit }">
@@ -86,8 +95,8 @@ import ArrowUpButton from '@/components/buttons/ArrowUpButton.vue';
 import CopyButton from '@/components/buttons/CopyButton.vue';
 import CheckButton from '@/components/buttons/CheckButton.vue';
 import RobotIcon from '@/components/icons/RobotIcon.vue';
-import { ref, onMounted, nextTick } from 'vue';
-import { chatbotQuery } from '@/api/chatbot';
+import { ref, onMounted, nextTick, computed  } from 'vue';
+
 import { marked } from 'marked';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism.css';
@@ -96,6 +105,12 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-c';
 import 'prismjs/components/prism-cpp';
+
+import { chatbotQuery, getChatbotSessions, getSessionHistory } from '@/api/chatbot'; // 추가된 import
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const eid = ref(null);
 const sessionId = ref('');
@@ -107,16 +122,7 @@ const isCopied = ref(false);
 
 const chatList = ref([]);
 
-const adjustHeight = () => {
-  if (!textarea.value) return;
-
-  const el = textarea.value; // 실제 DOM 요소 참조
-
-  el.style.height = 'auto';
-
-  const newHeight = el.scrollHeight;
-  el.style.height = `${newHeight}px`;
-};
+const selectedKeyword =ref([]);
 
 const fetchAnswer = async (eid, sessionId, query) => {
   const formData = {
@@ -128,10 +134,27 @@ const fetchAnswer = async (eid, sessionId, query) => {
   try {
     const response = await chatbotQuery(formData);
 
-    chatList.value.push({
-      type: 'bot',
-      message: `${response.answer}`,
-    });
+    console.log('챗봇 응답:', response);
+
+    if (response && response.content) {
+      // 응답 메시지 추가
+      chatList.value.push({
+        type: 'bot',
+        message: response.content.answer,
+      });
+
+      // 선택된 키워드가 있다면 로그 출력 (추가 활용 가능)
+      if (response.content.selected_keyword) {
+        selectedKeyword.value = response.content.selected_keyword;
+        console.log('선택된 키워드:',  selectedKeyword.value);
+      }
+    } else {
+      // 응답 데이터가 비어있을 경우 기본 메시지 추가
+      chatList.value.push({
+        type: 'bot',
+        message: '챗봇에서 유효한 응답을 받지 못했습니다. 다시 시도해주세요.',
+      });
+    }
 
     // 응답 후 스크롤을 최하단으로 이동
     nextTick(() => {
@@ -140,9 +163,109 @@ const fetchAnswer = async (eid, sessionId, query) => {
       }, 50); // 50ms 지연 후 스크롤 이동
     });
   } catch (error) {
-    console.error(error);
+    console.error('챗봇 응답 처리 중 오류:', error);
+
+    // 에러 메시지 추가
+    chatList.value.push({
+      type: 'bot',
+      message: '오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+    });
   }
 };
+
+
+// 챗봇 세션 목록 가져오기
+const fetchChatbotSessions = async () => {
+  try {
+    const sessions = await getChatbotSessions(eid.value);
+    console.log('챗봇 세션 목록:', sessions);
+    // 세션 데이터를 활용한 추가 로직 작성
+  } catch (error) {
+    console.error('챗봇 세션 목록 조회 실패:', error);
+  }
+};
+
+// 특정 세션의 대화 이력 가져오기
+const fetchSessionHistory = async (sessionId) => {
+  try {
+    const history = await getSessionHistory(sessionId);
+    console.log('대화 이력:', history);
+    // 대화 이력을 활용한 추가 로직 작성
+  } catch (error) {
+    console.error('대화 이력 조회 실패:', error);
+  }
+};
+
+// 키워드와 경로 매핑
+const keywordRoutes = {
+  commute: '/hr-basic/attendance/commute',
+  remote: '/hr-basic/attendance/remote',
+  overtime: '/hr-basic/attendance/overtime',
+  vacation: '/hr-basic/attendance/vacation',
+  leave: '/hr-basic/attendance/leave',
+  return: '/hr-basic/attendance/return',
+  business: '/hr-basic/attendance/business-trip',
+  dispatch: '/hr-basic/attendance/dispatch',
+  salary: '/hr-basic/salary',
+  contract: '/hr-basic/document/contract',
+  certificate: '/hr-basic/document/certificate',
+  department: '/hr-basic/my-department/info/careers',
+  evaluation: '/evaluation/leader',
+};
+
+// 영어 키워드 매핑 (반대로 변경)
+const keywordDict = {
+  commute: '근퇴',
+  remote: '재택',
+  overtime: '초과근무',
+  vacation: '휴가',
+  leave: '휴직',
+  return: '복직',
+  business: '출장',
+  dispatch: '파견',
+  salary: '급여',
+  contract: '계약',
+  certificate: '증명',
+  department: '부서',
+  evaluation: '평가',
+};
+
+
+// 버튼 라벨
+const keywordLabel = computed(() => {
+  const matchedKeyword = keywordDict[selectedKeyword.value];
+  return matchedKeyword
+    ? `${matchedKeyword}로 이동하기`
+    : '알 수 없는 키워드';
+});
+
+// 라우팅 함수
+const navigateToKeyword = () => {
+
+  if (selectedKeyword.value) {
+    const route = keywordRoutes[selectedKeyword.value];
+    if (route) {
+      router.push(route);
+    } else {
+      console.error('적절한 경로가 없습니다.');
+    }
+  } else {
+    console.error('선택된 키워드가 매핑되지 않았습니다.');
+  }
+};
+
+const adjustHeight = () => {
+  if (!textarea.value) return;
+
+  const el = textarea.value;
+
+  el.style.height = 'auto';
+
+  const newHeight = el.scrollHeight;
+  el.style.height = `${newHeight}px`;
+};
+
+
 
 const generateSessionId = () => {
   const array = new Uint8Array(24); // 24바이트 랜덤값
@@ -254,6 +377,13 @@ onMounted(() => {
   }
   employeeName.value = localStorage.getItem('employeeName');
   sessionId.value = generateSessionId();
+
+  // 챗봇 세션 목록 가져오기
+  fetchChatbotSessions();
+
+  // 특정 세션의 대화 이력 가져오기 (예: 초기 로딩 시 특정 세션 ID로 가져오기)
+  fetchSessionHistory(sessionId.value);
+
 });
 </script>
 
@@ -347,6 +477,34 @@ onMounted(() => {
   max-height: 16rem; /* 최대 높이 */
 }
 
+
+/* 키워드 네비게이션 버튼 */
+.keyword-navigation {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.keyword-button {
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 1.2rem;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.keyword-button:hover {
+  background-color: #0056b3;
+}
+
+.keyword-button:active {
+  background-color: #003d80;
+}
+/* 키워드 네비게이션 버튼 끝 */
+
 .submit-btn {
   align-self: flex-end;
 }
@@ -356,4 +514,9 @@ onMounted(() => {
   align-items: center;
   padding-bottom: 1rem;
 }
+
+
+
+
+
 </style>
