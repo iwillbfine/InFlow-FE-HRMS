@@ -1,7 +1,13 @@
 <template>
   <CommonArticle label="개인과제 등록" w="90%">
     <div class="date-selector mb-8">
-      <FlexItem class="year-half-section" fld="row" fs="1.6rem" fw="500" c="#003566">
+      <FlexItem
+        class="year-half-section"
+        fld="row"
+        fs="1.6rem"
+        fw="500"
+        c="#003566"
+      >
         <YearDropDown @valid-date-selected="handleYearSelected" />
         <HalfDropdown @half-selected="handleHalfSelected" />
       </FlexItem>
@@ -23,10 +29,20 @@
           />
         </TableCell>
         <TableCell>
-          <input type="text" v-model="taskName" class="task-input" placeholder="과제명을 입력하세요" />
+          <input
+            type="text"
+            v-model="taskName"
+            class="task-input"
+            placeholder="과제명을 입력하세요"
+          />
         </TableCell>
         <TableCell>
-          <input type="text" v-model="taskContent" class="task-input" placeholder="계획 목표를 입력하세요" />
+          <input
+            type="text"
+            v-model="taskContent"
+            class="task-input"
+            placeholder="계획 목표를 입력하세요"
+          />
         </TableCell>
       </TableRow>
     </TableItem>
@@ -55,13 +71,27 @@
         <TableCell th fs="1.6rem">과제명</TableCell>
         <TableCell th fs="1.6rem">계획 목표</TableCell>
       </TableRow>
-      <TableRow v-for="(task, index) in taskList" :key="task.task_item_id" class="task-row">
+      <TableRow
+        v-for="(task, index) in taskList"
+        :key="task.task_item_id"
+        class="task-row"
+      >
         <TableCell class="mid" fs="1.6rem">{{ index + 1 }}</TableCell>
-        <TableCell class="mid" fs="1.6rem">{{ getTaskTypeName(task.task_type_id) }}</TableCell>
-        <TableCell class="mid clickable" fs="1.6rem" @click="handleTaskClick(task)">
+        <TableCell class="mid" fs="1.6rem">{{
+          getTaskTypeName(task.task_type_id)
+        }}</TableCell>
+        <TableCell
+          class="mid clickable"
+          fs="1.6rem"
+          @click="handleTaskClick(task)"
+        >
           {{ task.task_name }}
         </TableCell>
-        <TableCell class="mid clickable" fs="1.6rem" @click="handleTaskClick(task)">
+        <TableCell
+          class="mid clickable"
+          fs="1.6rem"
+          @click="handleTaskClick(task)"
+        >
           {{ task.task_content }}
         </TableCell>
       </TableRow>
@@ -105,9 +135,7 @@ import { createTaskItem, findAllTaskItemsByEmpId } from '@/api/evaluation';
 
 // 상태 관리
 const taskList = ref([]);
-const taskTypes = ref([
-  { id: 2, name: '개인 과제' }
-]);
+const taskTypes = ref([{ id: 2, name: '개인 과제' }]);
 const taskName = ref('');
 const taskContent = ref('');
 const selectedYear = ref(null);
@@ -120,15 +148,14 @@ const emit = defineEmits(['yearSelected', 'halfSelected']);
 
 const props = defineProps({
   selectedYear: {
-    type: [Number, String], 
-    default: new Date().getFullYear()
+    type: [Number, String],
+    default: new Date().getFullYear(),
   },
   selectedHalf: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
-
 
 // 핸들러 함수들
 const handleYearSelected = (year) => {
@@ -142,8 +169,6 @@ const handleHalfSelected = (half) => {
 
 const handleTypeSelection = (typeId) => {
   selectedType.value = typeId;
-  console.log('handleTypeSelection에서 선택된 타입:', typeId);
-  console.log('handleTypeSelection 후 selectedType 값:', selectedType.value);
 };
 
 const handleTaskClick = (task) => {
@@ -171,21 +196,23 @@ watch(
 
 // 과제 유형 이름 가져오기
 const getTaskTypeName = (typeId) => {
-  const foundType = taskTypes.value.find((type) => type.task_type_id === typeId);
+  const foundType = taskTypes.value.find(
+    (type) => type.task_type_id === typeId
+  );
   return foundType ? foundType.task_type_name : '-';
 };
 
 // 과제 목록 조회
 const fetchTaskList = async () => {
   if (!selectedYear.value || !selectedHalf.value) return;
-  
+
   try {
     const response = await findAllTaskItemsByEmpId(
       employeeId.value,
       selectedYear.value,
       selectedHalf.value
     );
-    
+
     if (response.success) {
       taskList.value = response.content || [];
     } else {
@@ -199,7 +226,13 @@ const fetchTaskList = async () => {
 
 // 과제 등록
 const handleSubmit = async () => {
-  if (!taskName.value || !taskContent.value || !selectedType.value || !selectedYear.value || !selectedHalf.value) {
+  if (
+    !taskName.value ||
+    !taskContent.value ||
+    !selectedType.value ||
+    !selectedYear.value ||
+    !selectedHalf.value
+  ) {
     alert('모든 항목을 입력해주세요.');
     return;
   }
@@ -207,7 +240,7 @@ const handleSubmit = async () => {
   const taskData = {
     taskName: taskName.value,
     taskContent: taskContent.value,
-    employeeId: employeeId.value
+    employeeId: employeeId.value,
   };
 
   try {
@@ -239,7 +272,7 @@ onMounted(() => {
     alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
     return;
   }
-  
+
   // 현재 년도와 상반기를 기본값으로 설정
 
   // 초기 과제 목록 로드
@@ -268,7 +301,7 @@ hr {
   align-items: center;
 }
 
-.task-input {   
+.task-input {
   width: 100%;
   border: 0px solid #ccc;
   border-radius: 0.375rem;
@@ -301,11 +334,11 @@ hr {
 }
 
 .year-half-section {
-position: absolute;
-top: 1rem;
-right: 0;
-margin-top: -1rem;
-gap: 1rem;
+  position: absolute;
+  top: 1rem;
+  right: 0;
+  margin-top: -1rem;
+  gap: 1rem;
 }
 
 .mid {
@@ -330,5 +363,4 @@ gap: 1rem;
 .common-article {
   position: relative;
 }
-
 </style>

@@ -35,13 +35,13 @@ import FlexItem from '../semantic/FlexItem.vue';
 const props = defineProps({
   h: {
     type: String,
-    default: "58rem",
+    default: '58rem',
   },
   w: {
     type: String,
-    default: "75rem",
-  }
-})
+    default: '75rem',
+  },
+});
 
 const emit = defineEmits(['close']);
 
@@ -50,7 +50,7 @@ const closeModal = () => {
 };
 
 const preventScroll = (e) => {
-  const modal = document.querySelector(".modal-background");
+  const modal = document.querySelector('.modal-background');
 
   // 모달이 존재하고, 이벤트의 타겟이 모달 내부에 있으면 스크롤 허용
   if (modal && modal.contains(e.target)) {
@@ -64,24 +64,24 @@ const preventScroll = (e) => {
 const handlePreventScrollListener = (isModalOpen) => {
   if (isModalOpen) {
     // 스크롤 차단
-    window.addEventListener("wheel", preventScroll, { passive: false }); // 마우스 휠
-    window.addEventListener("touchmove", preventScroll, { passive: false }); // 모바일 터치
-    document.body.style.overflow = "hidden"; // 추가적으로 body 스크롤 차단
+    window.addEventListener('wheel', preventScroll, { passive: false }); // 마우스 휠
+    window.addEventListener('touchmove', preventScroll, { passive: false }); // 모바일 터치
+    document.body.style.overflow = 'hidden'; // 추가적으로 body 스크롤 차단
   } else {
     // 스크롤 활성화
-    window.removeEventListener("wheel", preventScroll);
-    window.removeEventListener("touchmove", preventScroll);
-    document.body.style.overflow = ""; // body 스크롤 다시 활성화
+    window.removeEventListener('wheel', preventScroll);
+    window.removeEventListener('touchmove', preventScroll);
+    document.body.style.overflow = ''; // body 스크롤 다시 활성화
   }
 };
 
 onMounted(() => {
   handlePreventScrollListener(true);
-})
+});
 
 onBeforeUnmount(() => {
   handlePreventScrollListener(false);
-})
+});
 </script>
 
 <style scoped>

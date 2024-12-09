@@ -8,6 +8,7 @@
           name="filter"
           value="전체"
           @change="filterByStatus"
+          id="total-status"
         />
         전체
       </label>
@@ -18,6 +19,7 @@
           name="filter"
           value="근무중"
           @change="filterByStatus"
+          id="working-satatus"
         />
         근무중
       </label>
@@ -28,6 +30,7 @@
           name="filter"
           value="부재중"
           @change="filterByStatus"
+          id="absent-status"
         />
         부재중
       </label>
@@ -37,6 +40,7 @@
         v-model="searchKeyword"
         type="text"
         placeholder="사원명으로 검색"
+        id="search-employee-name"
       />
       <button @click="filterMembers">검색</button>
     </div>
@@ -187,7 +191,7 @@ const attendanceStats = computed(() => {
 
 const handleSelected = (employee) => {
   emit('employeeSelected', employee);
-}
+};
 
 // attendanceStats 변경 시 부모에게 알림
 watch(attendanceStats, (newStats) => {

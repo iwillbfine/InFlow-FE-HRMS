@@ -1,5 +1,11 @@
 <template>
-  <FlexItem class="thirty-minute-dropdown" fld="row" fs="1.6rem" fw="500" c="#003566">
+  <FlexItem
+    class="thirty-minute-dropdown"
+    fld="row"
+    fs="1.6rem"
+    fw="500"
+    c="#003566"
+  >
     <DropdownItem
       v-model:selected-item="selectedHour"
       placeholder="--"
@@ -31,8 +37,8 @@ const props = defineProps({
   afterWork: {
     type: Boolean,
     default: false,
-  }
-})
+  },
+});
 
 // 시간 파싱 함수
 const parseTime = () => {
@@ -48,22 +54,21 @@ watch([selectedHour, selectedMinute], () => {
 });
 
 const hourList = ref(
-  props.afterWork ?
-  Array.from({ length: 6 }, (_, i) => ({
-    id: `${i+18}`,
-    name: `${i+18}`,
-  }))
-  :
-  Array.from({ length: 24 }, (_, i) => ({
-    id: `${i}`,
-    name: `${i}`,
-  }))
+  props.afterWork
+    ? Array.from({ length: 6 }, (_, i) => ({
+        id: `${i + 18}`,
+        name: `${i + 18}`,
+      }))
+    : Array.from({ length: 24 }, (_, i) => ({
+        id: `${i}`,
+        name: `${i}`,
+      }))
 );
 
 const minuteList = ref(
   Array.from({ length: 2 }, (_, i) => ({
-    id: `${i*30}`,
-    name: `${i*30}`,
+    id: `${i * 30}`,
+    name: `${i * 30}`,
   }))
 );
 </script>

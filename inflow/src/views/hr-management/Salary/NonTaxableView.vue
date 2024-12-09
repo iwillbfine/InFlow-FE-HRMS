@@ -35,7 +35,8 @@
       c="#fff"
       fs="1.6rem"
       @click="handleOnclick"
-    >등록</ButtonItem>
+      >등록</ButtonItem
+    >
   </CommonArticle>
   <hr />
   <CommonArticle label="비과세 급여 항목" w="95%">
@@ -45,13 +46,14 @@
         <TableCell th fs="1.7rem">비과세 항목명</TableCell>
         <TableCell th fs="1.7rem">금액</TableCell>
       </TableRow>
-      <TableRow
-        v-for="(nonTaxable, index) in nonTaxableList"
-        :key="index"
-      >
+      <TableRow v-for="(nonTaxable, index) in nonTaxableList" :key="index">
         <TableCell class="c1" fs="1.7rem">{{ index + 1 }}</TableCell>
-        <TableCell class="name" fs="1.7rem">{{ nonTaxable.non_taxable_name }}</TableCell>
-        <TableCell class="amount" fs="1.7rem">{{ formatCurrency(nonTaxable.amount) }}</TableCell>
+        <TableCell class="name" fs="1.7rem">{{
+          nonTaxable.non_taxable_name
+        }}</TableCell>
+        <TableCell class="amount" fs="1.7rem">{{
+          formatCurrency(nonTaxable.amount)
+        }}</TableCell>
       </TableRow>
     </TableItem>
     <PaginationComponent
@@ -62,15 +64,15 @@
   </CommonArticle>
 </template>
 <script setup>
-import CommonArticle from "@/components/common/CommonArticle.vue";
-import TableItem from "@/components/semantic/TableItem.vue";
-import TableRow from "@/components/semantic/TableRow.vue";
-import TableCell from "@/components/semantic/TableCell.vue";
-import ButtonItem from "@/components/semantic/ButtonItem.vue";
-import PaginationComponent from "@/components/common/PaginationComponent.vue";
-import {useRouter} from "vue-router";
-import {onMounted, ref} from "vue";
-import {createNonTaxable, getNonTaxablePayrolls} from "@/api/payroll.js";
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import PaginationComponent from '@/components/common/PaginationComponent.vue';
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { createNonTaxable, getNonTaxablePayrolls } from '@/api/payroll.js';
 
 const router = useRouter();
 
@@ -81,18 +83,18 @@ const curPage = ref(1);
 const nonTaxableName = ref('');
 const amount = ref(null);
 
-const fetchData = async(page) => {
+const fetchData = async (page) => {
   const response = await getNonTaxablePayrolls(page);
   nonTaxableList.value = response.content.elements || [];
   pageInfo.value = response.content;
-}
+};
 
 const handlePageChange = (page) => {
   curPage.value = page;
   fetchData(curPage.value);
   router.push({
-    name: "hr-management-salary-non-taxable-payrolls",
-    query: { page: curPage.value }
+    name: 'hr-management-salary-non-taxable-payrolls',
+    query: { page: curPage.value },
   });
 };
 
@@ -115,7 +117,7 @@ const handleOnclick = async () => {
 
   const formData = {
     non_taxable_name: nonTaxableName.value,
-    amount: won
+    amount: won,
   };
 
   nonTaxableName.value = '';
@@ -129,7 +131,7 @@ const handleOnclick = async () => {
     alert('비과세 항목 등록 실패! 다시 시도해주세요.');
   }
   window.location.reload();
-}
+};
 
 const formatCurrency = (value) => `${value.toLocaleString()} 원`;
 
@@ -137,12 +139,9 @@ onMounted((page) => {
   curPage.value = page;
   fetchData(curPage.value);
 });
-
 </script>
 
-
 <style scoped>
-
 .submit-btn {
   margin-top: 3.2rem;
   align-self: center;
@@ -162,5 +161,4 @@ onMounted((page) => {
   justify-content: flex-end;
   align-items: center;
 }
-
 </style>

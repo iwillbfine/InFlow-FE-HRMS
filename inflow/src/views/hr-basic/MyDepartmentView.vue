@@ -1,5 +1,5 @@
 <template>
-  <CommonNav :cur="2"></CommonNav>
+  <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="4" :list="menuList"></CommonMenu>
@@ -19,7 +19,9 @@
         @employee-selected="getEmployeeId"
       />
     </div>
-    <DepartmentMemberInfoComponent :empId="employeeId"></DepartmentMemberInfoComponent>
+    <DepartmentMemberInfoComponent
+      :empId="employeeId"
+    ></DepartmentMemberInfoComponent>
   </MainItem>
 </template>
 
@@ -53,8 +55,7 @@ const employeeId = ref('');
 const getEmployeeId = async (data) => {
   const tmp = await getEmpByNum(data.employee_number);
   employeeId.value = String(tmp.employee_id);
-  console.log('사원 id: ' + employeeId.value);
-}
+};
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
@@ -75,17 +76,13 @@ const fetchMyDepartmentData = async () => {
     // 로컬 스토리지에서 employeeId와 accessToken 가져오기
     const employeeId = localStorage.getItem('employeeId');
     const token = localStorage.getItem('accessToken');
-    // console.log("로그인된 사원 코드: ", employeeId);
-    // console.log("토큰 정보:", token);
 
     // 로그인된 사원의 기본 정보 가져오기
     const employeeData = await apiClient.get(`/employees/id/${employeeId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    // console.log("로그인된 사원 기본 정보:", employeeData);
 
     departmentCode.value = employeeData.data.content.department_code;
-    console.log('로그인된 사원의 부서 코드:', departmentCode.value);
 
     // 부서 구성원 목록 가져오기
     const departmentMembers = await apiClient.get(
@@ -95,10 +92,7 @@ const fetchMyDepartmentData = async () => {
 
     members.value = departmentMembers.data.content;
 
-    console.log('부서 구성원:', members.value);
-
     isDataLoaded.value = true; // 데이터가 로드되었음을 표시
-    console.log('isDataLoaded값:', isDataLoaded.value);
   } catch (error) {
     console.error('데이터 로드 중 에러 발생:', error);
     alert('데이터를 불러오는 데 실패했습니다.');
@@ -107,34 +101,13 @@ const fetchMyDepartmentData = async () => {
 onMounted(fetchMyDepartmentData);
 
 onMounted(async () => {
-  console.log('초기 departmentCode:', departmentCode.value);
-  console.log('초기 members:', members.value);
-
   await fetchMyDepartmentData();
-  console.log('데이터 로드 후:', members.value, departmentCode.value);
 });
-
-watch(
-  () => isDataLoaded.value,
-  (newVal) => {
-    console.log('isDataLoaded 변경:', newVal);
-    console.log('departmentCode:', departmentCode.value);
-    console.log('members:', members.value);
-    console.log('departmentCode:', departmentCode);
-    console.log(
-      'DOM 상태 확인:',
-      document.querySelector('.search-department-member')
-    );
-  },
-  { immediate: true }
-);
 
 watch(
   () => departmentCode.value && members.value.length > 0,
   (newCondition) => {
-    console.log('데이터 로드 상태 변경:', newCondition);
     isDataLoaded.value = newCondition;
-    console.log('isDataLoaded watch값:', isDataLoaded.value);
   }
 );
 

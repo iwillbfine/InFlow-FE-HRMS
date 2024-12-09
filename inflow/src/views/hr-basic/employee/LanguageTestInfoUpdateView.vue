@@ -2,22 +2,58 @@
   <FlexItem class="content-header" fld="row" h="6rem" w="96%">
     <CommonArticle label="어학" class="ca" w="100%" fs="2rem"></CommonArticle>
     <div class="btns">
-      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="deleteSelectedRows">
+      <ButtonItem
+        h="3.6rem"
+        w="12rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        :fs="'1.6rem'"
+        @click="deleteSelectedRows"
+      >
         <img src="../../../assets/icons/minus_icon.png" />
-        <p>선택 삭제</p></ButtonItem>
-      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="addRow">
+        <p>선택 삭제</p></ButtonItem
+      >
+      <ButtonItem
+        h="3.6rem"
+        w="12rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        :fs="'1.6rem'"
+        @click="addRow"
+      >
         <img src="../../../assets/icons/plus_icon.png" />
-        <p>행 추가</p></ButtonItem>
-      <ButtonItem h="3.6rem" w="12rem" bgc="#003566" br="0.6rem" c="#fff" :fs="'1.6rem'" @click="postData">수정 요청</ButtonItem>
+        <p>행 추가</p></ButtonItem
+      >
+      <ButtonItem
+        h="3.6rem"
+        w="12rem"
+        bgc="#003566"
+        br="0.6rem"
+        c="#fff"
+        :fs="'1.6rem'"
+        @click="postData"
+        >수정 요청</ButtonItem
+      >
     </div>
   </FlexItem>
   <FlexItem class="content-body" fld="column" h="calc(100% - 3rem)" w="96%">
     <div class="table-wrapper">
-      <TableItem class="commute-table" gtc="0.5fr 1fr 2fr 1fr 1fr 1.5fr 1.5fr" br="0.5rem">
+      <TableItem
+        class="commute-table"
+        gtc="0.5fr 1fr 2fr 1fr 1fr 1.5fr 1.5fr"
+        br="0.5rem"
+      >
         <TableRow>
           <TableCell th fs="1.6rem">
             <div class="chk">
-              <input type="checkbox" id="headerCheckbox" v-model="headerCheckbox" @change="toggleAllCheckboxes" />
+              <input
+                type="checkbox"
+                id="headerCheckbox"
+                v-model="headerCheckbox"
+                @change="toggleAllCheckboxes"
+              />
               <label for="headerCheckbox"></label>
             </div>
           </TableCell>
@@ -28,7 +64,11 @@
           <TableCell th fs="1.6rem">발급기관</TableCell>
           <TableCell th fs="1.6rem">등급 및 점수</TableCell>
         </TableRow>
-        <TableRow v-if="!isEmpty" v-for="(item, index) in langTestList" :key="index">
+        <TableRow
+          v-if="!isEmpty"
+          v-for="(item, index) in langTestList"
+          :key="index"
+        >
           <TableCell class="mid" fs="1.6rem">
             <div class="chk">
               <input
@@ -39,16 +79,30 @@
               <label :for="'check' + index"></label>
             </div>
           </TableCell>
-          <TableCell class="mid" v-for="(value, header) in item" key="header" fs="1.6rem">
+          <TableCell
+            class="mid"
+            v-for="(value, header) in item"
+            key="header"
+            fs="1.6rem"
+          >
             <input
               id="cell-input"
               type="text"
               v-model="langTestList[index][header]"
-              :class="{ 'invalid-row': !isCellValid(langTestList[index][header], header) }"
+              :class="{
+                'invalid-row': !isCellValid(
+                  langTestList[index][header],
+                  header
+                ),
+              }"
               class="cell-input"
               @focus="showModal(index, header)"
-              @blur="hideModal"/>
-            <div v-if="visible && activeRow === index && activeHeader === header" class="modal">
+              @blur="hideModal"
+            />
+            <div
+              v-if="visible && activeRow === index && activeHeader === header"
+              class="modal"
+            >
               <pre>{{ modalTxt[header] }}</pre>
             </div>
           </TableCell>
@@ -69,13 +123,18 @@
 </template>
 
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
+import CommonArticle from '@/components/common/CommonArticle.vue';
 import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import TableItem from '@/components/semantic/TableItem.vue';
 import TableRow from '@/components/semantic/TableRow.vue';
 import TableCell from '@/components/semantic/TableCell.vue';
-import { updateData, getLangCode, getLanguageTests, getLanguageTestsById } from '@/api/emp_attach';
+import {
+  updateData,
+  getLangCode,
+  getLanguageTests,
+  getLanguageTestsById,
+} from '@/api/emp_attach';
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -85,7 +144,7 @@ const headerCheckbox = ref(false);
 const selectedRows = ref([]);
 const langCodes = ref([]);
 const langs = ref([]);
-const langMap = ref([])
+const langMap = ref([]);
 
 const route = useRoute();
 const router = useRouter();
@@ -95,8 +154,10 @@ const empId = ref('');
 const isCellValid = (value, header) => {
   if (value === null || value === undefined) return false;
   if (typeof value === 'string' && value.trim() === '') return false;
-  if (header === 'language_name')  return langs.value.map((row) => row.language_name)?.includes(`${value}`);
-  if (header === 'qualification_number')  return !langCodes.value?.includes(`${value}`);
+  if (header === 'language_name')
+    return langs.value.map((row) => row.language_name)?.includes(`${value}`);
+  if (header === 'qualification_number')
+    return !langCodes.value?.includes(`${value}`);
   if (header === 'qualified_at') {
     return /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
@@ -113,12 +174,14 @@ const setModalTxt = () => {
   return {
     qualified_at: '입력 예:\n- YYYY-MM-DD',
     qualification_number: '유효한 자격번호를 입력하세요.',
-    language_name: '선택:\n- '+(langs.value?.map(row => row.language_name) || []).join('\n- '),
+    language_name:
+      '선택:\n- ' +
+      (langs.value?.map((row) => row.language_name) || []).join('\n- '),
   };
 };
 
 const showModal = (rowIndex, header) => {
-  if (modalTxt.value[header]  !== undefined) {
+  if (modalTxt.value[header] !== undefined) {
     visible.value = true;
     activeRow.value = rowIndex;
     activeHeader.value = header;
@@ -151,7 +214,6 @@ const fetchDate = async () => {
     .filter((r) => String(r.employee_id) !== empId.value)
     .map((row) => `${row.qualification_number}`);
 
-
   langMap.value = codes.reduce((acc, lang) => {
     acc[lang.language_name] = lang.language_code;
     return acc;
@@ -159,7 +221,7 @@ const fetchDate = async () => {
 
   if (response) {
     const sortedResponse = sortByDate(response);
-    langTestList.value = sortedResponse.map(row => ({
+    langTestList.value = sortedResponse.map((row) => ({
       language_name: row['language_name'],
       language_test_name: row['language_test_name'],
       qualification_number: row['qualification_number'],
@@ -208,7 +270,9 @@ const addRow = () => {
 };
 
 const deleteSelectedRows = () => {
-  langTestList.value = langTestList.value.filter((_, index) => !selectedRows.value[index]);
+  langTestList.value = langTestList.value.filter(
+    (_, index) => !selectedRows.value[index]
+  );
   initializeSelectedRows();
 };
 
@@ -228,18 +292,24 @@ const mapping = () => {
 
 const postData = async () => {
   const invalidRows = langTestList.value.filter((row) => {
-    return Object.entries(row).some(([header, value]) => !isCellValid(value, header));
+    return Object.entries(row).some(
+      ([header, value]) => !isCellValid(value, header)
+    );
   });
 
-  if (invalidRows.length>0) {
-    window.alert("유효하지 않은 데이터가 있습니다. 데이터를 확인하세요.");
+  if (invalidRows.length > 0) {
+    window.alert('유효하지 않은 데이터가 있습니다. 데이터를 확인하세요.');
     return;
   }
 
   const data = mapping();
   try {
-    await updateData(origin.value.map(row => Number(row.language_test_id)), data, 'language-tests');
-    window.alert("어학 시험 정보 수정 요청이 완료되었습니다.");
+    await updateData(
+      origin.value.map((row) => Number(row.language_test_id)),
+      data,
+      'language-tests'
+    );
+    window.alert('어학 시험 정보 수정 요청이 완료되었습니다.');
     router.push({
       path: '/hr-basic/my-info/languagetests',
       query: {
@@ -248,16 +318,15 @@ const postData = async () => {
     });
     return;
   } catch (error) {
-    window.alert("수정 요청 중 문제가 발생했습니다. 다시 시도하세요.");
+    window.alert('수정 요청 중 문제가 발생했습니다. 다시 시도하세요.');
   }
 };
 
-onMounted(async() => {
+onMounted(async () => {
   empId.value = route.query.employee_id || localStorage.getItem('employeeId');
   await fetchDate(empId.value);
   modalTxt.value = setModalTxt();
 });
-
 </script>
 
 <style scoped>
@@ -285,8 +354,8 @@ button {
   border-radius: 5px;
   background: #003566;
   border: none;
-  color: #FFF;
-  font-family: "Noto Sans KR";
+  color: #fff;
+  font-family: 'Noto Sans KR';
   font-style: normal;
   font-weight: 300;
   line-height: normal;
@@ -331,8 +400,8 @@ input {
   text-align: left;
   flex-shrink: 0;
   border-radius: 1px;
-  border: 0.586px solid #DBDBDB;
-  background: #F8F8F8;
+  border: 0.586px solid #dbdbdb;
+  background: #f8f8f8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
 .chbox {
@@ -348,21 +417,21 @@ input {
   justify-content: center;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid #DBDBDB;
+  border: 1px solid #dbdbdb;
   position: relative;
 }
 
-input[type="checkbox"]:checked + label::after {
+input[type='checkbox']:checked + label::after {
   content: '✔';
   font-size: 20px;
   width: 100%;
@@ -404,8 +473,8 @@ input[type="checkbox"]:checked + label::after {
 }
 
 .invalid-row {
-  background: #FFD8D8 !important;
-  stroke: #F00 !important;
+  background: #ffd8d8 !important;
+  stroke: #f00 !important;
   border: 2px solid red !important;
 }
 </style>

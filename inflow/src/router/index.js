@@ -72,26 +72,18 @@ import EducationInfoUpdateView from '@/views/hr-basic/employee/EducationInfoUpda
 import ContractSignView from '@/views/hr-basic/document/ContractSignView.vue';
 import CertificateView from '@/views/hr-basic/document/CertificateView.vue';
 import EvalPolicyManagementView from '@/views/evaluation/EvalPolicyManagementView.vue';
-import EmployeeSalaryListView from "@/views/hr-management/Salary/EmployeeSalaryListView.vue";
-import IrregularAllowanceView from "@/views/hr-management/Salary/IrregularAllowanceView.vue";
+import EmployeeSalaryListView from '@/views/hr-management/Salary/EmployeeSalaryListView.vue';
+import IrregularAllowanceView from '@/views/hr-management/Salary/IrregularAllowanceView.vue';
 import DeptTaskUploadView from '@/views/evaluation/leader/DeptTaskUploadView.vue';
 import DeptTaskAssignView from '@/views/evaluation/leader/DeptTaskAssignView.vue';
-import NonTaxableView from "@/views/hr-management/Salary/NonTaxableView.vue";
-
+import NonTaxableView from '@/views/hr-management/Salary/NonTaxableView.vue';
 
 // 인사관리 - 부서
 import DepartmentManagementInformationView from '@/views/hr-management/department/DepartmentManagementInformationView.vue';
 import DepartmentManagementAddView from '@/views/hr-management/department/DepartmentManagementAddView.vue';
-import PeriodicSalaryView from "@/views/hr-basic/salary/PeriodicSalaryView.vue";
-
+import PeriodicSalaryView from '@/views/hr-basic/salary/PeriodicSalaryView.vue';
 
 const routes = [
-  {
-    path: '/changuk/profile',
-    name: '인적사항',
-    component: ProfileView,
-  },
-
   {
     path: '/',
     name: 'home',
@@ -267,7 +259,7 @@ const routes = [
         name: 'hr-basic-attendance-dispatch-requests',
         component: DispatchRequestsView,
       },
-    ]
+    ],
   },
   {
     path: '/hr-basic/salary',
@@ -298,10 +290,10 @@ const routes = [
         path: 'period',
         name: 'hr-basic-salary-period',
         component: PeriodicSalaryView,
-      }
-    ]
+      },
+    ],
   },
-   // 인사기본- 계약서서명 및 재직 증명서
+  // 인사기본- 계약서서명 및 재직 증명서
   {
     path: '/hr-basic/document',
     name: 'hr-basic-document',
@@ -473,15 +465,11 @@ const routes = [
         name: 'hr-management-department-default',
         component: DepartmentManagementInformationView,
         redirect: '/hr-management/department/info',
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
-
       },
       {
         path: 'info',
         name: 'hr-management-department-info',
         component: DepartmentManagementInformationView,
-        props: (route) => ({ selectedDepartmentCode: route.query.selectedDepartmentCode })
-        // 이 라우터에만 부서코드 정보 전달
       },
       {
         path: 'add',
@@ -500,7 +488,8 @@ const routes = [
         path: 'upload',
         name: 'upload',
         component: AppointmentsUploadView,
-      },{
+      },
+      {
         path: 'history',
         name: 'history',
         component: AppointmentsHistoryView,
@@ -527,7 +516,7 @@ const routes = [
         name: 'hr-management-vacation-policy',
         component: VacationPolicyView,
       },
-    ]
+    ],
   },
   {
     path: '/hr-management/salary',
@@ -553,8 +542,8 @@ const routes = [
         path: 'non-taxable-payrolls',
         name: 'hr-management-salary-non-taxable-payrolls',
         component: NonTaxableView,
-      }
-    ]
+      },
+    ],
   },
   {
     path: '/evaluation',
@@ -569,51 +558,51 @@ const routes = [
       {
         path: '',
         name: 'evaluation-personal-default',
-        component: PersonalEvalFindView
+        component: PersonalEvalFindView,
       },
       {
         path: '1',
         name: 'self-evaluation-management',
-        component: PersonalEvalFindView
+        component: PersonalEvalFindView,
       },
       {
         path: '2',
         name: 'submenu2',
-        component: PersonalEvalCreateAndFindView
-      }
-    ]
-},
-{
-  path: '/evaluation/leader',
-  name: 'leader-evaluation',
-  component: LeaderEvalView,
-  children: [
+        component: PersonalEvalCreateAndFindView,
+      },
+    ],
+  },
+  {
+    path: '/evaluation/leader',
+    name: 'leader-evaluation',
+    component: LeaderEvalView,
+    children: [
       {
         path: '',
         name: 'leader-evaluation-default',
-        component: LeaderEvalListView
+        component: LeaderEvalListView,
       },
       {
         path: 'eval-list',
         name: 'leader-evaluation-list',
-        component: LeaderEvalListView
+        component: LeaderEvalListView,
       },
       {
         path: 'dept-task/upload',
         name: 'dept-task-upload',
-        component: DeptTaskUploadView
+        component: DeptTaskUploadView,
       },
       {
         path: 'dept-task/assign',
         name: 'dept-task-assign',
-        component: DeptTaskAssignView
+        component: DeptTaskAssignView,
       },
       {
         path: 'feedback',
         name: 'feedback-management',
-        component: FeedbackManageView
-      }
-    ]
+        component: FeedbackManageView,
+      },
+    ],
   },
   {
     path: '/evaluation/task',
@@ -623,14 +612,14 @@ const routes = [
       {
         path: '',
         name: 'evaluation-task-default',
-        component: PersonalEvalCreateAndFindView
+        component: PersonalEvalCreateAndFindView,
       },
       {
         path: 'register',
         name: 'TaskEvalCreate-view',
-        component: PersonalEvalCreateAndFindView
-      }
-    ]
+        component: PersonalEvalCreateAndFindView,
+      },
+    ],
   },
   {
     path: '/evaluation/policy',
@@ -640,24 +629,24 @@ const routes = [
       {
         path: '',
         name: 'eval-policy-default',
-        component: EvalTypeManagementView
+        component: EvalTypeManagementView,
       },
       {
         path: 'eval-type',
         name: 'eval-type-management',
-        component: EvalTypeManagementView
+        component: EvalTypeManagementView,
       },
       {
         path: 'eval-policy',
         name: 'eval-policy-management',
-        component: EvalPolicyManagementView
+        component: EvalPolicyManagementView,
       },
       {
         path: 'eval-grade',
         name: 'eval-grade-management',
-        component: EvalGradeView
-      }
-    ]
+        component: EvalGradeView,
+      },
+    ],
   },
 ];
 

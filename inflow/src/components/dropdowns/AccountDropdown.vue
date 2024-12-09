@@ -74,7 +74,7 @@ const selectItem = (item) => {
       handleLogout();
       break;
     default:
-      console.log('잘못된 요청입니다.');
+      console.error('잘못된 요청입니다.');
   }
   isDropdownOpen.value = false;
 };

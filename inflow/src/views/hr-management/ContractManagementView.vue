@@ -1,5 +1,5 @@
 <template>
-  <CommonNav :cur="3"></CommonNav>
+  <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="5" :list="menuList"></CommonMenu>
@@ -29,11 +29,10 @@ onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   employeeName.value = localStorage.getItem('employeeName');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

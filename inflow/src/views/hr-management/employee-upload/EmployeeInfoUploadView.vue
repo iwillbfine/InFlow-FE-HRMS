@@ -2,7 +2,13 @@
   <div class="emp-container">
     <CommonArticle label="기본 정보" class="ca" w="96%">
       <div class="tmp">
-        <input type="file" ref="fileInput" @change="handleFileUpload" accept=".xlsx, .xls" style="display: none;" />
+        <input
+          type="file"
+          ref="fileInput"
+          @change="handleFileUpload"
+          accept=".xlsx, .xls"
+          style="display: none"
+        />
       </div>
       <div class="exlbtns1">
         <button type="button" @click="fileDownload">
@@ -28,26 +34,55 @@
         <div class="inboard">
           <div class="colname headers">
             <div class="chbox">
-              <input type="checkbox" :id="chkHeader" v-model="chkHeader" @change="toggleAllCheckboxes" />
+              <input
+                type="checkbox"
+                :id="chkHeader"
+                v-model="chkHeader"
+                @change="toggleAllCheckboxes"
+              />
               <label :for="chkHeader"></label>
             </div>
             <div v-for="header in headerNames" :key="header">{{ header }}</div>
           </div>
-          <div class="colname rows" v-for="(row, rowIndex) in rowsData" :key="rowIndex">
+          <div
+            class="colname rows"
+            v-for="(row, rowIndex) in rowsData"
+            :key="rowIndex"
+          >
             <div class="chbox">
-              <input type="checkbox" :id="'check' + rowIndex" v-model="selectedRows[rowIndex]" />
+              <input
+                type="checkbox"
+                :id="'check' + rowIndex"
+                v-model="selectedRows[rowIndex]"
+              />
               <label :for="'check' + rowIndex"></label>
             </div>
-            <div v-for="(value, header) in row" :key="header" class="cell-container">
-              <input 
+
+            <div
+              v-for="(value, header) in row"
+              :key="header"
+              class="cell-container"
+            >
+              <input
+                type="text"
                 id="cell-input"
-                type="text" 
-                v-model="rowsData[rowIndex][header]" 
-                :class="{ 'invalid-row': !isCellValid(rowsData[rowIndex][header], header) }"
+                v-model="rowsData[rowIndex][header]"
+                :class="{
+                  'invalid-row': !isCellValid(
+                    rowsData[rowIndex][header],
+                    header
+                  ),
+                }"
                 class="cell-input"
                 @focus="showModal(rowIndex, header)"
-                @blur="hideModal"/>
-              <div v-if="visible && activeRow === rowIndex && activeHeader === header" class="modal">
+                @blur="hideModal"
+              />
+              <div
+                v-if="
+                  visible && activeRow === rowIndex && activeHeader === header
+                "
+                class="modal"
+              >
                 <pre>{{ modalTxt[header] }}</pre>
               </div>
             </div>
@@ -63,18 +98,32 @@
   </div>
 </template>
 
-
 <script setup>
-import CommonArticle from '@/components/common/CommonArticle.vue'
-import * as xlsx from "xlsx";
-import { ref, onMounted } from "vue";
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import * as xlsx from 'xlsx';
+import { ref, onMounted } from 'vue';
 import { getDoc, saveData, getValidData } from '@/api/emp_attach';
 
 const headerNames = ref([
-  "사번", "성별", "성명", "생년월일", "이메일", "휴대폰번호", "입사유형", "계약월급",
-  "도로명 주소", "상세주소", "우편번호", "부서코드", "직위코드", "직책코드", "직무코드"
+  '사번',
+  '성별',
+  '성명',
+  '생년월일',
+  '이메일',
+  '휴대폰번호',
+  '입사유형',
+  '계약월급',
+  '도로명 주소',
+  '상세주소',
+  '우편번호',
+  '부서코드',
+  '직위코드',
+  '직책코드',
+  '직무코드',
 ]);
-const defaultRow = Object.fromEntries(headerNames.value.map((key) => [key, null]));
+const defaultRow = Object.fromEntries(
+  headerNames.value.map((key) => [key, null])
+);
 
 const chkHeader = ref(false);
 const selectedRows = ref([]);
@@ -116,14 +165,14 @@ onMounted(async () => {
 
 const clickInput = () => {
   fileInput.value.click();
-}
+};
 
 const visible = ref(false);
 const activeRow = ref(null);
 const activeHeader = ref(null);
 
 const showModal = (rowIndex, header) => {
-  if (modalTxt.value[header]  !== undefined) {
+  if (modalTxt.value[header] !== undefined) {
     visible.value = true;
     activeRow.value = rowIndex;
     activeHeader.value = header;
@@ -144,10 +193,10 @@ const setModalTxt = (data) => {
     이메일: '입력 예:\n- employee@example.com',
     휴대폰번호: '입력 예:\n- 010-1234-5678',
     입사유형: '선택:\n- ROOKIE\n- VETERAN',
-    부서코드: '선택:\n- '+(data?.departments || []).join('\n- '),
-    직위코드: '선택:\n- '+(data?.positions || []).join('\n- '),
-    직책코드: '선택:\n- '+(data?.roles || []).join('\n- '),
-    직무코드: '선택:\n- '+(data?.duties || []).join('\n- '),
+    부서코드: '선택:\n- ' + (data?.departments || []).join('\n- '),
+    직위코드: '선택:\n- ' + (data?.positions || []).join('\n- '),
+    직책코드: '선택:\n- ' + (data?.roles || []).join('\n- '),
+    직무코드: '선택:\n- ' + (data?.duties || []).join('\n- '),
   };
 };
 
@@ -158,11 +207,11 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const binaryStr = e.target.result;
-    workbook.value = xlsx.read(binaryStr, { type: "binary" });
+    workbook.value = xlsx.read(binaryStr, { type: 'binary' });
     addToRowsData();
   };
   reader.readAsBinaryString(file);
-  event.target.value = "";
+  event.target.value = '';
 };
 
 const addToRowsData = () => {
@@ -210,61 +259,61 @@ const addRow = () => {
 };
 
 const deleteSelectedRows = () => {
-  rowsData.value = rowsData.value.filter((_, index) => !selectedRows.value[index]);
+  rowsData.value = rowsData.value.filter(
+    (_, index) => !selectedRows.value[index]
+  );
   initializeSelectedRows();
 };
 
 const mapping = () => {
   return rowsData.value.map((row) => ({
-    employee_number: row["사번"],
-    gender: row["성별"] === "여" ? "FEMALE" : row["성별"] === "남" ? "MALE" : null,
-    name: row["성명"],
-    birth_date: row["생년월일"],
-    email: row["이메일"],
-    phone_number: row["휴대폰번호"],
-    join_type: row["입사유형"],
-    monthly_salary: row["계약월급"],
-    street_address: row["도로명 주소"],
-    detailed_address: row["상세주소"],
-    postcode: row["우편번호"],
-    department_code: row["부서코드"],
-    position_code: row["직위코드"],
-    role_code: row["직책코드"],
-    duty_code: row["직무코드"],
+    employee_number: row['사번'],
+    gender:
+      row['성별'] === '여' ? 'FEMALE' : row['성별'] === '남' ? 'MALE' : null,
+    name: row['성명'],
+    birth_date: row['생년월일'],
+    email: row['이메일'],
+    phone_number: row['휴대폰번호'],
+    join_type: row['입사유형'],
+    monthly_salary: row['계약월급'],
+    street_address: row['도로명 주소'],
+    detailed_address: row['상세주소'],
+    postcode: row['우편번호'],
+    department_code: row['부서코드'],
+    position_code: row['직위코드'],
+    role_code: row['직책코드'],
+    duty_code: row['직무코드'],
   }));
 };
 
 // 파일 다운로드
 const fileDownload = async () => {
   try {
-    const response = await getDoc("new_employee");
+    const response = await getDoc('new_employee');
     const fileUrl = response.content; // content에서 URL 추출s
-    const link = document.createElement("a"); // 링크 생성
+    const link = document.createElement('a'); // 링크 생성
     link.href = fileUrl; // URL 연결
-    link.setAttribute("download", "new_employee_form.xlsx"); // 다운로드 파일 이름 설정
+    link.setAttribute('download', 'new_employee_form.xlsx'); // 다운로드 파일 이름 설정
     link.click(); // 클릭 이벤트 발생
   } catch (error) {
-    console.error("양식 다운로드 에러:", error.message);
+    console.error('양식 다운로드 에러:', error.message);
   }
 };
 
 const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
-    Object.entries(row).some(
-      ([header, value]) => !isCellValid(value, header)
-    )
+    Object.entries(row).some(([header, value]) => !isCellValid(value, header))
   );
 
   if (invalidRows) {
-    window.alert("유효하지 않은 데이터 존재!! 등록 불가!!");
+    window.alert('유효하지 않은 데이터 존재!! 등록 불가!!');
     return;
   }
   await saveData(mapping(), null);
-  window.alert("사원 기본 정보 등록 완료");
+  window.alert('사원 기본 정보 등록 완료');
   window.location.reload();
 };
 </script>
-
 
 <style scoped>
 .emp-container {
@@ -288,7 +337,8 @@ const postData = async () => {
   right: 0;
 }
 
-.exlbtns1, .exlbtns2 {
+.exlbtns1,
+.exlbtns2 {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -296,7 +346,8 @@ const postData = async () => {
   margin-right: 0.8rem;
 }
 
-.exlbtns1 button, .exlbtns2 button {
+.exlbtns1 button,
+.exlbtns2 button {
   width: 14.4rem;
   height: 3.6rem;
   gap: 1rem;
@@ -311,7 +362,7 @@ button {
   border-radius: 0.6rem;
   background-color: #003566;
   border: none;
-  color: #FFF;
+  color: #fff;
   font-size: 1.6rem;
   cursor: pointer;
 }
@@ -331,14 +382,13 @@ button p {
   padding: 1px;
 }
 
-
 .colboard {
   display: flex;
   flex-direction: column;
   width: 100%;
   flex-shrink: 0;
   border-radius: 0.6rem;
-  background: #FFF;
+  background: #fff;
   font-size: 1.4rem;
   border: 2px solid #2e2f3015;
   margin-top: 0.5rem;
@@ -380,15 +430,15 @@ button p {
   width: 100%;
 }
 
-.rows > div > input{
+.rows > div > input {
   width: 100%;
   height: 100%;
   padding-left: 0.5rem;
   text-align: left;
   flex-shrink: 0;
   border-radius: 0.977px;
-  border: 0.586px solid #DBDBDB;
-  background: #F8F8F8;
+  border: 0.586px solid #dbdbdb;
+  background: #f8f8f8;
   box-shadow: 0px 0.977px 1.954px 0px rgba(0, 0, 0, 0.25) inset;
 }
 
@@ -404,22 +454,22 @@ button p {
   justify-content: center;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   display: none;
 }
 
-input[type="checkbox"] + label {
+input[type='checkbox'] + label {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 1px solid #DBDBDB;
+  border: 1px solid #dbdbdb;
   background-color: #fff;
   position: relative;
 }
 
-input[type="checkbox"]:checked + label::after {
+input[type='checkbox']:checked + label::after {
   content: '✔';
   font-size: 20px;
   width: 100%;
@@ -467,8 +517,8 @@ input[type="checkbox"]:checked + label::after {
 }
 
 .invalid-row {
-  background: #FFD8D8 !important;
-  stroke: #F00 !important;
+  background: #ffd8d8 !important;
+  stroke: #f00 !important;
   border: 2px solid red !important;
 }
 </style>

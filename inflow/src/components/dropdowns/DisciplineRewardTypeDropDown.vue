@@ -28,7 +28,7 @@ const selectedType = ref(null);
 const setDatas = () => {
   typeList.value = types.value.map((row) => ({
     id: row,
-    name: row
+    name: row,
   }));
 
   // 기본 값 설정

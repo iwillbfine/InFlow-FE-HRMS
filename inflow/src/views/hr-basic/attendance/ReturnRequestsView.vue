@@ -37,7 +37,7 @@
             class="mid"
             fs="1.6rem"
             :botl="index === returnRequestList.length - 1"
-            >{{ parseDate(item.end_date)}}</TableCell
+            >{{ parseDate(item.end_date) }}</TableCell
           >
           <TableCell class="mid" fs="1.6rem">{{
             item.request_reason

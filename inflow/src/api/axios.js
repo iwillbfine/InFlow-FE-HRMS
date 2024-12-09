@@ -9,6 +9,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+    console.log('인터셉터에서 읽어온 토큰:', token);
 
     // 액세스 토큰이 있는 경우 Authorization 헤더에 추가
     if (token) {
@@ -26,7 +27,11 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     // 401 Unauthorized 에러 처리
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true; // 무한 루프 방지
 
       try {
@@ -48,7 +53,8 @@ apiClient.interceptors.response.use(
           }
         );
 
-        const { access_token: newAccessToken, refresh_token: newRefreshToken } = data.content;
+        const { access_token: newAccessToken, refresh_token: newRefreshToken } =
+          data.content;
 
         // 새로운 토큰 저장
         if (newAccessToken) {

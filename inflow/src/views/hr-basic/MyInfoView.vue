@@ -1,16 +1,19 @@
 <template>
-  <CommonNav :cur="2"></CommonNav>
+  <CommonNav :cur="3"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
-  
+
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :list="menuList" />
-    
+
     <SectionItem class="content-section" w="100%">
       <ProfileView></ProfileView>
-      <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+      <SubMenuNav
+        :cur="subIdx"
+        :list="subMenuList"
+        @clicked="handleClicked"
+      ></SubMenuNav>
       <router-view></router-view>
     </SectionItem>
-    
   </MainItem>
 </template>
 
@@ -36,7 +39,7 @@ const menuList = ref([
   { name: '근태 정보', link: '/hr-basic/attendance' },
   { name: '급여 및 수당', link: '/hr-basic/salary' },
   { name: '계약서 서명', link: '/hr-basic/document' },
-  { name: '내 부서 관리', link: '/hr-basic/my-department'},
+  { name: '내 부서 관리', link: '/hr-basic/my-department' },
 ]);
 
 const subMenuList = ref([
@@ -54,7 +57,7 @@ const employeeName = ref('');
 const handleClicked = (idx) => {
   subIdx.value = idx;
   localStorage.setItem('subIdx', subIdx.value);
-}
+};
 
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
@@ -80,7 +83,7 @@ watch(
   () => route.path,
   (newPath) => {
     const matchedIndex = subMenuList.value.findIndex(
-        (item) => item.link === newPath
+      (item) => item.link === newPath
     );
     if (matchedIndex !== -1) {
       subIdx.value = matchedIndex;
@@ -91,7 +94,6 @@ watch(
 </script>
 
 <style scoped>
-
 .content-section {
   position: absolute;
   top: 5.4rem;
@@ -103,6 +105,4 @@ watch(
   flex-grow: 1;
   align-items: center;
 }
-
-
 </style>

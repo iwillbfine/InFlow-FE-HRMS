@@ -30,6 +30,9 @@ const router = useRouter(); // 라우터 객체 생성
 // 로그인 처리 함수
 const handleLogin = async () => {
 
+  // 로그인 처리 시작 시 로컬 저장소 비우기
+  localStorage.clear();
+  
   // 입력값 검사
   if (!employeeNumber.value.trim()) {
     invalid.value = true;
@@ -44,10 +47,12 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = (await axios.post('http://localhost:5000/api/login', {
-      employee_number: employeeNumber.value,
-      password: password.value,
-    })).data;
+    const response = (
+      await axios.post('http://localhost:5000/api/login', {
+        employee_number: employeeNumber.value,
+        password: password.value,
+      })
+    ).data;
 
     if (response.success) {
       // 로그인 성공 시 API 응답에서 데이터 추출
@@ -55,7 +60,7 @@ const handleLogin = async () => {
         access_token: accessToken,
         refresh_token: refreshToken,
         employee_id: employeeId,
-        employee_number: empNumber
+        employee_number: empNumber,
       } = response.content;
 
       // 사원 이름 가져오기
@@ -77,7 +82,7 @@ const handleLogin = async () => {
       localStorage.setItem('employeeName', employeeName);
 
       // 세션 만료 시간 설정 (30분 후)
-      const expireTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+      const expireTime = new Date().getTime() + 1 * 60 * 60 * 1000;
       localStorage.setItem('expireTime', expireTime);
 
       try {
@@ -94,11 +99,11 @@ const handleLogin = async () => {
     }
   } catch (error) {
     invalid.value = true;
-    errorMessage.value = error.response?.data?.error?.message || '로그인 실패. 다시 시도해주세요.';
+    errorMessage.value =
+      error.response?.data?.error?.message || '로그인 실패. 다시 시도해주세요.';
     console.error(error.response?.data || error);
   }
 };
-
 </script>
 
 <style scoped>

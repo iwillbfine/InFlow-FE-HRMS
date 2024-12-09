@@ -1,11 +1,18 @@
-import apiClient from "@/api/axios";
+import apiClient from '@/api/axios';
 
-apiClient.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`
+apiClient.defaults.headers.common['Authorization'] =
+  `Bearer ${localStorage.getItem('accessToken')}`;
 
 /* 1. 사원별 연월별 급여 명세서 조회 */
-export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => {
+export const getPaymentByEmployeeIdAndYearAndMonth = async (
+  eid,
+  year,
+  month
+) => {
   if (!eid || !year || !month) {
-    throw new Error(`유효하지 않은 파라미터: eid=${eid}, year=${year}, month=${month}`);
+    throw new Error(
+      `유효하지 않은 파라미터: eid=${eid}, year=${year}, month=${month}`
+    );
   }
   try {
     const response = await apiClient.get(`/payrolls/details/${eid}`, {
@@ -18,9 +25,11 @@ export const getPaymentByEmployeeIdAndYearAndMonth = async(eid, year, month) => 
   }
 };
 
-export const getPeriodicPayments = async(employeeId, startDate, endDate) => {
+export const getPeriodicPayments = async (employeeId, startDate, endDate) => {
   if (!employeeId || !startDate || !endDate) {
-    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startDate}, endMonth=${endDate}`);
+    throw new Error(
+      `유효하지 않은 파라미터: employeeId=${employeeId}, startMonth=${startDate}, endMonth=${endDate}`
+    );
   }
   try {
     const response = await apiClient.get('/payrolls/period', {
@@ -33,9 +42,11 @@ export const getPeriodicPayments = async(employeeId, startDate, endDate) => {
   }
 };
 
-export const getPaymentsByYear = async(employeeId, year) => {
+export const getPaymentsByYear = async (employeeId, year) => {
   if (!employeeId || !year) {
-    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, year=${year}`);
+    throw new Error(
+      `유효하지 않은 파라미터: employeeId=${employeeId}, year=${year}`
+    );
   }
   try {
     const response = await apiClient.get('/payrolls/list', {
@@ -48,9 +59,11 @@ export const getPaymentsByYear = async(employeeId, year) => {
   }
 };
 
-export const getAllPayments = async(employeeId, page) => {
+export const getAllPayments = async (employeeId, page) => {
   if (!employeeId || !page) {
-    throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}, page=${page}`);
+    throw new Error(
+      `유효하지 않은 파라미터: employeeId=${employeeId}, page=${page}`
+    );
   }
   try {
     const response = await apiClient.get(`/payrolls/all/${employeeId}`, {
@@ -63,12 +76,14 @@ export const getAllPayments = async(employeeId, page) => {
   }
 };
 
-export const getEstimateWorkingDays = async(employeeId) => {
+export const getEstimateWorkingDays = async (employeeId) => {
   if (!employeeId) {
     throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}`);
   }
   try {
-    const response = await apiClient.get(`/severance-pay/estimate/${employeeId}`);
+    const response = await apiClient.get(
+      `/severance-pay/estimate/${employeeId}`
+    );
     return response.data;
   } catch (error) {
     console.error('getEstimateWorkingDays 에러: ', error);
@@ -76,12 +91,14 @@ export const getEstimateWorkingDays = async(employeeId) => {
   }
 };
 
-export const calculateSeverancePay = async(employeeId) => {
+export const calculateSeverancePay = async (employeeId) => {
   if (!employeeId) {
     throw new Error(`유효하지 않은 파라미터: employeeId=${employeeId}`);
   }
   try {
-    const response = await apiClient.get(`/severance-pay/calculate/${employeeId}`);
+    const response = await apiClient.get(
+      `/severance-pay/calculate/${employeeId}`
+    );
     return response.data;
   } catch (error) {
     console.error('calculateSeverancePay 에러: ', error);
@@ -89,42 +106,42 @@ export const calculateSeverancePay = async(employeeId) => {
   }
 };
 
-export const createIrregularAllowance = async(formData) => {
+export const createIrregularAllowance = async (formData) => {
   try {
     const response = await apiClient.post('irregular-allowances', formData);
     return response.data;
   } catch (error) {
-    console.error("createIrregularAllowance 오류: ", error);
+    console.error('createIrregularAllowance 오류: ', error);
   }
 };
 
-export const getIrregularAllowance = async(page) => {
+export const getIrregularAllowance = async (page) => {
   try {
     const response = await apiClient.get(`/irregular-allowances`, {
-      params: { page }
+      params: { page },
     });
     return response.data;
   } catch (error) {
-    console.error("getIrregularAllowance 오류: ", error)
+    console.error('getIrregularAllowance 오류: ', error);
   }
 };
 
-export const getNonTaxablePayrolls = async(page) => {
+export const getNonTaxablePayrolls = async (page) => {
   try {
     const response = await apiClient.get('/non-taxable-payrolls', {
-      params: { page }
+      params: { page },
     });
     return response.data;
   } catch (error) {
-    console.error("getNonTaxablePayrolls 오류: ", error)
+    console.error('getNonTaxablePayrolls 오류: ', error);
   }
-}
+};
 
-export const createNonTaxable = async(formData) => {
+export const createNonTaxable = async (formData) => {
   try {
     const response = await apiClient.post('/non-taxable-payrolls', formData);
     return response.data;
   } catch (error) {
-    console.error("createNonTaxable 오류: ", error);
+    console.error('createNonTaxable 오류: ', error);
   }
 };

@@ -1,20 +1,52 @@
 <template>
-  <CommonNav :cur="1"></CommonNav>
+  <CommonNav :cur="2"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" h="calc(100vh - 10rem)">
-    <SectionItem class="chatbot-section" :class="{ 'center-content': isInit }" h="100%" w="100%" fld="column">
+    <SectionItem
+      class="chatbot-section"
+      :class="{ 'center-content': isInit }"
+      h="100%"
+      w="100%"
+      fld="column"
+    >
       <p v-if="isInit" class="help-text">무엇을 도와드릴까요?</p>
       <UlItem v-if="!isInit" class="chat-list" w="80rem">
         <li
           v-for="(item, index) in chatList"
           :key="index"
           class="chat-item"
-          :class="{'user-chat': item.type === 'user', 'bot-chat': item.type === 'bot'}"
+          :class="{
+            'user-chat': item.type === 'user',
+            'bot-chat': item.type === 'bot',
+          }"
         >
-          <FlexItem  v-if="item.type === 'bot'" class="item-header" fld="row" w="100%" bgc="transparent" c="#888" fs="2rem">
+          <FlexItem
+            v-if="item.type === 'bot'"
+            class="item-header"
+            fld="row"
+            w="100%"
+            bgc="transparent"
+            c="#888"
+            fs="2rem"
+          >
             <RobotIcon></RobotIcon>
-            <CheckButton v-if="isCopied" h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem"></CheckButton>
-            <CopyButton v-else h="2rem" w="2rem" bgc="transparent" c="#888" fs="2rem" @click="handleCopy(item.message)"></CopyButton>
+            <CheckButton
+              v-if="isCopied"
+              h="2rem"
+              w="2rem"
+              bgc="transparent"
+              c="#888"
+              fs="2rem"
+            ></CheckButton>
+            <CopyButton
+              v-else
+              h="2rem"
+              w="2rem"
+              bgc="transparent"
+              c="#888"
+              fs="2rem"
+              @click="handleCopy(item.message)"
+            ></CopyButton>
           </FlexItem>
           <span v-html="parseMarkdown(item.message)"></span>
         </li>
@@ -29,7 +61,14 @@
             @keydown="handleKeydown"
             ref="textarea"
           ></textarea>
-          <ArrowUpButton class="submit-btn" h="4rem" w="4rem" bgc="#003566" br="50%" @click="handleSubmit"></ArrowUpButton>
+          <ArrowUpButton
+            class="submit-btn"
+            h="4rem"
+            w="4rem"
+            bgc="#003566"
+            br="50%"
+            @click="handleSubmit"
+          ></ArrowUpButton>
         </div>
       </div>
     </SectionItem>
@@ -84,7 +123,7 @@ const fetchAnswer = async (eid, sessionId, query) => {
     query: query,
     employee_id: eid,
     session_id: sessionId,
-  }
+  };
 
   try {
     const response = await chatbotQuery(formData);
@@ -103,13 +142,15 @@ const fetchAnswer = async (eid, sessionId, query) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 const generateSessionId = () => {
-    const array = new Uint8Array(24); // 24바이트 랜덤값
-    crypto.getRandomValues(array);  // 랜덤 값을 생성
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(''); // 16진수 문자열로 변환
-}
+  const array = new Uint8Array(24); // 24바이트 랜덤값
+  crypto.getRandomValues(array); // 랜덤 값을 생성
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join(
+    ''
+  ); // 16진수 문자열로 변환
+};
 
 const handleKeydown = (event) => {
   if (event.key === 'Enter') {
@@ -125,7 +166,8 @@ const handleKeydown = (event) => {
 };
 
 const handleCopy = (message) => {
-  navigator.clipboard.writeText(message)
+  navigator.clipboard
+    .writeText(message)
     .then(() => {
       isCopied.value = true;
       setTimeout(() => {
@@ -133,13 +175,13 @@ const handleCopy = (message) => {
       }, 3000);
     })
     .catch((error) => {
-      console.error("클립보드 복사 실패:", error);
+      console.error('클립보드 복사 실패:', error);
     });
 };
 
 const handleReturn = () => {
   isCopied.value = false;
-}
+};
 
 const handleSubmit = () => {
   if (!message.value) return;
@@ -152,12 +194,12 @@ const handleSubmit = () => {
   message.value = '';
 
   nextTick(() => {
-    adjustHeight();  // 메시지 제출 후 textarea 크기 조정
+    adjustHeight(); // 메시지 제출 후 textarea 크기 조정
     setTimeout(() => {
       scrollToBottom(); // 페이지 스크롤 최하단 이동
     }, 50); // 50ms 지연 후 스크롤 이동
   });
-}
+};
 
 const scrollToBottom = () => {
   window.scrollTo({
@@ -167,7 +209,7 @@ const scrollToBottom = () => {
 };
 
 const decodeHtmlEntities = (text) => {
-  const textarea = document.createElement("textarea");
+  const textarea = document.createElement('textarea');
   textarea.innerHTML = text;
   return textarea.value;
 };
@@ -184,7 +226,11 @@ const parseMarkdown = (text) => {
       const decodedCode = decodeHtmlEntities(code);
 
       // 디코딩된 코드에 하이라이팅 적용
-      const highlightedCode = Prism.highlight(decodedCode, Prism.languages[language], language);
+      const highlightedCode = Prism.highlight(
+        decodedCode,
+        Prism.languages[language],
+        language
+      );
       return `<pre><code class="language-${language}">${highlightedCode}</code></pre>`;
     }
   );
@@ -203,7 +249,7 @@ const parseMarkdown = (text) => {
 onMounted(() => {
   eid.value = localStorage.getItem('employeeId');
   if (!eid.value) {
-    alert("로그인이 필요합니다.");
+    alert('로그인이 필요합니다.');
     router.push('/login');
   }
   employeeName.value = localStorage.getItem('employeeName');

@@ -22,7 +22,7 @@
 .wrapper {
   height: 100%;
   width: 100%;
-  background-color: #00284D;
+  background-color: #00284d;
   position: absolute;
   z-index: -1;
 }

@@ -31,8 +31,8 @@ const props = defineProps({
   employee: {
     type: Object,
     required: true,
-  }
-})
+  },
+});
 
 const list = ref([
   { content: 'D-00', label: '월급날' },

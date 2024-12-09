@@ -35,7 +35,8 @@
       c="#fff"
       fs="1.6rem"
       @click="handleOnclick"
-    >등록</ButtonItem>
+      >등록</ButtonItem
+    >
   </CommonArticle>
   <hr />
   <CommonArticle label="비정기 수당 항목" w="95%">
@@ -45,13 +46,14 @@
         <TableCell th fs="1.7rem">비정기 수당명</TableCell>
         <TableCell th fs="1.7rem">금액</TableCell>
       </TableRow>
-      <TableRow
-        v-for="(allowance, index) in allowanceList"
-        :key="index"
-      >
+      <TableRow v-for="(allowance, index) in allowanceList" :key="index">
         <TableCell class="c1" fs="1.7rem">{{ index + 1 }}</TableCell>
-        <TableCell class="name" fs="1.7rem">{{ allowance.irregular_allowance_name }}</TableCell>
-        <TableCell class="amount" fs="1.7rem">{{ formatCurrency(allowance.amount) }}</TableCell>
+        <TableCell class="name" fs="1.7rem">{{
+          allowance.irregular_allowance_name
+        }}</TableCell>
+        <TableCell class="amount" fs="1.7rem">{{
+          formatCurrency(allowance.amount)
+        }}</TableCell>
       </TableRow>
     </TableItem>
     <PaginationComponent
@@ -62,15 +64,18 @@
   </CommonArticle>
 </template>
 <script setup>
-import CommonArticle from "@/components/common/CommonArticle.vue";
-import TableRow from "@/components/semantic/TableRow.vue";
-import TableCell from "@/components/semantic/TableCell.vue";
-import TableItem from "@/components/semantic/TableItem.vue";
-import ButtonItem from "@/components/semantic/ButtonItem.vue";
-import {onMounted, ref} from "vue";
-import {createIrregularAllowance, getIrregularAllowance} from "@/api/payroll.js";
-import PaginationComponent from "@/components/common/PaginationComponent.vue";
-import {useRouter} from "vue-router";
+import CommonArticle from '@/components/common/CommonArticle.vue';
+import TableRow from '@/components/semantic/TableRow.vue';
+import TableCell from '@/components/semantic/TableCell.vue';
+import TableItem from '@/components/semantic/TableItem.vue';
+import ButtonItem from '@/components/semantic/ButtonItem.vue';
+import { onMounted, ref } from 'vue';
+import {
+  createIrregularAllowance,
+  getIrregularAllowance,
+} from '@/api/payroll.js';
+import PaginationComponent from '@/components/common/PaginationComponent.vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -85,14 +90,14 @@ const fetchData = async (page) => {
   const response = await getIrregularAllowance(page);
   allowanceList.value = response.content.elements || [];
   pageInfo.value = response.content;
-}
+};
 
 const handlePageChange = (page) => {
   curPage.value = page;
   fetchData(curPage.value);
   router.push({
-    name: "hr-management-salary-irregular-allowance",
-    query: { page: curPage.value }
+    name: 'hr-management-salary-irregular-allowance',
+    query: { page: curPage.value },
   });
 };
 
@@ -115,7 +120,7 @@ const handleOnclick = async () => {
 
   const formData = {
     irregular_allowance_name: irregularAllowanceName.value,
-    amount: won
+    amount: won,
   };
 
   irregularAllowanceName.value = '';
@@ -137,12 +142,9 @@ onMounted((page) => {
   curPage.value = page;
   fetchData(curPage.value);
 });
-
 </script>
 
-
 <style scoped>
-
 .submit-btn {
   margin-top: 3.2rem;
   align-self: center;
@@ -162,5 +164,4 @@ onMounted((page) => {
   justify-content: flex-end;
   align-items: center;
 }
-
 </style>

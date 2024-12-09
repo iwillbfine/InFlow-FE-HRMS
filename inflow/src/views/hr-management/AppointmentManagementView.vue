@@ -1,9 +1,13 @@
 <template>
-  <CommonNav :cur="3"></CommonNav>
+  <CommonNav :cur="4"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
   <MainItem w="calc(100% - 12rem)" minh="calc(100% - 10rem)">
     <CommonMenu :cur="3" :list="menuList"></CommonMenu>
-    <SubMenuNav :cur="subIdx" :list="subMenuList" @clicked="handleClicked"></SubMenuNav>
+    <SubMenuNav
+      :cur="subIdx"
+      :list="subMenuList"
+      @clicked="handleClicked"
+    ></SubMenuNav>
     <SectionItem class="content-section" w="100%">
       <router-view v-slot="{ Component }">
         <component :is="Component" :title="subMenuList[subIdx].name" />
@@ -43,7 +47,7 @@ const subIdx = ref(0);
 
 const handleClicked = (idx) => {
   subIdx.value = idx;
-}
+};
 const eid = ref(null);
 const employeeName = ref('');
 
@@ -71,7 +75,7 @@ watch(
   () => route.path,
   (newPath) => {
     const matchedIndex = subMenuList.value.findIndex(
-        (item) => item.link === newPath
+      (item) => item.link === newPath
     );
     if (matchedIndex !== -1) {
       subIdx.value = matchedIndex;

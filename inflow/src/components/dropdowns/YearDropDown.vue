@@ -19,8 +19,8 @@ const props = defineProps({
   short: {
     type: Boolean,
     default: false,
-  }
-})
+  },
+});
 
 const emit = defineEmits(['valid-date-selected']);
 
