@@ -4,10 +4,12 @@
       <span v-if="node.sub_departments.length > 0" @click="toggleExpand">
         {{ isExpanded ? '&#8250;' : '⌵' }}
       </span>
-      <img :src="isExpanded ? require('../../assets/icons/file_open.png') : require('../../assets/icons/file_close.png')" alt="Icon" />
+      <img :src="isFileOpen && isExpanded ? fileOpen : fileClose" alt="Icon" />
       <span
         class="department-name"
         @click="selectDepartment(node.department_code)"
+        @blur.stop="node.sub_departments.length === 0? resetFileOpen(false):resetFileOpen(true)"
+        tabindex="0"
       >
         {{ node.department_name }}
       </span>
@@ -39,6 +41,8 @@
 <script setup>
 import { ref } from 'vue';
 import TreeNode from '@/components/employee-search/TreeNode.vue';
+import fileOpen from '@/assets/icons/file_open.png';
+import fileClose from '@/assets/icons/file_close.png';
 
 defineProps({
   node: {
@@ -52,15 +56,25 @@ defineProps({
 });
 
 const isExpanded = ref(false);
+const isFileOpen = ref(false);
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
+  isFileOpen.value = !isFileOpen.value;
 };
 
 const emit = defineEmits(['select']);
+
 const selectDepartment = (department) => {
+  isExpanded.value = true;
+  isFileOpen.value = true;
   emit('select', department);
 };
+
+const resetFileOpen = (tf) => {
+  isFileOpen.value = tf;
+}
+
 
 // 트랜지션 훅
 const beforeEnter = (el) => {
