@@ -57,8 +57,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: inflow-v5
-          environment_name: Inflow-v5-env
+          application_name: inflow-v6
+          environment_name: Inflow-v6-env
           version_label: github-action-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
