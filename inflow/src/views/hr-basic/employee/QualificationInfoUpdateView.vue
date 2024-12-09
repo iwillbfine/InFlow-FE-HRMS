@@ -85,6 +85,7 @@
             fs="1.6rem"
           >
             <input
+              id="cell-input"
               type="text"
               v-model="qualList[index][header]"
               :class="{
