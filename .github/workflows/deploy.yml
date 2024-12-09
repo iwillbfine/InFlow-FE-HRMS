@@ -25,12 +25,10 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Build project
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Install AWS CLI
         run: |
@@ -50,7 +48,7 @@ jobs:
           mkdir -p deploy
           cp -r dist deploy/
           cp package.json deploy/
-          cp server.js deploy/
+          cp server.js deploy/ 
           cp Procfile deploy/Procfile
           cd deploy && zip -r deploy.zip .
 
