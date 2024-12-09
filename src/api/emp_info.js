@@ -6,7 +6,7 @@ import router from '@/router';
 // 설명. 로그인
 export const login = async (formData) => {
   try {
-    const response = await apiClient.get(`/login`, formData);
+    const response = await apiClient.post(`/login`, formData);
     return response.data;
   } catch (error) {
     console.error('login 에러:', error);
