@@ -109,10 +109,18 @@ watch(employeeId, (newVal) => {
 <style scoped>
 .content-section {
   width: calc(100% - 36rem) !important;
-  margin-left: 36rem !important;
+  margin-left: 40rem !important;
   margin-top: 8rem;
 }
 .search-emp {
-  top: 19rem;
+  top: 20rem;
+  height: 82% !important;
+}
+.sub-menu-nav {
+  width: 96% !important;
+}
+
+.common-article {
+  width: 93% !important;
 }
 </style>

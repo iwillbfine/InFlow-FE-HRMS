@@ -57,6 +57,7 @@
               />
               <label :for="'check' + rowIndex"></label>
             </div>
+
             <div
               v-for="(value, header) in row"
               :key="header"
@@ -64,6 +65,7 @@
             >
               <input
                 type="text"
+                id="cell-input"
                 v-model="rowsData[rowIndex][header]"
                 :class="{
                   'invalid-row': !isCellValid(
