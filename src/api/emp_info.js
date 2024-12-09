@@ -1,12 +1,21 @@
 // 사원 기본 관련 api 모음
 
 import apiClient from '@/api/axios'; // Axios 설정이 적용된 apiClient 사용
+import axios from 'axios';
 import router from '@/router';
 
 // 설명. 로그인
 export const login = async (formData) => {
   try {
-    const response = await apiClient.post(`/login`, formData);
+    const response = await axios.post(
+      `https://api.inflow.run/api/login`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json', // 요청이 JSON 형식일 경우
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('login 에러:', error);
