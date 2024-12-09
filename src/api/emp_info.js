@@ -8,7 +8,7 @@ import router from '@/router';
 export const login = async (formData) => {
   try {
     const response = await axios.post(
-      `https://inflow-alb-1510076972.ap-northeast-2.elb.amazonaws.com/api/login`,
+      `https://api.inflow.run/api/login`,
       formData,
       {
         headers: {
