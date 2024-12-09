@@ -48,8 +48,9 @@ jobs:
           mkdir -p deploy
           cp -r dist deploy/
           cp package.json deploy/
-          cp server.js deploy/ 
-          cp Procfile deploy/Procfile
+          cp server.js deploy/
+          cp Procfile deploy/
+          cp -r .platform deploy/
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
