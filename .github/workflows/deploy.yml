@@ -25,12 +25,10 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Build project
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Install AWS CLI
         run: |
@@ -50,7 +48,7 @@ jobs:
           mkdir -p deploy
           cp -r dist deploy/
           cp package.json deploy/
-          cp server.js deploy/
+          cp server.js deploy/ 
           cp Procfile deploy/Procfile
           cd deploy && zip -r deploy.zip .
 
@@ -59,8 +57,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: inflow-vue
-          environment_name: Inflow-vue-env
+          application_name: inflow-v3
+          environment_name: Inflow-v3-env
           version_label: github-action-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
