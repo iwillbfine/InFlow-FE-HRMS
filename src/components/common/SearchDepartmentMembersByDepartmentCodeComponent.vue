@@ -18,7 +18,7 @@
         v-model="keyword"
         name="search-emp-input"
         type="text"
-        placeholder="사원명, 사번으로 검색"
+        placeholder="사원명, 사번, 부서명, 전화번호로 검색"
         @keyup.enter="searchEmployee"
       />
       <SearchButton
@@ -62,7 +62,7 @@
       w="100%"
       fs="1.4rem"
     >
-      검색된 부서원이 없습니다.
+      검색된 사원이 없습니다.
     </FlexItem>
   </ArticleItem>
 </template>
@@ -73,8 +73,10 @@ import ArticleItem from '@/components/semantic/ArticleItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import LiItem from '@/components/semantic/LiItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
-import { getMyDepartmentMemberListByDepartmentCode } from '@/api/department';
-import { getEmployeeById } from '@/api/emp_info';
+import {
+  getAllDepartmentMembers,
+  getEmployeesByKeywordOrDepartmentCode,
+} from '@/api/department';
 import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['employee-selected']);
@@ -82,57 +84,42 @@ const emit = defineEmits(['employee-selected']);
 const employeeList = ref([]);
 const isEmpty = ref(true);
 const keyword = ref('');
-const departmentCode = ref('');
 
-const fetchEmployeeData = async () => {
-try {
-  const employeeId = localStorage.getItem('employeeId');
-  const token = localStorage.getItem('accessToken');
-  const employeeData = await getEmployeeById(employeeId, token);
-  departmentCode.value = employeeData.department_code;
-} catch (error) {
-  console.error('사원 정보 조회 중 에러:', error);
-}
-};
+const fetchSearchedEmployeeData = async (keyword) => {
+  const response = await getEmployeesByKeywordOrDepartmentCode(keyword);
 
-const fetchDepartmentMembers = async () => {
-try {
-  const response = await getMyDepartmentMemberListByDepartmentCode(departmentCode.value);
-  
   if (response.success) {
     employeeList.value = response.content;
-    isEmpty.value = employeeList.value.length === 0;
+    isEmpty.value = employeeList.value.isEmpty ? true : false;
   } else {
     employeeList.value = [];
     isEmpty.value = true;
   }
-} catch (error) {
-  console.error('부서 구성원 조회 중 에러:', error);
-  employeeList.value = [];
-  isEmpty.value = true;
-}
+};
+
+const fetchAllEmployeeData = async () => {
+  const response = await getAllDepartmentMembers();
+
+  if (response.success) {
+    employeeList.value = response.content;
+    isEmpty.value = employeeList.value.isEmpty ? true : false;
+  } else {
+    employeeList.value = [];
+    isEmpty.value = true;
+  }
 };
 
 const searchEmployee = () => {
-if (!keyword.value) {
-  fetchDepartmentMembers();
-} else {
-  const filteredList = employeeList.value.filter(emp => 
-    emp.employee_name.includes(keyword.value) || 
-    emp.employee_number.includes(keyword.value)
-  );
-  employeeList.value = filteredList;
-  isEmpty.value = filteredList.length === 0;
-}
+  if (!keyword.value) fetchAllEmployeeData();
+  else fetchSearchedEmployeeData(keyword.value);
 };
 
 const handleSelected = (item) => {
-emit('employee-selected', item);
+  emit('employee-selected', item);
 };
 
-onMounted(async () => {
-await fetchEmployeeData();
-await fetchDepartmentMembers();
+onMounted(() => {
+  fetchAllEmployeeData();
 });
 </script>
 
