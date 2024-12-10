@@ -141,7 +141,7 @@ const modalTxt = ref({});
 const validators = {
   사번: (value) => ids.value[value] !== undefined,
   자격번호: (value) => !qns.value?.includes(`${value}`),
-  언어코드: (value) => langCode.value?.includes(`${value}`),
+  언어코드: (value) => langs.value.map(row => row.language_code)?.includes(`${value}`),
   취득일: (value) => /^\d{4}-\d{2}-\d{2}$/.test(value),
 };
 
@@ -168,11 +168,11 @@ const getEmpIds = async () => {
     ids.value[row['employee_number']] = row['employee_id'];
     ids.value[row['employee_id']] = row['employee_number'];
   });
+  langs.value = tmp2;
   tmp2.forEach((row) => {
     langCode.value[row['language_name']] = row['language_code'];
     langCode.value[row['language_code']] = row['language_name'];
   });
-  langs.value = tmp2;
   qns.value = tmp3.map((row) => `${row['qualification_number']}`);
   loading.value = false;
 };
