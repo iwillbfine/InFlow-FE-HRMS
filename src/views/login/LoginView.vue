@@ -51,8 +51,6 @@ const handleLogin = async () => {
       password: password.value,
     });
 
-    console.log(response);
-
     if (response.success) {
       // 로그인 성공 시 API 응답에서 데이터 추출
       const {
