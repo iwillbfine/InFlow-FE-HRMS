@@ -307,7 +307,7 @@ const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
     Object.entries(row).some(([header, value]) => !isCellValid(value, header))
   );
-
+  console.log("rowsData.value: ", rowsData.value);
   if (invalidRows) {
     window.alert('유효하지 않은 데이터 존재!! 등록 불가!!');
     return;
