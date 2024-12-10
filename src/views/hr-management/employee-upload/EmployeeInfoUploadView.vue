@@ -122,7 +122,7 @@ const headerNames = ref([
   '직무코드',
 ]);
 const defaultRow = Object.fromEntries(
-  headerNames.value.map((key) => [key, null])
+  headerNames.value.map((key) => key!=='monthly_salary'?[key, null]:[key, 0])
 );
 
 const chkHeader = ref(false);
@@ -227,6 +227,9 @@ const addToRowsData = () => {
       });
       rowsData.value.push(rowObj);
     });
+  });
+  rowsData.value.forEach((item) => {
+    item.계약월급 = parseInt(item.계약월급).toLocaleString();
   });
   removeDuplicateRows();
   initializeSelectedRows();
