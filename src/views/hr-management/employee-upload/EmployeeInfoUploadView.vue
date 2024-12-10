@@ -187,7 +187,7 @@ const hideModal = () => {
 
 const setModalTxt = (data) => {
   return {
-    사번: '유효한 사번을 입력하세요.',
+    사번: '새로운 사번을 입력하세요.',
     성별: '선택:\n- 남\n- 여',
     생년월일: '입력 예:\n- YYYY-MM-DD',
     이메일: '입력 예:\n- employee@example.com',
