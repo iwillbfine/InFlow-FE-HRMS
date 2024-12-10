@@ -122,7 +122,7 @@ const headerNames = ref([
   '직무코드',
 ]);
 const defaultRow = Object.fromEntries(
-  headerNames.value.map((key) => key!=='monthly_salary'?[key, null]:[key, 0])
+  headerNames.value.map((key) => key!=='계약월급'?[key, null]:[key, 0])
 );
 
 const chkHeader = ref(false);
