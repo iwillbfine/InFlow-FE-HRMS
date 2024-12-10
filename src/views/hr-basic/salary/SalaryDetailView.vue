@@ -26,7 +26,7 @@
             >국민연금
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip(
                     '과세금액의 4.5%를 공제하며, 비과세금액이 있을 경우 비과세액을 제외한 과세금액에서만 세액이 공제됩니다.',
@@ -34,7 +34,7 @@
                   )
                 "
                 @mouseleave="hideTooltip('국민연금')"
-                >?</i
+                ></i
               >
               <div v-if="isTooltipVisible['국민연금']" class="tooltip">
                 {{ tooltipText['국민연금'] }}
@@ -52,7 +52,7 @@
             >건강보험
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip(
                     '과세금액의 3.545%를 공제하며, 비과세금액이 있을 경우 비과세액을 제외한 과세금액에서만 세액이 공제됩니다.',
@@ -60,7 +60,7 @@
                   )
                 "
                 @mouseleave="hideTooltip('건강보험')"
-                >?</i
+                ></i
               >
               <div v-if="isTooltipVisible['건강보험']" class="tooltip">
                 {{ tooltipText['건강보험'] }}
@@ -78,7 +78,7 @@
             >장기요양
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip(
                     '건강보험 금액의 12.95%를 공제합니다.',
@@ -86,7 +86,7 @@
                   )
                 "
                 @mouseleave="hideTooltip('장기요양')"
-                >?</i
+                ></i
               >
               <div v-if="isTooltipVisible['장기요양']" class="tooltip">
                 {{ tooltipText['장기요양'] }}
@@ -104,7 +104,7 @@
             >고용보험
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip(
                     '과세금액의 0.9%를 공제하며, 비과세금액이 있을 경우 비과세액을 제외한 과세금액에서만 세액이 공제됩니다.',
@@ -112,7 +112,7 @@
                   )
                 "
                 @mouseleave="hideTooltip('고용보험')"
-                >?</i
+                ></i
               >
               <div v-if="isTooltipVisible['고용보험']" class="tooltip">
                 {{ tooltipText['고용보험'] }}
@@ -128,15 +128,13 @@
             >소득세
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip(
-                    '부양가족수와 20세 이하 자녀수에 따라, 국세청의 근로소득 간이세액표 자료를 기준으로 공제됩니다.',
-                    '소득세'
-                  )
+                    '부양가족수와 20세 이하 자녀수에 따라, 국세청의 근로소득 간이세액표 자료를 기준으로 공제됩니다.', '소득세')
                 "
                 @mouseleave="hideTooltip('소득세')"
-                >?</i
+                ></i
               >
               <div v-if="isTooltipVisible['소득세']" class="tooltip">
                 {{ tooltipText['소득세'] }}
@@ -152,13 +150,12 @@
             >지방소득세
             <div class="tooltip-wrapper">
               <i
-                class="tooltip-icon"
+                class="fa fa-question-circle tooltip-icon"
                 @mouseenter="
                   showTooltip('소득세의 10%를 공제합니다.', '지방소득세')
                 "
                 @mouseleave="hideTooltip('지방소득세')"
-                >?</i
-              >
+              ></i>
               <div v-if="isTooltipVisible['지방소득세']" class="tooltip">
                 {{ tooltipText['지방소득세'] }}
               </div>
@@ -445,9 +442,6 @@ onMounted(() => {
 
 .tooltip-icon {
   font-size: 1.5rem;
-  font-family: "Malgun Gothic";
-  color: #fff;
-  background-color: #666;
   margin-left: 2rem;
   width: 2.4rem;
   height: 2.4rem;
@@ -455,5 +449,16 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer; /* 아이콘 클릭 가능하도록 커서 스타일 추가 */
+  background-color: #ffffff; /* 메인 색상 적용 */
+  color: #003566;
+  transition: background-color 0.3s, transform 0.2s; /* 호버 효과와 클릭 효과를 위한 전환 */
 }
+
+.tooltip-icon:hover {
+  background-color: #ffffff; /* 호버 시 조금 어두운 색상으로 변경 */
+  transform: scale(1.1); /* 호버 시 약간 확대 효과 */
+}
+
+
 </style>

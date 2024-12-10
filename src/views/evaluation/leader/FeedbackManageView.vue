@@ -8,7 +8,9 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :startYear="startYear"
+      :length="length" @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -163,6 +165,8 @@ import {
   getIndividualTaskItems,
   getAllTaskTypes
 } from '@/api/evaluation';
+import { getAllDepartmentMembers, getEmployeesByKeywordOrDepartmentCode } from '@/api/department';
+
 
 
 // 상태 관리
@@ -178,12 +182,21 @@ const selectedTask = ref(null);
 const isEditing = ref(false);
 const taskTypes = ref([]);
 
+const employeeList = ref([]);
+const isEmpty = ref(true);
+const keyword = ref(''); 
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
+
 // 피드백 전역 상태 관리
 const feedbackState = ref({
   feedbackId: null,
   content: '',
   evaluationId: null,
 });
+
 
 // 유효성 검증
 const validateSearch = () => {
@@ -243,10 +256,9 @@ const handleHalfSelected = (half) => {
   selectedHalf.value = half;
 };
 
-const handleSelected = (employee) => {
-  selectedEmployee.value = employee;
+const handleSelected = (item) => {
+  selectedEmployee.value = item;
 };
-
 
 const openTaskEvalModal = (task) => {
   selectedTask.value = {
@@ -259,6 +271,36 @@ const openTaskEvalModal = (task) => {
 const closeTaskEvalModal = () => {
   isTaskEvalModalOpen.value = false;
   selectedTask.value = null;
+};
+
+
+const fetchSearchedEmployeeData = async (keyword) => {
+  const response = await getEmployeesByKeywordOrDepartmentCode(keyword);
+
+  if (response.success) {
+    employeeList.value = response.content;
+    isEmpty.value = employeeList.value.isEmpty ? true : false;
+  } else {
+    employeeList.value = [];
+    isEmpty.value = true;
+  }
+};
+
+const fetchAllEmployeeData = async () => {
+  const response = await getAllDepartmentMembers();
+
+  if (response.success) {
+    employeeList.value = response.content;
+    isEmpty.value = employeeList.value.isEmpty ? true : false;
+  } else {
+    employeeList.value = [];
+    isEmpty.value = true;
+  }
+};
+
+const searchEmployee = () => {
+  if (!keyword.value) fetchAllEmployeeData();
+  else fetchSearchedEmployeeData(keyword.value);
 };
 
 // 데이터 조회
@@ -302,27 +344,6 @@ const handleSearch = async () => {
   }
 };
 
-
-const fetchTaskList = async () => {
-  if (
-    !selectedEmployee.value?.department_member_id ||
-    !selectedYear.value ||
-    !selectedHalf.value
-  )
-    return;
-
-  try {
-    const tasksResponse = await getIndividualTaskItems(
-      selectedEmployee.value.department_member_id,
-      selectedYear.value,
-      selectedHalf.value
-    );
-    taskList.value = tasksResponse.content || [];
-  } catch (error) {
-    console.error('과제 목록 조회 중 에러:', error);
-    alert('과제 목록 조회 중 오류가 발생했습니다.');
-  }
-};
 
 const fetchTaskTypes = async () => {
   try {
@@ -392,8 +413,9 @@ const handleOnclick = async () => {
   }
 };
 
-onMounted(async () => {
+onMounted(async () => { 
   await fetchTaskTypes();
+  await fetchAllEmployeeData();
 });
 </script>
 

@@ -8,8 +8,10 @@ import router from '@/router';
 export const login = async (formData) => {
   try {
     const response = await axios.post(
-      `http://api.inflow.run/api/login`,
-      // `http://localhost:5000/api/login`,
+
+      `https://pado.info/api/login`,
+      // `http://localhost:5000/api/login`, ( 로컬 )
+
       formData,
       {
         headers: {

@@ -60,6 +60,8 @@
         <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
         <TableCell fs="1.6rem">
           <YearMonthDropDown
+          :start-year="startYear"
+          :length="length"
             @valid-date-selected="handlePolicyEditDateSelected"
           />
         </TableCell>
@@ -73,7 +75,9 @@
             c="#003566"
           >
             <YearDropDown
-              @valid-date-selected="handleRegistrationYearSelected"
+            :start-year="startYear"
+            :length="length"
+            @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
           </FlexItem>
@@ -132,7 +136,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -253,6 +260,11 @@ const registrationHalf = ref(null);
 // 모달 조회를 위한 상태
 const showPolicyModal = ref(false);
 const selectedPolicyId = ref(null);
+
+// Year 수정 위한 변수
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 // 과제 유형 목록 조회
 const fetchTaskTypes = async () => {
