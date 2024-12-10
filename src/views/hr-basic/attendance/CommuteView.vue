@@ -9,6 +9,8 @@
     </ChangeMonthComponent>
     <SelectYearMonthComponent
       class="select-year-month-section"
+      :start-year="startYear"
+      :length="length"
       @month-selected="goSelectedMonth"
     ></SelectYearMonthComponent>
   </FlexItem>
@@ -86,6 +88,9 @@ const eid = ref(null);
 const curMonth = ref('');
 const commuteList = ref([]);
 const isEmpty = ref(true);
+
+const startYear = ref(new Date().getFullYear() - 4);
+const length = ref(5);
 
 const router = useRouter();
 const route = useRoute();
