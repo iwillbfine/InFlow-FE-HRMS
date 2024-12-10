@@ -1,124 +1,117 @@
 <template>
   <CommonNav :cur="2"></CommonNav>
   <CommonHeader :user-name="employeeName"></CommonHeader>
+
   <MainItem w="calc(100% - 12rem)" h="calc(100vh - 10rem)" fld="row">
-    <!-- 세션 리스트 Section -->
-    <SectionItem class="session-list-section" h="100%" w="18%" fld="column" bgc="#f7f7f7">
-      <h2>대화 이력</h2>
-      <ul>
-        <li
-          v-for="session in sessions"
-          :key="session.session_id"
-          :class="{ active: selectedSession === session.session_id }"
-          @click="selectSession(session.session_id)"
-        >
+  <!-- 세션 리스트 Section -->
+  <div class="session-list-container">
+    <div class="session-list-header">
+      <h2>문의이력</h2>
+      <button class="create-session-button" @click="createSession">
+        <i class="fa-solid fa-plus"></i> 문의추가
+      </button>
+    </div>
+    <ul class="session-list">
+      <li
+        v-for="session in sessions"
+        :key="session.session_id"
+        :class="{ active: selectedSession === session.session_id }"
+        @click="selectSession(session.session_id)"
+      >
         <span style="font-size: 1.4rem; font-weight: 500;"><strong>질문:</strong>
           {{ session.first_question }}
         </span>
-          <p><strong>생성일:</strong> {{ formatDate(session.created_at) }}</p>
-        </li>
-      </ul>
-    </SectionItem>
+        <p><strong>생성일:</strong> {{ formatDate(session.created_at) }}</p>
+      </li>
+    </ul>
+</div>
 
-     <!-- 챗봇 Section -->
-    <SectionItem
-      class="chatbot-section"
-      :class="{ 'center-content': isInit }"
-      h="100%"
-      w="84%"
-      fld="column"
-    >
-      <p v-if="isInit" class="help-text">무엇을 도와드릴까요?</p>
-      <UlItem
-        v-if="!isInit"
-        class="chat-list"
-        w="100%" 
-      >
-        <li
-          v-for="(item, index) in chatList"
-          :key="index"
-          class="chat-item"
-          :class="{
-            'user-chat': item.type === 'user',
-            'bot-chat': item.type === 'bot',
-          }"
-        >
-          <FlexItem
-            v-if="item.type === 'bot'"
-            class="item-header"
-            fld="row"
-            w="100%"
-            bgc="transparent"
-            c="#888"
-            fs="2rem"
+    <!-- 챗봇 Section -->
+    <div class="chatbot-section">
+      <!-- 챗봇 히스토리 -->
+      <div class="chatbot-history">
+        <p v-if="isInit" class="help-text">무엇을 도와드릴까요?</p>
+        <ul v-if="!isInit" class="chat-list">
+          <li
+            v-for="(item, index) in chatList"
+            :key="index"
+            class="chat-item"
+            :class="{
+              'user-chat': item.type === 'user',
+              'bot-chat': item.type === 'bot',
+            }"
           >
-            <RobotIcon></RobotIcon>
-            <CheckButton
-              v-if="isCopied"
-              h="2rem"
-              w="2rem"
-              bgc="transparent"
-              c="#888"
-              fs="2rem"
-            ></CheckButton>
-            <CopyButton
-              v-else
-              h="2rem"
-              w="2rem"
-              bgc="transparent"
-              c="#888"
-              fs="2rem"
-              @click="handleCopy(item.message)"
-            ></CopyButton>
-          </FlexItem>
-          <span v-html="parseMarkdown(item.message)"></span>
-          <!-- 키워드에 따른 라우팅 버튼 -->
-          <div
-            v-if="item.type === 'bot' && keywordLabel"
-            class="keyword-navigation"
-          >
-            <button
-              @click="navigateToKeyword"
-              class="keyword-button"
+            <div
+              v-if="item.type === 'bot'"
+              class="item-header"
             >
-              {{ keywordLabel }}
-            </button>
-          </div>
-        </li>
-      </UlItem>
-      <div class="chat-container" :class="{ 'chat-bottom': !isInit }">
-        <div class="chat-input-wrapper">
-          <textarea
-            class="chat-textarea"
-            placeholder="메세지를 입력하세요."
-            v-model="message"
-            @input="adjustHeight"
-            @keydown="handleKeydown"
-            ref="textarea"
-          ></textarea>
-          <ArrowUpButton
-            class="submit-btn"
-            h="3rem"
-            w="3rem"
-            bgc="#003566"
-            br="50%"
-            @click="handleSubmit"
-          ></ArrowUpButton>
-        </div>
+              <RobotIcon class="robot-icon"></RobotIcon>
+              <CheckButton
+                v-if="isCopied"
+                h="3rem"
+                w="3rem"
+                bgc="transparent"
+                c="#888"
+                fs="2rem"
+              ></CheckButton>
+              <CopyButton
+                v-else
+                h="3rem"
+                w="3rem"
+                bgc="transparent"
+                c="#888"
+                fs="3rem"
+                @click="handleCopy(item.message)"
+              ></CopyButton>
+            </div>
+            <span v-html="parseMarkdown(item.message)"></span>
+            <!-- 키워드에 따른 라우팅 버튼 -->
+            <div
+              v-if="item.type === 'bot' && keywordLabel"
+              class="keyword-navigation"
+            >
+              <button
+                @click="navigateToKeyword"
+                class="keyword-button"
+              >
+                {{ keywordLabel }}
+              </button>
+            </div>
+          </li>
+        </ul>
       </div>
-    </SectionItem>
+    </div>
 
+    <!-- 입력창 Section -->
+    <div class="chat-container">
+      <div class="chat-input-wrapper">
+        <textarea
+          class="chat-textarea"
+          placeholder="메세지를 입력하세요."
+          v-model="message"
+          @input="adjustHeight"
+          @keydown="handleKeydown"
+          ref="textarea"
+        ></textarea>
+        <ArrowUpButton
+          class="submit-btn"
+          h="3rem"
+          w="3rem"
+          bgc="#003566"
+          br="50%"
+          @click="handleSubmit"
+        ></ArrowUpButton>
+      </div>
+    </div>
   </MainItem>
 </template>
+
 
 
 <script setup>
 import CommonNav from '@/components/common/CommonNav.vue';
 import CommonHeader from '@/components/common/CommonHeader.vue';
 import MainItem from '@/components/semantic/MainItem.vue';
-import FlexItem from '@/components/semantic/FlexItem.vue';
-import UlItem from '@/components/semantic/UlItem.vue';
-import SectionItem from '@/components/semantic/SectionItem.vue';
 import ArrowUpButton from '@/components/buttons/ArrowUpButton.vue';
 import CopyButton from '@/components/buttons/CopyButton.vue';
 import CheckButton from '@/components/buttons/CheckButton.vue';
@@ -137,6 +130,7 @@ import 'prismjs/components/prism-cpp';
 import { chatbotQuery, getChatbotSessions, getSessionHistory } from '@/api/chatbot'; // 추가된 import
 
 import { useRouter } from 'vue-router';
+import { watch } from "vue";
 
 const router = useRouter();
 
@@ -159,7 +153,7 @@ const selectedSession = ref(null); // 선택된 세션 ID
 const userMessage = ref(''); // 사용자 입력 메시지
 
 
-
+//질문 메서드
 const fetchAnswer = async (eid, sessionId, query) => {
   const formData = {
     query: query,
@@ -197,7 +191,7 @@ const fetchAnswer = async (eid, sessionId, query) => {
 
     // 스크롤을 강제로 끝까지 이동
     const scrollToBottom = () => {
-      const sessionList = document.querySelector('.session-list-section');
+      const sessionList = document.querySelector('.chatbot-history');
       if (sessionList) {
         sessionList.scrollTop = sessionList.scrollHeight; // 스크롤을 끝까지 이동
       }
@@ -234,7 +228,10 @@ const fetchChatbotSessions = async () => {
   try {
     const response = await getChatbotSessions(eid.value); // API 호출
     if (response.success) {
-      sessions.value = response.content; // 세션 목록 업데이트
+      // 세션 목록을 created_at 기준으로 최신순 정렬
+      sessions.value = response.content.sort((a, b) => 
+        new Date(b.created_at) - new Date(a.created_at)
+      );
     } else {
       console.warn('세션 목록이 비어있습니다.');
     }
@@ -242,6 +239,8 @@ const fetchChatbotSessions = async () => {
     console.error('챗봇 세션 목록 조회 실패:', error);
   }
 };
+
+
 
 // 날짜 포맷 함수
 const formatDate = (dateString) => {
@@ -254,39 +253,24 @@ const formatDate = (dateString) => {
 const fetchSessionHistory = async (sessionId) => {
   try {
     const response = await getSessionHistory(sessionId); // API 호출
+
     if (response.success && response.content && response.content.length > 0) {
-      // 응답 데이터를 사용자와 챗봇 메시지로 구분하여 매핑
-      chatList.value = response.content.map((item) => {
-        if (item.chatbot_type === 'HUMAN') {
-          // 사용자의 메시지
-          return {
-            type: 'user',
-            message: item.chatbot_content, // 사용자 입력 메시지
-          };
-        } else if (item.chatbot_type === 'CHATBOT') {
-          // 챗봇의 응답
-          return {
-            type: 'bot',
-            message: item.chatbot_content, // 챗봇 응답 메시지
-          };
-        } else {
-          console.warn('알 수 없는 chatbot_type:', item.chatbot_type);
-          return null; // 알 수 없는 타입은 무시
-        }
-      }).filter((item) => item !== null); // null 값 필터링
-      console.log('대화 이력:', chatList.value);
+      chatList.value = response.content.map((item) => ({
+        type: item.chatbot_type === "HUMAN" ? "user" : "bot",
+        message: item.chatbot_content,
+      }));
     } else {
-      console.warn('대화 이력이 없습니다.');
-      chatList.value = []; // 대화 이력이 없을 경우 빈 배열
+      console.warn("대화 이력이 없습니다.");
+      chatList.value = []; // 새 세션일 경우 빈 배열로 초기화
     }
   } catch (error) {
-    console.error('대화 이력 조회 실패:', error);
+    console.error("대화 이력 조회 실패:", error);
     chatList.value = [
       {
-        type: 'bot',
-        message: '대화 이력을 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.',
+        type: "bot",
+        message: "대화 이력을 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.",
       },
-    ]; // 오류 발생 시 기본 메시지
+    ];
   }
 };
 
@@ -361,7 +345,6 @@ const adjustHeight = () => {
 };
 
 
-
 const generateSessionId = () => {
   const array = new Uint8Array(24); // 24바이트 랜덤값
   crypto.getRandomValues(array); // 랜덤 값을 생성
@@ -369,6 +352,21 @@ const generateSessionId = () => {
     ''
   ); // 16진수 문자열로 변환
 };
+
+const createSession = () => {
+ // 새로고침
+ window.location.reload(); // 브라우저 새로고침
+};
+
+// watch를 사용하여 isInit 상태 변화 감지
+watch(isInit, async (newValue) => {
+  if (!newValue) {
+    // isInit이 false로 변경되었을 때 실행
+    console.log("isInit이 false로 변경됨, sessions 다시 불러오기");
+    await fetchChatbotSessions(); // 세션 목록 다시 불러오기
+  }
+});
+
 
 const handleKeydown = (event) => {
   if (event.key === 'Enter') {
@@ -411,20 +409,25 @@ const handleSubmit = () => {
   fetchAnswer(eid.value, sessionId.value, message.value);
   message.value = '';
 
+
+  // 스크롤을 강제로 끝까지 이동
+  const scrollToBottom = () => {  
+  const sessionList = document.querySelector('.chatbot-history');
+  if (sessionList) {
+    sessionList.scrollTop = sessionList.scrollHeight; // 스크롤을 끝까지 이동
+  }
+};  
+
+  // 응답 후 스크롤을 최하단으로 이동
   nextTick(() => {
     adjustHeight(); // 메시지 제출 후 textarea 크기 조정
     setTimeout(() => {
+      scrollToBottom(); // 스크롤을 강제로 끝까지 이동
       scrollToBottom(); // 페이지 스크롤 최하단 이동
     }, 50); // 50ms 지연 후 스크롤 이동
   });
 };
 
-const scrollToBottom = () => {
-  window.scrollTo({
-    top: document.documentElement.scrollHeight,
-    behavior: 'smooth', // 부드럽게 스크롤
-  });
-};
 
 const decodeHtmlEntities = (text) => {
   const textarea = document.createElement('textarea');
@@ -484,71 +487,100 @@ onMounted(() => {
 
 <style scoped>
 /* 세션 리스트 스타일 */
-.session-list-section {
-  position: fixed; /* 왼쪽에 고정 */
-  top: 10rem; /* 헤더 높이에 맞춰 위치 설정 */
-  height: calc(100vh - 10rem); /* 전체 높이에서 헤더 높이를 뺀 값 */
-  width: 18%; /* SectionItem의 너비 */
-  padding: 2rem;
+.session-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
   border-right: 1px solid #ddd;
-  overflow-y: auto; /* 스크롤 활성화 */
-  overflow-x: hidden; /* 가로 스크롤 방지 */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-  z-index: 1; /* 다른 요소 위로 올림 */
+  width: 18%; /* 기존 세션 리스트의 너비 */
 }
 
-.session-list-section h2 {
-  font-size: 2rem;
+/* 헤더 영역 스타일 */
+.session-list-header {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 양쪽에 배치 */
+  align-items: center;
+  padding: 1rem; /* 내부 여백 */
+  border-bottom: 1px solid #ddd; /* 구분선 */
+}
+
+.session-list-header h2 {
+  font-size: 2rem; /* 제목 크기 */
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin: 0; /* 여백 제거 */
+  align-items: center;
+  height: 100%; /* 부모 컨테이너 높이 기준으로 정렬 */
 }
 
-.session-list-section ul {
+.create-session-button {
+  background-color: #003566; /* 버튼 배경색 */
+  color: #fff; /* 버튼 텍스트 색상 */
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem; /* 버튼 텍스트 크기 */
+  margin-top: 0.6rem; /* 상단 간격 추가 */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+  
+}
+
+.create-session-button:hover {
+  background-color: #0056b3; /* 호버 시 배경색 */
+}
+
+.session-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.session-list-section li {
+.session-list li {
   padding: 1.5rem 1rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
+  margin-right: 1rem;
   background-color: #ddd;
-  border-radius: 1rem;
+  border-radius: 4px;
   border: 1px solid #ddd;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.session-list-section li:hover {
+.session-list li:hover {
   background-color: #e9f5ff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.session-list-section li.active {
+.session-list li.active {
   background-color: #004c99;
   color: #fff;
 }
 
-.session-list-section li p,
-.session-list-section li span {
+.session-list li p,
+.session-list li span {
   margin: 0.5rem 0;
   font-size: 1.4rem;
   line-height: 1.6;
   word-wrap: break-word; /* 긴 텍스트 줄바꿈 */
 }
-
 /* 챗봇 영역 스타일 */
 .chatbot-section {
-  margin-left: 20%; /* 세션 리스트 너비만큼 마진 추가 */
-  width: 84%; /* 나머지 공간 차지 */
-  
-  padding: 2rem;
-  overflow-y: auto;
+  position: static; /* 상위 컨테이너의 기준 제거 */
+  flex: 1; /* 남은 공간을 모두 차지 */
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  height: calc(100vh - 10rem); /* 입력창 높이를 제외한 나머지 높이 */
+  overflow: hidden; /* 넘치는 내용 숨김 */
 }
 
-.center-content {
-  justify-content: center;
-  margin-top: -8rem;
+/* 챗봇 히스토리 */
+.chatbot-history {
+  flex: 1; /* 남은 공간 모두 사용 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  padding: 1rem;
+  background-color: #f7f7f7;
 }
 
 .help-text {
@@ -558,19 +590,27 @@ onMounted(() => {
   margin-bottom: 4rem;
 }
 
+/* 입력창 고정 */
 .chat-container {
+  position: fixed; /* 화면 하단에 고정 */
+  bottom: 2%; /* 화면 하단에서 0만큼 띄움 */
+  left: 28%; /* 히스토리 섹션의 너비만큼 띄움 */
+  width: calc(100% - 38%); /* 히스토리 제외 나머지 공간 차지 */
+  height: 8rem; /* 고정된 높이 */
+  background-color: #ffffff;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: #fff;
-  width: 100%;
-  padding-bottom: 4rem;
-  z-index: 2;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0 1rem;
+  z-index: 10; /* 다른 요소 위로 */
 }
+
 
 .chat-list {
   width: 100%;
   display: flex;
+  flex-direction: column; /* 세로 정렬 */
   justify-content: center;
   align-items: center;
   gap: 4rem;
@@ -578,6 +618,7 @@ onMounted(() => {
   padding-bottom: 20rem;
 }
 
+/* 대화 아이템 스타일 */
 .chat-item {
   display: flex;
   display: flex;
@@ -612,7 +653,6 @@ onMounted(() => {
   text-align: right; /* 텍스트 오른쪽 정렬 */
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
 }
-
 .chat-item span {
   display: block;
   word-wrap: break-word; /* 구버전 호환 */
@@ -620,32 +660,22 @@ onMounted(() => {
   white-space: pre-wrap; /* 공백 및 줄바꿈 처리 */
 }
 
-.chat-bottom {
-  position: fixed;
-  width: 100rem;
-  bottom: 0;
-}
 
+/* 입력창 내부 스타일 */
 .chat-input-wrapper {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1rem;
   width: 100%;
-  max-width: 80rem;
-  padding: 0.8rem;
-  background-color: #f4f4f4;
-  border: none;
-  border-radius: 2.4rem;
-  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
 }
 
 .chat-textarea {
-  box-sizing: border-box;
-  resize: none;
-  padding: 1rem;
-  font-size: 1.6rem;
-  line-height: 2rem;
-  max-height: 16rem; /* 최대 높이 */
+  flex: 1; /* 남은 공간 모두 차지 */
+  height: 100%; /* 입력창 높이 맞춤 */
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  resize: none; /* 크기 조정 비활성화 */
 }
 
 /* 키워드 네비게이션 버튼 */
@@ -678,12 +708,48 @@ onMounted(() => {
 
 /* 제출 버튼 스타일 */
 .submit-btn {
-  align-self: flex-end;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: #003566;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .item-header {
+  display: flex; /* Flexbox 활성화 */
+  flex-direction: row; /* 기본값이지만 명시적으로 설정 */
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1rem;
 }
+
+/* 스크롤바 스타일 */
+.chatbot-history,
+.session-list-section {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f0f0f0;
+}
+
+.chatbot-history::-webkit-scrollbar,
+.session-list-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatbot-history::-webkit-scrollbar-thumb,
+.session-list-section::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* 로봇 아이콘 */
+.robot-icon {
+  width: 5rem;
+  height: 5rem;
+}
+
+
 </style>
