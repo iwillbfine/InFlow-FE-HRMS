@@ -411,12 +411,13 @@ onMounted(() => {
   color: #000;
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
   white-space: nowrap;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9999; /* 최상위 */
   pointer-events: none; /* 툴팁 이벤트 차단 */
-  transform: translate(-50%, -100%); /* 기준점 위로 띄움 */
+  transform: translate(-50%, -130%); /* 기준점 위로 띄움 */
 }
 
 .tooltip::after {
@@ -438,7 +439,15 @@ onMounted(() => {
 
 .tooltip-icon {
   font-size: 1.5rem;
-  color: #0063bf;
+  font-family: "Malgun Gothic";
+  color: #fff;
+  background-color: #666;
   margin-left: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
