@@ -8,7 +8,9 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :startYear="startYear"
+      :length="length" @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -183,6 +185,10 @@ const taskTypes = ref([]);
 const employeeList = ref([]);
 const isEmpty = ref(true);
 const keyword = ref(''); 
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 // 피드백 전역 상태 관리
 const feedbackState = ref({

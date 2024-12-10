@@ -54,7 +54,9 @@
             c="#003566"
           >
             <YearDropDown
-              @valid-date-selected="handleRegistrationYearSelected"
+            :start-year="startYear"
+            :length="length"
+            @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
           </FlexItem>
@@ -87,7 +89,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -184,6 +189,11 @@ const registrationHalf = ref(null);
 
 const isUpdateModalOpen = ref(false);
 const selectedGrade = ref(null);
+
+// Year 드롭다운 관련 상태
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 const gradeForm = ref({
   grade_name: '',
