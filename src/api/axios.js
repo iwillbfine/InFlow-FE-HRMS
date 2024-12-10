@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'https://api.inflow.run/api', // API 기본 경로
+  baseURL: 'http://api.inflow.run/api', // API 기본 경로
   // baseURL: 'http://localhost:5000/api', // API 기본 경로 ( 로컬 )
 
 
