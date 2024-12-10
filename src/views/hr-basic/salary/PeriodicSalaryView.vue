@@ -2,11 +2,15 @@
   <FlexItem class="content-header" fld="row" h="1rem" w="90%">
     <YearMonthDropDown
       label="시작 월"
+      :startYear="startYear"
+      :length="length"
       @valid-date-selected="updateStartMonth"
     ></YearMonthDropDown>
     <div class="text">~</div>
     <YearMonthDropDown
       label="종료 월"
+      :startYear="startYear"
+      :length="length"
       @valid-date-selected="updateEndMonth"
     ></YearMonthDropDown>
     <ButtonItem
@@ -71,6 +75,10 @@ import { getPeriodicPayments } from '@/api/payroll.js';
 const payments = ref([]);
 const startDate = ref('');
 const endDate = ref('');
+
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 // 시작 월 선택
 const updateStartMonth = (date) => {
