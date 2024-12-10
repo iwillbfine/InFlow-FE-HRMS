@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'https://api.inflow.run/api', // API 기본 경로
+  baseURL: 'http://api.inflow.run/api', // API 기본 경로
 });
 
 // 요청 인터셉터: 모든 요청에 Authorization 헤더 추가
