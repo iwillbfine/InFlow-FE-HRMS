@@ -9,7 +9,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -156,6 +159,10 @@ const selectedHalf = ref(null);
 const selectedType = ref(null);
 const selectedTask = ref(null);
 const employeeId = ref(localStorage.getItem('employeeId'));
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 const emit = defineEmits(['yearSelected', 'halfSelected']);
 

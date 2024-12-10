@@ -8,7 +8,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -141,6 +144,10 @@ const isLoading = ref(false);
 const taskItems = ref([]);
 const selectedTasks = ref([]);
 const errorMessage = ref('');
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 // 과제 유형 매핑
 const taskTypes = ref([]);
