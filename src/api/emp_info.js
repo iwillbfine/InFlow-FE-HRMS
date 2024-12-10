@@ -8,7 +8,7 @@ import router from '@/router';
 export const login = async (formData) => {
   try {
     const response = await axios.post(
-      `https://api.inflow.run/api/login`,
+      `http://api.inflow.run/api/login`,
       formData,
       {
         headers: {
