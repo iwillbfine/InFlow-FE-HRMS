@@ -6,9 +6,9 @@
   <!-- 세션 리스트 Section -->
   <div class="session-list-container">
     <div class="session-list-header">
-      <h2>문의이력</h2>
+      <h2>대화 이력</h2>
       <button class="create-session-button" @click="createSession">
-        <i class="fa-solid fa-plus"></i> 문의추가
+        <i class="fa-solid fa-comment-dots"></i> 대화 생성
       </button>
     </div>
     <ul class="session-list">
@@ -19,7 +19,7 @@
         @click="selectSession(session.session_id)"
       >
         <span style="font-size: 1.4rem; font-weight: 500;"><strong>질문:</strong>
-          {{ session.first_question }}
+          {{ truncateText(session.first_question, 10  ) }}
         </span>
         <p><strong>생성일:</strong> {{ formatDate(session.created_at) }}</p>
       </li>
@@ -48,19 +48,19 @@
               <RobotIcon class="robot-icon"></RobotIcon>
               <CheckButton
                 v-if="isCopied"
-                h="3rem"
-                w="3rem"
+                h="2rem"
+                w="2rem"
                 bgc="transparent"
                 c="#888"
                 fs="2rem"
               ></CheckButton>
               <CopyButton
                 v-else
-                h="3rem"
-                w="3rem"
+                h="2rem"
+                w="2rem"
                 bgc="transparent"
                 c="#888"
-                fs="3rem"
+                fs="2rem"
                 @click="handleCopy(item.message)"
               ></CopyButton>
             </div>
@@ -103,6 +103,7 @@
         ></ArrowUpButton>
       </div>
     </div>
+    
   </MainItem>
 </template>
 
@@ -240,7 +241,13 @@ const fetchChatbotSessions = async () => {
   }
 };
 
-
+//텍스트 청킹하기
+const truncateText = (text, maxLength) => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
+  }
+  return text;
+};
 
 // 날짜 포맷 함수
 const formatDate = (dateString) => {
@@ -250,6 +257,7 @@ const formatDate = (dateString) => {
 };
 
 // 특정 세션의 대화 이력 가져오기
+// 특정 세션의 대화 이력 가져오기
 const fetchSessionHistory = async (sessionId) => {
   try {
     const response = await getSessionHistory(sessionId); // API 호출
@@ -258,7 +266,19 @@ const fetchSessionHistory = async (sessionId) => {
       chatList.value = response.content.map((item) => ({
         type: item.chatbot_type === "HUMAN" ? "user" : "bot",
         message: item.chatbot_content,
+        selectedKeyword: item.selected_keyword, // selected_keyword 추가
       }));
+
+      // 마지막 응답의 selected_keyword를 기준으로 버튼 라벨 설정
+      const lastBotResponse = response.content.reverse().find(
+        (item) => item.chatbot_type === "CHATBOT" && item.selected_keyword
+      );
+
+      if (lastBotResponse && lastBotResponse.selected_keyword !== "Nothing") {
+        selectedKeyword.value = lastBotResponse.selected_keyword;
+      } else {
+        selectedKeyword.value = null; // 유효한 키워드가 없을 경우 초기화
+      }
     } else {
       console.warn("대화 이력이 없습니다.");
       chatList.value = []; // 새 세션일 경우 빈 배열로 초기화
@@ -502,7 +522,6 @@ onMounted(() => {
   justify-content: space-between; /* 제목과 버튼을 양쪽에 배치 */
   align-items: center;
   padding: 1rem; /* 내부 여백 */
-  border-bottom: 1px solid #ddd; /* 구분선 */
 }
 
 .session-list-header h2 {
@@ -534,6 +553,7 @@ onMounted(() => {
   list-style: none;
   padding: 0;
   margin: 0;
+  
 }
 
 .session-list li {
@@ -541,21 +561,20 @@ onMounted(() => {
   margin-top: 1rem;
   margin-bottom: 1rem;
   margin-right: 1rem;
-  background-color: #ddd;
+  background-color: #f7f7f7f7;
   border-radius: 4px;
-  border: 1px solid #ddd;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .session-list li:hover {
-  background-color: #e9f5ff;
+  background-color: #e0e0e0;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .session-list li.active {
-  background-color: #004c99;
-  color: #fff;
+  background-color: #787878;
+  color: #f7f7f7f7;
 }
 
 .session-list li p,
@@ -572,15 +591,17 @@ onMounted(() => {
   display: flex;
   flex-direction: column; /* 세로 정렬 */
   height: calc(100vh - 10rem); /* 입력창 높이를 제외한 나머지 높이 */
+  background-color: #ffffff;
   overflow: hidden; /* 넘치는 내용 숨김 */
 }
 
 /* 챗봇 히스토리 */
 .chatbot-history {
-  flex: 1; /* 남은 공간 모두 사용 */
+  /* flex: 1; 남은 공간 모두 사용 */
+  height: calc(100% - 10rem); /* 부모 컨테이너 높이에서 8rem을 뺀 값으로 설정 */
   overflow-y: auto; /* 세로 스크롤 활성화 */
   padding: 1rem;
-  background-color: #f7f7f7;
+  background-color: #ffffff;
 }
 
 .help-text {
@@ -594,13 +615,13 @@ onMounted(() => {
 .chat-container {
   position: fixed; /* 화면 하단에 고정 */
   bottom: 2%; /* 화면 하단에서 0만큼 띄움 */
-  left: 28%; /* 히스토리 섹션의 너비만큼 띄움 */
-  width: calc(100% - 38%); /* 히스토리 제외 나머지 공간 차지 */
-  height: 8rem; /* 고정된 높이 */
-  background-color: #ffffff;
+  left: 32%; /* 히스토리 섹션의 너비만큼 띄움 */
+  width: calc(100% - 40%); /* 히스토리 제외 나머지 공간 차지 */
+  height: 10rem; /* 고정된 높이 */
+  background-color: #f7f7f7;
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 10px;
   padding: 0 1rem;
   z-index: 10; /* 다른 요소 위로 */
@@ -608,14 +629,12 @@ onMounted(() => {
 
 
 .chat-list {
-  width: 100%;
   display: flex;
   flex-direction: column; /* 세로 정렬 */
   justify-content: center;
   align-items: center;
-  gap: 4rem;
+  gap: 3rem;
   padding: 0rem 1rem;
-  padding-bottom: 20rem;
 }
 
 /* 대화 아이템 스타일 */
@@ -625,7 +644,7 @@ onMounted(() => {
   justify-content: center;
   align-items: left;
   flex-direction: column;
-  margin-bottom: 1rem; /* 메시지 간 간격 */
+  margin-bottom: 1.8rem; /* 메시지 간 간격 */
   border-radius: 1.5rem;
   max-width: 80rem;
   padding: 1rem;
@@ -633,22 +652,24 @@ onMounted(() => {
   line-height: 1.8rem;
 }
 .bot-chat {
+  margin-left: 10%;
   align-self: flex-start; /* 왼쪽 정렬 */
   width: auto; /* 너비를 컨텐츠에 맞게 */
-  max-width: 70%; /* 최대 너비 설정 */
+  max-width: 48%; /* 최대 너비 설정 */
   background-color: #f7f7f7; /* 봇 메시지 배경색 */
-  border-radius: 1.5rem; /* 둥근 모서리 */
+  border-radius: 7px; /* 둥근 모서리 */
   padding: 1rem 1.5rem; /* 내부 여백 */
   text-align: left; /* 텍스트 왼쪽 정렬 */
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
 }
 
-.user-chat {
+.user-chat { 
+  margin-right: 10%;
   align-self: flex-end; /* 오른쪽 정렬 */
   width: auto; /* 너비를 컨텐츠에 맞게 */
-  max-width: 70%; /* 최대 너비 설정 */
-  background-color: #d9ecfb; /* 사용자 메시지 배경색 */
-  border-radius: 1.5rem; /* 둥근 모서리 */
+  max-width: 48%; /* 최대 너비 설정 */
+  background-color: #e6e6e6; /* 사용자 메시지 배경색 */
+  border-radius: 7px; /* 둥근 모서리 */
   padding: 1rem 1.5rem; /* 내부 여백 */
   text-align: right; /* 텍스트 오른쪽 정렬 */
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
@@ -686,12 +707,12 @@ onMounted(() => {
 
 .keyword-button {
   display: inline-block; /* 버튼을 인라인으로 */
-  margin-left: 0; /* 왼쪽 여백을 없앰 */  padding: 0.8rem 2rem;
+  margin-left: 0; /* 왼쪽 여백을 없앰 */  padding: 0.4rem 0.8rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 3px;
   background-color: #003356;
   color: #fff;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -743,12 +764,6 @@ onMounted(() => {
 .session-list-section::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 4px;
-}
-
-/* 로봇 아이콘 */
-.robot-icon {
-  width: 5rem;
-  height: 5rem;
 }
 
 
