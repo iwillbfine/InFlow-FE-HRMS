@@ -2,6 +2,8 @@
   <SectionItem fld="row">
     <YearMonthDropDown
       @valid-date-selected="updateSelectedMonth"
+      :start-year="props.startYear"
+      :length="props.length"
     ></YearMonthDropDown>
     <ButtonItem
       h="3.6rem"
@@ -21,6 +23,17 @@ import ButtonItem from '@/components/semantic/ButtonItem.vue';
 import SectionItem from '@/components/semantic/SectionItem.vue';
 import YearMonthDropDown from '@/components/dropdowns/YearMonthDropDown.vue';
 import { ref } from 'vue';
+
+const props = defineProps({
+  startYear: {
+    type: Number,
+    default: 1951,
+  },
+  length: {
+    type: Number,
+    default: 101,
+  }
+})
 
 const selectedMonth = ref('');
 

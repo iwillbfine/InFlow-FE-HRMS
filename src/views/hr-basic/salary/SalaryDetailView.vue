@@ -2,6 +2,8 @@
   <FlexItem class="content-header" fld="row" h="6rem" w="90%">
     <SelectYearMonthComponent
       class="select-month-year-section"
+      :startYear="startYear"
+      :length="length"
       @month-selected="goSelectedMonth"
     ></SelectYearMonthComponent>
   </FlexItem>
@@ -208,6 +210,10 @@ const employeeId = ref(null);
 const year = ref(null);
 const month = ref(null);
 const payments = ref({});
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 // 툴팁 상태를 객체로 관리
 const tooltipText = ref({});
