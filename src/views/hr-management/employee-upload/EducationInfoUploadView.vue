@@ -105,7 +105,7 @@
 import CommonArticle from '@/components/common/CommonArticle.vue';
 import * as xlsx from 'xlsx';
 import { ref, onMounted } from 'vue';
-import { getDoc, saveData, getEmpId } from '@/api/emp_attach';
+import { getDoc, saveData, getAllEmpId } from '@/api/emp_attach';
 
 const headerNames = ref(['사번', '학교명', '입학일', '졸업일', '학위', '전공']);
 const defaultRow = Object.fromEntries(

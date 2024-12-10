@@ -278,7 +278,7 @@ const mapping = () => {
     email: row['이메일'],
     phone_number: row['휴대폰번호'],
     join_type: row['입사유형'],
-    monthly_salary: row['계약월급'],
+    monthly_salary: parseInt(row['계약월급'].replace(/,/g, ''), 10),
     street_address: row['도로명 주소'],
     detailed_address: row['상세주소'],
     postcode: row['우편번호'],
