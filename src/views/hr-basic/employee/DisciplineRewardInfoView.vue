@@ -91,12 +91,7 @@ const fetchDate = async (empId) => {
   const response = await getDisciplineReward(empId);
 
   if (response) {
-    const sortedResponse = sortByDate(
-      response[0].discipline_rewards.map((row) => ({
-        ...row,
-        created_at: row['created_at'].split('T')[0],
-      }))
-    );
+    const sortedResponse = sortByDate(response);
     drList.value = sortedResponse;
     showList.value = drList.value;
     isEmpty.value = drList.value.length === 0;

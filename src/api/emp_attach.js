@@ -249,7 +249,7 @@ export const getCareersById = async (empId) => {
 
 export const getDisciplineReward = async (empId) => {
   try {
-    const response = await apiClient.get(`/employees/attached/${empId}`);
+    const response = await apiClient.get(`/employees/discipline-rewards/${empId}`);
     return response.data.content;
   } catch (error) {
     console.error(
