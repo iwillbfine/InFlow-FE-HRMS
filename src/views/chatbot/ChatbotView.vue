@@ -93,14 +93,29 @@
           @keydown="handleKeydown"
           ref="textarea"
         ></textarea>
-        <ArrowUpButton
-          class="submit-btn"
-          h="3rem"
-          w="3rem"
-          bgc="#003566"
-          br="50%"
-          @click="handleSubmit"
-        ></ArrowUpButton>
+
+        <div>
+        <!-- 로딩 상태 -->
+        <template v-if="isLoading">
+          <div class="spinner-wrapper">
+            <i class="fas fa-spinner fa-spin"></i> <!-- 로딩 아이콘 -->
+          </div>
+        </template>
+
+        <!-- 기본 상태 -->
+        <template v-else>
+          <ArrowUpButton
+            class="submit-btn"
+            h="3rem"
+            w="3rem"
+            bgc="#003566"
+            br="50%"
+            @click="handleSubmit"
+          />
+        </template>
+      </div>
+
+
       </div>
     </div>
     
@@ -152,9 +167,8 @@ const sessions = ref([]); // 세션 목록
 const chatHistory = ref([]); // 대화 이력
 const selectedSession = ref(null); // 선택된 세션 ID
 const userMessage = ref(''); // 사용자 입력 메시지
+const isLoading = ref(false); // 로딩 상태 변수
 
-
-//질문 메서드
 const fetchAnswer = async (eid, sessionId, query) => {
   const formData = {
     query: query,
@@ -163,56 +177,46 @@ const fetchAnswer = async (eid, sessionId, query) => {
   };
 
   try {
+    isLoading.value = true; // 로딩 시작
+    chatList.value.push({
+      type: 'bot',
+      message: 'AI가 응답을 생성중입니다. 잠시만 기다려 주세요...', // 로딩 중 메시지 추가
+    });
+
     const response = await chatbotQuery(formData);
 
     console.log('챗봇 응답:', response);
 
     if (response && response.content) {
-      // 응답 메시지에서 연속된 \n을 하나로 압축
-      const sanitizedMessage = response.content.answer.replace(/\n+/g, '\n');
+      // 로딩 중 메시지 제거
+      chatList.value.pop();
 
-      // 응답 메시지 추가
+      const sanitizedMessage = response.content.answer.replace(/\n+/g, '\n');
       chatList.value.push({
         type: 'bot',
         message: sanitizedMessage,
       });
 
-      // 선택된 키워드가 있다면 로그 출력 (추가 활용 가능)
       if (response.content.selected_keyword) {
         selectedKeyword.value = response.content.selected_keyword;
         console.log('선택된 키워드:', selectedKeyword.value);
       }
     } else {
-      // 응답 데이터가 비어있을 경우 기본 메시지 추가
+      chatList.value.pop(); // 로딩 중 메시지 제거
       chatList.value.push({
         type: 'bot',
         message: '챗봇에서 유효한 응답을 받지 못했습니다. 다시 시도해주세요.',
       });
-    } 
-
-    // 스크롤을 강제로 끝까지 이동
-    const scrollToBottom = () => {
-      const sessionList = document.querySelector('.chatbot-history');
-      if (sessionList) {
-        sessionList.scrollTop = sessionList.scrollHeight; // 스크롤을 끝까지 이동
-      }
-    };  
-
-    // 응답 후 스크롤을 최하단으로 이동
-    nextTick(() => {
-      setTimeout(() => {
-        scrollToBottom(); // 스크롤을 강제로 끝까지 이동
-        scrollToBottom(); // 페이지 스크롤 최하단 이동
-      }, 50); // 50ms 지연 후 스크롤 이동
-    });
+    }
   } catch (error) {
     console.error('챗봇 응답 처리 중 오류:', error);
-
-    // 에러 메시지 추가
+    chatList.value.pop(); // 로딩 중 메시지 제거
     chatList.value.push({
       type: 'bot',
       message: '오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
     });
+  } finally {
+    isLoading.value = false; // 로딩 종료
   }
 };
 
@@ -764,6 +768,31 @@ onMounted(() => {
 .session-list-section::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 4px;
+}
+
+.spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  width: 3rem;
+  background-color: #003566; /* 로딩 배경색 */
+  border-radius: 50%;
+}
+
+.fa-spinner {
+  animation: spin 1s linear infinite; /* 기본 Font Awesome 스타일 */
+  font-size: 1.5rem;
+  color: #ffffff; /* 아이콘 색상 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
