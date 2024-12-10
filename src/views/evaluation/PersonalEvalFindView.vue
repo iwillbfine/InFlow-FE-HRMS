@@ -7,7 +7,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -95,6 +98,10 @@ const selectedYear = ref(null);
 const selectedHalf = ref(null);
 const isSearched = ref(false);
 const isEmpty = ref(true);
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 // 로컬 스토리지에서 사용자 ID 가져오기
 const eid = ref(localStorage.getItem('employeeId'));

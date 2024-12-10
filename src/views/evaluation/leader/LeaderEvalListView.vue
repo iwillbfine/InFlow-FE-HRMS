@@ -7,7 +7,10 @@
       fw="500"
       c="#003566"
     >
-      <YearDropDown @valid-date-selected="handleYearSelected" />
+      <YearDropDown
+      :start-year="startYear"
+      :length="length"
+      @valid-date-selected="handleYearSelected" />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -98,6 +101,10 @@ const finalGrade = ref('-');
 const taskList = ref([]);
 const taskTypes = ref([]);
 const evaluationId = ref(null);
+
+const currentYear = ref(new Date().getFullYear())
+const startYear = ref(currentYear.value - 10 )
+const length = ref(40)
 
 // 피드백 조회 함수
 const fetchFeedback = async () => {
