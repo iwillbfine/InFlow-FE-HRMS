@@ -45,7 +45,8 @@ apiClient.interceptors.response.use(
 
         // 리프레시 토큰으로 새로운 액세스 토큰 요청
         const { data } = await axios.post(
-          'https://api.inflow.run/api/auth/refresh-token',
+          'https://pado.info/api/auth/refresh-token',
+          // 'http://locahost:5000/api/auth/refresh-token', // 로컬
           { refresh_token: refreshToken }, // JSON 형식으로 데이터 전달
           {
             headers: {

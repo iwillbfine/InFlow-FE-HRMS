@@ -97,6 +97,13 @@
   </CommonArticle>
   <hr />
   <CommonArticle label="등록된 휴가 정책" w="95%">
+    <YearDropDown
+      class="query-year-dropdown"
+      @valid-date-selected="updateQueryYear"
+      :start-year="startYear"
+      :length="length"
+      >
+    </YearDropDown>
     <TableItem gtc="2.5fr 1fr 1fr 5fr 1.5fr 1fr 1fr 1fr">
       <TableRow>
         <TableCell th fs="1.6rem" topl>휴가 정책명</TableCell>
@@ -187,6 +194,11 @@ const selectedVacationType = ref(null);
 const selectedYear = ref(null);
 const selectedPaidStatus = ref('');
 const selectedAutoAllocationCycle = ref('');
+
+const startYear = ref(new Date().getFullYear() - 10)
+const length = ref(21)
+
+const queryYear = ref(null);
 
 const vacationPolicyStatusList = [
   { id: 'NORMAL', name: '모든 사원' },
@@ -279,6 +291,11 @@ const updateSelectedPaidStatus = (status) => {
 const updateSelectedAutoAllocationCycle = (cycle) => {
   selectedAutoAllocationCycle.value = cycle;
 };
+
+const updateQueryYear = async (year) => {
+  queryYear.value = year;
+  await fetchVacationPolicyData(year);
+}
 
 const handleOnclick = async () => {
   if (!vacationPolicyName.value) {
@@ -385,6 +402,10 @@ hr {
   border: 1px solid #dadada;
 }
 
+.common-article {
+  position: relative;
+}
+
 .h-7 {
   height: 7rem !important;
 }
@@ -410,6 +431,12 @@ hr {
 .submit-btn {
   margin-top: 3.2rem;
   align-self: center;
+}
+
+.query-year-dropdown {
+  position: absolute;
+  top: -1rem;
+  right: 0;
 }
 
 .empty-message {
