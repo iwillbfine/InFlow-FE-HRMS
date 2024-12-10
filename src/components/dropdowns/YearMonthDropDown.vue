@@ -33,7 +33,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  startYear: {
+    type: Number,
+    default: 1951,
+  },
+  length: {
+    type: Number,
+    default: 101,
+  }
 });
+
+console.log(props);
 
 const emit = defineEmits(['valid-date-selected']);
 
@@ -72,9 +82,9 @@ const yearList = ref(
         id: currentYear + i,
         name: `${currentYear + i}`,
       }))
-    : Array.from({ length: 101 }, (_, i) => ({
-        id: 1951 + i,
-        name: `${1951 + i}`,
+    : Array.from({ length: props.length }, (_, i) => ({
+        id: props.startYear + i,
+        name: `${props.startYear + i}`,
       }))
 );
 

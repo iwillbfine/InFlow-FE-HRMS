@@ -1,7 +1,27 @@
 // 사원 기본 관련 api 모음
 
 import apiClient from '@/api/axios'; // Axios 설정이 적용된 apiClient 사용
+import axios from 'axios';
 import router from '@/router';
+
+// 설명. 로그인
+export const login = async (formData) => {
+  try {
+    const response = await axios.post(
+      `https://api.inflow.run/api/login`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'application/json', // 요청이 JSON 형식일 경우
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('login 에러:', error);
+    throw error; // 에러를 호출한 쪽으로 전달
+  }
+};
 
 // 설명. 홈 화면 일정 조회
 export const getHomeInfo = async (employeeId, month) => {
@@ -29,7 +49,7 @@ export const getEmployeeById = async (employeeId, token) => {
     return response.data.content; // 사원 정보를 반환
   } catch (error) {
     console.error('getEmployeeById 에러:', error.response?.data || error);
-    router.push("/login");
+    router.push('/login');
     throw error; // 에러를 호출한 쪽으로 전달
   }
 };

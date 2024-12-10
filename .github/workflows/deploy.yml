@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -46,7 +46,7 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp -r dist deploy/
+          cp -r dist deploy/  # dist 디렉토리를 포함
           cp package.json deploy/
           cp server.js deploy/ 
           cp Procfile deploy/Procfile
@@ -57,8 +57,9 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: inflow-v3
-          environment_name: Inflow-v3-env
+          application_name: inflow-v6
+          environment_name: Inflow-v6-env
           version_label: github-action-${{ github.sha }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
+          wait_for_environment_recovery: 180
