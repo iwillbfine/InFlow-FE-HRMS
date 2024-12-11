@@ -486,7 +486,6 @@ const saveContract = async () => {
     );
 
     alert('근로계약서가 성공적으로 업로드되었습니다!');
-    console.log('업로드 결과:', response);
 
     // 모달 닫기
     emit('close'); // 상위 컴포넌트에 close 이벤트 전달

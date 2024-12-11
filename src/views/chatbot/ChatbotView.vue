@@ -356,7 +356,6 @@ const adjustHeight = () => {
   // 줄 높이를 구하고, 최대 3줄까지만 늘어남
   const lineHeight = parseFloat(window.getComputedStyle(el).lineHeight); // 줄 높이 계산
   const maxLines = 3; // 최대 3줄
-  console.log(el.scrollHeight, initHeight + lineHeight * maxLines);
   const newHeight = Math.min(
     el.scrollHeight,
     initHeight + lineHeight * maxLines
@@ -390,7 +389,6 @@ const createSession = () => {
 watch(isInit, async (newValue) => {
   if (!newValue) {
     // isInit이 false로 변경되었을 때 실행
-    console.log('isInit이 false로 변경됨, sessions 다시 불러오기');
     await fetchChatbotSessions(); // 세션 목록 다시 불러오기
   }
 });

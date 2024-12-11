@@ -3,30 +3,31 @@
   <CommonArticle label="개인과제 등록" w="90%">
     <div class="date-selector mb-8">
       <FlexItem
-      class="year-half-section"
-      fld="row"
-      fs="1.6rem"
-      fw="500"
-      c="#003566"
-    >
-      <YearDropDown
-      :start-year="startYear"
-      :length="length"
-      @valid-date-selected="handleYearSelected" />
-      <HalfDropdown @half-selected="handleHalfSelected" />
-      <ButtonItem
-        class="search-btn"
-        h="3.6rem"
-        w="7.2rem"
-        bgc="#003566"
-        br="0.6rem"
-        c="#fff"
+        class="year-half-section"
+        fld="row"
         fs="1.6rem"
-        @click="handleSearch"
+        fw="500"
+        c="#003566"
       >
-        조회
-      </ButtonItem>
-    </FlexItem>
+        <YearDropDown
+          :start-year="startYear"
+          :length="length"
+          @valid-date-selected="handleYearSelected"
+        />
+        <HalfDropdown @half-selected="handleHalfSelected" />
+        <ButtonItem
+          class="search-btn"
+          h="3.6rem"
+          w="7.2rem"
+          bgc="#003566"
+          br="0.6rem"
+          c="#fff"
+          fs="1.6rem"
+          @click="handleSearch"
+        >
+          조회
+        </ButtonItem>
+      </FlexItem>
     </div>
 
     <TableItem gtc="0.8fr 2fr 2fr">
@@ -147,7 +148,11 @@ import TypeDropdown from '@/components/dropdowns/DropdownItem.vue';
 import YearDropDown from '@/components/dropdowns/YearDropDown.vue';
 import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import TaskEvalModal from '@/views/evaluation/TaskEvalModal.vue';
-import { createTaskItem, findAllTaskItemsByEmpId, getAllTaskTypes  } from '@/api/evaluation';
+import {
+  createTaskItem,
+  findAllTaskItemsByEmpId,
+  getAllTaskTypes,
+} from '@/api/evaluation';
 
 // 상태 관리
 const taskList = ref([]);
@@ -160,9 +165,9 @@ const selectedType = ref(null);
 const selectedTask = ref(null);
 const employeeId = ref(localStorage.getItem('employeeId'));
 
-const currentYear = ref(new Date().getFullYear())
-const startYear = ref(currentYear.value - 10 )
-const length = ref(40)
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 const emit = defineEmits(['yearSelected', 'halfSelected']);
 
@@ -190,7 +195,6 @@ const validateSearch = () => {
   return true;
 };
 
-
 // 핸들러 함수들
 
 // 조회 버튼
@@ -210,8 +214,6 @@ const handleHalfSelected = (half) => {
 
 const handleTypeSelection = (typeId) => {
   selectedType.value = typeId;
-  console.log('handleTypeSelection에서 선택된 타입:', typeId);
-  console.log('handleTypeSelection 후 selectedType 값:', selectedType.value);
 };
 
 const handleTaskClick = (task) => {
@@ -228,7 +230,7 @@ const handleEvalSubmit = () => {
 
 // 과제 유형 이름 가져오기 함수 수정
 const getTaskTypeName = (typeId) => {
-  const foundType = taskTypes.value.find(type => type.id === typeId);
+  const foundType = taskTypes.value.find((type) => type.id === typeId);
   return foundType ? foundType.name : '-';
 };
 
@@ -237,9 +239,9 @@ const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success && response.content) {
-      taskTypes.value = response.content.map(type => ({
+      taskTypes.value = response.content.map((type) => ({
         id: type.task_type_id,
-        name: type.task_type_name
+        name: type.task_type_name,
       }));
     }
   } catch (error) {
@@ -247,7 +249,6 @@ const fetchTaskTypes = async () => {
     taskTypes.value = [];
   }
 };
-
 
 // 과제 목록 조회
 const fetchTaskList = async () => {
@@ -319,11 +320,10 @@ onMounted(async () => {
     alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
     return;
   }
-  
+
   // 과제 유형 데이터 조회
   await fetchTaskTypes();
 });
-
 </script>
 
 <style scoped>

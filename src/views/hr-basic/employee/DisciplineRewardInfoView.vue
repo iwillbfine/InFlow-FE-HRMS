@@ -115,7 +115,6 @@ const handleOnclick = () => {
       (row) => row.discipline_reward_name === selectedType.value
     );
   }
-  console.log(showList.value)
 };
 
 const employeeId = ref('');
