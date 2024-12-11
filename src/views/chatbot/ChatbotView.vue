@@ -661,6 +661,14 @@ onMounted(() => {
   border-radius: 1.5rem;
   max-width: 80rem;
   padding: 1rem;
+}
+
+.chat-item span {
+  font-size: 1.6rem;
+  line-height: 2rem;
+}
+
+.chat-item p {
   font-size: 1.6rem;
   line-height: 2rem;
 }
