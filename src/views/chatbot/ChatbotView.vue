@@ -297,19 +297,19 @@ const fetchSessionHistory = async (sessionId) => {
 
 // 키워드와 경로 매핑
 const keywordRoutes = {
-  commute: '/hr-basic/attendance/commute',
-  remote: '/hr-basic/attendance/remote',
-  overtime: '/hr-basic/attendance/overtime',
-  vacation: '/hr-basic/attendance/vacation',
-  leave: '/hr-basic/attendance/leave',
-  return: '/hr-basic/attendance/return',
-  business: '/hr-basic/attendance/business-trip',
-  dispatch: '/hr-basic/attendance/dispatch',
-  salary: '/hr-basic/salary',
-  contract: '/hr-basic/document/contract',
-  certificate: '/hr-basic/document/certificate',
-  department: '/hr-basic/my-department/info/careers',
-  evaluation: '/evaluation/leader',
+  commute: { link: '/hr-basic/attendance/commute', subIdx: 0 },
+  remote: { link: '/hr-basic/attendance/remote', subIdx: 1 },
+  overtime: { link: '/hr-basic/attendance/overtime', subIdx: 2 },
+  vacation: { link: '/hr-basic/attendance/vacation', subIdx: 3 },
+  leave: { link: '/hr-basic/attendance/leave', subIdx: 4 },
+  return: { link: '/hr-basic/attendance/return', subIdx: 5 },
+  business: { link: '/hr-basic/attendance/business-trip', subIdx: 6 },
+  dispatch: { link: '/hr-basic/attendance/dispatch', subIdx: 7 },
+  salary: { link: '/hr-basic/salary', subIdx: 0 },
+  contract: { link: '/hr-basic/document/contract', subIdx: 0 },
+  certificate: { link: '/hr-basic/document/certificate', subIdx: 1 },
+  department: { link: '/hr-basic/my-department/info/careers', subIdx: 0 },
+  evaluation: { link: '/evaluation/personal', subIdx: 0 },
 };
 
 // 영어 키워드 매핑 (반대로 변경)
@@ -333,7 +333,8 @@ const keywordDict = {
 const navigateToKeyword = (index) => {
   const selectedKeyword = chatList.value[index].selectedKeyword;
   if (selectedKeyword !== null && selectedKeyword !== 'Nothing') {
-    const route = keywordRoutes[selectedKeyword];
+    const route = keywordRoutes[selectedKeyword].link;
+    localStorage.setItem('subIdx', keywordRoutes[selectedKeyword].subIdx);
     if (route) {
       router.push(route);
     } else {
