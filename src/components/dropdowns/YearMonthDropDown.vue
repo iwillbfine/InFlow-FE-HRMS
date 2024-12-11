@@ -43,8 +43,6 @@ const props = defineProps({
   }
 });
 
-console.log(props);
-
 const emit = defineEmits(['valid-date-selected']);
 
 const selectedYear = ref(null);

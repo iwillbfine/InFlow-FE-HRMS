@@ -104,8 +104,8 @@ const sortByDate = (list) => {
 };
 
 const fetchDate = async (empId) => {
+  if (!empId) return;
   const response = await getLanguageTestsById(empId);
-
   if (response) {
     const sortedResponse = sortByDate(response);
     langTestList.value = sortedResponse;
@@ -130,15 +130,16 @@ onMounted(() => {
     route.query.employee_id ||
     props.employee_id ||
     localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
 });
 
 watch(
-  () => props.employee_id,
-  (newVal) => {
-    employeeId.value =
-      route.query.employee_id || newVal || localStorage.getItem('employeeId');
-    fetchDate(employeeId.value);
+  [() => route.query.employee_id, () => props.employee_id],
+  ([queryId, propId], [oldQueryId, oldPropId]) => {
+    const newId = queryId || propId || localStorage.getItem('employeeId');
+    if (newId !== employeeId.value) {
+      employeeId.value = newId;
+      fetchDate(newId);
+    }
   },
   { immediate: true }
 );

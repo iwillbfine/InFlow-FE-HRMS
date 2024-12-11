@@ -1,7 +1,7 @@
 <template>
   <div class="department-heirarchy">
     <div class="root">
-      <img src="../../assets/icons/company_icon.png"/>
+      <BuildingIcon></BuildingIcon>
       <span>INFLOW</span>
     </div>
     <!-- 최상위 부서 목록 -->
@@ -23,6 +23,7 @@ import { ref } from 'vue';
 
 // 재귀적으로 호출되는 컴포넌트
 import TreeNode from '@/components/employee-search/TreeNode.vue';
+import BuildingIcon from '../icons/BuildingIcon.vue';
 
 // 부모 컴포넌트에서 부서 코드가 넘어오는 경우
 
@@ -44,17 +45,18 @@ const selectDepartment = (department) => {
 <style scoped>
 .root {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  font-size: 2rem;
+  color: #003566;
+  gap: 0.7rem;
 }
 
 .root > span {
-  font-size: 2rem;
-  color: #003566;
   font-weight: 500;
 }
 
 .department-heirarchy > ul {
-  margin-left: 20px;
-  margin-top: 10px;
+  margin-left: 2rem;
+  margin-top: 1rem;
 }
 </style>

@@ -1,14 +1,15 @@
 <template>
   <li class="tree-node">
     <div class="node" :style="{ marginLeft: `${level * 30}px` }">
-      <span v-if="node.sub_departments.length > 0" @click="toggleExpand">
-        {{ isExpanded ? '&#8250;' : '⌵' }}
-      </span>
-      <img :src="isFileOpen && isExpanded ? fileOpen : fileClose" alt="Icon" />
+      <div class="icon-wrapper" :class="{'hidden': node.sub_departments.length === 0}" @click="toggleExpand">
+        <ChevronDownIcon v-if="!isExpanded"></ChevronDownIcon>
+        <ChevronRightIcon v-else></ChevronRightIcon>
+      </div>
+      <FolderOpenIcon v-if="isFileOpen && isExpanded" @click="toggleExpand"></FolderOpenIcon>
+      <FolderCloseIcon v-else @click="toggleExpand"></FolderCloseIcon>
       <span
         class="department-name"
         @click="selectDepartment(node.department_code)"
-        @blur.stop="node.sub_departments.length === 0? resetFileOpen(false):resetFileOpen(true)"
         tabindex="0"
       >
         {{ node.department_name }}
@@ -43,6 +44,10 @@ import { ref } from 'vue';
 import TreeNode from '@/components/employee-search/TreeNode.vue';
 import fileOpen from '@/assets/icons/file_open.png';
 import fileClose from '@/assets/icons/file_close.png';
+import ChevronDownIcon from '../icons/ChevronDownIcon.vue';
+import ChevronRightIcon from '../icons/ChevronRightIcon.vue';
+import FolderCloseIcon from '../icons/FolderCloseIcon.vue';
+import FolderOpenIcon from '../icons/FolderOpenIcon.vue';
 
 defineProps({
   node: {
@@ -66,15 +71,8 @@ const toggleExpand = () => {
 const emit = defineEmits(['select']);
 
 const selectDepartment = (department) => {
-  isExpanded.value = true;
-  isFileOpen.value = true;
   emit('select', department);
 };
-
-const resetFileOpen = (tf) => {
-  isFileOpen.value = tf;
-}
-
 
 // 트랜지션 훅
 const beforeEnter = (el) => {
@@ -121,6 +119,7 @@ const leave = (el, done) => {
   align-items: center;
   transition: 0.2s ease-in-out;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .node:hover {
@@ -130,6 +129,14 @@ const leave = (el, done) => {
   padding: 4px;
 }
 
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-right: 0.4rem;
+}
+
 .department-name {
   flex-grow: 1;
   cursor: pointer;
@@ -137,5 +144,9 @@ const leave = (el, done) => {
 
 .sub-department {
   overflow: hidden;
+}
+
+.hidden {
+  visibility: hidden;
 }
 </style>

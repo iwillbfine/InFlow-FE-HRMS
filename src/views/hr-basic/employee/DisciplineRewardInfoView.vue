@@ -88,18 +88,13 @@ const sortByDate = (list) => {
 };
 
 const fetchDate = async (empId) => {
+  if (!empId) return;
   const response = await getDisciplineReward(empId);
-
   if (response) {
-    const sortedResponse = sortByDate(
-      response[0].discipline_rewards.map((row) => ({
-        ...row,
-        created_at: row['created_at'].split('T')[0],
-      }))
-    );
+    const sortedResponse = sortByDate(response);
     drList.value = sortedResponse;
-    showList.value = drList.value;
     isEmpty.value = drList.value.length === 0;
+    showList.value = drList.value;
   } else {
     drList.value = [];
     isEmpty.value = true;
@@ -120,20 +115,26 @@ const handleOnclick = () => {
       (row) => row.discipline_reward_name === selectedType.value
     );
   }
+  console.log(showList.value)
 };
 
 const employeeId = ref('');
 
 onMounted(() => {
-  employeeId.value = props.employee_id || localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
+  employeeId.value =
+    route.query.employee_id ||
+    props.employee_id ||
+    localStorage.getItem('employeeId');
 });
 
 watch(
-  () => props.employee_id,
-  (newVal) => {
-    employeeId.value = newVal || localStorage.getItem('employeeId');
-    fetchDate(employeeId.value);
+  [() => route.query.employee_id, () => props.employee_id],
+  ([queryId, propId], [oldQueryId, oldPropId]) => {
+    const newId = queryId || propId || localStorage.getItem('employeeId');
+    if (newId !== employeeId.value) {
+      employeeId.value = newId;
+      fetchDate(newId);
+    }
   },
   { immediate: true }
 );
