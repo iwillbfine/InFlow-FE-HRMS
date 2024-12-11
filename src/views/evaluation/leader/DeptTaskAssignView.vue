@@ -107,7 +107,7 @@
     <ButtonItem
       class="submit-btn"
       h="3.6rem"
-      w="7.2rem"
+      w="8rem"
       bgc="#003566"
       br="0.6rem"
       c="#fff"

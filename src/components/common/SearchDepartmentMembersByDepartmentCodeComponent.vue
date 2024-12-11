@@ -73,7 +73,7 @@ import ArticleItem from '@/components/semantic/ArticleItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import LiItem from '@/components/semantic/LiItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
-import { getMyDepartmentMemberListByDepartmentCode, getEmployeesByKeywordOrDepartmentCode } from '@/api/department';
+import { getMyDepartmentMemberListByDepartmentCode, getMyDepartmentMemberListByDepartmentCodeAndKeyword } from '@/api/department';
 import { getEmployeeById } from '@/api/emp_info';
 import { ref, onMounted } from 'vue';
 
