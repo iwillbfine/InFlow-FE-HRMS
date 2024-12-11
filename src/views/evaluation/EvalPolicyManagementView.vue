@@ -180,7 +180,7 @@
 
         <TableCell class="button-cell">
           <ButtonItem
-            class="submit-btn"
+            class="detail-btn"
             h="3.6rem"
             w="7.2rem"
             bgc="#003566"
@@ -490,6 +490,11 @@ onMounted(() => {
 
 .submit-btn {
   margin-top: 3.2rem;
+  padding: 1rem 0;
+}
+
+/* 마진 제거로 테이블 높이 조절  */
+.detail-btn {
   padding: 1rem 0;
 }
 
