@@ -411,7 +411,7 @@ onMounted(() => {
 .tooltip {
   position: absolute; /* 참조 요소 기준 */
   background-color: #fff;
-  color: #000;
+  color: #003566;
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
   font-size: 1.6rem;

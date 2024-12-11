@@ -113,8 +113,8 @@ watch(employeeId, (newVal) => {
   margin-top: 8rem;
 }
 .search-emp {
-  top: 20rem;
-  height: 82% !important;
+  top: 18.5rem;
+  height: calc(100% - 18.4rem) !important;
 }
 .sub-menu-nav {
   width: 96% !important;

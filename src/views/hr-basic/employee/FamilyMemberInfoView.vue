@@ -85,15 +85,13 @@ const sortByDate = (list) => {
 };
 
 const fetchDate = async (empId) => {
+  if (!empId) return;
   const response = await getFamilyById(empId);
-
-  if (Array.isArray(response)) {
-    const sortedResponse = sortByDate(
-      response.map((row) => ({
-        ...row,
-        birth_date: row['birth_date'].split('T')[0],
-      }))
-    );
+  if (response) {
+    const sortedResponse = sortByDate(response.map((row) => ({
+      ...row,
+      birth_date: row['birth_date'].split('T')[0],
+    })));
     familyList.value = sortedResponse;
     isEmpty.value = familyList.value.length === 0;
   } else {
@@ -117,15 +115,16 @@ onMounted(() => {
     route.query.employee_id ||
     props.employee_id ||
     localStorage.getItem('employeeId');
-  fetchDate(employeeId.value);
 });
 
 watch(
-  () => props.employee_id,
-  (newVal) => {
-    employeeId.value =
-      route.query.employee_id || newVal || localStorage.getItem('employeeId');
-    fetchDate(employeeId.value);
+  [() => route.query.employee_id, () => props.employee_id],
+  ([queryId, propId], [oldQueryId, oldPropId]) => {
+    const newId = queryId || propId || localStorage.getItem('employeeId');
+    if (newId !== employeeId.value) {
+      employeeId.value = newId;
+      fetchDate(newId);
+    }
   },
   { immediate: true }
 );

@@ -187,7 +187,7 @@ const hideModal = () => {
 
 const setModalTxt = (data) => {
   return {
-    사번: '유효한 사번을 입력하세요.',
+    사번: '새로운 사번을 입력하세요.',
     성별: '선택:\n- 남\n- 여',
     생년월일: '입력 예:\n- YYYY-MM-DD',
     이메일: '입력 예:\n- employee@example.com',
@@ -278,7 +278,7 @@ const mapping = () => {
     email: row['이메일'],
     phone_number: row['휴대폰번호'],
     join_type: row['입사유형'],
-    monthly_salary: row['계약월급'],
+    monthly_salary: parseInt(row['계약월급'].replace(/,/g, ''), 10),
     street_address: row['도로명 주소'],
     detailed_address: row['상세주소'],
     postcode: row['우편번호'],
@@ -307,7 +307,6 @@ const postData = async () => {
   const invalidRows = rowsData.value.some((row) =>
     Object.entries(row).some(([header, value]) => !isCellValid(value, header))
   );
-
   if (invalidRows) {
     window.alert('유효하지 않은 데이터 존재!! 등록 불가!!');
     return;

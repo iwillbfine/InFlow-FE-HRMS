@@ -117,6 +117,7 @@ const selectEmployee = (employeeCode) => {
 }
 
 .no-list {
+  height: 100%;
   font-size: 1.5rem;
   display: flex;
   justify-content: center;

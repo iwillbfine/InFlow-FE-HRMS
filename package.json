@@ -17,6 +17,7 @@
     "fastapi": "^0.0.8",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.2",
+    "inflow": "file:",
     "jspdf": "^2.5.2",
     "marked": "^15.0.3",
     "pdfmake": "^0.2.15",
