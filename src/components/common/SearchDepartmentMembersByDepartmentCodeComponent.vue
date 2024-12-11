@@ -73,10 +73,8 @@ import ArticleItem from '@/components/semantic/ArticleItem.vue';
 import FlexItem from '@/components/semantic/FlexItem.vue';
 import LiItem from '@/components/semantic/LiItem.vue';
 import UlItem from '@/components/semantic/UlItem.vue';
-import {
-  getAllDepartmentMembers,
-  getEmployeesByKeywordOrDepartmentCode,
-} from '@/api/department';
+import { getMyDepartmentMemberListByDepartmentCode, getEmployeesByKeywordOrDepartmentCode } from '@/api/department';
+import { getEmployeeById } from '@/api/emp_info';
 import { ref, onMounted } from 'vue';
 
 const emit = defineEmits(['employee-selected']);
@@ -85,33 +83,69 @@ const employeeList = ref([]);
 const isEmpty = ref(true);
 const keyword = ref('');
 
+const fetchDepartmentMembers = async () => {
+  try {
+    
+    const employeeId = localStorage.getItem('employeeId');
+    const token = localStorage.getItem('accessToken');
+
+    // 사원 정보 조회
+    const employeeData = await getEmployeeById(employeeId, token);
+    
+    // 부서 구성원 조회
+    const departmentMembers = await getMyDepartmentMemberListByDepartmentCode(
+      employeeData.department_code
+    );
+
+    // 부서 구성원 로그 
+    // console.log('부서 구성원 목록: ', departmentMembers);
+    // console.log('부서 구성원 상세 정보 조회', departmentMembers.content);
+
+    // 조회된 결과를 employeeList에 설정
+    employeeList.value = departmentMembers.content;
+    isEmpty.value = employeeList.value.length === 0;
+  } catch (error) {
+    console.error('부서 구성원 조회 중 에러 발생:', error);
+    employeeList.value = [];
+    isEmpty.value = true;
+  }
+};
+
 const fetchSearchedEmployeeData = async (keyword) => {
-  const response = await getEmployeesByKeywordOrDepartmentCode(keyword);
+  try {
+    const employeeId = localStorage.getItem('employeeId');
+    const token = localStorage.getItem('accessToken');
+    
+    // 현재 로그인한 사원의 부서 코드를 가져옴
+    const employeeData = await getEmployeeById(employeeId, token);
+    
+    // 부서 코드와 키워드로 검색
+    const response = await getMyDepartmentMemberListByDepartmentCodeAndKeyword(
+      employeeData.department_code,
+      keyword
+    );
 
-  if (response.success) {
-    employeeList.value = response.content;
-    isEmpty.value = employeeList.value.isEmpty ? true : false;
-  } else {
+    if (response.success) {
+      employeeList.value = response.content;
+      isEmpty.value = employeeList.value.length === 0;
+    } else {
+      employeeList.value = [];
+      isEmpty.value = true;
+    }
+  } catch (error) {
+    console.error('부서 구성원 키워드 검색 중 에러 발생:', error);
     employeeList.value = [];
     isEmpty.value = true;
   }
 };
 
-const fetchAllEmployeeData = async () => {
-  const response = await getAllDepartmentMembers();
-
-  if (response.success) {
-    employeeList.value = response.content;
-    isEmpty.value = employeeList.value.isEmpty ? true : false;
-  } else {
-    employeeList.value = [];
-    isEmpty.value = true;
-  }
-};
 
 const searchEmployee = () => {
-  if (!keyword.value) fetchAllEmployeeData();
-  else fetchSearchedEmployeeData(keyword.value);
+  if (!keyword.value) {
+    fetchDepartmentMembers(); // 검색어가 없을 때는 부서 구성원 표시
+  } else {
+    fetchSearchedEmployeeData(keyword.value);
+  }
 };
 
 const handleSelected = (item) => {
@@ -119,7 +153,7 @@ const handleSelected = (item) => {
 };
 
 onMounted(() => {
-  fetchAllEmployeeData();
+  fetchDepartmentMembers(); // 초기 로딩 시 부서 구성원 조회
 });
 </script>
 

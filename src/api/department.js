@@ -51,3 +51,22 @@ export const getMyDepartmentMemberListByDepartmentCode = async (
     throw error;
   }
 };
+
+// 5. 부서 구성원 조회(팀장) - 키워드 검색 추가
+export const getMyDepartmentMemberListByDepartmentCodeAndKeyword = async (
+  departmentCode,
+  keyword
+) => {
+  try {
+    const response = await apiClient.get(
+      `/departments/my-department/${departmentCode}/members`,
+      {
+        params: { keyword }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('getMyDepartmentMemberListByDepartmentCodeAndKeyword 에러:', error);
+    throw error;
+  }
+};

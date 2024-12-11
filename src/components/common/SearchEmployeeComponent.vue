@@ -103,6 +103,7 @@
     if (response.success) {
       employeeList.value = response.content;
       isEmpty.value = employeeList.value.isEmpty ? true : false;
+      
     } else {
       employeeList.value = [];
       isEmpty.value = true;
