@@ -112,12 +112,28 @@ const fetchDepartmentMembers = async () => {
 };
 
 const fetchSearchedEmployeeData = async (keyword) => {
-  const response = await getEmployeesByKeywordOrDepartmentCode(keyword);
+  try {
+    const employeeId = localStorage.getItem('employeeId');
+    const token = localStorage.getItem('accessToken');
+    
+    // 현재 로그인한 사원의 부서 코드를 가져옴
+    const employeeData = await getEmployeeById(employeeId, token);
+    
+    // 부서 코드와 키워드로 검색
+    const response = await getMyDepartmentMemberListByDepartmentCodeAndKeyword(
+      employeeData.department_code,
+      keyword
+    );
 
-  if (response.success) {
-    employeeList.value = response.content;
-    isEmpty.value = employeeList.value.isEmpty ? true : false;
-  } else {
+    if (response.success) {
+      employeeList.value = response.content;
+      isEmpty.value = employeeList.value.length === 0;
+    } else {
+      employeeList.value = [];
+      isEmpty.value = true;
+    }
+  } catch (error) {
+    console.error('부서 구성원 키워드 검색 중 에러 발생:', error);
     employeeList.value = [];
     isEmpty.value = true;
   }
