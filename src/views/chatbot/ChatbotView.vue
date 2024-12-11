@@ -662,7 +662,7 @@ onMounted(() => {
   max-width: 80rem;
   padding: 1rem;
   font-size: 1.6rem;
-  line-height: 1.8rem;
+  line-height: 2rem;
 }
 
 .bot-chat {
