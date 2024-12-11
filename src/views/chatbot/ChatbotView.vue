@@ -393,6 +393,11 @@ watch(isInit, async (newValue) => {
 
 
 const handleKeydown = (event) => {
+  if (isLoading.value) {
+    event.preventDefault(); // 로딩 중일 경우 기본 동작 차단
+    return;
+  }
+
   if (event.key === 'Enter') {
     if (event.shiftKey) {
       // shift + enter일 경우 줄바꿈
@@ -404,6 +409,7 @@ const handleKeydown = (event) => {
     }
   }
 };
+
 
 const handleCopy = (message) => {
   navigator.clipboard
