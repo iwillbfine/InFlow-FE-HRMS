@@ -54,8 +54,7 @@
             c="#003566"
           >
             <YearDropDown
-              :start-year="startYear"
-              :length="length"
+              short
               @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
