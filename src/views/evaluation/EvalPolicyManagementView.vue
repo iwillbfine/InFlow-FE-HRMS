@@ -39,7 +39,10 @@
             fw="500"
             c="#003566"
           >
-            <DateDropDown @valid-date-selected="handleStartDateSelected" />
+            <DateDropDown
+              short
+              @valid-date-selected="handleStartDateSelected"
+            />
           </FlexItem>
         </TableCell>
         <TableCell th fs="1.6rem">평가 종료일</TableCell>
@@ -51,7 +54,7 @@
             fw="500"
             c="#003566"
           >
-            <DateDropDown @valid-date-selected="handleEndDateSelected" />
+            <DateDropDown short @valid-date-selected="handleEndDateSelected" />
           </FlexItem>
         </TableCell>
       </TableRow>
