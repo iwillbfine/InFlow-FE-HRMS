@@ -380,7 +380,7 @@ const handleDelete = async (gradeId) => {
 
 .custom-year-half {
   position: absolute;
-  top: 0;
+  top: -2rem;
   right: 0;
 }
 
