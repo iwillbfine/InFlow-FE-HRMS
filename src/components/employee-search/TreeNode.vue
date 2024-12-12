@@ -1,11 +1,18 @@
 <template>
   <li class="tree-node">
     <div class="node" :style="{ marginLeft: `${level * 30}px` }">
-      <div class="icon-wrapper" :class="{'hidden': node.sub_departments.length === 0}" @click="toggleExpand">
-        <ChevronDownIcon v-if="!isExpanded"></ChevronDownIcon>
+      <div
+        class="icon-wrapper"
+        :class="{ hidden: node.sub_departments.length === 0 }"
+        @click="toggleExpand"
+      >
+        <ChevronDownIcon v-if="isExpanded"></ChevronDownIcon>
         <ChevronRightIcon v-else></ChevronRightIcon>
       </div>
-      <FolderOpenIcon v-if="isFileOpen && isExpanded" @click="toggleExpand"></FolderOpenIcon>
+      <FolderOpenIcon
+        v-if="isFileOpen && isExpanded"
+        @click="toggleExpand"
+      ></FolderOpenIcon>
       <FolderCloseIcon v-else @click="toggleExpand"></FolderCloseIcon>
       <span
         class="department-name"

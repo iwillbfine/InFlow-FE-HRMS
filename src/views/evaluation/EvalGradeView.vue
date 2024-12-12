@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle label="평가 유형 등록" w="90%">
+  <CommonArticle label="평가 등급 등록" w="90%">
     <TableItem gtc="0.25fr 0.25fr 0.25fr 0.25fr">
       <TableRow>
         <TableCell th fs="1.6rem">등급</TableCell>
@@ -54,9 +54,9 @@
             c="#003566"
           >
             <YearDropDown
-            :start-year="startYear"
-            :length="length"
-            @valid-date-selected="handleRegistrationYearSelected"
+              :start-year="startYear"
+              :length="length"
+              @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
           </FlexItem>
@@ -81,18 +81,19 @@
 
   <hr />
 
-  <CommonArticle label="평가 유형 목록" w="90%">
+  <CommonArticle label="평가 등급 목록" w="90%">
     <FlexItem
-      class="year-half-section"
+      class="custom-year-half year-half-section"
       fld="row"
       fs="1.6rem"
       fw="500"
       c="#003566"
     >
       <YearDropDown
-      :start-year="startYear"
-      :length="length"
-      valid-date-selected="handleYearSelected" />
+        :start-year="startYear"
+        :length="length"
+        valid-date-selected="handleYearSelected"
+      />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -126,7 +127,6 @@
         >
         <TableCell class="button-cell">
           <ButtonItem
-
             h="3.6rem"
             w="7.2rem"
             bgc="#003566"
@@ -174,7 +174,7 @@ import HalfDropdown from '@/components/dropdowns/HalfDropdown.vue';
 import {
   findGradeByYearAndHalf,
   createGrade,
-  deleteGrade
+  deleteGrade,
 } from '@/api/evaluation';
 import EvalGradeUpdateModalView from '@/views/evaluation/EvalGradeUpdateModalView.vue';
 
@@ -191,9 +191,9 @@ const isUpdateModalOpen = ref(false);
 const selectedGrade = ref(null);
 
 // Year 드롭다운 관련 상태
-const currentYear = ref(new Date().getFullYear())
-const startYear = ref(currentYear.value - 10 )
-const length = ref(40)
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 const gradeForm = ref({
   grade_name: '',
@@ -333,7 +333,11 @@ const handleDelete = async (gradeId) => {
   }
 
   try {
-    const response = await deleteGrade(gradeId, selectedYear.value, selectedHalf.value);
+    const response = await deleteGrade(
+      gradeId,
+      selectedYear.value,
+      selectedHalf.value
+    );
     if (response.success) {
       alert('등급이 삭제되었습니다.');
       fetchGrades();
@@ -345,7 +349,6 @@ const handleDelete = async (gradeId) => {
     alert('등급 삭제 중 오류가 발생했습니다.');
   }
 };
-
 </script>
 
 <style scoped>
@@ -371,11 +374,22 @@ const handleDelete = async (gradeId) => {
   align-items: center;
 }
 
+.common-article {
+  position: relative;
+}
+
+.custom-year-half {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+}
+
 .year-half-section {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  padding: 1rem 0;
   gap: 1rem;
+  padding: 1rem 0;
 }
 
 .registration-year-half {
