@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle label="평가 유형 등록" w="90%">
+  <CommonArticle label="과제 유형 등록" w="90%">
     <TableItem gtc="2fr 0.3fr">
       <TableRow>
         <TableCell th fs="1.6rem">유형</TableCell>
@@ -36,7 +36,7 @@
 
   <hr />
 
-  <CommonArticle class="pos-rel" label="평가 유형 목록" w="90%">
+  <CommonArticle class="pos-rel" label="과제 유형 목록" w="90%">
     <TableItem gtc="0.25fr 2fr 0.25fr">
       <TableRow>
         <TableCell th fs="1.6rem">No</TableCell>
