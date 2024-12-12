@@ -1,6 +1,6 @@
 <!-- PersonalEvalCreateAndFindView.vue -->
 <template>
-  <CommonArticle label="개인과제 등록" w="90%">
+  <CommonArticle label="과제 등록" w="90%">
     <div class="date-selector mb-8">
       <FlexItem
         class="year-half-section"

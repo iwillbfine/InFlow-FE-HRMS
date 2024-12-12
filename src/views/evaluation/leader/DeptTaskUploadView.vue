@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle class="task-upload-article" label="부서 과제 등록" w="90%">
+  <CommonArticle class="task-upload-article" label="과제 등록" w="90%">
     <FlexItem
       class="year-half-section"
       fld="row"
@@ -8,9 +8,10 @@
       c="#003566"
     >
       <YearDropDown
-      :start-year="startYear"
-      :length="length"
-      @valid-date-selected="handleYearSelected" />
+        :start-year="startYear"
+        :length="length"
+        @valid-date-selected="handleYearSelected"
+      />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -28,7 +29,7 @@
     <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <TableItem gtc="3fr 6fr 8fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>유형</TableCell>
+        <TableCell th fs="1.6rem" topl>과제 유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
         <TableCell th fs="1.6rem">과제 내용</TableCell>
       </TableRow>
@@ -140,11 +141,9 @@ const taskList = ref([]);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-const currentYear = ref(new Date().getFullYear())
-const startYear = ref(currentYear.value - 10 )
-const length = ref(40)
-
-
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 // 과제 유형 목록 조회
 const fetchTaskTypes = async () => {
