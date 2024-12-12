@@ -83,7 +83,7 @@
 
   <CommonArticle label="평가 등급 목록" w="90%">
     <FlexItem
-      class="year-half-section"
+      class="custom-year-half year-half-section"
       fld="row"
       fs="1.6rem"
       fw="500"
@@ -378,10 +378,13 @@ const handleDelete = async (gradeId) => {
   position: relative;
 }
 
-.year-half-section {
+.custom-year-half {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.year-half-section {
   display: flex;
   align-items: center;
   justify-content: flex-end;
