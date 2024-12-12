@@ -374,11 +374,19 @@ const handleDelete = async (gradeId) => {
   align-items: center;
 }
 
+.common-article {
+  position: relative;
+}
+
 .year-half-section {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  padding: 1rem 0;
   gap: 1rem;
+  padding: 1rem 0;
 }
 
 .registration-year-half {

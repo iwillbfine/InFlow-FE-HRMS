@@ -60,8 +60,8 @@
         <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
         <TableCell fs="1.6rem">
           <YearMonthDropDown
-          :start-year="startYear"
-          :length="length"
+            :start-year="startYear"
+            :length="length"
             @valid-date-selected="handlePolicyEditDateSelected"
           />
         </TableCell>
@@ -75,9 +75,9 @@
             c="#003566"
           >
             <YearDropDown
-            :start-year="startYear"
-            :length="length"
-            @valid-date-selected="handleRegistrationYearSelected"
+              :start-year="startYear"
+              :length="length"
+              @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
           </FlexItem>
@@ -137,9 +137,10 @@
       c="#003566"
     >
       <YearDropDown
-      :start-year="startYear"
-      :length="length"
-      @valid-date-selected="handleYearSelected" />
+        :start-year="startYear"
+        :length="length"
+        @valid-date-selected="handleYearSelected"
+      />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -262,9 +263,9 @@ const showPolicyModal = ref(false);
 const selectedPolicyId = ref(null);
 
 // Year 수정 위한 변수
-const currentYear = ref(new Date().getFullYear())
-const startYear = ref(currentYear.value - 10 )
-const length = ref(40)
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 // 과제 유형 목록 조회
 const fetchTaskTypes = async () => {
@@ -462,7 +463,14 @@ onMounted(() => {
   gap: 1rem;
 }
 
+.common-article {
+  position: relative;
+}
+
 .year-half-section {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -571,6 +579,4 @@ hr {
   margin-top: 3.2rem;
   padding: 1rem 0;
 }
-
-
 </style>
