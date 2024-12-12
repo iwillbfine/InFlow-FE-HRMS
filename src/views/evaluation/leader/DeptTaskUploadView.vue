@@ -29,7 +29,7 @@
     <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     <TableItem gtc="3fr 6fr 8fr">
       <TableRow>
-        <TableCell th fs="1.6rem" topl>과제 유형</TableCell>
+        <TableCell th fs="1.6rem" topl>유형</TableCell>
         <TableCell th fs="1.6rem">과제명</TableCell>
         <TableCell th fs="1.6rem">과제 내용</TableCell>
       </TableRow>
