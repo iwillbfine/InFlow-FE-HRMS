@@ -31,7 +31,7 @@
 
       <TableRow>
         <TableCell th fs="1.6rem">평가 시작일</TableCell>
-        <TableCell class="pl-1" fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -46,7 +46,7 @@
           </FlexItem>
         </TableCell>
         <TableCell th fs="1.6rem">평가 종료일</TableCell>
-        <TableCell class="pl-1" fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -61,14 +61,14 @@
 
       <TableRow>
         <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
-        <TableCell class="pl-1" fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <YearMonthDropDown
             short
             @valid-date-selected="handlePolicyEditDateSelected"
           />
         </TableCell>
         <TableCell th fs="1.6rem">적용 시기</TableCell>
-        <TableCell class="pl-1" fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -449,8 +449,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.pl-1 {
-  padding-left: 1rem !important;
+.pl-2 {
+  padding-left: 2rem !important;
 }
 
 .dropdown-container {
