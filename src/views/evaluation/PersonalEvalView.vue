@@ -36,7 +36,7 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '자기평가 관리', link: '/evaluation/personal/1' },
+  { name: '자기 평가 관리', link: '/evaluation/personal/1' },
 ]);
 
 const router = useRouter();

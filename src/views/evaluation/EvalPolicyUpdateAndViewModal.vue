@@ -7,7 +7,7 @@
     <div class="modal-content">
       <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
         <TableRow>
-          <TableCell th fs="1.6rem">과제 유형</TableCell>
+          <TableCell th fs="1.6rem">유형</TableCell>
           <TableCell fs="1.6rem">
             <template v-if="isEditing">
               <DropdownItem

@@ -3,7 +3,7 @@
   <CommonArticle label="평가 정책 등록" w="90%">
     <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
       <TableRow>
-        <TableCell th fs="1.6rem">과제유형</TableCell>
+        <TableCell th fs="1.6rem">과제 유형</TableCell>
         <TableCell>
           <TypeDropdown
             placeholder="선택"
