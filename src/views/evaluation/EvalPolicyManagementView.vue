@@ -31,7 +31,7 @@
 
       <TableRow>
         <TableCell th fs="1.6rem">평가 시작일</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-1" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -46,7 +46,7 @@
           </FlexItem>
         </TableCell>
         <TableCell th fs="1.6rem">평가 종료일</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-1" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -61,15 +61,14 @@
 
       <TableRow>
         <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-1" fs="1.6rem">
           <YearMonthDropDown
-            :start-year="startYear"
-            :length="length"
+            short
             @valid-date-selected="handlePolicyEditDateSelected"
           />
         </TableCell>
         <TableCell th fs="1.6rem">적용 시기</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-1" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -78,8 +77,7 @@
             c="#003566"
           >
             <YearDropDown
-              :start-year="startYear"
-              :length="length"
+              short
               @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
@@ -451,6 +449,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.pl-1 {
+  padding-left: 1rem !important;
+}
+
 .dropdown-container {
   width: fit-content;
   display: flex;
