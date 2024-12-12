@@ -71,8 +71,8 @@
             <div
               v-if="
                 item.type === 'bot' &&
-                chatList[index].selectedKeyword !== 'Nothing' &&
-                chatList[index].selectedKeyword !== null
+                chatList[index].selectedKeyword &&
+                chatList[index].selectedKeyword !== 'Nothing'
               "
               class="keyword-navigation"
             >
