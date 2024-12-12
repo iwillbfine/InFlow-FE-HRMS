@@ -1,5 +1,5 @@
 <template>
-  <CommonArticle class="task-upload-article" label="부서 과제 등록" w="90%">
+  <CommonArticle class="task-upload-article" label="과제 등록" w="90%">
     <FlexItem
       class="year-half-section"
       fld="row"
@@ -8,9 +8,10 @@
       c="#003566"
     >
       <YearDropDown
-      :start-year="startYear"
-      :length="length"
-      @valid-date-selected="handleYearSelected" />
+        :start-year="startYear"
+        :length="length"
+        @valid-date-selected="handleYearSelected"
+      />
       <HalfDropdown @half-selected="handleHalfSelected" />
       <ButtonItem
         class="search-btn"
@@ -140,21 +141,21 @@ const taskList = ref([]);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-const currentYear = ref(new Date().getFullYear())
-const startYear = ref(currentYear.value - 10 )
-const length = ref(40)
-
-
+const currentYear = ref(new Date().getFullYear());
+const startYear = ref(currentYear.value - 10);
+const length = ref(40);
 
 // 과제 유형 목록 조회
 const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success) {
-      taskTypes.value = response.content.map((item) => ({
-        id: item.task_type_id,
-        name: item.task_type_name,
-      }));
+      taskTypes.value = response.content
+        .filter((type) => type.task_type_name !== '공통과제')
+        .map((type) => ({
+          id: type.task_type_id,
+          name: type.task_type_name,
+        }));
     } else {
       console.error('과제 유형 조회 실패:', response);
       taskTypes.value = [];

@@ -3,7 +3,7 @@
   <CommonArticle label="평가 정책 등록" w="90%">
     <TableItem gtc="0.25fr 0.75fr 0.25fr 0.75fr">
       <TableRow>
-        <TableCell th fs="1.6rem">과제유형</TableCell>
+        <TableCell th fs="1.6rem">과제 유형</TableCell>
         <TableCell>
           <TypeDropdown
             placeholder="선택"
@@ -31,7 +31,7 @@
 
       <TableRow>
         <TableCell th fs="1.6rem">평가 시작일</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -39,11 +39,14 @@
             fw="500"
             c="#003566"
           >
-            <DateDropDown @valid-date-selected="handleStartDateSelected" />
+            <DateDropDown
+              short
+              @valid-date-selected="handleStartDateSelected"
+            />
           </FlexItem>
         </TableCell>
         <TableCell th fs="1.6rem">평가 종료일</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -51,22 +54,21 @@
             fw="500"
             c="#003566"
           >
-            <DateDropDown @valid-date-selected="handleEndDateSelected" />
+            <DateDropDown short @valid-date-selected="handleEndDateSelected" />
           </FlexItem>
         </TableCell>
       </TableRow>
 
       <TableRow>
         <TableCell th fs="1.6rem"> 수정 가능 시기</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <YearMonthDropDown
-            :start-year="startYear"
-            :length="length"
+            short
             @valid-date-selected="handlePolicyEditDateSelected"
           />
         </TableCell>
         <TableCell th fs="1.6rem">적용 시기</TableCell>
-        <TableCell fs="1.6rem">
+        <TableCell class="pl-2" fs="1.6rem">
           <FlexItem
             class="year-half-section"
             fld="row"
@@ -75,8 +77,7 @@
             c="#003566"
           >
             <YearDropDown
-              :start-year="startYear"
-              :length="length"
+              short
               @valid-date-selected="handleRegistrationYearSelected"
             />
             <HalfDropdown @half-selected="handleRegistrationHalfSelected" />
@@ -448,6 +449,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.pl-2 {
+  padding-left: 2rem !important;
+}
+
 .dropdown-container {
   width: fit-content;
   display: flex;

@@ -1,6 +1,6 @@
 <!-- PersonalEvalCreateAndFindView.vue -->
 <template>
-  <CommonArticle label="개인과제 등록" w="90%">
+  <CommonArticle label="과제 등록" w="90%">
     <div class="date-selector mb-8">
       <FlexItem
         class="year-half-section"
@@ -239,10 +239,12 @@ const fetchTaskTypes = async () => {
   try {
     const response = await getAllTaskTypes();
     if (response.success && response.content) {
-      taskTypes.value = response.content.map((type) => ({
-        id: type.task_type_id,
-        name: type.task_type_name,
-      }));
+      taskTypes.value = response.content
+        .filter((type) => type.task_type_name === '공통과제')
+        .map((type) => ({
+          id: type.task_type_id,
+          name: type.task_type_name,
+        }));
     }
   } catch (error) {
     console.error('과제 유형 조회 실패:', error);

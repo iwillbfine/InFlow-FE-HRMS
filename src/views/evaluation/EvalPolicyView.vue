@@ -32,7 +32,7 @@ const menuList = ref([
 ]);
 
 const subMenuList = ref([
-  { name: '평가 유형 관리', link: '/evaluation/policy/eval-type' },
+  { name: '과제 유형 관리', link: '/evaluation/policy/eval-type' },
   { name: '평가 정책 관리', link: '/evaluation/policy/eval-policy' },
   { name: '평가 등급 관리', link: '/evaluation/policy/eval-grade' },
 ]);
